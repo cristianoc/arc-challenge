@@ -1,5 +1,7 @@
 import os
 import json
+import matplotlib.pyplot as plt
+import numpy as np
 
 def load_arc_data(directory):
     tasks = []
@@ -10,15 +12,19 @@ def load_arc_data(directory):
                 tasks.append(task)
     return tasks
 
+def plot_grid(grid, title="Grid"):
+    grid_array = np.array(grid)
+    plt.imshow(grid_array, cmap='tab20')
+    plt.title(title)
+    plt.colorbar()
+    plt.show()
+
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Construct paths to the training and evaluation datasets
 training_dataset_path = os.path.join(script_dir, '../data/training/')
 evaluation_dataset_path = os.path.join(script_dir, '../data/evaluation/')
-
-print("Training dataset path:", training_dataset_path)
-print("Evaluation dataset path:", evaluation_dataset_path)
 
 # Load training and evaluation datasets
 training_data = load_arc_data(training_dataset_path)
@@ -40,9 +46,13 @@ print("\nFirst training task train set:")
 for example in train_set:
     print("Input:\n", example['input'])
     print("Output:\n", example['output'])
+    plot_grid(example['input'], title="Train Input")
+    plot_grid(example['output'], title="Train Output")
 
 print("\nFirst training task test set:")
 for example in test_set:
     print("Input:\n", example['input'])
+    plot_grid(example['input'], title="Test Input")
     if 'output' in example:
         print("Output:\n", example['output'])
+        plot_grid(example['output'], title="Test Output")
