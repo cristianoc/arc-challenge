@@ -27,13 +27,23 @@ class Grid:
             print(f"Grid: {self.grid}")
             print(f"Inferred shape: {self.shape}")
 
-    # infer a shape
-    # example: [[1,2], [3,4], [5,6], [7,8]] infers Shape(2), i.e. 2x2
-    # nested example (of shape Shape(2,2) i.e. 2x2x2x2):
 
     def infer_shape(self, grid):
+        """
+        Infer the shape of a grid.
+
+        Args:
+            grid (list[list[Any]]): A list of lists representing the grid.
+
+        Returns:
+            Shape: The inferred shape of the grid.
+
+        Raises:
+            ValueError: If the grid is not a list, or if it is not a list of lists, or if the grid is not square.
+
+        """
         # From a list of lists, determine the size and check it is a square
-        # Check that everty element is a list of the same lenght as the outer list.
+        # Check that every element is a list of the same length as the outer list.
         def get_size(grid: list[list[Any]]) -> int:
             # check that it's a list
             if not isinstance(grid, list):
