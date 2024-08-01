@@ -1,6 +1,6 @@
 import copy
 from enum import Enum
-from typing import Callable
+from typing import Callable, Optional
 
 from matplotlib import colors, pyplot as plt
 
@@ -99,7 +99,7 @@ class Grid:
                                      for i in range(size)]
         return Grid(transform_raw(new_grid))
 
-    def Display(self) -> None:
+    def Display(self, title: Optional[str] = None) -> None:
         data = self.raw
         cmap = colors.ListedColormap(
             ['black', 'orange', 'green', 'blue', 'yellow', 'white'])
@@ -117,6 +117,9 @@ class Grid:
                 rect = plt.Rectangle(  # type: ignore
                     (j - 0.5, i - 0.5), 1, 1, edgecolor='grey', facecolor='none', linewidth=1)
                 ax.add_patch(rect)
+        # Set title
+        if title:
+            ax.set_title(title, color = 'white')
         plt.axis('off')  # type: ignore
         plt.show()  # type: ignore
 

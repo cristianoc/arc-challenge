@@ -1,23 +1,25 @@
 import os
 import json
-import matplotlib.pyplot as plt
-import numpy as np
 
-def load_arc_data(directory):
-    tasks = []
+from grid import Grid, Raw
+
+Example = dict[str, Raw]
+Task = dict[str, list[Example]]
+
+
+def load_arc_data(directory: str) -> list[Task]:
+    tasks: list[Task] = []
     for filename in os.listdir(directory):
         if filename.endswith(".json"):
             with open(os.path.join(directory, filename), 'r') as file:
-                task = json.load(file)
+                task: Task = json.load(file)
                 tasks.append(task)
     return tasks
 
-def plot_grid(grid, title="Grid"):
-    grid_array = np.array(grid)
-    plt.imshow(grid_array, cmap='tab20')
-    plt.title(title)
-    plt.colorbar()
-    plt.show()
+
+def plot_grid(raw: Raw, title: str = "Grid") -> None:
+    Grid(raw).Display(title=title)
+
 
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -27,8 +29,8 @@ training_dataset_path = os.path.join(script_dir, '../data/training/')
 evaluation_dataset_path = os.path.join(script_dir, '../data/evaluation/')
 
 # Load training and evaluation datasets
-training_data = load_arc_data(training_dataset_path)
-evaluation_data = load_arc_data(evaluation_dataset_path)
+training_data: list[Task] = load_arc_data(training_dataset_path)
+evaluation_data: list[Task] = load_arc_data(evaluation_dataset_path)
 
 # Print the number of tasks loaded and an example from each dataset
 print("Loaded {} training tasks".format(len(training_data)))
