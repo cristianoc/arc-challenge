@@ -14,9 +14,9 @@ def transform(input_grid: Grid) -> Grid:
 
 def test_example():
     input_grid = Grid([
-        [0, 1, 1],
-        [1, 1, 1],
-        [0, 1, 1]
+        [0, 7, 7],
+        [7, 7, 7],
+        [0, 7, 7]
     ])
 
     input_grid.display("Input Grid:")
