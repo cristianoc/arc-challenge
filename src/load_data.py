@@ -1,14 +1,15 @@
 import os
 import json
+from typing import List, Dict
 
 from grid import Grid, Raw
 
-Example = dict[str, Raw]
-Task = dict[str, list[Example]]
+Example = Dict[str, Raw]
+Task = Dict[str, List[Example]]
 
 
-def load_arc_data(directory: str) -> list[Task]:
-    tasks: list[Task] = []
+def load_arc_data(directory: str) -> List[Task]:
+    tasks: List[Task] = []
     for filename in os.listdir(directory):
         if filename.endswith(".json"):
             with open(os.path.join(directory, filename), 'r') as file:
@@ -29,14 +30,14 @@ training_dataset_path = os.path.join(script_dir, '../data/training/')
 evaluation_dataset_path = os.path.join(script_dir, '../data/evaluation/')
 
 # Load training and evaluation datasets
-training_data: list[Task] = load_arc_data(training_dataset_path)
-evaluation_data: list[Task] = load_arc_data(evaluation_dataset_path)
+training_data: List[Task] = load_arc_data(training_dataset_path)
+evaluation_data: List[Task] = load_arc_data(evaluation_dataset_path)
 
 # Print the number of tasks loaded and an example from each dataset
-print("Loaded {} training tasks".format(len(training_data)))
+print(f"Loaded {len(training_data)} training tasks")
 print("First training task:", json.dumps(training_data[0], indent=2))
 
-print("\nLoaded {} evaluation tasks".format(len(evaluation_data)))
+print(f"\nLoaded {len(evaluation_data)} evaluation tasks")
 print("First evaluation task:", json.dumps(evaluation_data[0], indent=2))
 
 # Access train and test sets for the first task in the training data
