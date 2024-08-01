@@ -19,6 +19,5 @@ def test_example():
         [0, 7, 7]
     ])
 
-    input_grid.display("Input Grid:")
     output_grid = transform(input_grid)
-    output_grid.display("Output Grid:")
+    input_grid.display(title="Example 1:", output=output_grid)

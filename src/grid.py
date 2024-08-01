@@ -100,8 +100,8 @@ class Grid:
             [func(i, j).raw for j in range(size)] for i in range(size)]
         return Grid(transform_raw(new_grid))
 
-    def display(self, title: Optional[str] = None) -> None:
-        data = self.raw
+    def display(self, title: Optional[str] = None, output: Optional['Grid'] = None) -> None:
+        data1 = self.raw
 
         # Define the custom color scheme as a list of colors
         color_scheme = [
@@ -124,20 +124,29 @@ class Grid:
         bounds = np.arange(-0.5, len(color_scheme) - 0.5, 1)
         norm = colors.BoundaryNorm(bounds, cmap.N)
 
-        fig, ax = plt.subplots()  # type: ignore
-        fig.patch.set_facecolor('black')
-        ax.set_facecolor('black')
-        for i in range(len(data)):
-            for j in range(len(data[0])):
-                rect = plt.Rectangle(  # type: ignore
-                    (j - 0.5, i - 0.5), 1, 1, edgecolor='grey', facecolor='none', linewidth=1)
-                ax.add_patch(rect)
+        # Create a figure with one or two subplots depending on whether data2 is provided
+        num_subplots = 2 if output is not None else 1
+        fig, axes = plt.subplots(1, num_subplots, figsize=( # type: ignore
+            5 * num_subplots, 5))  # type: ignore
 
-        plt.imshow(data, cmap=cmap, norm=norm)  # type: ignore
-        plt.colorbar(ticks=np.arange(len(color_scheme)))  # type: ignore
-        if title:
-            plt.title(title)  # type: ignore
-        plt.show()  # type: ignore
+        if num_subplots == 1:
+            # Make sure axes is iterable if there's only one subplot
+            axes = [axes]
+
+        for ax, data, title_suffix in zip(axes, [data1, output.raw if output is not None else data1], ['Input', 'Output']):
+            ax.set_facecolor('black')
+            for i in range(len(data)):
+                for j in range(len(data[0])):
+                    rect = plt.Rectangle( # type: ignore
+                        (j - 0.5, i - 0.5), 1, 1, edgecolor='grey', facecolor='none', linewidth=1)
+                    ax.add_patch(rect)
+
+            im = ax.imshow(data, cmap=cmap, norm=norm)  # type: ignore
+            ax.set_title(
+                f"{title} - {title_suffix}" if title else title_suffix)
+
+        plt.tight_layout()
+        plt.show() # type: ignore
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Grid):
