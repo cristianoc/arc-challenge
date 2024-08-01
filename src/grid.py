@@ -9,12 +9,31 @@ import numpy as np
 
 Color = NewType('Color', int)
 
-BLACK: Color = Color(0)
-RED: Color = Color(1)
-GREEN: Color = Color(2)
-BLUE: Color = Color(3)
-YELLOW: Color = Color(4)
-WHITE: Color = Color(5)
+# Define the custom color scheme as a list of colors
+color_scheme = [
+    '#000000',  # black
+    '#0074D9',  # blue
+    '#FF4136',  # red
+    '#2ECC40',  # green
+    '#FFDC00',  # yellow
+    '#AAAAAA',  # grey
+    '#F012BE',  # fuschia
+    '#FF851B',  # orange
+    '#7FDBFF',  # teal
+    '#870C25'   # brown
+]
+
+# Definitions using the indices
+BLACK: Color = Color(0)   # #000000
+BLUE: Color = Color(1)    # #0074D9
+RED: Color = Color(2)     # #FF4136
+GREEN: Color = Color(3)   # #2ECC40
+YELLOW: Color = Color(4)  # #FFDC00
+GREY: Color = Color(5)    # #AAAAAA
+FUSCHIA: Color = Color(6) # #F012BE
+ORANGE: Color = Color(7)  # #FF851B
+TEAL: Color = Color(8)    # #7FDBFF
+BROWN: Color = Color(9)   # #870C25
 
 
 class Direction(str, Enum):
@@ -102,20 +121,6 @@ class Grid:
 
     def display(self, title: Optional[str] = None, output: Optional['Grid'] = None) -> None:
         data1 = self.raw
-
-        # Define the custom color scheme as a list of colors
-        color_scheme = [
-            '#000000',  # black
-            '#0074D9',  # blue
-            '#FF4136',  # red
-            '#2ECC40',  # green
-            '#FFDC00',  # yellow
-            '#AAAAAA',  # grey
-            '#F012BE',  # fuschia
-            '#FF851B',  # orange
-            '#7FDBFF',  # teal
-            '#870C25'   # brown
-        ]
 
         # Create a ListedColormap with the specified colors
         cmap = colors.ListedColormap(color_scheme)
