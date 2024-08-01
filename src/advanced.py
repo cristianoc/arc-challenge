@@ -12,7 +12,7 @@ def transform(input_grid: Grid) -> Grid:
 
     # Transform the input grid to the output grid
     output_grid = input_grid.map(map_func)
-    return output_grid
+    return output_grid.flatten()
 
 
 # Example usage:
@@ -25,5 +25,6 @@ input_grid = Grid([
 input_grid.Display()
 
 output_grid = transform(input_grid)
+print("Flattened Grid:")
 print(output_grid.raw)
 output_grid.Display()

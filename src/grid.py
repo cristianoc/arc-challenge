@@ -1,4 +1,5 @@
 import copy
+from curses import raw
 from enum import Enum
 from typing import Callable, Optional
 
@@ -93,7 +94,7 @@ class Grid:
         bounds = [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5]
         norm = colors.BoundaryNorm(bounds, cmap.N)
         if isinstance(data[0][0], int):
-            fig, ax = plt.subplots() # type: ignore
+            fig, ax = plt.subplots()  # type: ignore
             fig.patch.set_facecolor('black')
             ax.set_facecolor('black')
 
@@ -102,22 +103,35 @@ class Grid:
             # Add borders to each square
             for i in range(len(data)):
                 for j in range(len(data[0])):
-                    rect = plt.Rectangle( # type: ignore
-                        (j - 0.5, i - 0.5), 1, 1, edgecolor='black', facecolor='none', linewidth=1)
+                    rect = plt.Rectangle(  # type: ignore
+                        (j - 0.5, i - 0.5), 1, 1, edgecolor='grey', facecolor='none', linewidth=1)
                     ax.add_patch(rect)
-            plt.axis('off') # type: ignore
+            plt.axis('off')  # type: ignore
         else:
-            fig, axes = plt.subplots(nrows=len(data), ncols=len(  # type: ignore
-                data[0]), figsize=(8, 8))
-            fig.patch.set_facecolor('black')
-            for i, row in enumerate(data):
-                for j, cell in enumerate(row):
-                    ax = axes[i, j]
-                    ax.imshow(cell, cmap=cmap, norm=norm)
-                    ax.axis('off')
-                    ax.set_facecolor('black')
-            plt.tight_layout()
+            assert False, "Displaying nested grids is not supported"
         plt.show()  # type: ignore
+
+    # flatten a nested grid
+    def flatten(self) -> 'Grid':
+        if isinstance(self.raw[0][0], int):
+            return self
+
+        def transform_raw(raw: RawGrid):
+            n = len(raw)  # This is the size of the outer grid
+            n2 = n * n     # This is the size of the resulting grid
+            new_grid = [[0 for _ in range(n2)] for _ in range(n2)]  # Initialize the new grid
+            
+            for i in range(n):
+                for j in range(n):
+                    sub_grid = raw[i][j]
+                    for sub_i in range(n):
+                        for sub_j in range(n):
+                            new_grid[i * n + sub_i][j * n + sub_j] = sub_grid[sub_i][sub_j]
+            
+            return new_grid
+
+        raw = transform_raw(self.raw)        
+        return Grid(raw, shape=Shape(len(self.raw) * len(self.raw[0])))
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Grid):
