@@ -17,9 +17,9 @@ def transform(input_grid: Grid) -> Grid:
 
 # Example usage:
 input_grid = Grid([
-    [1, 0, 1],
-    [0, 1, 0],
-    [1, 0, 1]
+    [0, 1, 1],
+    [1, 1, 1],
+    [0, 1, 1]
 ])
 
 input_grid.Display()

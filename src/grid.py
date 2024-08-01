@@ -2,7 +2,7 @@ import copy
 from enum import Enum
 from typing import Callable, Optional
 
-from matplotlib import pyplot as plt
+from matplotlib import colors, pyplot as plt
 
 from shape import RawGrid, Shape
 
@@ -82,16 +82,19 @@ class Grid:
         return Grid(copy.deepcopy(self.raw), shape=self.shape)
 
     def map(self, func: Callable[[int, int], 'Grid']) -> 'Grid':
-        new_grid = [[func(i, j).raw for i in range(self.shape.dims[0])]
-                    for j in range(self.shape.dims[0])]
+        new_grid = [[func(i, j).raw for j in range(self.shape.dims[0])]
+                    for i in range(self.shape.dims[0])]
         return Grid(new_grid, shape=self.shape)
 
     def Display(self) -> None:
         data = self.raw
+        cmap = colors.ListedColormap(['black', 'orange', 'green', 'blue', 'yellow', 'white'])
+        bounds = [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5]
+        norm = colors.BoundaryNorm(bounds, cmap.N)
         if isinstance(data[0][0], int):
             fig = plt.figure() # type: ignore
             fig.patch.set_facecolor('black')
-            plt.imshow(data, cmap='gray') # type: ignore
+            plt.imshow(data, cmap=cmap, norm=norm) # type: ignore
             plt.axis('off') # type: ignore
         else:
             fig, axes = plt.subplots(nrows=len(data), ncols=len( # type: ignore
@@ -99,7 +102,7 @@ class Grid:
             fig.patch.set_facecolor('black')
             for i, row in enumerate(data):
                 for j, cell in enumerate(row):
-                    axes[i, j].imshow(cell, cmap='gray')
+                    axes[i, j].imshow(cell, cmap=cmap, norm=norm)
                     axes[i, j].axis('off')
                     axes[i, j].set_facecolor('black')
             plt.tight_layout()
