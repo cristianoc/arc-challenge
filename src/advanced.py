@@ -6,7 +6,7 @@ def transform(input_grid: Grid) -> Grid:
         color = input_grid.raw[i][j]
         assert isinstance(color, int)
         if color == 0:
-            return Grid.empty(input_grid.shape)
+            return Grid.empty(input_grid.Size())
         else:
             return input_grid.Copy()
 

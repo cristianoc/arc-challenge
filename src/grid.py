@@ -1,10 +1,9 @@
 import copy
 from enum import Enum
-from typing import Callable, Optional
+from typing import Callable
 
 from matplotlib import colors, pyplot as plt
 
-from shape import RawGrid, Shape
 
 
 from typing import NewType
@@ -33,29 +32,24 @@ Raw = list[list[int]]
 
 
 class Grid:
-    def __init__(self, raw: Raw, shape: Optional[Shape] = None):
+    def __init__(self, raw: Raw):
         self.raw = raw
-        if shape:
-            self.shape = shape
-        else:
-            self.shape = Shape.infer(raw)
-            print(f"Raw: {self.raw} Inferred shape: {self.shape}")
+        print(f"Raw: {self.raw}")
 
-    def _rotate_grid(self, raw: RawGrid):
+    def _rotate_grid(self, raw: Raw):
         return [list(reversed(col)) for col in zip(*raw)]
 
     def Rotate(self, direction: Direction):
         rotated_grid = self._rotate_grid(self.raw) if direction == Direction.Clockwise else self._rotate_grid(
             self._rotate_grid(self._rotate_grid(self.raw)))
-        return Grid(rotated_grid, shape=self.shape)
+        return Grid(rotated_grid)
 
     def Flip(self, axis: Axis):
         if axis == Axis.Horizontal:
-            flipped_grid: RawGrid = [row[::-1]
-                                     for row in self.raw]  # type: ignore
+            flipped_grid: Raw = [row[::-1] for row in self.raw]
         else:
-            flipped_grid: RawGrid = self.raw[::-1]
-        return Grid(flipped_grid, shape=self.shape)
+            flipped_grid: Raw = self.raw[::-1]
+        return Grid(flipped_grid)
 
     def Translate(self, dx: int, dy: int):
         new_grid: Raw = [[Black] * len(self.raw[0])
@@ -65,23 +59,23 @@ class Grid:
                 new_x = (x + dx) % len(self.raw[0])
                 new_y = (y + dy) % len(self.raw)
                 new_grid[new_y][new_x] = val
-        return Grid(new_grid, shape=self.shape)
+        return Grid(new_grid)
 
     def ColorChange(self, from_color: Color, to_color: Color):
         new_grid = [[to_color if cell == from_color else cell for cell in row]
                     for row in self.raw]
-        ng: RawGrid = new_grid  # type: ignore
-        return Grid(ng, shape=self.shape)
+        return Grid(new_grid)
 
     @staticmethod
-    def empty(shape: Shape) -> 'Grid':
-        size = shape.dims[0]
-        raw: RawGrid = [
-            [Black for _ in range(size)] for _ in range(size)]
-        return Grid(raw, shape=shape)
+    def empty(size: int) -> 'Grid':
+        raw: Raw = [[Black for _ in range(size)] for _ in range(size)]
+        return Grid(raw)
 
     def Copy(self):
-        return Grid(copy.deepcopy(self.raw), shape=self.shape)
+        return Grid(copy.deepcopy(self.raw))
+
+    def Size(self) -> int:
+        return len(self.raw)
 
     def map(self, func: Callable[[int, int], 'Grid']) -> 'Grid':
         def transform_raw(raw: list[list[list[list[int]]]]):
@@ -100,9 +94,10 @@ class Grid:
 
             return new_grid
 
-        new_grid: list[list[Raw]] = [[func(i, j).raw for j in range(self.shape.dims[0])]
-                                     for i in range(self.shape.dims[0])]
-        return Grid(transform_raw(new_grid), shape=self.shape)
+        size = self.Size()
+        new_grid: list[list[Raw]] = [[func(i, j).raw for j in range(size)]
+                                     for i in range(size)]
+        return Grid(transform_raw(new_grid))
 
     def Display(self) -> None:
         data = self.raw
@@ -127,7 +122,7 @@ class Grid:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Grid):
-            return self.raw == other.raw and self.shape == other.shape
+            return self.raw == other.raw
         return False
 
 
