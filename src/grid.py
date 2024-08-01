@@ -88,23 +88,34 @@ class Grid:
 
     def Display(self) -> None:
         data = self.raw
-        cmap = colors.ListedColormap(['black', 'orange', 'green', 'blue', 'yellow', 'white'])
+        cmap = colors.ListedColormap(
+            ['black', 'orange', 'green', 'blue', 'yellow', 'white'])
         bounds = [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5]
         norm = colors.BoundaryNorm(bounds, cmap.N)
         if isinstance(data[0][0], int):
-            fig = plt.figure() # type: ignore
+            fig, ax = plt.subplots() # type: ignore
             fig.patch.set_facecolor('black')
-            plt.imshow(data, cmap=cmap, norm=norm) # type: ignore
+            ax.set_facecolor('black')
+
+            _im = ax.imshow(data, cmap=cmap, norm=norm)
+
+            # Add borders to each square
+            for i in range(len(data)):
+                for j in range(len(data[0])):
+                    rect = plt.Rectangle( # type: ignore
+                        (j - 0.5, i - 0.5), 1, 1, edgecolor='black', facecolor='none', linewidth=1)
+                    ax.add_patch(rect)
             plt.axis('off') # type: ignore
         else:
-            fig, axes = plt.subplots(nrows=len(data), ncols=len( # type: ignore
+            fig, axes = plt.subplots(nrows=len(data), ncols=len(  # type: ignore
                 data[0]), figsize=(8, 8))
             fig.patch.set_facecolor('black')
             for i, row in enumerate(data):
                 for j, cell in enumerate(row):
-                    axes[i, j].imshow(cell, cmap=cmap, norm=norm)
-                    axes[i, j].axis('off')
-                    axes[i, j].set_facecolor('black')
+                    ax = axes[i, j]
+                    ax.imshow(cell, cmap=cmap, norm=norm)
+                    ax.axis('off')
+                    ax.set_facecolor('black')
             plt.tight_layout()
         plt.show()  # type: ignore
 
