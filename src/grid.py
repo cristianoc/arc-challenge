@@ -1,5 +1,4 @@
 import copy
-from curses import raw
 from enum import Enum
 from typing import Callable, Optional
 
@@ -116,7 +115,7 @@ class Grid:
         if isinstance(self.raw[0][0], int):
             return self
 
-        def transform_raw(raw: RawGrid):
+        def transform_raw(raw: list[list[list[list[int]]]]):
             n = len(raw)  # This is the size of the outer grid
             n2 = n * n     # This is the size of the resulting grid
             new_grid = [[0 for _ in range(n2)] for _ in range(n2)]  # Initialize the new grid
@@ -130,7 +129,7 @@ class Grid:
             
             return new_grid
 
-        raw = transform_raw(self.raw)        
+        raw = transform_raw(self.raw)         # type: ignore
         return Grid(raw, shape=Shape(len(self.raw) * len(self.raw[0])))
 
     def __eq__(self, other: object) -> bool:
