@@ -31,7 +31,7 @@ class Grid:
     def __init__(self, raw: RawGrid, shape: Optional[Shape] = None):
         self.raw = raw
         if shape:
-            self.shape = Shape(*shape)
+            self.shape = shape
         else:
             self.shape = Shape.infer(raw)
             print(f"Raw: {self.raw} Inferred shape: {self.shape}")
@@ -42,12 +42,12 @@ class Grid:
     def Rotate(self, direction: Direction):
         rotated_grid = self._rotate_grid(self.raw) if direction == Direction.Clockwise else self._rotate_grid(
             self._rotate_grid(self._rotate_grid(self.raw)))
-        return Grid(rotated_grid, shape=self.shape.dims)
+        return Grid(rotated_grid, shape=self.shape)
 
     def Flip(self, axis: Axis):
         flipped_grid = [
             row[::-1] for row in self.raw] if axis == Axis.Horizontal else self.raw[::-1]
-        return Grid(flipped_grid, shape=self.shape.dims)
+        return Grid(flipped_grid, shape=self.shape)
 
     def Translate(self, dx: int, dy: int):
         new_grid = [[None]*len(self.raw[0]) for _ in range(len(self.raw))]
@@ -56,15 +56,15 @@ class Grid:
                 new_x = (x + dx) % len(self.raw[0])
                 new_y = (y + dy) % len(self.raw)
                 new_grid[new_y][new_x] = val
-        return Grid(new_grid, shape=self.shape.dims)
+        return Grid(new_grid, shape=self.shape)
 
     def ColorChange(self, from_color: Color, to_color: Color):
         new_grid = [[to_color if cell == from_color else cell for cell in row]
                     for row in self.raw]
-        return Grid(new_grid, shape=self.shape.dims)
+        return Grid(new_grid, shape=self.shape)
 
     def Copy(self):
-        return Grid(copy.deepcopy(self.raw), shape=self.shape.dims)
+        return Grid(copy.deepcopy(self.raw), shape=self.shape)
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Grid):
