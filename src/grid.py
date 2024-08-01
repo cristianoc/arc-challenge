@@ -1,9 +1,19 @@
 import copy
-from typing import Any
-from shape import Shape
+from enum import Enum
+from typing import Optional
+from shape import RawGrid, Shape
 
 
-class Direction:
+class Color(int, Enum):
+    Black = 0
+    Red = 1
+    Green = 2
+    Blue = 3
+    Yellow = 4
+    White = 5
+
+
+class Direction(str, Enum):
     Clockwise = 'Clockwise'
     CounterClockwise = 'CounterClockwise'
     Left = 'Left'
@@ -12,113 +22,62 @@ class Direction:
     Down = 'Down'
 
 
-class Axis:
+class Axis(str, Enum):
     Horizontal = 'Horizontal'
     Vertical = 'Vertical'
 
 
 class Grid:
-    def __init__(self, grid, shape=None):
-        self.grid = grid
+    def __init__(self, raw: RawGrid, shape: Optional[Shape] = None):
+        self.raw = raw
         if shape:
             self.shape = Shape(*shape)
         else:
-            self.shape = self.infer_shape(grid)
-            print(f"Grid: {self.grid}")
-            print(f"Inferred shape: {self.shape}")
+            self.shape = Shape.infer(raw)
+            print(f"Raw: {self.raw} Inferred shape: {self.shape}")
 
-
-    def infer_shape(self, grid):
-        """
-        Infer the shape of a grid.
-
-        Args:
-            grid (list[list[Any]]): A list of lists representing the grid.
-
-        Returns:
-            Shape: The inferred shape of the grid.
-
-        Raises:
-            ValueError: If the grid is not a list, or if it is not a list of lists, or if the grid is not square.
-
-        """
-        # From a list of lists, determine the size and check it is a square
-        # Check that every element is a list of the same length as the outer list.
-        def get_size(grid: list[list[Any]]) -> int:
-            # check that it's a list
-            if not isinstance(grid, list):
-                raise ValueError("Grid is not a list")
-            size = len(grid)
-            # check that it's a list of lists
-            if not isinstance(grid[0], list):
-                raise ValueError("Grid is not a list of lists")
-            for row in grid:
-                if len(row) != size:
-                    raise ValueError("Grid is not square")
-            return size
-
-        def nested_shape(g: list[list[Any]]) -> list[int]:
-            outer_size: int = get_size(g)
-            if isinstance(g[0][0], list):
-                inner_shape = nested_shape(g[0][0])
-                return [outer_size] + inner_shape
-            else:
-                return [outer_size]
-
-        return Shape(*nested_shape(grid))
-
-    def _rotate_grid(self, grid):
+    def _rotate_grid(self, grid: "Grid"):
         return [list(reversed(col)) for col in zip(*grid)]
 
-    def Rotate(self, direction):
-        rotated_grid = self._rotate_grid(self.grid) if direction == Direction.Clockwise else self._rotate_grid(
-            self._rotate_grid(self._rotate_grid(self.grid)))
+    def Rotate(self, direction: Direction):
+        rotated_grid = self._rotate_grid(self.raw) if direction == Direction.Clockwise else self._rotate_grid(
+            self._rotate_grid(self._rotate_grid(self.raw)))
         return Grid(rotated_grid, shape=self.shape.dims)
 
-    def Flip(self, axis):
+    def Flip(self, axis: Axis):
         flipped_grid = [
-            row[::-1] for row in self.grid] if axis == Axis.Horizontal else self.grid[::-1]
+            row[::-1] for row in self.raw] if axis == Axis.Horizontal else self.raw[::-1]
         return Grid(flipped_grid, shape=self.shape.dims)
 
-    def Translate(self, dx, dy):
-        new_grid = [[None]*len(self.grid[0]) for _ in range(len(self.grid))]
-        for y, row in enumerate(self.grid):
+    def Translate(self, dx: int, dy: int):
+        new_grid = [[None]*len(self.raw[0]) for _ in range(len(self.raw))]
+        for y, row in enumerate(self.raw):
             for x, val in enumerate(row):
-                new_x = (x + dx) % len(self.grid[0])
-                new_y = (y + dy) % len(self.grid)
+                new_x = (x + dx) % len(self.raw[0])
+                new_y = (y + dy) % len(self.raw)
                 new_grid[new_y][new_x] = val
         return Grid(new_grid, shape=self.shape.dims)
 
-    def ColorChange(self, from_color, to_color):
+    def ColorChange(self, from_color: Color, to_color: Color):
         new_grid = [[to_color if cell == from_color else cell for cell in row]
-                    for row in self.grid]
+                    for row in self.raw]
         return Grid(new_grid, shape=self.shape.dims)
 
     def Copy(self):
-        return Grid(copy.deepcopy(self.grid), shape=self.shape.dims)
+        return Grid(copy.deepcopy(self.raw), shape=self.shape.dims)
 
-    def __getitem__(self, idx):
-        elem = self.grid
-        for i in idx:
-            elem = elem[i]
-        return elem
-
-    def __setitem__(self, idx, value):
-        elem = self.grid
-        for i in idx[:-1]:
-            elem = elem[i]
-        elem[idx[-1]] = value
-
-    def __eq__(self, other):
-        return self.grid == other.grid and self.shape == other.shape
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Grid):
+            return self.raw == other.raw and self.shape == other.shape
+        return False
 
     def __str__(self):
-        def to_string(grid):
-            if isinstance(grid[0], list):
-                return '\n'.join([to_string(row) for row in grid])
+        def to_string(raw: RawGrid):
+            if isinstance(raw[0], list):
+                return '\n'.join([to_string(row) for row in raw])
             else:
-                return ' '.join(map(str, grid))
-        return to_string(self.grid)
+                return ' '.join(map(str, raw))
+        return to_string(self.raw)
 
 # Test functions
 
@@ -153,10 +112,10 @@ def test_translate():
 
 
 def test_color_change():
-    grid = Grid([['red', 'blue'], ['green', 'red']])
-    color_changed_grid = grid.ColorChange('red', 'yellow')
-    assert color_changed_grid == Grid([['yellow', 'blue'], [
-                                      'green', 'yellow']]), f"Expected [['yellow', 'blue'], ['green', 'yellow']], but got {color_changed_grid}"
+    grid = Grid([[Color.Red, Color.Blue], [Color.Green, Color.Red]])
+    color_changed_grid = grid.ColorChange(Color.Red, Color.Yellow)
+    assert color_changed_grid == Grid([[Color.Yellow, Color.Blue], [
+                                      Color.Green, Color.Yellow]]), f"Expected [['yellow', 'blue'], ['green', 'yellow']], but got {color_changed_grid}"
 
 
 def test_copy():
@@ -171,7 +130,7 @@ def test_infer_shape():
     shape = Grid(grid).shape
     assert shape == Shape(3), f"Expected Shape(3), but got {shape}"
 
-    grid = [[[[1, 2, 3], [4, 5, 6], [7, 8, 9]], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]], [
+    grid: RawGrid = [[[[1, 2, 3], [4, 5, 6], [7, 8, 9]], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]], [
         [[1, 2, 3], [4, 5, 6], [7, 8, 9]], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]]]
     shape = Grid(grid).shape
     assert shape == Shape(2, 3), f"Expected Shape(2, 3), but got {shape}"
