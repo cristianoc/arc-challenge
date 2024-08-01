@@ -1,17 +1,20 @@
 import copy
 from enum import Enum
-from typing import Optional
+from typing import Callable, Optional
 
 from shape import RawGrid, Shape
 
 
-class Color(int, Enum):
-    Black = 0
-    Red = 1
-    Green = 2
-    Blue = 3
-    Yellow = 4
-    White = 5
+from typing import NewType
+
+Color = NewType('Color', int)
+
+Black: Color = Color(0)
+Red: Color = Color(1)
+Green: Color = Color(2)
+Blue: Color = Color(3)
+Yellow: Color = Color(4)
+White: Color = Color(5)
 
 
 class Direction(str, Enum):
@@ -50,7 +53,7 @@ class Grid:
         return Grid(flipped_grid, shape=self.shape)
 
     def Translate(self, dx: int, dy: int):
-        new_grid: list[list[RawGrid | int]] = [[Color.Black]
+        new_grid: list[list[RawGrid | int]] = [[Black]
                                                * len(self.raw[0]) for _ in range(len(self.raw))]
         for y, row in enumerate(self.raw):
             for x, val in enumerate(row):
@@ -66,8 +69,20 @@ class Grid:
         ng: RawGrid = new_grid  # type: ignore
         return Grid(ng, shape=self.shape)
 
+    @staticmethod
+    def empty(shape: Shape) -> 'Grid':
+        size = shape.dims[0]
+        raw: RawGrid = [
+            [Black for _ in range(size)] for _ in range(size)]
+        return Grid(raw, shape=shape)
+
     def Copy(self):
         return Grid(copy.deepcopy(self.raw), shape=self.shape)
+
+    def map(self, func: Callable[[int, int], 'Grid']) -> 'Grid':
+        new_grid = [[func(i, j).raw for i in range(self.shape.dims[0])]
+                    for j in range(self.shape.dims[0])]
+        return Grid(new_grid, shape=self.shape)
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Grid):
@@ -107,10 +122,10 @@ def test_translate():
 
 
 def test_color_change():
-    grid = Grid([[Color.Red, Color.Blue], [Color.Green, Color.Red]])
-    color_changed_grid = grid.ColorChange(Color.Red, Color.Yellow)
-    assert color_changed_grid == Grid([[Color.Yellow, Color.Blue], [
-                                      Color.Green, Color.Yellow]]), f"Expected [['yellow', 'blue'], ['green', 'yellow']], but got {color_changed_grid}"
+    grid = Grid([[Red, Blue], [Green, Red]])
+    color_changed_grid = grid.ColorChange(Red, Yellow)
+    assert color_changed_grid == Grid([[Yellow, Blue], [
+                                      Green, Yellow]]), f"Expected [['yellow', 'blue'], ['green', 'yellow']], but got {color_changed_grid}"
 
 
 def test_copy():
