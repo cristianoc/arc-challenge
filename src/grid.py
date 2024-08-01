@@ -1,6 +1,7 @@
 import copy
 from enum import Enum
 from typing import Optional
+
 from shape import RawGrid, Shape
 
 
@@ -16,10 +17,6 @@ class Color(int, Enum):
 class Direction(str, Enum):
     Clockwise = 'Clockwise'
     CounterClockwise = 'CounterClockwise'
-    Left = 'Left'
-    Right = 'Right'
-    Up = 'Up'
-    Down = 'Down'
 
 
 class Axis(str, Enum):
@@ -36,8 +33,8 @@ class Grid:
             self.shape = Shape.infer(raw)
             print(f"Raw: {self.raw} Inferred shape: {self.shape}")
 
-    def _rotate_grid(self, grid: "Grid"):
-        return [list(reversed(col)) for col in zip(*grid)]
+    def _rotate_grid(self, raw: RawGrid):
+        return [list(reversed(col)) for col in zip(*raw)]
 
     def Rotate(self, direction: Direction):
         rotated_grid = self._rotate_grid(self.raw) if direction == Direction.Clockwise else self._rotate_grid(
@@ -45,23 +42,29 @@ class Grid:
         return Grid(rotated_grid, shape=self.shape)
 
     def Flip(self, axis: Axis):
-        flipped_grid = [
-            row[::-1] for row in self.raw] if axis == Axis.Horizontal else self.raw[::-1]
+        if axis == Axis.Horizontal:
+            flipped_grid: RawGrid = [row[::-1]
+                                     for row in self.raw]  # type: ignore
+        else:
+            flipped_grid: RawGrid = self.raw[::-1]
         return Grid(flipped_grid, shape=self.shape)
 
     def Translate(self, dx: int, dy: int):
-        new_grid = [[None]*len(self.raw[0]) for _ in range(len(self.raw))]
+        new_grid: list[list[RawGrid | int]] = [[Color.Black]
+                                               * len(self.raw[0]) for _ in range(len(self.raw))]
         for y, row in enumerate(self.raw):
             for x, val in enumerate(row):
                 new_x = (x + dx) % len(self.raw[0])
                 new_y = (y + dy) % len(self.raw)
                 new_grid[new_y][new_x] = val
-        return Grid(new_grid, shape=self.shape)
+        ng: RawGrid = new_grid  # type: ignore
+        return Grid(ng, shape=self.shape)
 
     def ColorChange(self, from_color: Color, to_color: Color):
         new_grid = [[to_color if cell == from_color else cell for cell in row]
                     for row in self.raw]
-        return Grid(new_grid, shape=self.shape)
+        ng: RawGrid = new_grid  # type: ignore
+        return Grid(ng, shape=self.shape)
 
     def Copy(self):
         return Grid(copy.deepcopy(self.raw), shape=self.shape)
@@ -70,14 +73,6 @@ class Grid:
         if isinstance(other, Grid):
             return self.raw == other.raw and self.shape == other.shape
         return False
-
-    def __str__(self):
-        def to_string(raw: RawGrid):
-            if isinstance(raw[0], list):
-                return '\n'.join([to_string(row) for row in raw])
-            else:
-                return ' '.join(map(str, raw))
-        return to_string(self.raw)
 
 # Test functions
 
