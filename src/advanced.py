@@ -22,5 +22,8 @@ input_grid = Grid([
     [1, 0, 1]
 ])
 
+input_grid.Display()
+
 output_grid = transform(input_grid)
 print(output_grid.raw)
+output_grid.Display()

@@ -2,6 +2,8 @@ import copy
 from enum import Enum
 from typing import Callable, Optional
 
+from matplotlib import pyplot as plt
+
 from shape import RawGrid, Shape
 
 
@@ -84,14 +86,32 @@ class Grid:
                     for j in range(self.shape.dims[0])]
         return Grid(new_grid, shape=self.shape)
 
+    def Display(self) -> None:
+        data = self.raw
+        if isinstance(data[0][0], int):
+            fig = plt.figure() # type: ignore
+            fig.patch.set_facecolor('black')
+            plt.imshow(data, cmap='gray') # type: ignore
+            plt.axis('off') # type: ignore
+        else:
+            fig, axes = plt.subplots(nrows=len(data), ncols=len( # type: ignore
+                data[0]), figsize=(8, 8))
+            fig.patch.set_facecolor('black')
+            for i, row in enumerate(data):
+                for j, cell in enumerate(row):
+                    axes[i, j].imshow(cell, cmap='gray')
+                    axes[i, j].axis('off')
+                    axes[i, j].set_facecolor('black')
+            plt.tight_layout()
+        plt.show()  # type: ignore
+
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Grid):
             return self.raw == other.raw and self.shape == other.shape
         return False
 
+
 # Test functions
-
-
 def test_rotate():
     grid = Grid([[1, 2], [3, 4]])
     rotated_grid = grid.Rotate(Direction.Clockwise)
