@@ -29,8 +29,11 @@ class Axis(str, Enum):
     Vertical = 'Vertical'
 
 
+Raw = list[list[int]]
+
+
 class Grid:
-    def __init__(self, raw: RawGrid, shape: Optional[Shape] = None):
+    def __init__(self, raw: Raw, shape: Optional[Shape] = None):
         self.raw = raw
         if shape:
             self.shape = shape
@@ -55,15 +58,14 @@ class Grid:
         return Grid(flipped_grid, shape=self.shape)
 
     def Translate(self, dx: int, dy: int):
-        new_grid: list[list[RawGrid | int]] = [[Black]
-                                               * len(self.raw[0]) for _ in range(len(self.raw))]
+        new_grid: Raw = [[Black] * len(self.raw[0])
+                         for _ in range(len(self.raw))]
         for y, row in enumerate(self.raw):
             for x, val in enumerate(row):
                 new_x = (x + dx) % len(self.raw[0])
                 new_y = (y + dy) % len(self.raw)
                 new_grid[new_y][new_x] = val
-        ng: RawGrid = new_grid  # type: ignore
-        return Grid(ng, shape=self.shape)
+        return Grid(new_grid, shape=self.shape)
 
     def ColorChange(self, from_color: Color, to_color: Color):
         new_grid = [[to_color if cell == from_color else cell for cell in row]
@@ -82,9 +84,25 @@ class Grid:
         return Grid(copy.deepcopy(self.raw), shape=self.shape)
 
     def map(self, func: Callable[[int, int], 'Grid']) -> 'Grid':
-        new_grid = [[func(i, j).raw for j in range(self.shape.dims[0])]
-                    for i in range(self.shape.dims[0])]
-        return Grid(new_grid, shape=self.shape)
+        def transform_raw(raw: list[list[list[list[int]]]]):
+            n = len(raw)  # This is the size of the outer grid
+            n2 = n * n     # This is the size of the resulting grid
+            # Initialize the new grid
+            new_grid = [[0 for _ in range(n2)] for _ in range(n2)]
+
+            for i in range(n):
+                for j in range(n):
+                    sub_grid = raw[i][j]
+                    for sub_i in range(n):
+                        for sub_j in range(n):
+                            new_grid[i * n + sub_i][j * n +
+                                                    sub_j] = sub_grid[sub_i][sub_j]
+
+            return new_grid
+
+        new_grid: list[list[Raw]] = [[func(i, j).raw for j in range(self.shape.dims[0])]
+                                     for i in range(self.shape.dims[0])]
+        return Grid(transform_raw(new_grid), shape=self.shape)
 
     def Display(self) -> None:
         data = self.raw
@@ -92,45 +110,20 @@ class Grid:
             ['black', 'orange', 'green', 'blue', 'yellow', 'white'])
         bounds = [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5]
         norm = colors.BoundaryNorm(bounds, cmap.N)
-        if isinstance(data[0][0], int):
-            fig, ax = plt.subplots()  # type: ignore
-            fig.patch.set_facecolor('black')
-            ax.set_facecolor('black')
+        fig, ax = plt.subplots()  # type: ignore
+        fig.patch.set_facecolor('black')
+        ax.set_facecolor('black')
 
-            _im = ax.imshow(data, cmap=cmap, norm=norm)
+        _im = ax.imshow(data, cmap=cmap, norm=norm)
 
-            # Add borders to each square
-            for i in range(len(data)):
-                for j in range(len(data[0])):
-                    rect = plt.Rectangle(  # type: ignore
-                        (j - 0.5, i - 0.5), 1, 1, edgecolor='grey', facecolor='none', linewidth=1)
-                    ax.add_patch(rect)
-            plt.axis('off')  # type: ignore
-        else:
-            assert False, "Displaying nested grids is not supported"
+        # Add borders to each square
+        for i in range(len(data)):
+            for j in range(len(data[0])):
+                rect = plt.Rectangle(  # type: ignore
+                    (j - 0.5, i - 0.5), 1, 1, edgecolor='grey', facecolor='none', linewidth=1)
+                ax.add_patch(rect)
+        plt.axis('off')  # type: ignore
         plt.show()  # type: ignore
-
-    # flatten a nested grid
-    def flatten(self) -> 'Grid':
-        if isinstance(self.raw[0][0], int):
-            return self
-
-        def transform_raw(raw: list[list[list[list[int]]]]):
-            n = len(raw)  # This is the size of the outer grid
-            n2 = n * n     # This is the size of the resulting grid
-            new_grid = [[0 for _ in range(n2)] for _ in range(n2)]  # Initialize the new grid
-            
-            for i in range(n):
-                for j in range(n):
-                    sub_grid = raw[i][j]
-                    for sub_i in range(n):
-                        for sub_j in range(n):
-                            new_grid[i * n + sub_i][j * n + sub_j] = sub_grid[sub_i][sub_j]
-            
-            return new_grid
-
-        raw = transform_raw(self.raw)         # type: ignore
-        return Grid(raw, shape=Shape(len(self.raw) * len(self.raw[0])))
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Grid):
@@ -180,14 +173,3 @@ def test_copy():
     copied_grid = grid.Copy()
     assert copied_grid == grid, f"Expected {grid}, but got {copied_grid}"
     assert copied_grid is not grid, "Copy should create a new instance"
-
-
-def test_infer_shape():
-    grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-    shape = Grid(grid).shape
-    assert shape == Shape(3), f"Expected Shape(3), but got {shape}"
-
-    grid: RawGrid = [[[[1, 2, 3], [4, 5, 6], [7, 8, 9]], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]], [
-        [[1, 2, 3], [4, 5, 6], [7, 8, 9]], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]]]
-    shape = Grid(grid).shape
-    assert shape == Shape(2, 3), f"Expected Shape(2, 3), but got {shape}"
