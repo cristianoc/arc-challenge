@@ -1,5 +1,6 @@
-from grid_data import GREEN, YELLOW, display
+from grid_data import YELLOW, display
 from grid import Grid
+import load_data
 
 """
 This example demonstrates transforming a grid of colors by identifying and changing enclosed areas. 
@@ -22,24 +23,15 @@ def transform(input_grid: Grid) -> Grid:
 
 
 def test_example():
-    # Define one-letter color variables for clarity
-    g = GREEN
-
-    # List of example grids and titles
-    examples = [
-        (
-            [
-                [0, 0, 0, 0, 0, 0],
-                [0, 0, g, 0, 0, 0],
-                [0, g, 0, g, 0, 0],
-                [0, 0, g, 0, g, 0],
-                [0, 0, 0, g, 0, 0],
-                [0, 0, 0, 0, 0, 0]
-            ], "Example 1:"),
-    ]
-
-    # Run each example
-    for grid_data, title in examples:
-        input_grid = Grid(grid_data)
+    name = "00d62c1b.json"
+    task = load_data.training_data[name]
+    train_set = task['train']
+    test_set = task['test']
+    for i, example in enumerate(train_set):
+        input_grid = Grid(example['input'])
         output_grid = transform(input_grid)
-        display(title=title, input=input_grid.data, output=output_grid.data)
+        display(title=f"Train Example {i+1}:", input=input_grid.data, output=output_grid.data)
+    for i, example in enumerate(test_set):
+        input_grid = Grid(example['input'])
+        output_grid = transform(input_grid)
+        display(title=f"Test Example {i+1}:", input=input_grid.data, output=output_grid.data)
