@@ -2,17 +2,12 @@ from example_tester import example
 from grid import Grid
 
 """
-This example demonstrates transforming a grid of colors by replacing certain cells with nested grids.
-In this context, a nested grid means that each cell in the original grid is transformed into another grid.
-
-The transformation is defined such that any cell with a value of 0 is replaced by an empty grid of the same 
-size, while cells with non-zero values are replaced by a copy of the original grid. This approach highlights 
-the use of nested mapping to create grids within grids, illustrating complex transformations and data 
-structure manipulations.
-
-The example showcases various color combinations to demonstrate how different patterns result in different 
-nested grid structures. The results are visualized to provide a clear understanding of the transformations 
-applied to the input data.
+This example demonstrates transforming a grid by replacing specific cells with nested grids.
+Each cell in the original grid is transformed based on its value: cells with a value of 0 are 
+replaced by an empty grid of the same size, while non-zero cells are replaced by a copy of the 
+original grid. This process showcases the use of nested mapping to create grids within grids, 
+illustrating complex data transformations. Various color combinations are used to highlight 
+different nested grid patterns, with results visualized for clarity.
 """
 
 
