@@ -18,8 +18,11 @@ def load_arc_data(directory: str) -> List[Task]:
     return tasks
 
 
+DISPLAY = False
+
 def plot_grid(data: GridData, title: str = "Grid") -> None:
-    display(input=data, title=title)
+    if DISPLAY:
+        display(input=data, title=title)
 
 
 # Get the directory of the current script
