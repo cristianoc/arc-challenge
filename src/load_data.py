@@ -2,27 +2,21 @@ import os
 import json
 from typing import List, Dict
 
-from grid_data import GridData, display
+from grid_data import GridData
 
 Example = Dict[str, GridData]
 Task = Dict[str, List[Example]]
+Tasks = Dict[str, Task]
 
 
-def load_arc_data(directory: str) -> List[Task]:
-    tasks: List[Task] = []
+def load_arc_data(directory: str) -> Tasks:
+    tasks: Tasks = {}
     for filename in os.listdir(directory):
         if filename.endswith(".json"):
             with open(os.path.join(directory, filename), 'r') as file:
                 task: Task = json.load(file)
-                tasks.append(task)
+                tasks[filename] = task
     return tasks
-
-
-DISPLAY = False
-
-def plot_grid(data: GridData, title: str = "Grid") -> None:
-    if DISPLAY:
-        display(input=data, title=title)
 
 
 # Get the directory of the current script
@@ -33,32 +27,19 @@ training_dataset_path = os.path.join(script_dir, '../data/training/')
 evaluation_dataset_path = os.path.join(script_dir, '../data/evaluation/')
 
 # Load training and evaluation datasets
-training_data: List[Task] = load_arc_data(training_dataset_path)
-evaluation_data: List[Task] = load_arc_data(evaluation_dataset_path)
-
-# Print the number of tasks loaded and an example from each dataset
-print(f"Loaded {len(training_data)} training tasks")
-print("First training task:", json.dumps(training_data[0], indent=2))
-
-print(f"\nLoaded {len(evaluation_data)} evaluation tasks")
-print("First evaluation task:", json.dumps(evaluation_data[0], indent=2))
+training_data = load_arc_data(training_dataset_path)
+evaluation_data = load_arc_data(evaluation_dataset_path)
 
 # Access train and test sets for the first task in the training data
-first_training_task = training_data[0]
+first_training = training_data.popitem()
+first_training_task: Task = first_training[1]
+first_evaluation = evaluation_data.popitem()
+first_evaluation_task: Task = first_evaluation[1]
+
 train_set = first_training_task['train']
 test_set = first_training_task['test']
 
-print("\nFirst training task train set:")
-for example in train_set:
-    print("Input:\n", example['input'])
-    print("Output:\n", example['output'])
-    plot_grid(example['input'], title="Train Input")
-    plot_grid(example['output'], title="Train Output")
 
-print("\nFirst training task test set:")
-for example in test_set:
-    print("Input:\n", example['input'])
-    plot_grid(example['input'], title="Test Input")
-    if 'output' in example:
-        print("Output:\n", example['output'])
-        plot_grid(example['output'], title="Test Output")
+# Print the number of tasks loaded and an example from each dataset
+print(f"Loaded {len(training_data)} training tasks")
+print(f"Loaded {len(evaluation_data)} evaluation tasks")
