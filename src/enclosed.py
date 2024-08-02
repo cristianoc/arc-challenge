@@ -1,4 +1,4 @@
-from grid_data import FUSCHIA, GREEN, ORANGE, RED, YELLOW, display
+from grid_data import GREEN, YELLOW, display
 from grid import Grid
 
 

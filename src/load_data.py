@@ -2,7 +2,6 @@ import os
 import json
 from typing import List, Dict
 
-from grid import Grid
 from grid_data import GridData, display
 
 Example = Dict[str, GridData]
