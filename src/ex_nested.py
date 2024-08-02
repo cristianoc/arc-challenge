@@ -1,6 +1,5 @@
-from grid_data import display
+from example_tester import example
 from grid import Grid
-import load_data
 
 """
 This example demonstrates transforming a grid of colors by replacing certain cells with nested grids.
@@ -25,16 +24,5 @@ def transform(input_grid: Grid) -> Grid:
     return input_grid.map_nested(map_func)
 
 
-def test_example():
-    name = "007bbfb7.json"
-    task = load_data.training_data[name]
-    train_set = task['train']
-    test_set = task['test']
-    for i, example in enumerate(train_set):
-        input_grid = Grid(example['input'])
-        output_grid = transform(input_grid)
-        display(title=f"Train Example {i+1}:", input=input_grid.data, output=output_grid.data)
-    for i, example in enumerate(test_set):
-        input_grid = Grid(example['input'])
-        output_grid = transform(input_grid)
-        display(title=f"Test Example {i+1}:", input=input_grid.data, output=output_grid.data)
+def test():
+    example(name="007bbfb7.json", transform=transform)
