@@ -1,10 +1,10 @@
 from collections import deque
 from typing import List
 
-from grid import Raw
+from grid_data import GridData
 
 
-def find_enclosed_areas(grid: Raw) -> List[List[bool]]:
+def find_enclosed_areas(grid: GridData) -> List[List[bool]]:
     height = len(grid)
     width = len(grid[0])
 

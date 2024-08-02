@@ -2,9 +2,10 @@ import os
 import json
 from typing import List, Dict
 
-from grid import Grid, Raw
+from grid import Grid
+from grid_data import GridData, display
 
-Example = Dict[str, Raw]
+Example = Dict[str, GridData]
 Task = Dict[str, List[Example]]
 
 
@@ -18,8 +19,8 @@ def load_arc_data(directory: str) -> List[Task]:
     return tasks
 
 
-def plot_grid(raw: Raw, title: str = "Grid") -> None:
-    Grid(raw).display(title=title)
+def plot_grid(data: GridData, title: str = "Grid") -> None:
+    display(input=data, title=title)
 
 
 # Get the directory of the current script

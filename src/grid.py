@@ -1,39 +1,8 @@
 import copy
 from enum import Enum
-from typing import Callable, Optional, List
+from typing import Callable, List
 
-from matplotlib import colors, pyplot as plt
-from typing import NewType
-
-import numpy as np
-
-Color = NewType('Color', int)
-
-# Define the custom color scheme as a list of colors
-color_scheme = [
-    '#000000',  # black
-    '#0074D9',  # blue
-    '#FF4136',  # red
-    '#2ECC40',  # green
-    '#FFDC00',  # yellow
-    '#AAAAAA',  # grey
-    '#F012BE',  # fuschia
-    '#FF851B',  # orange
-    '#7FDBFF',  # teal
-    '#870C25'   # brown
-]
-
-# Definitions using the indices
-BLACK: Color = Color(0)   # #000000
-BLUE: Color = Color(1)    # #0074D9
-RED: Color = Color(2)     # #FF4136
-GREEN: Color = Color(3)   # #2ECC40
-YELLOW: Color = Color(4)  # #FFDC00
-GREY: Color = Color(5)    # #AAAAAA
-FUSCHIA: Color = Color(6) # #F012BE
-ORANGE: Color = Color(7)  # #FF851B
-TEAL: Color = Color(8)    # #7FDBFF
-BROWN: Color = Color(9)   # #870C25
+from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData
 
 
 class Direction(str, Enum):
@@ -46,67 +15,64 @@ class Axis(str, Enum):
     VERTICAL = 'Vertical'
 
 
-Raw = List[List[int]]
-
-
 class Grid:
-    def __init__(self, raw: Raw):
-        self.raw = raw
-        print(f"Raw: {self.raw}")
+    def __init__(self, data: GridData):
+        self.data = data
+        print(f"Data: {self.data}")
 
-    def _rotate_grid(self, raw: Raw) -> Raw:
-        return [list(reversed(col)) for col in zip(*raw)]
+    def _rotate_grid(self, data: GridData) -> GridData:
+        return [list(reversed(col)) for col in zip(*data)]
 
     def rotate(self, direction: Direction) -> 'Grid':
         if direction == Direction.CLOCKWISE:
-            rotated_grid = self._rotate_grid(self.raw)
+            rotated_grid = self._rotate_grid(self.data)
         else:
             rotated_grid = self._rotate_grid(
-                self._rotate_grid(self._rotate_grid(self.raw)))
+                self._rotate_grid(self._rotate_grid(self.data)))
         return Grid(rotated_grid)
 
     def flip(self, axis: Axis) -> 'Grid':
         if axis == Axis.HORIZONTAL:
-            flipped_grid: Raw = [row[::-1] for row in self.raw]
+            flipped_grid: GridData = [row[::-1] for row in self.data]
         else:
-            flipped_grid: Raw = self.raw[::-1]
+            flipped_grid: GridData = self.data[::-1]
         return Grid(flipped_grid)
 
     def translate(self, dx: int, dy: int) -> 'Grid':
-        new_grid: Raw = [[BLACK] * len(self.raw[0])
-                         for _ in range(len(self.raw))]
-        for y, row in enumerate(self.raw):
+        new_grid: GridData = [[BLACK] * len(self.data[0])
+                         for _ in range(len(self.data))]
+        for y, row in enumerate(self.data):
             for x, val in enumerate(row):
-                new_x = (x + dx) % len(self.raw[0])
-                new_y = (y + dy) % len(self.raw)
+                new_x = (x + dx) % len(self.data[0])
+                new_y = (y + dy) % len(self.data)
                 new_grid[new_y][new_x] = val
         return Grid(new_grid)
 
     def color_change(self, from_color: Color, to_color: Color) -> 'Grid':
         new_grid = [[to_color if cell == from_color else cell for cell in row]
-                    for row in self.raw]
+                    for row in self.data]
         return Grid(new_grid)
 
     @staticmethod
     def empty(size: int) -> 'Grid':
-        raw: Raw = [[BLACK for _ in range(size)] for _ in range(size)]
-        return Grid(raw)
+        data: GridData = [[BLACK for _ in range(size)] for _ in range(size)]
+        return Grid(data)
 
     def copy(self) -> 'Grid':
-        return Grid(copy.deepcopy(self.raw))
+        return Grid(copy.deepcopy(self.data))
 
     def size(self) -> int:
-        return len(self.raw)
+        return len(self.data)
 
     def map(self, func: Callable[[int, int], 'Grid']) -> 'Grid':
-        def transform_raw(raw: List[List[Raw]]) -> Raw:
-            n = len(raw)
+        def transform_data(data: List[List[GridData]]) -> GridData:
+            n = len(data)
             n2 = n * n
             new_grid = [[0 for _ in range(n2)] for _ in range(n2)]
 
             for i in range(n):
                 for j in range(n):
-                    sub_grid = raw[i][j]
+                    sub_grid = data[i][j]
                     for sub_i in range(n):
                         for sub_j in range(n):
                             new_grid[i * n + sub_i][j * n +
@@ -115,47 +81,13 @@ class Grid:
             return new_grid
 
         size = self.size()
-        new_grid: List[List[Raw]] = [
-            [func(i, j).raw for j in range(size)] for i in range(size)]
-        return Grid(transform_raw(new_grid))
-
-    def display(self, title: Optional[str] = None, output: Optional['Grid'] = None) -> None:
-        data1 = self.raw
-
-        # Create a ListedColormap with the specified colors
-        cmap = colors.ListedColormap(color_scheme)
-
-        # Adjust the bounds to match the number of colors
-        bounds = np.arange(-0.5, len(color_scheme) - 0.5, 1)
-        norm = colors.BoundaryNorm(bounds, cmap.N)
-
-        # Create a figure with one or two subplots depending on whether data2 is provided
-        num_subplots = 2 if output is not None else 1
-        fig, axes = plt.subplots(1, num_subplots, figsize=( # type: ignore
-            5 * num_subplots, 5))  # type: ignore
-
-        if num_subplots == 1:
-            # Make sure axes is iterable if there's only one subplot
-            axes = [axes]
-
-        for ax, data, title_suffix in zip(axes, [data1, output.raw if output is not None else data1], ['Input', 'Output']):
-            ax.set_facecolor('black')
-            for i in range(len(data)):
-                for j in range(len(data[0])):
-                    rect = plt.Rectangle( # type: ignore
-                        (j - 0.5, i - 0.5), 1, 1, edgecolor='grey', facecolor='none', linewidth=1)
-                    ax.add_patch(rect)
-
-            im = ax.imshow(data, cmap=cmap, norm=norm)  # type: ignore
-            ax.set_title(
-                f"{title} - {title_suffix}" if title else title_suffix)
-
-        plt.tight_layout()
-        plt.show() # type: ignore
+        new_grid: List[List[GridData]] = [
+            [func(i, j).data for j in range(size)] for i in range(size)]
+        return Grid(transform_data(new_grid))
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Grid):
-            return self.raw == other.raw
+            return self.data == other.data
         return False
 
 

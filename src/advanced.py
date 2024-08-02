@@ -1,9 +1,10 @@
-from grid import FUSCHIA, ORANGE, RED, YELLOW, Grid
+from grid_data import FUSCHIA, ORANGE, RED, YELLOW, display
+from grid import Grid
 
 
 def transform(input_grid: Grid) -> Grid:
     def map_func(x: int, y: int) -> Grid:
-        color = input_grid.raw[x][y]
+        color = input_grid.data[x][y]
         assert isinstance(color, int)
         if color == 0:
             return Grid.empty(input_grid.size())
@@ -24,7 +25,7 @@ def test_example():
         [0, o, o]
     ])
     output1 = transform(input1)
-    input1.display(title="Example 1:", output=output1)
+    display(title="Example 1:", input=input1.data, output=output1.data)
 
     input2 = Grid([
         [y, 0, y],
@@ -32,7 +33,7 @@ def test_example():
         [0, y, 0]
     ])
     output2 = transform(input2)
-    input2.display(title="Example 2:", output=output2)
+    display(title="Example 2:", input=input2.data, output=output2.data)
 
     input3 = Grid([
         [0, 0, 0],
@@ -40,7 +41,7 @@ def test_example():
         [r, 0, r]
     ])
     output3 = transform(input3)
-    input3.display(title="Example 3:", output=output3)
+    display(title="Example 3:", input=input3.data, output=output3.data)
 
     input4 = Grid([
         [f, f, 0],
@@ -48,7 +49,7 @@ def test_example():
         [0, f, f]
     ])
     output4 = transform(input4)
-    input4.display(title="Example 4:", output=output4)
+    display(title="Example 4:", input=input4.data, output=output4.data)
 
     input5 = Grid([
         [r, r, r],
@@ -56,7 +57,7 @@ def test_example():
         [0, r, r]
     ])
     output5 = transform(input5)
-    input5.display(title="Example 5:", output=output5)
+    display(title="Example 5:", input=input5.data, output=output5.data)
 
     test = Grid([
         [0, o, o],
@@ -64,4 +65,4 @@ def test_example():
         [0, o, o],
     ])
     output = transform(test)
-    test.display(title="Test:", output=output)
+    display(title="Test:", input=test.data, output=output.data)
