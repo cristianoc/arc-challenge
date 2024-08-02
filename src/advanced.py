@@ -6,7 +6,7 @@ def transform(input_grid: Grid) -> Grid:
         color = input_grid.data[x][y]
         assert isinstance(color, int)
         return Grid.empty(input_grid.size()) if color == 0 else input_grid.copy()
-    return input_grid.map(map_func)
+    return input_grid.map_nested(map_func)
 
 def test_example():
     # Define one-letter color variables for clarity

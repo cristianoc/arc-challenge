@@ -2,6 +2,7 @@ import copy
 from enum import Enum
 from typing import Callable, List
 
+from flood_fill import find_enclosed_areas
 from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData
 
 
@@ -52,6 +53,11 @@ class Grid:
         new_grid = [[to_color if cell == from_color else cell for cell in row]
                     for row in self.data]
         return Grid(new_grid)
+    
+    def is_enclosed(self, x: int, y: int) -> bool:
+        if not hasattr(self, 'enclosed'):
+            self.enclosed = find_enclosed_areas(self.data)
+        return self.enclosed[x][y]
 
     @staticmethod
     def empty(size: int) -> 'Grid':
@@ -64,7 +70,12 @@ class Grid:
     def size(self) -> int:
         return len(self.data)
 
-    def map(self, func: Callable[[int, int], 'Grid']) -> 'Grid':
+    def map(self, func: Callable[[int, int], int]) -> 'Grid':
+        new_grid = [[func(x, y) for y in range(len(self.data[0]))]
+                    for x in range(len(self.data))]
+        return Grid(new_grid)
+
+    def map_nested(self, func: Callable[[int, int], 'Grid']) -> 'Grid':
         def transform_data(data: List[List[GridData]]) -> GridData:
             n = len(data)
             n2 = n * n
