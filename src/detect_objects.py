@@ -3,6 +3,17 @@ from typing import List, Set
 
 from flood_fill import Cell, EnclosedCells, find_enclosed_cells
 
+"""
+This module detects and identifies enclosed objects within a 2D grid.
+It works by identifying enclosed regions, finding connected components 
+using depth-first search, and determining contours to define object boundaries.
+
+Each detected object is represented by its bounding box, origin, width, height, 
+and relative cell positions.
+"""
+
+
+# Defining a type alias for a connected component
 ConnectedComponent = List[Cell]
 
 
@@ -15,7 +26,7 @@ class DetectedObject:
 
 
 def find_connected_components(enclosed_cells: EnclosedCells) -> List[ConnectedComponent]:
-    def dfs(x: int, y: int):
+    def dfs(x: int, y: int) -> ConnectedComponent:
         # Stack for DFS
         stack = [(x, y)]
         component: ConnectedComponent = []
@@ -64,7 +75,7 @@ def find_contour(grid: List[List[int]], component: ConnectedComponent) -> List[C
     cols = len(grid[0])
     contour: Set[Cell] = set()  # Use a set to avoid duplicate entries
 
-    # Directions for moving in the grid (right, down, left, up), and diagonal
+    # Directions for moving in the grid (right, down, left, up), and diagonals
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0),
                   (1, 1), (1, -1), (-1, 1), (-1, -1)]
 
