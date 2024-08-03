@@ -16,5 +16,5 @@ def example(name: str, transform: Callable[[Grid], Grid]) -> None:
     for i, example in enumerate(test_set):
         input_grid = Grid(example['input'])
         output_grid = transform(input_grid)
-        display(title=f"Test Example {i+1}:",
+        display(title=f"Train Test {i+1}:",
                 input=input_grid.data, output=output_grid.data)
