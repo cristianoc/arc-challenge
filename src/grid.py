@@ -2,7 +2,7 @@ import copy
 from enum import Enum
 from typing import Callable, List
 
-from flood_fill import find_enclosed_areas
+from flood_fill import find_enclosed_cells
 from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData
 
 
@@ -56,7 +56,7 @@ class Grid:
     
     def is_enclosed(self, x: int, y: int) -> bool:
         if not hasattr(self, 'enclosed'):
-            self.enclosed = find_enclosed_areas(self.data)
+            self.enclosed = find_enclosed_cells(self.data)
         return self.enclosed[x][y]
 
     @staticmethod

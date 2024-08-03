@@ -1,10 +1,12 @@
 from collections import deque
-from typing import List
+from typing import List, Tuple
 
+Cell = Tuple[int, int]
 from grid_data import GridData
 
+EnclosedCells = List[List[Cell]]
 
-def find_enclosed_areas(grid: GridData) -> List[List[bool]]:
+def find_enclosed_cells(grid: GridData) -> EnclosedCells:
     height = len(grid)
     width = len(grid[0])
 
@@ -64,7 +66,7 @@ def test():
     ]
 
     # Find all enclosed areas
-    enclosed_grid = find_enclosed_areas(grid)
+    enclosed_grid = find_enclosed_cells(grid)
 
     print("Result:")
 
