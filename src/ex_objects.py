@@ -1,23 +1,20 @@
 from detect_objects import detect_objects
 from example_tester import example
 from grid import Grid
-from grid_data import display
 
 """
 TODO: describe this example
 """
 
+
 def transform(input_grid: Grid) -> Grid:
     objects = detect_objects(input_grid)
+    rows = len(input_grid.data)
+    cols = len(input_grid.data[0])
+    new_grid: Grid = Grid.empty(rows, cols)
     for obj in objects:
-        print(f"Object: {obj}")
-        rows = len(input_grid.data)
-        cols = len(input_grid.data[0])
-        new_grid: Grid = Grid.empty(rows, cols)
-        new_grid.add_object(obj)
-        display(title=f"Object {obj}:", input=new_grid.data)
-
-    return input_grid
+        new_grid.add_object(obj.squash_left().move(0, 1))
+    return new_grid
 
 
 def test():

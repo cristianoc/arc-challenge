@@ -90,12 +90,12 @@ def detect_object(grid: Grid, contour: List[Cell]) -> Object:
     """
     min_row = min(r for r, _ in contour)
     min_col = min(c for _, c in contour)
-    height = max(r for r, _r in contour) - min_row + 1
-    width = max(c for _, c in contour) - min_col + 1
-    data = Grid.empty(rows=height, columns=width).data
+    rows = max(r for r, _r in contour) - min_row + 1
+    columns = max(c for _, c in contour) - min_col + 1
+    data = Grid.empty(rows=rows, columns=columns).data
     for r, c in contour:
         data[r - min_row][c - min_col] = grid.data[r][c]
-    return Object((min_row, min_col), height, width, data)
+    return Object((min_row, min_col), data)
 
 
 def detect_objects(grid: Grid) -> List[Object]:
