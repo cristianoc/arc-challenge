@@ -28,21 +28,56 @@ class Object:
         new_origin = (self.origin[0] + dr, self.origin[1] + dc)
         return Object(new_origin, self.data)
 
-    def squash_left(self) -> 'Object':
-        def remove_last_black(lst: List[int]):
-            # Iterate over the list in reverse order
-            for i in range(len(lst) - 1, -1, -1):
-                if lst[i] == BLACK:
-                    del lst[i]
-                    break
+    def compact_left(self) -> 'Object':
+        """
+        Compacts each row of the object's grid data by shifting elements to the left, effectively reducing the grid's width by one, while maintaining the overall structure of shapes.
+
+        High-Level Operation:
+        - **Shift Left**: Each row is adjusted to move elements to the leftmost position possible.
+        - **Remove Last BLACK**: If a row contains `BLACK`, the last `BLACK` element is removed to enable the shift.
+        - **Preserve Structure**: If a row does not contain `BLACK`, the first element is removed, maintaining the structural integrity of the shape.
+
+        The result is a grid with a consistent width reduction, ensuring all shapes remain compact and visually consistent.
+
+        Returns:
+            Object: A new `Object` instance with each row compacted to the left, reducing the width by one.
+
+        Example:
+            Given an object with grid data:
+            [
+                [1, 2, BLACK, 3],
+                [BLACK, 4, 5, BLACK],
+                [6, 7, 8, 9]
+            ]
+            Calling `squash_left` will result in:
+            [
+                [1, 2, 3],     # Last BLACK is removed, row shifts left
+                [BLACK, 4, 5], # Last BLACK is removed, row shifts left
+                [7, 8, 9]      # No BLACK, first element is removed
+            ]
+
+        This operation is ideal for reducing grid size while preserving the meaningful arrangement of elements.
+        """
+
+        def remove_last_black(lst: List[int]) -> List[int]:
+            # Remove the last BLACK cell in the list
+            if BLACK in lst:
+                lst.reverse()
+                lst.remove(BLACK)
+                lst.reverse()
+            else:
+                lst = lst[1:]
             return lst
 
         def squash_row(row: List[int]) -> List[int]:
+            # Process each row by removing the last BLACK cell or the first cell
             if BLACK in row:
                 new_row = remove_last_black(row)
             else:
                 new_row = row[1:]
             return new_row
+
+        # Apply squash_row to each row in self.data
         new_data = [squash_row(row) for row in self.data]
         return Object(self.origin, new_data)
 
@@ -113,14 +148,13 @@ class TestSquashLeft:
 
     # Removes the last occurrence of BLACK from each row containing BLACK
     def test_removes_last_black_occurrence(self):
-        from src.grid_data import Object, BLACK
         data = [
             [1, 2, BLACK, 3],
             [BLACK, 4, 5, BLACK],
             [6, 7, 8, 9]
         ]
         obj = Object(origin=(0, 0), data=data)
-        result = obj.squash_left()
+        result = obj.compact_left()
         expected_data = [
             [1, 2, 3],
             [BLACK, 4, 5],
