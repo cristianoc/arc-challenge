@@ -1,10 +1,9 @@
 from collections import deque
-from typing import List, Tuple
+from typing import List
 
-Cell = Tuple[int, int]
 from grid_data import GridData
 
-EnclosedCells = List[List[Cell]]
+EnclosedCells = List[List[bool]]
 
 def find_enclosed_cells(grid: GridData) -> EnclosedCells:
     height = len(grid)

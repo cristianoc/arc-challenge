@@ -1,9 +1,20 @@
-from typing import List, NewType, Optional
+from dataclasses import dataclass
+from typing import List, NewType, Optional, Tuple
 
 from matplotlib import colors, pyplot as plt
 import numpy as np
 
 GridData = List[List[int]]
+
+Cell = Tuple[int, int]
+
+@dataclass
+class Object:
+    origin: Cell  # top-left corner of the bounding box
+    height: int
+    width: int
+    data: GridData  # cells w.r.t the origin
+
 
 Color = NewType('Color', int)
 

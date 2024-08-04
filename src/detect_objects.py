@@ -1,7 +1,8 @@
-from dataclasses import dataclass
 from typing import List, Set
 
-from flood_fill import Cell, EnclosedCells, find_enclosed_cells
+from flood_fill import EnclosedCells, find_enclosed_cells
+from grid import Grid
+from grid_data import Cell, Object
 
 """
 This module detects and identifies enclosed objects within a 2D grid.
@@ -15,14 +16,6 @@ and relative cell positions.
 
 # Defining a type alias for a connected component
 ConnectedComponent = List[Cell]
-
-
-@dataclass
-class DetectedObject:
-    origin: Cell  # top-left corner of the bounding box
-    width: int
-    height: int
-    cells: List[Cell]  # cells w.r.t the origin
 
 
 def find_connected_components(enclosed_cells: EnclosedCells) -> List[ConnectedComponent]:
@@ -66,13 +59,13 @@ def find_connected_components(enclosed_cells: EnclosedCells) -> List[ConnectedCo
     return components
 
 
-def find_contour(grid: List[List[int]], component: ConnectedComponent) -> List[Cell]:
+def find_contour(grid: Grid, component: ConnectedComponent) -> List[Cell]:
     """
     Find the contour of a connected component in a grid: all the cells that are reachable in one step from
     a cell in the component, and which have a non-zero value.
     """
-    rows = len(grid)
-    cols = len(grid[0])
+    rows = len(grid.data)
+    cols = len(grid.data[0])
     contour: Set[Cell] = set()  # Use a set to avoid duplicate entries
 
     # Directions for moving in the grid (right, down, left, up), and diagonals
@@ -83,7 +76,7 @@ def find_contour(grid: List[List[int]], component: ConnectedComponent) -> List[C
         for dx, dy in directions:
             nx, ny = x + dx, y + dy
             # Check if the new position is within bounds, has a non-zero value, and is not part of the component
-            if 0 <= nx < rows and 0 <= ny < cols and grid[nx][ny] != 0 and (nx, ny) not in component:
+            if 0 <= nx < rows and 0 <= ny < cols and grid.data[nx][ny] != 0 and (nx, ny) not in component:
                 # Add to the set to ensure uniqueness
                 contour.add((nx, ny))
 
@@ -91,15 +84,27 @@ def find_contour(grid: List[List[int]], component: ConnectedComponent) -> List[C
     return sorted(contour)
 
 
-def detect_object(contour: List[Cell]) -> DetectedObject:
+def detect_object(grid: Grid, contour: List[Cell]) -> Object:
     """
     Given a list of cells forming a contour, return them as a detected object.
     """
-    min_x = min(x for x, _y in contour)
-    min_y = min(y for _x, y in contour)
-    width = max(x for x, _y in contour) - min_x + 1
-    height = max(y for _x, y in contour) - min_y + 1
-    return DetectedObject((min_x, min_y), width, height, [(x - min_x, y - min_y) for x, y in contour])
+    min_row = min(r for r, _ in contour)
+    min_col = min(c for _, c in contour)
+    height = max(r for r, _r in contour) - min_row + 1
+    width = max(c for _, c in contour) - min_col + 1
+    data = Grid.empty(rows=height, columns=width).data
+    for r, c in contour:
+        data[r - min_row][c - min_col] = grid.data[r][c]
+    return Object((min_row, min_col), height, width, data)
+
+
+def detect_objects(grid: Grid) -> List[Object]:
+    enclosed_cells = find_enclosed_cells(grid.data)
+    detected_objects = [
+        detect_object(grid, find_contour(grid, component))
+        for component in find_connected_components(enclosed_cells)
+    ]
+    return detected_objects
 
 
 def test():
@@ -112,12 +117,6 @@ def test():
         [0, 0, 0, 0, 0, 0],
     ]
 
-    enclosed_cells = find_enclosed_cells(grid)
-    print(f"Enclosed cells: {enclosed_cells}")
-
-    detected_objects = [
-        detect_object(find_contour(grid, component))
-        for component in find_connected_components(enclosed_cells)
-    ]
-    for obj in detected_objects:
+    objects = detect_objects(Grid(grid))
+    for obj in objects:
         print(f"Detected object: {obj}")

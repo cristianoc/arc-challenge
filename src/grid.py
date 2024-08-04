@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Callable, List
 
 from flood_fill import find_enclosed_cells
-from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData
+from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData, Object
 
 
 class Direction(str, Enum):
@@ -41,7 +41,7 @@ class Grid:
 
     def translate(self, dx: int, dy: int) -> 'Grid':
         new_grid: GridData = [[BLACK] * len(self.data[0])
-                         for _ in range(len(self.data))]
+                              for _ in range(len(self.data))]
         for y, row in enumerate(self.data):
             for x, val in enumerate(row):
                 new_x = (x + dx) % len(self.data[0])
@@ -53,15 +53,15 @@ class Grid:
         new_grid = [[to_color if cell == from_color else cell for cell in row]
                     for row in self.data]
         return Grid(new_grid)
-    
+
     def is_enclosed(self, x: int, y: int) -> bool:
         if not hasattr(self, 'enclosed'):
             self.enclosed = find_enclosed_cells(self.data)
         return self.enclosed[x][y]
 
     @staticmethod
-    def empty(size: int) -> 'Grid':
-        data: GridData = [[BLACK for _ in range(size)] for _ in range(size)]
+    def empty(rows: int, columns: int) -> 'Grid':
+        data: GridData = [[BLACK for _ in range(columns)] for _ in range(rows)]
         return Grid(data)
 
     def copy(self) -> 'Grid':
@@ -95,6 +95,14 @@ class Grid:
         new_grid: List[List[GridData]] = [
             [func(i, j).data for j in range(size)] for i in range(size)]
         return Grid(transform_data(new_grid))
+
+    def add_object(self, obj: Object) -> None:
+        [r_off, c_off] = obj.origin
+        for r in range(obj.height):
+            for c in range(obj.width):
+                color = obj.data[r][c]
+                if color != BLACK:
+                    self.data[r + r_off][c + c_off] = color
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Grid):
