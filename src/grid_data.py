@@ -30,17 +30,25 @@ class Object:
 
     def compact_left(self) -> 'Object':
         """
-        Compacts each row of the object's grid data by shifting elements to the left, effectively reducing the grid's width by one, while maintaining the overall structure of shapes.
+        Compacts each row of the object's grid data by shifting elements 
+        to the left, effectively reducing the grid's width by one while 
+        maintaining the overall structure of shapes.
 
         High-Level Operation:
-        - **Shift Left**: Each row is adjusted to move elements to the leftmost position possible.
-        - **Remove Last BLACK**: If a row contains `BLACK`, the last `BLACK` element is removed to enable the shift.
-        - **Preserve Structure**: If a row does not contain `BLACK`, the first element is removed, maintaining the structural integrity of the shape.
+        - **Shift Left**: Each row is adjusted to move elements to the 
+          leftmost position possible.
+        - **Remove Last BLACK**: If a row contains `BLACK`, the last 
+          `BLACK` element is removed to enable the shift.
+        - **Preserve Structure**: If a row does not contain `BLACK`, the 
+          first element is removed, maintaining the structural integrity 
+          of the shape.
 
-        The result is a grid with a consistent width reduction, ensuring all shapes remain compact and visually consistent.
+        The result is a grid with a consistent width reduction, ensuring 
+        all shapes remain compact and visually consistent.
 
         Returns:
-            Object: A new `Object` instance with each row compacted to the left, reducing the width by one.
+            Object: A new `Object` instance with each row compacted to 
+            the left, reducing the width by one.
 
         Example:
             Given an object with grid data:
@@ -49,18 +57,21 @@ class Object:
                 [BLACK, 4, 5, BLACK],
                 [6, 7, 8, 9]
             ]
-            Calling `squash_left` will result in:
+            Calling `compact_left` will result in:
             [
                 [1, 2, 3],     # Last BLACK is removed, row shifts left
                 [BLACK, 4, 5], # Last BLACK is removed, row shifts left
                 [7, 8, 9]      # No BLACK, first element is removed
             ]
 
-        This operation is ideal for reducing grid size while preserving the meaningful arrangement of elements.
+        This operation is ideal for reducing grid size while preserving 
+        the meaningful arrangement of elements.
         """
 
         def remove_last_black(lst: List[int]) -> List[int]:
-            # Remove the last BLACK cell in the list
+            """
+            Remove the last BLACK cell in the list.
+            """
             if BLACK in lst:
                 lst.reverse()
                 lst.remove(BLACK)
@@ -70,7 +81,9 @@ class Object:
             return lst
 
         def squash_row(row: List[int]) -> List[int]:
-            # Process each row by removing the last BLACK cell or the first cell
+            """
+            Process each row by removing the last BLACK cell or the first cell.
+            """
             if BLACK in row:
                 new_row = remove_last_black(row)
             else:
