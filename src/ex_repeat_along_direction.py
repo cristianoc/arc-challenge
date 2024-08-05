@@ -4,12 +4,26 @@ from grid import Grid
 from typing import List, Tuple
 from grid_data import DIRECTIONS8, Object
 
+
+"""
+This example demonstrates a grid transformation process where a main object
+is identified and extended in specified directions based on detected subset objects.
+The algorithm first detects all objects in the grid, identifies a primary 3x3 object,
+and then searches for related subset objects positioned in specific directions
+around the main object. It uses this information to transform the grid by 
+extending the main object in the direction of the subsets, replicating and
+coloring them based on detected subset properties. The process ultimately
+illustrates how to manipulate and extend patterns within a grid-like structure.
+"""
+
+
 def find_main_object(objects: List[Object]) -> Object:
     """Find and return the main 3x3 object from the detected objects."""
     for obj in objects:
         if obj.height == 3 and obj.width == 3:
             return obj
     raise ValueError("Main object not found")
+
 
 def find_subsets(grid: Grid, main_object: 'Object', objects: List['Object']) -> List[Tuple[Tuple[int, int], int]]:
     """Find subset objects around the main object and determine their directions and colors."""
@@ -34,6 +48,7 @@ def find_subsets(grid: Grid, main_object: 'Object', objects: List['Object']) -> 
 
     return subsets
 
+
 def transform(input_grid: Grid) -> Grid:
     # Detect all objects in the grid
     objects = detect_objects(input_grid)
@@ -48,7 +63,7 @@ def transform(input_grid: Grid) -> Grid:
     subsets = find_subsets(input_grid, main_object, objects)
 
     # Create a new grid with the same dimensions as the input grid
-    new_grid = Grid.empty(len(input_grid.data), len(input_grid.data[0]))
+    new_grid = Grid.empty(input_grid.height, input_grid.width)
 
     # Add the main object to the new grid in its original position
     new_grid.add_object(main_object)
@@ -60,18 +75,18 @@ def transform(input_grid: Grid) -> Grid:
 
         while True:
             # Calculate new origin for the object
-            new_origin = (
-                current_object.origin[0] + 4 * dr, current_object.origin[1] + 4 * dc)
+            new_origin = current_object.origin + 4 * (dr, dc)
 
             # Check if the new object is completely outside the grid boundaries
-            if (new_origin[0] >= len(input_grid.data) or
-                new_origin[1] >= len(input_grid.data[0]) or
+            if (new_origin[0] >= input_grid.height or
+                new_origin[1] >= input_grid.width or
                 new_origin[0] + current_object.height <= 0 or
-                new_origin[1] + current_object.width <= 0):
+                    new_origin[1] + current_object.width <= 0):
                 break
 
             # Create a new object with the specified color and new origin
-            new_object = current_object.move(4 * dr, 4 * dc).change_color(color)
+            new_object = current_object.move(
+                4 * dr, 4 * dc).change_color(color)
 
             # Add the new object to the grid
             new_grid.add_object(new_object)
@@ -80,6 +95,7 @@ def transform(input_grid: Grid) -> Grid:
             current_object = new_object
 
     return new_grid
+
 
 def test():
     example(name="045e512c.json", transform=transform)

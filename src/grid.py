@@ -19,6 +19,13 @@ class Axis(str, Enum):
 class Grid:
     def __init__(self, data: GridData):
         self.data = data
+    @property
+    def height(self) -> int:
+        return len(self.data)
+    
+    @property
+    def width(self) -> int:
+        return len(self.data[0])
 
     def _rotate_grid(self, data: GridData) -> GridData:
         return [list(reversed(col)) for col in zip(*data)]
