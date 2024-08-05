@@ -2,17 +2,14 @@ from detect_objects import detect_objects
 from example_tester import example
 from grid import Grid
 from typing import List, Tuple
-
 from grid_data import DIRECTIONS8, Object
-
 
 def find_main_object(objects: List[Object]) -> Object:
     """Find and return the main 3x3 object from the detected objects."""
     for obj in objects:
         if obj.height == 3 and obj.width == 3:
             return obj
-    assert False, "Main object not found"
-
+    raise ValueError("Main object not found")
 
 def find_subsets(grid: Grid, main_object: 'Object', objects: List['Object']) -> List[Tuple[Tuple[int, int], int]]:
     """Find subset objects around the main object and determine their directions and colors."""
@@ -22,7 +19,8 @@ def find_subsets(grid: Grid, main_object: 'Object', objects: List['Object']) -> 
         # Calculate expected position for a subset
         off_row = main_object.origin[0] + 4 * dr
         off_col = main_object.origin[1] + 4 * dc
-        # Find the first color in the subset object (assuming uniufor color)
+
+        # Find the first color in the subset object (assuming uniform color)
         color = 0
         for r in range(main_object.height):
             for c in range(main_object.width):
@@ -30,12 +28,11 @@ def find_subsets(grid: Grid, main_object: 'Object', objects: List['Object']) -> 
                     try:
                         color = grid.data[r+off_row][c+off_col]
                     except IndexError:
-                        pass
+                        continue
         if color != 0:
             subsets.append(((dr, dc), color))
 
     return subsets
-
 
 def transform(input_grid: Grid) -> Grid:
     # Detect all objects in the grid
@@ -66,9 +63,11 @@ def transform(input_grid: Grid) -> Grid:
             new_origin = (
                 current_object.origin[0] + 4 * dr, current_object.origin[1] + 4 * dc)
 
-            # Check if the new object is within grid boundaries
-            if not (0 <= new_origin[0] < len(input_grid.data) - 2 and
-                    0 <= new_origin[1] < len(input_grid.data[0]) - 2):
+            # Check if the new object is completely outside the grid boundaries
+            if (new_origin[0] >= len(input_grid.data) or
+                new_origin[1] >= len(input_grid.data[0]) or
+                new_origin[0] + current_object.height <= 0 or
+                new_origin[1] + current_object.width <= 0):
                 break
 
             # Create a new object with the specified color and new origin
@@ -81,7 +80,6 @@ def transform(input_grid: Grid) -> Grid:
             current_object = new_object
 
     return new_grid
-
 
 def test():
     example(name="045e512c.json", transform=transform)

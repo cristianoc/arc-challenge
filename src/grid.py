@@ -101,7 +101,9 @@ class Grid:
             for c in range(obj.width):
                 color = obj.data[r][c]
                 if color != BLACK:
-                    self.data[r + r_off][c + c_off] = color
+                    # only add the color if it's in bounds
+                    if 0 <= r + r_off < len(self.data) and 0 <= c + c_off < len(self.data[0]):
+                        self.data[r + r_off][c + c_off] = color
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Grid):
