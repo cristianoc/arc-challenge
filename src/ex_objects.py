@@ -3,7 +3,10 @@ from example_tester import example
 from grid import Grid
 
 """
-TODO: describe this example
+# Problem:
+# Given a grid, detect all objects and return a new grid with each object
+# compacted to the left by one cell. The width of the grid is reduced by one
+# cell for each object.
 """
 
 
