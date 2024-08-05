@@ -28,6 +28,14 @@ class Object:
         new_origin = (self.origin[0] + dr, self.origin[1] + dc)
         return Object(new_origin, self.data)
 
+    def change_color(self, to_color: int) -> 'Object':
+        """
+        Changes the color of all cells in the object to `to_color`.
+        """
+        new_data = [[to_color if cell != 0 else cell for cell in row]
+                    for row in self.data]
+        return Object(self.origin, new_data)
+
     def compact_left(self) -> 'Object':
         """
         Compacts each row of the object's grid data by shifting elements 

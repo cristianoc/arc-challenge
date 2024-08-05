@@ -74,13 +74,7 @@ def transform(input_grid: Grid) -> Grid:
                 break
 
             # Create a new object with the specified color and new origin
-            new_object = current_object.move(4 * dr, 4 * dc)
-
-            # Change the color of the new object
-            for r in range(current_object.height):
-                for c in range(current_object.width):
-                    if current_object.data[r][c] != 0:
-                        new_object.data[r][c] = color
+            new_object = current_object.move(4 * dr, 4 * dc).change_color(color)
 
             # Add the new object to the grid
             new_grid.add_object(new_object)
