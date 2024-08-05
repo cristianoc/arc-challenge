@@ -1,27 +1,27 @@
-import random
-import time
 from typing import List
 
 from grid import Grid
-from grid_data import Cell
+from grid_data import Cell, Object
 
 # Type alias for the id of visited objects
-VISITED = List[List[int]]
-
+VISITED = List[List[bool]]
 
 # Defining a type alias for a connected component
 ConnectedComponent = List[Cell]
 
 
-def dfs_recursive_list(grid: Grid, visited: VISITED, r: int, c: int, color: int, object_id: int):
+def dfs_recursive_list(grid: Grid, visited: VISITED, r: int, c: int, color: int, component: ConnectedComponent):
     # Base conditions to stop recursion
     if r < 0 or r >= len(grid.data) or c < 0 or c >= len(grid.data[0]):
         return
     if visited[r][c] or grid.data[r][c] != color:
         return
 
-    # Mark the cell as visited with the current object ID
-    visited[r][c] = object_id
+    # Mark the cell as visited
+    visited[r][c] = True
+
+    # Add the cell to the current component
+    component.append((r, c))
 
     # Direction vectors for 8 directions (N, NE, E, SE, S, SW, W, NW)
     directions = [(-1, 0), (-1, 1), (0, 1), (1, 1),
@@ -29,46 +29,58 @@ def dfs_recursive_list(grid: Grid, visited: VISITED, r: int, c: int, color: int,
 
     # Recursively visit all 8 neighbors
     for dr, dc in directions:
-        dfs_recursive_list(grid, visited, r + dr, c + dc, color, object_id)
+        dfs_recursive_list(grid, visited, r + dr, c + dc,
+                           color, component)
 
 
-def detect_objects_list(grid: Grid) -> tuple[int, VISITED]:
+def find_connected_components(grid: Grid) -> List[ConnectedComponent]:
     rows = len(grid.data)
     cols = len(grid.data[0])
-    visited : VISITED = [[0 for _ in range(cols)] for _ in range(rows)]
-    object_id = 0
+    visited: VISITED = [[False for _ in range(cols)] for _ in range(rows)]
+    connected_components: List[ConnectedComponent] = []
 
     for r in range(rows):
         for c in range(cols):
-            if visited[r][c] == 0:
-                object_id += 1
+            if visited[r][c] == False:
+                # Create a new component
+                component: ConnectedComponent = []
                 dfs_recursive_list(grid, visited, r, c,
-                                   grid.data[r][c], object_id)
+                                   grid.data[r][c], component)
+                # Add the component to the list of connected components
+                if component:
+                    connected_components.append(component)
 
-    return object_id, visited
+    return connected_components
+
+def create_object(grid: Grid, component: ConnectedComponent) -> Object:
+    """
+    Create an object from a connected component in a grid
+    """
+    min_row = min(r for r, _ in component)
+    min_col = min(c for _, c in component)
+    rows = max(r for r, _r in component) - min_row + 1
+    columns = max(c for _, c in component) - min_col + 1
+    data = Grid.empty(rows=rows, columns=columns).data
+    for r, c in component:
+        data[r - min_row][c - min_col] = grid.data[r][c]
+    return Object((min_row, min_col), data)
+
+def detect_objects(grid: Grid) -> List[Object]:
+    connected_components = find_connected_components(grid)
+    detected_objects = [create_object(grid, component) for component in connected_components]
+    return detected_objects
 
 
+def test():
+    grid = [
+        [0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0],
+        [0, 1, 0, 0, 1, 0],
+        [0, 0, 1, 0, 1, 0],
+        [0, 0, 0, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0],
+    ]
 
-
-GRID_SIZE = 300
-
-
-def test_lists():
-    # Generate a grid with random integers for benchmarking
-    random.seed(42)  # Seed for reproducibility
-    medium_grid = Grid([[random.randint(0, 10) for _ in range(
-        GRID_SIZE)] for _ in range(GRID_SIZE)])
-    # Benchmark the recursive DFS implementation
-    start_time_dfs_recursive = time.time()
-    object_count_dfs_recursive, _visited_dfs_recursive = detect_objects_list(
-        medium_grid)
-    end_time_dfs_recursive = time.time()
-    execution_time_dfs_recursive = end_time_dfs_recursive - start_time_dfs_recursive
-
-    print(
-        f"DFS Lists: Total Objects Detected: {object_count_dfs_recursive}, Execution Time: {execution_time_dfs_recursive:.3f} seconds")
-
-
-if __name__ == "__main__":
-    test_lists()
-    test_lists()
+    objects = detect_objects(Grid(grid))
+    for obj in objects:
+        print(f"Detected object: {obj}")
