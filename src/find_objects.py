@@ -41,7 +41,8 @@ def find_connected_components(grid: Grid) -> List[ConnectedComponent]:
 
     for r in range(rows):
         for c in range(cols):
-            if visited[r][c] == False:
+            # Skip cells with color 0
+            if visited[r][c] == False and grid.data[r][c] != 0:
                 # Create a new component
                 component: ConnectedComponent = []
                 dfs_recursive_list(grid, visited, r, c,
@@ -58,7 +59,7 @@ def create_object(grid: Grid, component: ConnectedComponent) -> Object:
     """
     min_row = min(r for r, _ in component)
     min_col = min(c for _, c in component)
-    rows = max(r for r, _r in component) - min_row + 1
+    rows = max(r for r, _ in component) - min_row + 1
     columns = max(c for _, c in component) - min_col + 1
     data = Grid.empty(rows=rows, columns=columns).data
     for r, c in component:
@@ -84,3 +85,4 @@ def test():
     objects = detect_objects(Grid(grid))
     for obj in objects:
         print(f"Detected object: {obj}")
+
