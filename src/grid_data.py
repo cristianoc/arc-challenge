@@ -122,8 +122,8 @@ color_scheme = [
     '#AAAAAA',  # grey
     '#F012BE',  # fuschia
     '#FF851B',  # orange
+    '#870C25',   # brown
     '#7FDBFF',  # teal
-    '#870C25'   # brown
 ]
 
 # Definitions using the indices
@@ -135,8 +135,8 @@ YELLOW: Color = Color(4)  # #FFDC00
 GREY: Color = Color(5)    # #AAAAAA
 FUSCHIA: Color = Color(6)  # F012BE
 ORANGE: Color = Color(7)  # #FF851B
-TEAL: Color = Color(8)    # #7FDBFF
-BROWN: Color = Color(9)   # #870C25
+BROWN: Color = Color(8)   # #870C25
+TEAL: Color = Color(9)    # #7FDBFF
 
 
 def display(input: GridData, output: Optional[GridData] = None, title: Optional[str] = None) -> None:
