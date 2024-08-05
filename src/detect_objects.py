@@ -1,7 +1,7 @@
 from typing import List
 
 from grid import Grid
-from grid_data import Cell, Object
+from grid_data import DIRECTIONS8, Cell, Object
 
 # Type alias for the id of visited objects
 VISITED = List[List[bool]]
@@ -23,12 +23,8 @@ def dfs_recursive_list(grid: Grid, visited: VISITED, r: int, c: int, color: int,
     # Add the cell to the current component
     component.append((r, c))
 
-    # Direction vectors for 8 directions (N, NE, E, SE, S, SW, W, NW)
-    directions = [(-1, 0), (-1, 1), (0, 1), (1, 1),
-                  (1, 0), (1, -1), (0, -1), (-1, -1)]
-
     # Recursively visit all 8 neighbors
-    for dr, dc in directions:
+    for dr, dc in DIRECTIONS8:
         dfs_recursive_list(grid, visited, r + dr, c + dc,
                            color, component)
 
@@ -53,6 +49,7 @@ def find_connected_components(grid: Grid) -> List[ConnectedComponent]:
 
     return connected_components
 
+
 def create_object(grid: Grid, component: ConnectedComponent) -> Object:
     """
     Create an object from a connected component in a grid
@@ -66,9 +63,11 @@ def create_object(grid: Grid, component: ConnectedComponent) -> Object:
         data[r - min_row][c - min_col] = grid.data[r][c]
     return Object((min_row, min_col), data)
 
+
 def detect_objects(grid: Grid) -> List[Object]:
     connected_components = find_connected_components(grid)
-    detected_objects = [create_object(grid, component) for component in connected_components]
+    detected_objects = [create_object(grid, component)
+                        for component in connected_components]
     return detected_objects
 
 
@@ -85,4 +84,3 @@ def test():
     objects = detect_objects(Grid(grid))
     for obj in objects:
         print(f"Detected object: {obj}")
-

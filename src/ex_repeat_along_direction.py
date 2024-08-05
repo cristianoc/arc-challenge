@@ -3,7 +3,7 @@ from example_tester import example
 from grid import Grid
 from typing import List, Tuple
 
-from grid_data import Object
+from grid_data import DIRECTIONS8, Object
 
 
 def find_main_object(objects: List[Object]) -> Object:
@@ -16,11 +16,9 @@ def find_main_object(objects: List[Object]) -> Object:
 
 def find_subsets(grid: Grid, main_object: 'Object', objects: List['Object']) -> List[Tuple[Tuple[int, int], int]]:
     """Find subset objects around the main object and determine their directions and colors."""
-    directions = [(-1, 0), (-1, -1), (0, -1), (1, -1),
-                  (1, 0), (1, 1), (0, 1), (-1, 1)]
     subsets: List[Tuple[Tuple[int, int], int]] = []
 
-    for dr, dc in directions:
+    for dr, dc in DIRECTIONS8:
         # Calculate expected position for a subset
         off_row = main_object.origin[0] + 4 * dr
         off_col = main_object.origin[1] + 4 * dc

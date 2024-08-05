@@ -1,7 +1,7 @@
 from collections import deque
 from typing import List
 
-from grid_data import GridData
+from grid_data import DIRECTIONS4, GridData
 
 EnclosedCells = List[List[bool]]
 
@@ -12,9 +12,6 @@ def find_enclosed_cells(grid: GridData) -> EnclosedCells:
     # Initialize arrays
     enclosed = [[False for _ in range(width)] for _ in range(height)]
     visited = [[False for _ in range(width)] for _ in range(height)]
-
-    # Directions for moving in the grid: right, left, down, up
-    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
     def is_enclosed(x: int, y: int):
         # BFS queue
@@ -31,7 +28,7 @@ def find_enclosed_cells(grid: GridData) -> EnclosedCells:
                 enclosed_area = False
 
             # Explore neighbors
-            for dx, dy in directions:
+            for dx, dy in DIRECTIONS4:
                 nx, ny = cx + dx, cy + dy
 
                 # Check if within bounds and not visited and is a free cell

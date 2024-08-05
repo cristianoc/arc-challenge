@@ -7,6 +7,13 @@ import numpy as np
 Cell = Tuple[int, int]
 GridData = List[List[int]]
 
+# Directions for moving in the grid: right, left, down, up
+DIRECTIONS4 = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+# Direction vectors for 8 directions (N, NE, E, SE, S, SW, W, NW)
+DIRECTIONS8 = [(-1, 0), (-1, 1), (0, 1), (1, 1),
+               (1, 0), (1, -1), (0, -1), (-1, -1)]
+
 
 @dataclass
 class Object:
