@@ -12,19 +12,19 @@ def puzzle(name: str, transform: Callable[[Grid], Grid]) -> None:
     train_set = task['train']
     test_set = task['test']
     for i, example in enumerate(train_set):
-        input_grid = Grid(example['input'])
-        output_grid = transform(input_grid)
+        input = Grid(example['input'])
+        output = transform(input)
         if DISPLAY:
             display(title=f"Train Example {i+1}:",
-                    input=input_grid.data, output=output_grid.data)
+                    input=input.data, output=output.data)
     for i, example in enumerate(test_set):
-        input_grid = Grid(example['input'])
+        input = Grid(example['input'])
         correct_grid = Grid(example['output'])
-        output_grid = transform(input_grid)
+        output = transform(input)
         if DISPLAY:
             display(title=f"Train Test {i+1}:",
-                    input=input_grid.data, output=output_grid.data)
-        if output_grid != correct_grid:
+                    input=input.data, output=output.data)
+        if output != correct_grid:
             display(title=f"Correct Output {i+1}:",
-                input=output_grid.data, output=correct_grid.data)
+                input=output.data, output=correct_grid.data)
             assert False, f"Test {i+1} failed"

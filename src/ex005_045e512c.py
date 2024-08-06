@@ -1,4 +1,3 @@
-from detect_objects import detect_objects
 from test_runner import puzzle
 from grid import Grid
 from typing import List, Tuple
@@ -49,21 +48,21 @@ def find_subsets(grid: Grid, main_object: 'Object', objects: List['Object']) -> 
     return subsets
 
 
-def transform(input_grid: Grid) -> Grid:
+def transform(input: Grid) -> Grid:
     # Detect all objects in the grid
-    objects = detect_objects(input_grid)
+    objects = input.detect_objects()
 
     # Find the main 3x3 object
     main_object = find_main_object(objects)
 
     if not main_object:
-        return input_grid  # Return the original grid if no main object is found
+        return input  # Return the original grid if no main object is found
 
     # Find subset objects and their directions
-    subsets = find_subsets(input_grid, main_object, objects)
+    subsets = find_subsets(input, main_object, objects)
 
     # Create a new grid with the same dimensions as the input grid
-    new_grid = Grid.empty(input_grid.height, input_grid.width)
+    new_grid = Grid.empty(input.height, input.width)
 
     # Add the main object to the new grid in its original position
     new_grid.add_object(main_object)
@@ -78,8 +77,8 @@ def transform(input_grid: Grid) -> Grid:
             new_origin = current_object.origin + 4 * (dr, dc)
 
             # Check if the new object is completely outside the grid boundaries
-            if (new_origin[0] >= input_grid.height or
-                new_origin[1] >= input_grid.width or
+            if (new_origin[0] >= input.height or
+                new_origin[1] >= input.width or
                 new_origin[0] + current_object.height <= 0 or
                     new_origin[1] + current_object.width <= 0):
                 break

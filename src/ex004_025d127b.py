@@ -1,4 +1,3 @@
-from detect_objects import detect_objects
 from test_runner import puzzle
 from grid import Grid
 
@@ -10,10 +9,10 @@ from grid import Grid
 """
 
 
-def transform(input_grid: Grid) -> Grid:
-    objects = detect_objects(input_grid)
-    rows = len(input_grid.data)
-    cols = len(input_grid.data[0])
+def transform(input: Grid) -> Grid:
+    objects = input.detect_objects()
+    rows = len(input.data)
+    cols = len(input.data[0])
     new_grid: Grid = Grid.empty(rows, cols)
     for obj in objects:
         new_grid.add_object(obj.compact_left().move(0, 1))

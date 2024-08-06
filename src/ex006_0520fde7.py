@@ -11,10 +11,10 @@ highlighting shared non-zero positions between the sections.
 """
 
 
-def transform(input_grid: Grid) -> Grid:
+def transform(input: Grid) -> Grid:
     # Extract leftmost and rightmost 3x3 sub-grids
-    leftmost_grid = Grid([row[:3] for row in input_grid.data])
-    rightmost_grid = Grid([row[-3:] for row in input_grid.data])
+    leftmost_grid = Grid([row[:3] for row in input.data])
+    rightmost_grid = Grid([row[-3:] for row in input.data])
 
     output_grid = Grid([[0 for _ in range(3)] for _ in range(3)])
 

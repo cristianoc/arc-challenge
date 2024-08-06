@@ -17,10 +17,10 @@ def extend_list(lst: List[T], length: int):
     return lst * (length // len(lst)) + lst[:length % len(lst)]
 
 
-def transform(input_grid: Grid) -> Grid:
-    vertical_period = find_shortest_period(input_grid.data)
-    pattern = input_grid.data[:vertical_period]
-    assert len(input_grid.data) == 6
+def transform(input: Grid) -> Grid:
+    vertical_period = find_shortest_period(input.data)
+    pattern = input.data[:vertical_period]
+    assert len(input.data) == 6
     extended_pattern = extend_list(pattern, 9)
     grid = Grid(extended_pattern)
     return grid.color_change(BLUE, RED)
