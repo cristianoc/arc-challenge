@@ -48,10 +48,11 @@ class Object:
         """
         Returns the first non-0 color detected in the object
         """
-        for row in self.data:
-            for cell in row:
-                if cell != 0:
-                    return cell
+        for row in range(self.height):
+            for col in range(self.width):
+                    color = self.data[row][col]
+                    if color != 0:
+                        return color
         return 0
 
     def compact_left(self) -> 'Object':
