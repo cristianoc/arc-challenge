@@ -1,5 +1,5 @@
 from detect_objects import detect_objects
-from example_tester import example
+from test_runner import puzzle
 from grid import Grid
 
 """
@@ -21,4 +21,4 @@ def transform(input_grid: Grid) -> Grid:
 
 
 def test():
-    example(name="025d127b.json", transform=transform)
+    puzzle(name="025d127b.json", transform=transform)

@@ -1,4 +1,4 @@
-from example_tester import example
+from test_runner import puzzle
 from grid_data import YELLOW
 from grid import Grid
 
@@ -20,4 +20,4 @@ def transform(input_grid: Grid) -> Grid:
 
 
 def test():
-    example(name="00d62c1b.json", transform=transform)
+    puzzle(name="00d62c1b.json", transform=transform)

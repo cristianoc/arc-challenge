@@ -1,5 +1,5 @@
 from detect_objects import detect_objects
-from example_tester import example
+from test_runner import puzzle
 from grid import Grid
 from typing import List, Tuple
 from grid_data import DIRECTIONS8, Object
@@ -98,4 +98,4 @@ def transform(input_grid: Grid) -> Grid:
 
 
 def test():
-    example(name="045e512c.json", transform=transform)
+    puzzle(name="045e512c.json", transform=transform)

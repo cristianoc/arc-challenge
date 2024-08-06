@@ -1,5 +1,5 @@
 from typing import List, TypeVar
-from example_tester import example
+from test_runner import puzzle
 from grid import Grid
 from grid_data import BLUE, RED
 from shortest_period import find_shortest_period
@@ -27,4 +27,4 @@ def transform(input_grid: Grid) -> Grid:
 
 
 def test():
-    example(name="017c7c7b.json", transform=transform)
+    puzzle(name="017c7c7b.json", transform=transform)
