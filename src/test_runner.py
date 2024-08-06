@@ -1,9 +1,11 @@
+import os
 from typing import Callable
 from grid import Grid
 from grid_data import display
 import load_data
 
-DISPLAY = True
+# Get DISPLAY from environment variable or default to True if not set
+DISPLAY = os.getenv('DISPLAY', 'True').lower() in ['true', '1', 'yes']
 
 def puzzle(name: str, transform: Callable[[Grid], Grid]) -> None:
     task = load_data.training_data[name]
