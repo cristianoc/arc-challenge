@@ -18,19 +18,24 @@ def transform(input: Grid) -> Grid:
     # Create an empty grid with the same dimensions as input
     output_grid = Grid.empty(input.height, input.width)
 
-    # Fill diagonals with the corresponding colors based on their indices
-    for diagonal_index in range(-input.height + 1, input.width):
+    # Iterate over diagonals from bottom-left to top-right
+    for diagonal_index in range(input.height + input.width - 1):
         # Determine the color index for the current diagonal
         color_index = diagonal_index % 3
         color = object_colors[color_index]
 
-        # Fill the diagonal with the selected color
-        x_start = max(0, -diagonal_index)
-        y_start = max(0, diagonal_index)
+        # Calculate start positions for the diagonal
+        if diagonal_index < input.height:
+            x_start = diagonal_index
+            y_start = 0
+        else:
+            x_start = input.height - 1
+            y_start = diagonal_index - input.height + 1
 
-        while x_start < input.height and y_start < input.width:
+        # Fill the diagonal with the selected color
+        while x_start >= 0 and y_start < input.width:
             output_grid.data[x_start][y_start] = color
-            x_start += 1
+            x_start -= 1
             y_start += 1
 
     return output_grid
