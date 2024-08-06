@@ -43,6 +43,17 @@ class Object:
                     for row in self.data]
         return Object(self.origin, new_data)
 
+    @property
+    def color(self) -> int:
+        """
+        Returns the first non-0 color detected in the object
+        """
+        for row in self.data:
+            for cell in row:
+                if cell != 0:
+                    return cell
+        return 0
+
     def compact_left(self) -> 'Object':
         """
         Compacts each row of the object's grid data by shifting elements 
