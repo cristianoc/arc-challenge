@@ -2,6 +2,13 @@ from test_runner import puzzle
 from grid import Grid
 
 """
+This transformation function takes a grid as input, detects exactly three objects within it, 
+and colors the grid such that each cell's color is determined by its diagonal index. 
+The grid is divided into three diagonal groups, where the sum of the row and column indices 
+modulo three determines the group. Each group is assigned a color based on the detected objects, 
+ensuring that all cells within the same diagonal group have the same color as the corresponding object. 
+The output grid retains the dimensions of the input grid, with colors consistently applied across 
+diagonal groups.
 """
 
 
