@@ -6,15 +6,12 @@ import matplotlib.pyplot as plt
 n_values = [2, 3, 4]
 
 # Checkerboard pattern generation
-
-
 def generate_checkerboard(size):
     x = np.arange(size)
     y = np.arange(size)
     X, Y = np.meshgrid(x, y)
-    color_indices = (X - Y + 3) % 3  # Checkerboard pattern
+    color_indices = (X + Y) % 2  # Checkerboard pattern
     return X, Y, color_indices
-
 
 # Generate training data (checkerboard pattern)
 grid_size = 100
@@ -31,8 +28,7 @@ ymod = [Y_train_flat % n for n in n_values]
 xy_sum_mod = [(X_train_flat + Y_train_flat) % n for n in n_values]
 diag1_mod = [(X_train_flat - Y_train_flat + n) % n for n in n_values]
 diag2_mod = [(Y_train_flat - X_train_flat + n) % n for n in n_values]
-X_augmented_train = np.column_stack(
-    xmod + ymod + xy_sum_mod + diag1_mod + diag2_mod)
+X_augmented_train = np.column_stack(xmod + ymod + xy_sum_mod + diag1_mod + diag2_mod)
 
 # Train the logistic regression model
 logistic_model = LogisticRegression(
@@ -46,14 +42,23 @@ logistic_model.fit(X_augmented_train, color_indices_train_flat)
 coefficients = logistic_model.coef_[0]
 intercept = logistic_model.intercept_[0]
 
-print("Coefficients for the linear function:")
-print("x % 2:", coefficients[0])
-print("x % 3:", coefficients[1])
-print("x % 4:", coefficients[2])
-print("y % 2:", coefficients[3])
-print("y % 3:", coefficients[4])
-print("y % 4:", coefficients[5])
-print("Intercept:", intercept)
+# Define the mapping of feature indices to their corresponding functions
+feature_functions = [
+    "x % 2", "x % 3", "x % 4", 
+    "y % 2", "y % 3", "y % 4", 
+    "(x + y) % 2", "(x + y) % 3", "(x + y) % 4", 
+    "(x - y + 2) % 2", "(x - y + 3) % 3", "(x - y + 4) % 4", 
+    "(y - x + 2) % 2", "(y - x + 3) % 3", "(y - x + 4) % 4"
+]
+
+# Print the rounded coefficients and corresponding functions
+print("Learned function:")
+for coef, func in zip(coefficients, feature_functions):
+    rounded_coef = round(coef, 2)  # Round the coefficients to 2 decimal places
+    if rounded_coef != 0:
+        print(f"{rounded_coef} * {func}")
+
+print("Intercept:", round(intercept, 2))
 
 # Generate test data (different range to test generalization)
 test_grid_size = 100
@@ -69,12 +74,9 @@ Y_test_flat = Y_test.flatten()
 xmod = [X_test_flat % n for n in n_values]
 ymod = [Y_test_flat % n for n in n_values]
 xy_sum_mod = [(X_test_flat + Y_test_flat) % n for n in n_values]
-diag1_mod = [(X_train_flat - Y_train_flat + n) % n for n in n_values]
-diag2_mod = [(Y_train_flat - X_train_flat + n) % n for n in n_values]
-
-
-X_augmented_test = np.column_stack(
-    xmod + ymod + xy_sum_mod + diag1_mod + diag2_mod)
+diag1_mod = [(X_test_flat - Y_test_flat + n) % n for n in n_values]
+diag2_mod = [(Y_test_flat - X_test_flat + n) % n for n in n_values]
+X_augmented_test = np.column_stack(xmod + ymod + xy_sum_mod + diag1_mod + diag2_mod)
 
 # Define the expected color index pattern for test data (checkerboard)
 color_indices_test_flat = (X_test_flat + Y_test_flat) % 2
@@ -110,8 +112,7 @@ plt.figure(figsize=(12, 5))
 # Plot the expected checkerboard pattern
 plt.subplot(1, 2, 1)
 plt.title("Expected Checkerboard Pattern")
-plt.imshow(color_indices_test_flat.reshape(
-    test_grid_size, test_grid_size), cmap='gray')
+plt.imshow(color_indices_test_flat.reshape(test_grid_size, test_grid_size), cmap='gray')
 plt.colorbar(label='Color Index')
 
 # Plot the predicted checkerboard pattern
