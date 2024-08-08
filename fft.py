@@ -1,48 +1,42 @@
 import numpy.typing as npt
 import numpy as np
-import matplotlib.pyplot as plt
 
 num_points = 1000
 
 x: npt.NDArray[np.int_] = np.arange(0, num_points)
 
-# Compute x % 3 for the larger dataset
-y = x % 3
+def dominant_frequency_likelihood(y: npt.NDArray[np.int_]) -> float:
+    # Perform Fourier Transform on the dataset
+    fft_values = np.fft.fft(y)
 
-def dominant_frequency_and_period(y: npt.NDArray[np.int_], s: str) -> None:
-    # Perform Fourier Transform on the larger dataset
-    fft_values_large = np.fft.fft(y)
+    # Get the absolute values (magnitudes) of the FFT
+    magnitudes = np.abs(fft_values)
 
-    # Get the absolute values (magnitudes) of the FFT for the larger dataset
-    magnitudes_large = np.abs(fft_values_large)
+    # Get the frequencies corresponding to FFT values
+    frequencies = np.fft.fftfreq(len(y), d=1)  # d=1 means sample spacing is 1
 
-    # Get the frequencies corresponding to FFT values for the larger dataset
-    frequencies_large = np.fft.fftfreq(len(y), d=1)  # d=1 means sample spacing is 1
+    # Find the index of the maximum magnitude, excluding the zero-frequency component
+    dominant_frequency_index = np.argmax(magnitudes[1:]) + 1
+    dominant_magnitude = magnitudes[dominant_frequency_index]
 
-    # Find the index of the maximum magnitude, excluding the zero-frequency component for the larger dataset
-    dominant_frequency_index_large = np.argmax(magnitudes_large[1:]) + 1
-    dominant_frequency_large = frequencies_large[dominant_frequency_index_large]
+    # Calculate the average magnitude, excluding the zero-frequency component
+    average_magnitude = np.mean(magnitudes[1:])
 
-    # Calculate the period for the larger dataset
-    dominant_period_large = 1 / dominant_frequency_large
+    # Calculate the ratio of the dominant magnitude to the average magnitude
+    likelihood = dominant_magnitude / average_magnitude
 
-    # Plot the FFT magnitudes
-    plt.figure()
-    plt.plot(frequencies_large, magnitudes_large)
-    plt.title(f"FFT Magnitudes for {s}")
-    plt.xlabel("Frequency")
-    plt.ylabel("Magnitude")
-    plt.grid()
-    plt.show()
-
-    print(f"Results for {s}")
-    print(f"Dominant Frequency: {dominant_frequency_large}")
-    print(f"Dominant Period: {dominant_period_large}")
+    return likelihood
 
 def test_mod3():
     y = x % 3
-    dominant_frequency_and_period(y, "mod3")
+    likelihood = dominant_frequency_likelihood(y)
+    print(f"Likelihood of periodic patterns in mod3: {likelihood}")
 
 def test_random():
     y: npt.NDArray[np.int_] = np.random.randint(0, 100, size=num_points) # type: ignore
-    dominant_frequency_and_period(y, "random")
+    likelihood = dominant_frequency_likelihood(y)
+    print(f"Likelihood of periodic patterns in random: {likelihood}")
+
+# Run the tests
+test_mod3()
+test_random()
