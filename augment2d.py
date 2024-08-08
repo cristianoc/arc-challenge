@@ -1,3 +1,4 @@
+from matplotlib import colors
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt
@@ -87,15 +88,44 @@ def print_model_coefficients(model: LogisticRegression, feature_functions: List[
 # Derive the most likely predicted function
 def derive_predicted_function(model: LogisticRegression, feature_functions: List[str]) -> str:
     coefficients = model.coef_[0]
-
-    # Identify the dominant term
-    dominant_term_index = np.argmax(np.abs(coefficients))
-    dominant_term = feature_functions[dominant_term_index]
-
+    
+    # Identify the most significant term(s) (highest absolute value of coefficients)
+    significant_terms = sorted(zip(coefficients, feature_functions), key=lambda x: abs(x[0]), reverse=True)
+    
+    # Get the top significant term
+    top_term = significant_terms[0][1]
+    
     # Construct the function
-    predicted_function = f"f(x, y) => {dominant_term}"
-
+    predicted_function = f"f(x, y) => {top_term}"
+    
     return predicted_function
+
+# Simplified predicted class function based on significant terms
+def predicted_class(x, y):
+    term1 = (x + y) % 4
+
+    # Considering the intercept and most significant terms
+    if term1 in [0, 2]:
+        return 0
+    else:
+        return 1
+
+# Define the custom color scheme as a list of colors
+color_scheme = [
+    '#000000',  # black
+    '#0074D9',  # blue
+    '#FF4136',  # red
+    '#2ECC40',  # green
+    '#FFDC00',  # yellow
+    '#AAAAAA',  # grey
+    '#F012BE',  # fuschia
+    '#FF851B',  # orange
+    '#870C25',   # brown
+    '#7FDBFF',  # teal
+]
+
+cmap = colors.ListedColormap(color_scheme)
+
 
 # Visualization
 def visualize_results(X: np.ndarray, true_color_indices: np.ndarray, predicted_color_indices: np.ndarray, grid_size: int) -> None:
@@ -104,16 +134,16 @@ def visualize_results(X: np.ndarray, true_color_indices: np.ndarray, predicted_c
     
     plt.figure(figsize=(12, 5))
 
-    # Plot the expected checkerboard pattern
+    # Plot the expected checkerboard pattern with colors
     plt.subplot(1, 2, 1)
     plt.title("Expected Checkerboard Pattern")
-    plt.imshow(true_grid, cmap='gray')
+    plt.imshow(true_grid, cmap=cmap)
     plt.colorbar(label='Color Index')
 
-    # Plot the predicted checkerboard pattern
+    # Plot the predicted checkerboard pattern with colors
     plt.subplot(1, 2, 2)
     plt.title("Predicted Checkerboard Pattern")
-    plt.imshow(predicted_grid, cmap='gray')
+    plt.imshow(predicted_grid, cmap=cmap)
     plt.colorbar(label='Color Index')
 
     plt.tight_layout()
@@ -123,7 +153,7 @@ def visualize_results(X: np.ndarray, true_color_indices: np.ndarray, predicted_c
 def main() -> None:
     # Generate training data (checkerboard pattern)
     grid_size = 100
-    modulo = 3
+    modulo = 4
     X_train, Y_train, color_indices_train = generate_grid(grid_size, modulo)
     X_augmented_train = augment_features(X_train, Y_train, modulo_n_values)
     
