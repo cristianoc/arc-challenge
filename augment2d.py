@@ -24,6 +24,21 @@ def augment_features(X, Y, n_values):
     diag2_mod = [(Y_flat - X_flat + n) % n for n in n_values]
     return np.column_stack(xmod + ymod + xy_sum_mod + diag1_mod + diag2_mod)
 
+# Generate feature function names
+def generate_feature_functions(n_values):
+    feature_functions = []
+    for n in n_values:
+        feature_functions.append(f"x % {n}")
+    for n in n_values:
+        feature_functions.append(f"y % {n}")
+    for n in n_values:
+        feature_functions.append(f"(x + y) % {n}")
+    for n in n_values:
+        feature_functions.append(f"(x - y + {n}) % {n}")
+    for n in n_values:
+        feature_functions.append(f"(y - x + {n}) % {n}")
+    return feature_functions
+
 # Train logistic regression model
 def train_model(X, y):
     model = LogisticRegression(
@@ -94,14 +109,8 @@ def main():
     # Train the logistic regression model
     logistic_model = train_model(X_augmented_train, color_indices_train.flatten())
     
-    # Define the mapping of feature indices to their corresponding functions
-    feature_functions = [
-        "x % 2", "x % 3", "x % 4", 
-        "y % 2", "y % 3", "y % 4", 
-        "(x + y) % 2", "(x + y) % 3", "(x + y) % 4", 
-        "(x - y + 2) % 2", "(x - y + 3) % 3", "(x - y + 4) % 4", 
-        "(y - x + 2) % 2", "(y - x + 3) % 3", "(y - x + 4) % 4"
-    ]
+    # Generate feature functions
+    feature_functions = generate_feature_functions(n_values)
     
     # Print the model coefficients
     print_model_coefficients(logistic_model, feature_functions)
