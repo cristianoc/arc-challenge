@@ -3,40 +3,43 @@ from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt
 
 # Augmentation parameters
-n_values = [2, 3, 4]
+modulo_n_values = [2, 3, 4]
 
-# Checkerboard pattern generation
-def generate_checkerboard(size, modulo):
+# Grid pattern generation
+def generate_grid(size, modulo):
     x = np.arange(size)
     y = np.arange(size)
     X, Y = np.meshgrid(x, y)
     color_indices = (X + Y) % modulo  # Checkerboard pattern
     return X, Y, color_indices
 
+# List of operations to be applied for augmentation and their corresponding names
+operations = [
+    (lambda x, y, n: x % n, "x % {n}"),
+    (lambda x, y, n: y % n, "y % {n}"),
+    (lambda x, y, n: (x + y) % n, "(x + y) % {n}"),
+    (lambda x, y, n: (x - y + n) % n, "(x - y + {n}) % {n}"),
+    (lambda x, y, n: (y - x + n) % n, "(y - x + {n}) % {n}")
+]
+
 # Feature augmentation
 def augment_features(X, Y, n_values):
     X_flat = X.flatten()
     Y_flat = Y.flatten()
-    xmod = [X_flat % n for n in n_values]
-    ymod = [Y_flat % n for n in n_values]
-    xy_sum_mod = [(X_flat + Y_flat) % n for n in n_values]
-    diag1_mod = [(X_flat - Y_flat + n) % n for n in n_values]
-    diag2_mod = [(Y_flat - X_flat + n) % n for n in n_values]
-    return np.column_stack(xmod + ymod + xy_sum_mod + diag1_mod + diag2_mod)
+    
+    features = []
+    for op, _ in operations:
+        for n in n_values:
+            features.append(op(X_flat, Y_flat, n))
+    
+    return np.column_stack(features)
 
 # Generate feature function names
 def generate_feature_functions(n_values):
     feature_functions = []
-    for n in n_values:
-        feature_functions.append(f"x % {n}")
-    for n in n_values:
-        feature_functions.append(f"y % {n}")
-    for n in n_values:
-        feature_functions.append(f"(x + y) % {n}")
-    for n in n_values:
-        feature_functions.append(f"(x - y + {n}) % {n}")
-    for n in n_values:
-        feature_functions.append(f"(y - x + {n}) % {n}")
+    for _, name_template in operations:
+        for n in n_values:
+            feature_functions.append(name_template.format(n=n))
     return feature_functions
 
 # Train logistic regression model
@@ -103,22 +106,22 @@ def main():
     # Generate training data (checkerboard pattern)
     grid_size = 100
     modulo = 3
-    X_train, Y_train, color_indices_train = generate_checkerboard(grid_size, modulo)
-    X_augmented_train = augment_features(X_train, Y_train, n_values)
+    X_train, Y_train, color_indices_train = generate_grid(grid_size, modulo)
+    X_augmented_train = augment_features(X_train, Y_train, modulo_n_values)
     
     # Train the logistic regression model
     logistic_model = train_model(X_augmented_train, color_indices_train.flatten())
     
     # Generate feature functions
-    feature_functions = generate_feature_functions(n_values)
+    feature_functions = generate_feature_functions(modulo_n_values)
     
     # Print the model coefficients
     print_model_coefficients(logistic_model, feature_functions)
     
     # Generate test data (different range to test generalization)
     test_grid_size = 100
-    X_test, Y_test, color_indices_test = generate_checkerboard(test_grid_size, modulo)
-    X_augmented_test = augment_features(X_test, Y_test, n_values)
+    X_test, Y_test, color_indices_test = generate_grid(test_grid_size, modulo)
+    X_augmented_test = augment_features(X_test, Y_test, modulo_n_values)
     
     # Evaluate the logistic regression model
     test_accuracy, probs_test, predictions, confidence_levels_test = evaluate_model(logistic_model, X_augmented_test, color_indices_test.flatten())
