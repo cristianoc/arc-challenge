@@ -1,13 +1,11 @@
-from matplotlib.figure import Figure
 from matplotlib import colors
 import numpy as np
-import numpy.typing as npt
 from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt
 from typing import Any, List, Tuple, Callable
 
 # Type aliases for readability
-Array = npt.NDArray[np.int_]
+Array = np.ndarray[np.int64]
 FeatureFunction = Callable[[Array, Array, int], Array]
 plt: Any = plt
 
@@ -18,11 +16,11 @@ modulo_n_values: List[int] = [2, 3, 4]
 
 
 def generate_grid(size: int, modulo: int) -> Tuple[Array, Array, Array]:
-    x = np.arange(size)
-    y = np.arange(size)
-    X, Y = np.meshgrid(x, y)
-    color_indices = (X + Y) % modulo  # Checkerboard pattern
-    return X, Y, color_indices
+    x_: Array = np.arange(size)
+    y_: Array = np.arange(size)
+    x, y = np.meshgrid(x_, y_) # type: ignore
+    color_indices : Array = (x + y) % modulo # type: ignore
+    return x, y, color_indices # type: ignore
 
 
 # List of operations to be applied for augmentation and their corresponding names
@@ -32,7 +30,7 @@ operations: List[Tuple[FeatureFunction, str]] = [
     (lambda x, y, n: (x + y) % n, "(x + y) % {n}"),
     (lambda x, y, n: (x - y + n) % n, "(x - y + {n}) % {n}"),
     (lambda x, y, n: (y - x + n) % n, "(y - x + {n}) % {n}")
-]
+] # type: ignore
 
 # Feature augmentation
 
@@ -46,7 +44,7 @@ def augment_features(X: Array, Y: Array, n_values: List[int]) -> Array:
         for n in n_values:
             features.append(op(X_flat, Y_flat, n))
 
-    return np.column_stack(features)
+    return np.column_stack(features) # type: ignore
 
 # Generate feature function names
 
@@ -67,31 +65,32 @@ def train_model(X: Array, y: Array) -> LogisticRegression:
         max_iter=1000,
         solver='lbfgs'
     )
-    model.fit(X, y)
+    model.fit(X, y) # type: ignore
     return model
 
 # Evaluate the model
 
 
 def evaluate_model(model: LogisticRegression, X: Array, y: Array) -> Tuple[float, Array, Array, List[str]]:
-    probs = model.predict_proba(X)
-    accuracy = model.score(X, y)
-    predictions = model.predict(X)
+    probs = model.predict_proba(X) # type: ignore
+    accuracy = model.score(X, y) # type: ignore
+    predictions = model.predict(X) # type: ignore
     confidence_levels: List[str] = []
-    for prob in probs:
-        max_prob = max(prob)
+    for prob in probs: # type: ignore
+        max_prob = max(prob) # type: ignore
         if max_prob >= 0.8:
             confidence_levels.append("High")
         elif max_prob >= 0.6:
             confidence_levels.append("Medium")
         else:
             confidence_levels.append("Low")
-    return accuracy, probs, predictions, confidence_levels
+    return accuracy, probs, predictions, confidence_levels # type: ignore
 
 # Print model coefficients
 
 
-def print_model_coefficients(model: LogisticRegression, feature_functions: List[str]) -> None:
+def print_model_coefficients(model_: LogisticRegression, feature_functions: List[str]) -> None:
+    model : Any = model_
     coefficients = model.coef_[0]
     intercept = model.intercept_[0]
     print("Learned function:")
@@ -105,11 +104,11 @@ def print_model_coefficients(model: LogisticRegression, feature_functions: List[
 
 
 def derive_predicted_function(model: LogisticRegression, feature_functions: List[str]) -> str:
-    coefficients = model.coef_[0]
+    coefficients = model.coef_[0] # type: ignore
 
     # Identify the most significant term(s) (highest absolute value of coefficients)
-    significant_terms = sorted(
-        zip(coefficients, feature_functions), key=lambda x: abs(x[0]), reverse=True)
+    significant_terms = sorted( # type: ignore
+        zip(coefficients, feature_functions), key=lambda x: abs(x[0]), reverse=True) # type: ignore
 
     # Get the top significant term
     top_term = significant_terms[0][1]
@@ -122,7 +121,7 @@ def derive_predicted_function(model: LogisticRegression, feature_functions: List
 # Simplified predicted class function based on significant terms
 
 
-def predicted_class(x, y):
+def predicted_class(x: int, y: int):
     term1 = (x + y) % 4
 
     # Considering the intercept and most significant terms
@@ -151,24 +150,23 @@ cmap = colors.ListedColormap(color_scheme)
 
 # Visualization
 
+# Simplified Visualization
+
 def visualize_results(true_color_indices: Array, predicted_color_indices: Array, grid_size: int) -> None:
     true_grid = true_color_indices.reshape(grid_size, grid_size)
     predicted_grid = predicted_color_indices.reshape(grid_size, grid_size)
 
-    fig: Figure = plt.figure(figsize=(12, 5))
-    _ = fig
+    _fig, axs = plt.subplots(1, 2, figsize=(12, 5))
 
-    # Plot the expected checkerboard pattern with colors
-    plt.subplot(1, 2, 1)
-    plt.title("Expected Checkerboard Pattern")
-    plt.imshow(true_grid, cmap=cmap)
-    plt.colorbar(label='Color Index')
+    # Plot the expected checkerboard pattern
+    axs[0].imshow(true_grid, cmap='viridis')
+    axs[0].set_title("Expected Checkerboard Pattern")
+    axs[0].axis('off')
 
-    # Plot the predicted checkerboard pattern with colors
-    plt.subplot(1, 2, 2)
-    plt.title("Predicted Checkerboard Pattern")
-    plt.imshow(predicted_grid, cmap=cmap)
-    plt.colorbar(label='Color Index')
+    # Plot the predicted checkerboard pattern
+    axs[1].imshow(predicted_grid, cmap='viridis')
+    axs[1].set_title("Predicted Checkerboard Pattern")
+    axs[1].axis('off')
 
     plt.tight_layout()
     plt.show()
