@@ -6,10 +6,10 @@ In the ARC challenge DSL, transformations (xforms) map one grid to another. To f
 
 ### Shape Types
 
-A **shape type** $ S $ denotes a set of grids. This can capture structure such as dimensions, content patterns, or other properties. For example:
+A **shape type** $S$ denotes a set of grids. This can capture structure such as dimensions, content patterns, or other properties. For example:
 
-- $ S $ could represent all grids of a certain size, like all $ 3 \times 3 $ grids.
-- $ S $ could also represent grids with a specific pattern, such as grids where all cells along the diagonal are the same.
+- $S$ could represent all grids of a certain size, like all $3 \times 3$ grids.
+- $S$ could also represent grids with a specific pattern, such as grids where all cells along the diagonal are the same.
 
 Shape types include singleton types, denoting specific grids, and type variables `X` of kind `Grid` (for now).
 
@@ -32,10 +32,10 @@ Intuitively, matching means that the spec admits the input $I$, and exactly spec
 
 ### Non-Parametric Matching
 
-Given examples $ I_i \rightarrow O_i $ for $i = 1..3$, the following spec matches all of them:
-$$
-[I1,O1] \wedge [I2,O2] \wedge [I3,O3]
-$$
+Given examples $I_i \rightarrow O_i$ for $i = 1..3$, the following spec matches all of them:
+
+$$[I1,O1] \wedge [I2,O2] \wedge [I3,O3]$$
+
 where we write `I` as the singleton shape type denoting exactly `I`.
 
 Here's an example
@@ -65,8 +65,8 @@ This transformation, `flip_grid`, works for grids of any size by flipping each r
 In addition to the non-parametric spec above, this transformation satisfies spec
 $$[X, Flip(X)]$$ where:
 
-- $ X $ represents any grid.
-- $ \text{Flip}(X) \) denotes the grid \( X $ flipped horizontally.
+- $X$ represents any grid.
+- $\text{Flip}(X)$ denotes the grid $X$ flipped horizontally.
 
 ### Genericity of Specs
 
