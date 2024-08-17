@@ -62,9 +62,7 @@ def flip_grid(grid):
 
 This transformation, `flip_grid`, works for grids of any size by flipping each row horizontally.
 
-In addition to the non-parametric spec above, this transformation satisfies spec
-$$[X, Flip(X)]$$ where:
-
+In addition to the non-parametric spec above, this transformation satisfies spec $[X, Flip(X)]$ where:
 - $X$ represents any grid.
 - $\text{Flip}(X)$ denotes the grid $X$ flipped horizontally.
 
