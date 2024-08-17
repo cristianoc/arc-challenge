@@ -17,11 +17,9 @@ illustrates how to manipulate and extend patterns within a grid-like structure.
 
 
 def find_main_object(objects: List[Object]) -> Object:
-    """Find and return the main 3x3 object from the detected objects."""
-    for obj in objects:
-        if obj.height == 3 and obj.width == 3:
-            return obj
-    raise ValueError("Main object not found")
+    """Find and return the largest object from the detected objects."""
+    obj = max(objects, key=lambda obj: obj.height * obj.width)
+    return obj
 
 
 def find_subsets(grid: Grid, main_object: 'Object', objects: List['Object']) -> List[Tuple[Tuple[int, int], int]]:
