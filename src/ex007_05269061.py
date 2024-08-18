@@ -27,7 +27,7 @@ def transform(input: Grid) -> Grid:
     for obj in objects:
         point_on_diagonal = (obj.origin[0] + obj.height - 1, obj.origin[1])
         index = diagonal_index(point_on_diagonal[0], point_on_diagonal[1])
-        object_colors[index] = obj.color
+        object_colors[index] = obj.first_color
 
     # Create an empty grid with the same dimensions as input
     output_grid = Grid.empty(input.height, input.width)

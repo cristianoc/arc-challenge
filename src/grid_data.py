@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, List, NewType, Optional, Tuple
+from typing import Any, Dict, List, NewType, Optional, Tuple
 
 from matplotlib import colors, pyplot as plt
 from matplotlib.colors import ListedColormap
@@ -49,7 +49,7 @@ class Object:
         return Object(self.origin, new_data)
 
     @property
-    def color(self) -> int:
+    def first_color(self) -> int:
         """
         Returns the first non-0 color detected in the object
         """
@@ -59,6 +59,22 @@ class Object:
                     if color != 0:
                         return color
         return 0
+
+    @property
+    def main_color(self) -> int:
+        """
+        Returns the most frequent color in the object.
+        Raises a ValueError if there are no non-zero colors.
+        """
+        color_count: Dict[int, int] = {}
+        for row in range(self.height):
+            for col in range(self.width):
+                color = self.data[row][col]
+                if color != 0:
+                    color_count[color] = color_count.get(color, 0) + 1   
+        if not color_count:
+            return self.first_color     
+        return max(color_count, key=lambda item: item)
 
     def compact_left(self) -> 'Object':
         """
@@ -138,7 +154,7 @@ class Object:
             return False
 
         # Determine the object's color
-        obj_color = self.color
+        obj_color = self.first_color
         # if obj_color == 0:
         #     return False
 
@@ -154,7 +170,7 @@ class Object:
         return True
     
     def is_block(self) -> bool:
-        obj_color = self.color
+        obj_color = self.first_color
         if obj_color == 0:
             return False
 

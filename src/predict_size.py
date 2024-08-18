@@ -26,14 +26,15 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
     shrunk_objects: List[Object] = []
     if len(frame_objects) == 0:
         for obj in objects:
-            color = obj.color
+            color = obj.main_color
             threshold = 0.2
+            print(f"Object: {obj} color: {color} size:{obj.size}")
 
             while obj.width > 2 and obj.height > 2:
                 # Check the leftmost column and remove it if the number of cells of the color is less than the threshold
                 left_col = [row[0] for row in obj.data]
                 size_before = obj.size
-                if left_col.count(color) < obj.height * threshold:
+                if left_col.count(color) <= 2 or left_col.count(color) < obj.height * threshold:
                     obj = Object(
                         (obj.origin[0], obj.origin[1] + 1), [row[1:] for row in obj.data])
                     print(f"Shrinking left size: {size_before} -> {obj.size}")
@@ -41,21 +42,21 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
 
                 # Check the rightmost column and remove it if the number of cells of the color is less than the threshold
                 right_col = [row[-1] for row in obj.data]
-                if right_col.count(color) < obj.height * threshold:
+                if right_col.count(color) <= 2 or right_col.count(color) < obj.height * threshold:
                     obj = Object((obj.origin[0], obj.origin[1]), [
                                  row[:-1] for row in obj.data])
                     print(f"Shrinking right size: {size_before} -> {obj.size}")
                     continue
 
                 # Check the topmost row and remove it if the number of cells of the color is less than the threshold
-                if obj.data[0].count(color) < obj.width * threshold:
+                if obj.data[0].count(color) <= 2 or obj.data[0].count(color) < obj.width * threshold:
                     obj = Object(
                         (obj.origin[0] + 1, obj.origin[1]), obj.data[1:])
                     print(f"Shrinking top size: {size_before} -> {obj.size}")
                     continue
 
                 # Check the bottommost row and remove it if the number of cells of the color is less than the threshold
-                if obj.data[-1].count(color) < obj.width * threshold:
+                if obj.data[-1].count(color) <= 2 or obj.data[-1].count(color) < obj.width * threshold:
                     obj = Object((obj.origin[0], obj.origin[1]), obj.data[:-1])
                     print(
                         f"Shrinking bottom size: {size_before} -> {obj.size}")
@@ -83,10 +84,10 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
         h, w = frame.size
         if h > 2 and w > 2:
             # check if all the elements immediately inside the frame are of a different color
-            if all(frame.data[1][j] != frame.color for j in range(1, w - 1)) and \
-                    all(frame.data[h - 2][j] != frame.color for j in range(1, w - 1)) and \
-                    all(frame.data[i][1] != frame.color for i in range(1, h - 1)) and \
-                    all(frame.data[i][w - 2] != frame.color for i in range(1, h - 1)):
+            if all(frame.data[1][j] != frame.first_color for j in range(1, w - 1)) and \
+                    all(frame.data[h - 2][j] != frame.first_color for j in range(1, w - 1)) and \
+                    all(frame.data[i][1] != frame.first_color for i in range(1, h - 1)) and \
+                    all(frame.data[i][w - 2] != frame.first_color for i in range(1, h - 1)):
                 # Reduce the frame by 1 cell on each side
                 print(f"Reducing frame size to {h-2}x{w-2}")
                 return (h - 2, w - 2)
@@ -98,7 +99,7 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
             return (h, w)
         else:
             # Handle case where frame is too small to reduce
-            print("Frame is too small to reduce {frame.size}")
+            print(f"Frame is too small to reduce {frame.size}")
             return (0, 0)
     print("No frame object found")
     return (0, 0)
