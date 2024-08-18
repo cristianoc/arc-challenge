@@ -1,6 +1,9 @@
+from turtle import color
 from typing import Callable, List, Optional, Tuple
+
+from torch import threshold
 from grid import Grid
-from grid_data import display
+from grid_data import Object, display
 from load_data import Example, Tasks, iter_tasks, training_data, evaluation_data
 
 
@@ -21,6 +24,50 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid):
     objects = grid.detect_objects(diagonals=False)
 
     frame_objects = [obj for obj in objects if obj.has_frame()]
+    shrunk_objects: List[Object] = []
+    if len(frame_objects) == 0:
+        for obj in objects:
+            color = obj.color
+            threshold = 0.2
+
+            size = obj.size
+            if size[0] > 3 and size[1] > 3:
+                print(f"Object color: {color} size: {obj.size} object: {obj}")
+
+            while obj.width > 2 and obj.height > 2:
+                # Check the leftmost column and remove it if the number of cells of the color is less than the threshold
+                left_col = [row[0] for row in obj.data]
+                size_before = obj.size
+                if left_col.count(color) < obj.height * threshold:
+                    obj = Object((obj.origin[0], obj.origin[1] + 1), [row[1:] for row in obj.data])
+                    print(f"Shrinking left size: {size_before} -> {obj.size}")
+                    continue
+
+                # Check the rightmost column and remove it if the number of cells of the color is less than the threshold
+                right_col = [row[-1] for row in obj.data]
+                if right_col.count(color) < obj.height * threshold:
+                    obj = Object((obj.origin[0], obj.origin[1]), [row[:-1] for row in obj.data])
+                    print(f"Shrinking right size: {size_before} -> {obj.size}")
+                    continue
+
+                # Check the topmost row and remove it if the number of cells of the color is less than the threshold
+                if obj.data[0].count(color) < obj.width * threshold:
+                    obj = Object((obj.origin[0] + 1, obj.origin[1]), obj.data[1:])
+                    print(f"Shrinking top size: {size_before} -> {obj.size}")
+                    continue
+
+                # Check the bottommost row and remove it if the number of cells of the color is less than the threshold
+                if obj.data[-1].count(color) < obj.width * threshold:
+                    obj = Object((obj.origin[0], obj.origin[1]), obj.data[:-1])
+                    print(f"Shrinking bottom size: {size_before} -> {obj.size}")
+                    continue
+                break
+
+            if obj.has_frame():
+                shrunk_objects.append(obj)
+    if len(shrunk_objects) >= 1:
+        # display(grid.data, title="Grid with shrunk objects")
+        frame_objects = shrunk_objects
     print(f"# of objects: {len(objects)}")
     print(f"# of frame objects: {len(frame_objects)}")
 
@@ -32,6 +79,8 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid):
     # Check if there's exactly one frame
     if len(frame_objects) == 1:
         frame = frame_objects[0]
+        if len(shrunk_objects) >= 1:
+            print(f"Frame object: {frame}")
         h, w = frame.size
         if h > 2 and w > 2:
             # check if all the elements immediately inside the frame are of a different color
@@ -83,7 +132,6 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid)
     colors = grid.get_colors()
     # remove 0 if present
     colors = [c for c in colors if c != 0]
-    print(f"Colors: {colors}")
     ncolors = len(colors) 
     return (h * ncolors, w * ncolors)
 
@@ -114,7 +162,7 @@ def iter_over_tasks(tasks: Tasks):
             # check if at least one xform is correct
             for xform in xforms:
                 if check_xform_on_examples(xform, examples):
-                    if xform == size_is_multiple_determined_by_colors_xform:
+                    if xform == one_object_is_a_frame_xform:
                         display(examples[0]['input'], output=examples[0]
                                 ['output'], title="Size determined by frame")
                     num_correct += 1
@@ -132,8 +180,12 @@ def iter_over_tasks(tasks: Tasks):
                     output_objects = output.detect_objects()
                     input_sizes = [obj.size for obj in input_objects]
                     output_sizes = [obj.size for obj in output_objects]
+                    input_colors = input.get_colors()
+                    output_colors = output.get_colors()
                     print(f"  Input sizes: {input_sizes}")
                     print(f"  Output sizes: {output_sizes}")
+                    print(f"  Input colors: {input_colors}")
+                    print(f"  Output colors: {output_colors}")
     return num_correct, num_incorrect
 
 
