@@ -109,7 +109,7 @@ class Grid(GridA):
                 colors.add(cell)  # type: ignore
         return sorted(list(colors))
 
-    def detect_objects(self: 'Grid') -> List[Object]:
+    def detect_objects(self: 'Grid', diagonals:bool = True) -> List[Object]:
         def create_object(grid: Grid, component: ConnectedComponent) -> Object:
             """
             Create an object from a connected component in a grid
@@ -122,7 +122,7 @@ class Grid(GridA):
             for r, c in component:
                 data[r - min_row][c - min_col] = grid.data[r][c]
             return Object((min_row, min_col), data)
-        connected_components = find_connected_components(self.data)
+        connected_components = find_connected_components(self.data, diagonals)
         detected_objects = [create_object(self, component)
                             for component in connected_components]
         return detected_objects

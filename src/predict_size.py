@@ -18,13 +18,13 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid):
         if output_grid.size >= input_grid.size:
             return (0, 0)
 
-    objects = grid.detect_objects()
+    objects = grid.detect_objects(diagonals=False)
 
     frame_objects = [obj for obj in objects if obj.has_frame()]
     print(f"# of objects: {len(objects)}")
     print(f"# of frame objects: {len(frame_objects)}")
 
-    if len(frame_objects) > 1 and len(frame_objects) <= 3:
+    if len(frame_objects) > 1:
         # if there are multiple frame objects, keep the largest one
         frame = max(frame_objects, key=lambda obj: obj.size[0] * obj.size[1])
         frame_objects = [frame]
