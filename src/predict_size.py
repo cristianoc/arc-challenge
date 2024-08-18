@@ -93,6 +93,9 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
             else:
                 print(f"Frame size is {h}x{w}")
                 return (h, w)
+        elif frame.is_block():
+            print(f"Frame is a block")
+            return (h, w)
         else:
             # Handle case where frame is too small to reduce
             print("Frame is too small to reduce {frame.size}")
