@@ -171,9 +171,6 @@ class Object:
     
     def is_block(self) -> bool:
         obj_color = self.first_color
-        if obj_color == 0:
-            return False
-
         # Check if all cells have the same color
         for row in self.data:
             if any(cell != obj_color for cell in row):
