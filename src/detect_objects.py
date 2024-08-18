@@ -29,7 +29,7 @@ def dfs_recursive_list(data: GridData, visited: VISITED, r: int, c: int, color: 
                            color, component, diagonals)
 
 
-def find_connected_components(data: GridData, diagonals: bool) -> List[ConnectedComponent]:
+def find_connected_components(data: GridData, diagonals: bool, allow_black: bool) -> List[ConnectedComponent]:
     rows = len(data)
     cols = len(data[0])
     visited: VISITED = [[False for _ in range(cols)] for _ in range(rows)]
@@ -38,7 +38,7 @@ def find_connected_components(data: GridData, diagonals: bool) -> List[Connected
     for r in range(rows):
         for c in range(cols):
             # Skip cells with color 0
-            if visited[r][c] == False and data[r][c] != 0:
+            if visited[r][c] == False and (allow_black or data[r][c] != 0):
                 # Create a new component
                 component: ConnectedComponent = []
                 dfs_recursive_list(data, visited, r, c,

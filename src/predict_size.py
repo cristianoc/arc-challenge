@@ -13,24 +13,21 @@ identity_xform: SizeXform = lambda grids, grid: grid.size
 always_same_output_xform: SizeXform = lambda grids, grid: grids[0][1].size
 
 
-def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid):
+def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: bool):
     # Check that all the output sizes are smaller than the input sizes
     for input_grid, output_grid in grids:
         if output_grid.size >= input_grid.size:
             return (0, 0)
 
-    objects = grid.detect_objects(diagonals=False)
+    objects = grid.detect_objects(diagonals=False, allow_black=allow_black)
 
-    frame_objects = [obj for obj in objects if obj.has_frame()]
+    frame_objects = [obj for obj in objects if obj.size !=
+                     grid.size and obj.has_frame()]
     shrunk_objects: List[Object] = []
     if len(frame_objects) == 0:
         for obj in objects:
             color = obj.color
             threshold = 0.2
-
-            size = obj.size
-            if size[0] > 3 and size[1] > 3:
-                print(f"Object color: {color} size: {obj.size} object: {obj}")
 
             while obj.width > 2 and obj.height > 2:
                 # Check the leftmost column and remove it if the number of cells of the color is less than the threshold
@@ -91,13 +88,25 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid):
                     all(frame.data[i][1] != frame.color for i in range(1, h - 1)) and \
                     all(frame.data[i][w - 2] != frame.color for i in range(1, h - 1)):
                 # Reduce the frame by 1 cell on each side
+                print(f"Reducing frame size to {h-2}x{w-2}")
                 return (h - 2, w - 2)
             else:
+                print(f"Frame size is {h}x{w}")
                 return (h, w)
         else:
             # Handle case where frame is too small to reduce
+            print("Frame is too small to reduce {frame.size}")
             return (0, 0)
+    print("No frame object found")
     return (0, 0)
+
+
+def one_object_is_a_frame_xform_noblack(grids: ExampleGrids, grid: Grid):
+    return one_object_is_a_frame_xform_(grids, grid, allow_black=False)
+
+
+def one_object_is_a_frame_xform_black(grids: ExampleGrids, grid: Grid):
+    return one_object_is_a_frame_xform_(grids, grid, allow_black=True)
 
 
 def size_is_multiple_xform(grids: ExampleGrids, grid: Grid):
@@ -139,7 +148,7 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid)
 
 
 xforms = [identity_xform, always_same_output_xform,
-          size_is_multiple_xform, size_is_multiple_determined_by_colors_xform, one_object_is_a_frame_xform]
+          size_is_multiple_xform, size_is_multiple_determined_by_colors_xform, one_object_is_a_frame_xform_noblack, one_object_is_a_frame_xform_black]
 
 
 def check_xform_on_examples(xform: SizeXform, examples: List[Example]):
@@ -158,15 +167,18 @@ def iter_over_tasks(tasks: Tasks):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
+        print(f"Task: {task_name}")
         for task_type, examples in task.items():
             if task_type not in ['train', 'test']:
                 continue
             # check if at least one xform is correct
             for xform in xforms:
                 if check_xform_on_examples(xform, examples):
-                    if xform == one_object_is_a_frame_xform:
-                        display(examples[0]['input'], output=examples[0]
-                                ['output'], title="Size determined by frame")
+                    if xform == one_object_is_a_frame_xform_black:
+                        title = f"Size determined by frame ({task_name})"
+                        print(title)
+                        display(examples[0]['input'],
+                                output=examples[0]['output'], title=title)
                     num_correct += 1
                     break
             else:
