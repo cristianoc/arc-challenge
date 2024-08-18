@@ -154,7 +154,7 @@ class Object:
             return False
 
         # Determine the object's color
-        obj_color = self.first_color
+        obj_color = self.main_color
         # if obj_color == 0:
         #     return False
 
