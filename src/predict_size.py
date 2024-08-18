@@ -34,59 +34,59 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
 
     objects = grid.detect_objects(diagonals=False, allow_black=allow_black)
 
-    frame_objects = [obj for obj in objects if obj.size !=
-                     grid.size and obj.has_frame() or (allow_black and obj.is_block())]
-    shrunk_objects: List[Object] = []
-    if len(frame_objects) == 0:
-        for obj in objects:
-            color = obj.main_color
-            threshold = 0.2
+    frame_objects: List[Object] = []
+    for obj in objects:
+        if obj.size != grid.size and obj.has_frame() or (allow_black and obj.is_block()):
+            frame_objects.append(obj)
+            continue
 
-            while obj.width > 2 and obj.height > 2:
-                # Check the leftmost column and remove it if the number of cells of the color is less than the threshold
-                left_col = [row[0] for row in obj.data]
-                size_before = obj.size
-                if left_col.count(color) <= 2 or left_col.count(color) < obj.height * threshold:
-                    obj = Object(
-                        (obj.origin[0], obj.origin[1] + 1), [row[1:] for row in obj.data])
-                    if Debug:
-                        print(
-                            f"Shrinking left size: {size_before} -> {obj.size}")
-                    continue
+        if len(frame_objects) >= 1: continue
 
-                # Check the rightmost column and remove it if the number of cells of the color is less than the threshold
-                right_col = [row[-1] for row in obj.data]
-                if right_col.count(color) <= 2 or right_col.count(color) < obj.height * threshold:
-                    obj = Object((obj.origin[0], obj.origin[1]), [
-                                 row[:-1] for row in obj.data])
-                    if Debug:
-                        print(
-                            f"Shrinking right size: {size_before} -> {obj.size}")
-                    continue
+        color = obj.main_color
+        threshold = 0.2
 
-                # Check the topmost row and remove it if the number of cells of the color is less than the threshold
-                if obj.data[0].count(color) <= 2 or obj.data[0].count(color) < obj.width * threshold:
-                    obj = Object(
-                        (obj.origin[0] + 1, obj.origin[1]), obj.data[1:])
-                    if Debug:
-                        print(
-                            f"Shrinking top size: {size_before} -> {obj.size}")
-                    continue
+        while obj.width > 2 and obj.height > 2:
+            # Check the leftmost column and remove it if the number of cells of the color is less than the threshold
+            left_col = [row[0] for row in obj.data]
+            size_before = obj.size
+            if left_col.count(color) <= 2 or left_col.count(color) < obj.height * threshold:
+                obj = Object(
+                    (obj.origin[0], obj.origin[1] + 1), [row[1:] for row in obj.data])
+                if Debug:
+                    print(
+                        f"Shrinking left size: {size_before} -> {obj.size}")
+                continue
 
-                # Check the bottommost row and remove it if the number of cells of the color is less than the threshold
-                if obj.data[-1].count(color) <= 2 or obj.data[-1].count(color) < obj.width * threshold:
-                    obj = Object((obj.origin[0], obj.origin[1]), obj.data[:-1])
-                    if Debug:
-                        print(
-                            f"Shrinking bottom size: {size_before} -> {obj.size}")
-                    continue
-                break
+            # Check the rightmost column and remove it if the number of cells of the color is less than the threshold
+            right_col = [row[-1] for row in obj.data]
+            if right_col.count(color) <= 2 or right_col.count(color) < obj.height * threshold:
+                obj = Object((obj.origin[0], obj.origin[1]), [
+                                row[:-1] for row in obj.data])
+                if Debug:
+                    print(
+                        f"Shrinking right size: {size_before} -> {obj.size}")
+                continue
 
-            if obj.has_frame():
-                shrunk_objects.append(obj)
-    if len(shrunk_objects) >= 1:
-        # display(grid.data, title="Grid with shrunk objects")
-        frame_objects = shrunk_objects
+            # Check the topmost row and remove it if the number of cells of the color is less than the threshold
+            if obj.data[0].count(color) <= 2 or obj.data[0].count(color) < obj.width * threshold:
+                obj = Object(
+                    (obj.origin[0] + 1, obj.origin[1]), obj.data[1:])
+                if Debug:
+                    print(
+                        f"Shrinking top size: {size_before} -> {obj.size}")
+                continue
+
+            # Check the bottommost row and remove it if the number of cells of the color is less than the threshold
+            if obj.data[-1].count(color) <= 2 or obj.data[-1].count(color) < obj.width * threshold:
+                obj = Object((obj.origin[0], obj.origin[1]), obj.data[:-1])
+                if Debug:
+                    print(
+                        f"Shrinking bottom size: {size_before} -> {obj.size}")
+                continue
+            break
+
+        if obj.has_frame():
+            frame_objects.append(obj)
     if Debug:
         print(f"# of objects: {len(objects)}")
     if Debug:
@@ -116,9 +116,6 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
     # Check if there's exactly one frame
     if len(frame_objects) == 1:
         frame = frame_objects[0]
-        if len(shrunk_objects) >= 1:
-            if Debug:
-                print(f"Frame object: {frame}")
         h, w = frame.size
         if h > 2 and w > 2:
             # check if all the elements immediately inside the frame are of a different color
@@ -133,7 +130,7 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
                     n_diff_color += 1
                 if frame.data[h - 2][j] == frame.first_color:
                     n_diff_color += 1
-            if n_diff_color == 0:
+            if n_diff_color <= 1:
                 # Reduce the frame by 1 cell on each side
                 if Debug:
                     print(f"Reducing frame size to {h-2}x{w-2}")
