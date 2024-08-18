@@ -71,8 +71,23 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
     print(f"# of frame objects: {len(frame_objects)}")
 
     if len(frame_objects) > 1:
+        sorted_objects = []
+        if allow_black:
+            black_objects: List[Object] = []
+            other_objects: List[Object] = []
+            for obj in frame_objects:
+                if obj.main_color == 0:
+                    black_objects.append(obj)
+                else:
+                    other_objects.append(obj)
+            sorted_objects = sorted(black_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True) + sorted(
+                other_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True)
+        else:
+            sorted_objects = sorted(
+                frame_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True)
         # if there are multiple frame objects, keep the largest one
-        frame = max(frame_objects, key=lambda obj: obj.size[0] * obj.size[1])
+        print(f"Sorted objects: {sorted_objects}")
+        frame = sorted_objects[0]
         frame_objects = [frame]
 
     # Check if there's exactly one frame
@@ -98,7 +113,8 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
             return (h, w)
         else:
             # Handle case where frame is too small to reduce
-            print(f"Frame is too small to reduce {frame.size}")
+            print(
+                f"Frame is too small to reduce origin:{frame.origin} size:{frame.size}")
             return (0, 0)
     print("No frame object found")
     return (0, 0)
