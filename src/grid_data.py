@@ -165,8 +165,6 @@ class Object:
 
         # Determine the object's color
         obj_color = self.main_color
-        # if obj_color == 0:
-        #     return False
 
         # Check top and bottom rows
         if not all(cell == obj_color for cell in self.data[0]) or not all(cell == obj_color for cell in self.data[-1]):
