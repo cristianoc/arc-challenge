@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import copy
 from enum import Enum
-from typing import Callable, List
+from typing import Callable, List, Tuple
 from detect_objects import ConnectedComponent, find_connected_components
 from flood_fill import find_enclosed_cells
 from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData, Object
@@ -28,6 +28,10 @@ class GridA(ABC):
     @property
     def width(self) -> int:
         return len(self.data[0])
+    
+    @property
+    def size(self) -> Tuple[int, int]:
+        return (self.height, self.width)
 
     @abstractmethod
     def detect_objects(self) -> List[Object]:
