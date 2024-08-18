@@ -48,9 +48,34 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid):
             return (0, 0)
     return (0, 0)
 
+def size_is_multiple_xform(grids: ExampleGrids, grid: Grid):
+    """
+    Determines if the given grid can be scaled by consistent ratios derived from example grids.
+    The function checks if applying these ratios to the grid's size results in integer dimensions.
+    
+    If the transformation is valid and consistent across all example grids, it returns the new size.
+    Otherwise, it returns (0, 0).
+    """
+    ratios_height: List[float] = []
+    ratios_width: List[float] = []
+    for input_grid, output_grid in grids:
+        ratios_height.append(output_grid.size[0] / input_grid.size[0])
+        ratios_width.append(output_grid.size[1] / input_grid.size[1])
+    
+    # Check if applying the ratios to the grid's size results in integers
+    transformed_height = [ratio * grid.size[0] for ratio in ratios_height]
+    transformed_width = [ratio * grid.size[1] for ratio in ratios_width]
+    
+    if all(height.is_integer() for height in transformed_height) and all(width.is_integer() for width in transformed_width):
+        # Ensure all ratios are the same
+        if all(ratio == ratios_height[0] for ratio in ratios_height) and all(ratio == ratios_width[0] for ratio in ratios_width):
+            return (int(ratios_height[0] * grid.size[0]), int(ratios_width[0] * grid.size[1]))
+    
+    return (0, 0)
+
 
 xforms = [identity_xform, always_same_output_xform,
-          one_object_is_a_frame_xform]
+          size_is_multiple_xform, one_object_is_a_frame_xform]
 
 
 def check_xform_on_examples(xform: SizeXform, examples: List[Example]):
@@ -70,13 +95,15 @@ def iter_over_tasks(tasks: Tasks):
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
         for task_type, examples in task.items():
+            print(f"\n* Task: {task_name} {task_type}")
             if task_type not in ['train', 'test']:
                 continue
             # check if at least one xform is correct
             for xform in xforms:
                 if check_xform_on_examples(xform, examples):
-                    if xform == one_object_is_a_frame_xform:
-                        display(examples[0]['input'], output=examples[0]['output'], title="Size determined by frame")
+                    # if xform == size_is_multiple_xform:
+                    #     display(examples[0]['input'], output=examples[0]
+                    #             ['output'], title="Size determined by frame")
                     num_correct += 1
                     break
             else:
@@ -87,6 +114,12 @@ def iter_over_tasks(tasks: Tasks):
                     input = Grid(example['input'])
                     output = Grid(example['output'])
                     print(f"  {task_type} {input.size} -> {output.size}")
+                    input_objects = input.detect_objects()
+                    output_objects = output.detect_objects()
+                    input_sizes = [obj.size for obj in input_objects]
+                    output_sizes = [obj.size for obj in output_objects]
+                    print(f"  Input sizes: {input_sizes}")
+                    print(f"  Output sizes: {output_sizes}")
     return num_correct, num_incorrect
 
 
