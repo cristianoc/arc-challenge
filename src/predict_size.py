@@ -5,10 +5,10 @@ from load_data import Example, Tasks, iter_tasks, training_data, evaluation_data
 
 Size = Tuple[int, int]
 ExampleGrids = List[Tuple[Grid, Grid]]
-SizeXform = Callable[[ExampleGrids, Size], Size]
+SizeXform = Callable[[ExampleGrids, Grid], Size]
 
-identity_xform: SizeXform = lambda grids, size: size
-always_same_output_xform: SizeXform = lambda grids, size: grids[0][1].size
+identity_xform: SizeXform = lambda grids, grid: grid.size
+always_same_output_xform: SizeXform = lambda grids, grid: grids[0][1].size
 
 xforms = [identity_xform, always_same_output_xform]
 
@@ -19,10 +19,8 @@ def check_xform_on_examples(xform: SizeXform, examples: List[Example]):
     for example in examples:
         input = Grid(example['input'])
         output = Grid(example['output'])
-        input_size = input.size
-        output_size = output.size
-        new_output_size = xform(grids, input_size)
-        if new_output_size != output_size:
+        new_output_size = xform(grids, input)
+        if new_output_size != output.size:
             return False
     return True
 
