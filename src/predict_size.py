@@ -19,7 +19,7 @@ def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid):
     objects = grid.detect_objects()
     if not objects:
         return (0, 0)
-    largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
+    largest_object = max(objects, key=lambda obj: obj.num_cells)
     return largest_object.size
 
 
