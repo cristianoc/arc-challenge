@@ -27,6 +27,10 @@ class Object:
     @property
     def width(self) -> int:
         return len(self.data[0]) if self.data else 0
+    
+    @property
+    def size(self) -> Tuple[int, int]:
+        return (self.height, self.width)
 
     def move(self, dr: int, dc: int) -> 'Object':
         """
@@ -120,6 +124,46 @@ class Object:
         # Apply squash_row to each row in self.data
         new_data = [squash_row(row) for row in self.data]
         return Object(self.origin, new_data)
+    
+    def has_frame(self) -> bool:
+        """
+        Check if the object is a frame, i.e., has a border of 1 cell width and the color is not 0.
+
+        A frame is defined as having non-zero cells in the entire first and last row,
+        as well as the first and last column of the object. Additionally, the frame's color
+        should be consistent and non-zero.
+        """
+        if self.height < 2 or self.width < 2:
+            return False
+
+        # Determine the object's color
+        obj_color = self.color
+        if obj_color == 0:
+            return False
+
+        # Check top and bottom rows
+        if not all(cell == obj_color for cell in self.data[0]) or not all(cell == obj_color for cell in self.data[-1]):
+            return False
+
+        # Check left and right columns
+        for row in self.data:
+            if row[0] != obj_color or row[-1] != obj_color:
+                return False
+
+        return True
+    
+    def is_block(self) -> bool:
+        obj_color = self.color
+        if obj_color == 0:
+            return False
+
+        # Check if all cells have the same color
+        for row in self.data:
+            if any(cell != obj_color for cell in row):
+                return False
+
+        return True
+
 
 
 Color = NewType('Color', int)
