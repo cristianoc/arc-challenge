@@ -12,7 +12,7 @@ SizeXform = Callable[[ExampleGrids, Grid], Size]
 identity_xform: SizeXform = lambda grids, grid: grid.size
 always_same_output_xform: SizeXform = lambda grids, grid: grids[0][1].size
 
-Debug = True
+Debug = False
 
 
 def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid):
