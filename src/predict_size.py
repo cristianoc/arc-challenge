@@ -13,6 +13,14 @@ identity_xform: SizeXform = lambda grids, grid: grid.size
 always_same_output_xform: SizeXform = lambda grids, grid: grids[0][1].size
 
 
+def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid):
+    objects = grid.detect_objects()
+    if not objects:
+        return (0, 0)
+    largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
+    return largest_object.size
+
+
 def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: bool):
     # Check that all the output sizes are smaller than the input sizes
     for input_grid, output_grid in grids:
@@ -166,7 +174,7 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid)
     return (h * ncolors, w * ncolors)
 
 
-xforms = [identity_xform, always_same_output_xform,
+xforms = [identity_xform, always_same_output_xform, size_of_largest_object_xform,
           size_is_multiple_xform, size_is_multiple_determined_by_colors_xform, one_object_is_a_frame_xform_noblack, one_object_is_a_frame_xform_black]
 
 
@@ -193,7 +201,7 @@ def iter_over_tasks(tasks: Tasks):
             # check if at least one xform is correct
             for xform in xforms:
                 if check_xform_on_examples(xform, examples):
-                    if xform == one_object_is_a_frame_xform_black:
+                    if False and xform == one_object_is_a_frame_xform_black:
                         title = f"Size determined by frame ({task_name})"
                         print(title)
                         display(examples[0]['input'],
