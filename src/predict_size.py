@@ -1,7 +1,5 @@
-from turtle import color
 from typing import Callable, List, Optional, Tuple
 
-from torch import threshold
 from grid import Grid
 from grid_data import Object, display
 from load_data import Example, Tasks, iter_tasks, training_data, evaluation_data
@@ -39,27 +37,31 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid):
                 left_col = [row[0] for row in obj.data]
                 size_before = obj.size
                 if left_col.count(color) < obj.height * threshold:
-                    obj = Object((obj.origin[0], obj.origin[1] + 1), [row[1:] for row in obj.data])
+                    obj = Object(
+                        (obj.origin[0], obj.origin[1] + 1), [row[1:] for row in obj.data])
                     print(f"Shrinking left size: {size_before} -> {obj.size}")
                     continue
 
                 # Check the rightmost column and remove it if the number of cells of the color is less than the threshold
                 right_col = [row[-1] for row in obj.data]
                 if right_col.count(color) < obj.height * threshold:
-                    obj = Object((obj.origin[0], obj.origin[1]), [row[:-1] for row in obj.data])
+                    obj = Object((obj.origin[0], obj.origin[1]), [
+                                 row[:-1] for row in obj.data])
                     print(f"Shrinking right size: {size_before} -> {obj.size}")
                     continue
 
                 # Check the topmost row and remove it if the number of cells of the color is less than the threshold
                 if obj.data[0].count(color) < obj.width * threshold:
-                    obj = Object((obj.origin[0] + 1, obj.origin[1]), obj.data[1:])
+                    obj = Object(
+                        (obj.origin[0] + 1, obj.origin[1]), obj.data[1:])
                     print(f"Shrinking top size: {size_before} -> {obj.size}")
                     continue
 
                 # Check the bottommost row and remove it if the number of cells of the color is less than the threshold
                 if obj.data[-1].count(color) < obj.width * threshold:
                     obj = Object((obj.origin[0], obj.origin[1]), obj.data[:-1])
-                    print(f"Shrinking bottom size: {size_before} -> {obj.size}")
+                    print(
+                        f"Shrinking bottom size: {size_before} -> {obj.size}")
                     continue
                 break
 
@@ -132,7 +134,7 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid)
     colors = grid.get_colors()
     # remove 0 if present
     colors = [c for c in colors if c != 0]
-    ncolors = len(colors) 
+    ncolors = len(colors)
     return (h * ncolors, w * ncolors)
 
 

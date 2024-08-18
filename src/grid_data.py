@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import List, NewType, Optional, Tuple
+from typing import Any, List, NewType, Optional, Tuple
 
 from matplotlib import colors, pyplot as plt
+from matplotlib.colors import ListedColormap
 import numpy as np
 
 Cell = Tuple[int, int]
@@ -197,11 +198,11 @@ TEAL: Color = Color(9)    # #7FDBFF
 
 def display(input: GridData, output: Optional[GridData] = None, title: Optional[str] = None) -> None:
     # Create a ListedColormap with the specified colors
-    cmap = colors.ListedColormap(color_scheme)
+    cmap : ListedColormap = colors.ListedColormap(color_scheme)
 
     # Adjust the bounds to match the number of colors
     bounds = np.arange(-0.5, len(color_scheme) - 0.5, 1)
-    norm = colors.BoundaryNorm(bounds, cmap.N)
+    norm = colors.BoundaryNorm(bounds, cmap.N) # type: ignore
 
     # Create a figure with one or two subplots depending on whether data2 is provided
     num_subplots = 2 if output is not None else 1
@@ -210,7 +211,7 @@ def display(input: GridData, output: Optional[GridData] = None, title: Optional[
 
     if num_subplots == 1:
         # Make sure axes is iterable if there's only one subplot
-        axes = [axes]
+        axes: Any = [axes]
 
     for ax, data, title_suffix in zip(axes, [input, output if output is not None else input], ['Input', 'Output']):
         ax.set_facecolor('black')
@@ -224,7 +225,7 @@ def display(input: GridData, output: Optional[GridData] = None, title: Optional[
         ax.set_title(
             f"{title} - {title_suffix}" if title else title_suffix)
 
-    plt.tight_layout()
+    plt.tight_layout() # type: ignore
     plt.show()  # type: ignore
 
 
