@@ -1,7 +1,7 @@
 from typing import Callable, List, Optional, Tuple
 
 from grid import Grid
-from grid_data import Object, display
+from grid_data import GridData, Object, display, display_multiple
 from load_data import Example, Tasks, iter_tasks, training_data, evaluation_data
 
 
@@ -46,7 +46,9 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
                 if left_col.count(color) <= 2 or left_col.count(color) < obj.height * threshold:
                     obj = Object(
                         (obj.origin[0], obj.origin[1] + 1), [row[1:] for row in obj.data])
-                    if Debug: print(f"Shrinking left size: {size_before} -> {obj.size}")
+                    if Debug:
+                        print(
+                            f"Shrinking left size: {size_before} -> {obj.size}")
                     continue
 
                 # Check the rightmost column and remove it if the number of cells of the color is less than the threshold
@@ -54,21 +56,26 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
                 if right_col.count(color) <= 2 or right_col.count(color) < obj.height * threshold:
                     obj = Object((obj.origin[0], obj.origin[1]), [
                                  row[:-1] for row in obj.data])
-                    if Debug: print(f"Shrinking right size: {size_before} -> {obj.size}")
+                    if Debug:
+                        print(
+                            f"Shrinking right size: {size_before} -> {obj.size}")
                     continue
 
                 # Check the topmost row and remove it if the number of cells of the color is less than the threshold
                 if obj.data[0].count(color) <= 2 or obj.data[0].count(color) < obj.width * threshold:
                     obj = Object(
                         (obj.origin[0] + 1, obj.origin[1]), obj.data[1:])
-                    if Debug: print(f"Shrinking top size: {size_before} -> {obj.size}")
+                    if Debug:
+                        print(
+                            f"Shrinking top size: {size_before} -> {obj.size}")
                     continue
 
                 # Check the bottommost row and remove it if the number of cells of the color is less than the threshold
                 if obj.data[-1].count(color) <= 2 or obj.data[-1].count(color) < obj.width * threshold:
                     obj = Object((obj.origin[0], obj.origin[1]), obj.data[:-1])
-                    if Debug: print(
-                        f"Shrinking bottom size: {size_before} -> {obj.size}")
+                    if Debug:
+                        print(
+                            f"Shrinking bottom size: {size_before} -> {obj.size}")
                     continue
                 break
 
@@ -77,8 +84,10 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
     if len(shrunk_objects) >= 1:
         # display(grid.data, title="Grid with shrunk objects")
         frame_objects = shrunk_objects
-    if Debug: print(f"# of objects: {len(objects)}")
-    if Debug: print(f"# of frame objects: {len(frame_objects)}")
+    if Debug:
+        print(f"# of objects: {len(objects)}")
+    if Debug:
+        print(f"# of frame objects: {len(frame_objects)}")
 
     if len(frame_objects) > 1:
         sorted_objects = []
@@ -96,7 +105,8 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
             sorted_objects = sorted(
                 frame_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True)
         # if there are multiple frame objects, keep the largest one
-        if Debug: print(f"Sorted objects: {sorted_objects}")
+        if Debug:
+            print(f"Sorted objects: {sorted_objects}")
         frame = sorted_objects[0]
         frame_objects = [frame]
 
@@ -104,7 +114,8 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
     if len(frame_objects) == 1:
         frame = frame_objects[0]
         if len(shrunk_objects) >= 1:
-            if Debug: print(f"Frame object: {frame}")
+            if Debug:
+                print(f"Frame object: {frame}")
         h, w = frame.size
         if h > 2 and w > 2:
             # check if all the elements immediately inside the frame are of a different color
@@ -113,20 +124,25 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
                     all(frame.data[i][1] != frame.first_color for i in range(1, h - 1)) and \
                     all(frame.data[i][w - 2] != frame.first_color for i in range(1, h - 1)):
                 # Reduce the frame by 1 cell on each side
-                if Debug: print(f"Reducing frame size to {h-2}x{w-2}")
+                if Debug:
+                    print(f"Reducing frame size to {h-2}x{w-2}")
                 return (h - 2, w - 2)
             else:
-                if Debug: print(f"Frame size is {h}x{w}")
+                if Debug:
+                    print(f"Frame size is {h}x{w}")
                 return (h, w)
         elif frame.is_block():
-            if Debug: print(f"Frame is a block")
+            if Debug:
+                print(f"Frame is a block")
             return (h, w)
         else:
             # Handle case where frame is too small to reduce
-            if Debug: print(
-                f"Frame is too small to reduce origin:{frame.origin} size:{frame.size}")
+            if Debug:
+                print(
+                    f"Frame is too small to reduce origin:{frame.origin} size:{frame.size}")
             return (0, 0)
-    if Debug: print("No frame object found")
+    if Debug:
+        print("No frame object found")
     return (0, 0)
 
 
@@ -196,7 +212,8 @@ def iter_over_tasks(tasks: Tasks):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
-        if Debug: print(f"Task: {task_name}")
+        if Debug:
+            print(f"Task: {task_name}")
         for task_type, examples in task.items():
             if task_type not in ['train', 'test']:
                 continue
@@ -215,6 +232,10 @@ def iter_over_tasks(tasks: Tasks):
                 print(f"\n***Task: {task_name} {task_type}***")
                 print(
                     f"Could not find correct xform for {task_name} {task_type} examples")
+                grids: List[Tuple[GridData, Optional[GridData]]] = [(Grid(example['input']).data, Grid(example['output']).data)
+                         for example in examples]
+                if False:
+                    display_multiple(grids, title=f"Task: {task_name} {task_type}")
                 for example in examples:
                     input = Grid(example['input'])
                     output = Grid(example['output'])
