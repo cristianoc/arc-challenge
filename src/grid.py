@@ -59,9 +59,6 @@ class GridA(ABC):
             self.enclosed = find_enclosed_cells(self.data)
         return self.enclosed[x][y]
 
-    def size(self) -> int:
-        return len(self.data)
-
     @abstractmethod
     def add_object(self, obj: Object) -> None:
         pass
@@ -148,9 +145,8 @@ class Grid(GridA):
 
             return new_grid
 
-        size = self.size()
         new_grid: List[List[GridData]] = [
-            [func(i, j).data for j in range(size)] for i in range(size)]
+            [func(i, j).data for j in range(self.width)] for i in range(self.height)]
         return Grid(transform_data(new_grid))
 
     def rotate(self, direction: Direction) -> 'Grid':
