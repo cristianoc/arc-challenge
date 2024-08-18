@@ -22,7 +22,7 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
     objects = grid.detect_objects(diagonals=False, allow_black=allow_black)
 
     frame_objects = [obj for obj in objects if obj.size !=
-                     grid.size and obj.has_frame()]
+                     grid.size and obj.has_frame() or (allow_black and obj.is_block())]
     shrunk_objects: List[Object] = []
     if len(frame_objects) == 0:
         for obj in objects:
