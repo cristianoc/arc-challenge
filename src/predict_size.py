@@ -28,7 +28,6 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
         for obj in objects:
             color = obj.main_color
             threshold = 0.2
-            print(f"Object: {obj} color: {color} size:{obj.size}")
 
             while obj.width > 2 and obj.height > 2:
                 # Check the leftmost column and remove it if the number of cells of the color is less than the threshold
