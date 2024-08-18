@@ -28,10 +28,14 @@ class GridA(ABC):
     @property
     def width(self) -> int:
         return len(self.data[0])
-    
+
     @property
     def size(self) -> Tuple[int, int]:
         return (self.height, self.width)
+
+    @abstractmethod
+    def get_colors(self) -> List[int]:
+        pass
 
     @abstractmethod
     def detect_objects(self) -> List[Object]:
@@ -97,6 +101,13 @@ class Grid(GridA):
 
     def copy(self) -> 'Grid':
         return Grid(copy.deepcopy(self.data))
+
+    def get_colors(self) -> List[int]:
+        colors: set[Color] = set()
+        for row in self.data:
+            for cell in row:
+                colors.add(cell)  # type: ignore
+        return sorted(list(colors))
 
     def detect_objects(self: 'Grid') -> List[Object]:
         def create_object(grid: Grid, component: ConnectedComponent) -> Object:
