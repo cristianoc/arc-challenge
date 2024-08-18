@@ -2,11 +2,12 @@ import os
 import json
 from typing import List, Dict
 
+from grid import Grid
 from grid_data import GridData
 
-Example = Dict[str, GridData]
-Task = Dict[str, List[Example]]
-Tasks = Dict[str, Task]
+Example = Dict[str, GridData]  # {input, output} -> grid data
+Task = Dict[str, List[Example]]  # {train, test} -> examples
+Tasks = Dict[str, Task]  # xxxx.json -> task
 
 
 def load_arc_data(directory: str) -> Tasks:
@@ -27,17 +28,24 @@ training_dataset_path = os.path.join(script_dir, '../data/training/')
 evaluation_dataset_path = os.path.join(script_dir, '../data/evaluation/')
 
 # Load training and evaluation datasets
-training_data = load_arc_data(training_dataset_path)
-evaluation_data = load_arc_data(evaluation_dataset_path)
+training_data: Tasks = load_arc_data(training_dataset_path)
+evaluation_data: Tasks = load_arc_data(evaluation_dataset_path)
+
+
+def iter_tasks(tasks: Tasks):
+    for task_name, task in tasks.items():
+        yield task_name, task
+
 
 # Access train and test sets for the first task in the training data
-first_training = training_data.popitem()
-first_training_task: Task = first_training[1]
-first_evaluation = evaluation_data.popitem()
-first_evaluation_task: Task = first_evaluation[1]
+training_1 = training_data.popitem()
+print(f"First training task: {training_1[0]}")
+tr_task_1: Task = training_1[1]
+eval_1 = evaluation_data.popitem()
+ev_task_1: Task = eval_1[1]
 
-train_set = first_training_task['train']
-test_set = first_training_task['test']
+train_set = tr_task_1['train']
+test_set = tr_task_1['test']
 
 
 # Print the number of tasks loaded and an example from each dataset
