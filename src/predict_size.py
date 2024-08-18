@@ -12,7 +12,7 @@ SizeXform = Callable[[ExampleGrids, Grid], Size]
 identity_xform: SizeXform = lambda grids, grid: grid.size
 always_same_output_xform: SizeXform = lambda grids, grid: grids[0][1].size
 
-Debug = False
+Debug = True
 
 
 def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid):
@@ -24,6 +24,9 @@ def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid):
 
 
 def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: bool):
+    if Debug:
+        print(f"\nChecking one object is a frame xform")
+
     # Check that all the output sizes are smaller than the input sizes
     for input_grid, output_grid in grids:
         if output_grid.size >= input_grid.size:
@@ -119,10 +122,18 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
         h, w = frame.size
         if h > 2 and w > 2:
             # check if all the elements immediately inside the frame are of a different color
-            if all(frame.data[1][j] != frame.first_color for j in range(1, w - 1)) and \
-                    all(frame.data[h - 2][j] != frame.first_color for j in range(1, w - 1)) and \
-                    all(frame.data[i][1] != frame.first_color for i in range(1, h - 1)) and \
-                    all(frame.data[i][w - 2] != frame.first_color for i in range(1, h - 1)):
+            n_diff_color = 0
+            for i in range(1, h - 1):
+                if frame.data[i][1] == frame.first_color:
+                    n_diff_color += 1
+                if frame.data[i][w - 2] == frame.first_color:
+                    n_diff_color += 1
+            for j in range(1, w - 1):
+                if frame.data[1][j] == frame.first_color:
+                    n_diff_color += 1
+                if frame.data[h - 2][j] == frame.first_color:
+                    n_diff_color += 1
+            if n_diff_color == 0:
                 # Reduce the frame by 1 cell on each side
                 if Debug:
                     print(f"Reducing frame size to {h-2}x{w-2}")
@@ -233,9 +244,10 @@ def iter_over_tasks(tasks: Tasks):
                 print(
                     f"Could not find correct xform for {task_name} {task_type} examples")
                 grids: List[Tuple[GridData, Optional[GridData]]] = [(Grid(example['input']).data, Grid(example['output']).data)
-                         for example in examples]
+                                                                    for example in examples]
                 if False:
-                    display_multiple(grids, title=f"Task: {task_name} {task_type}")
+                    display_multiple(
+                        grids, title=f"Task: {task_name} {task_type}")
                 for example in examples:
                     input = Grid(example['input'])
                     output = Grid(example['output'])
