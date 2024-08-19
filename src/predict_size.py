@@ -305,7 +305,7 @@ def iter_over_tasks(tasks: Tasks, set: str):
                     common_decision_rule = None
                     for input_objects, index in matchings:
                         emdeddings = [detect_color_features(
-                            obj, input_objects) for obj in input_objects]
+                            obj, input_objects, Debug) for obj in input_objects]
                         decision_rule = select_object_minimal(
                             emdeddings, index)
                         if decision_rule is not None:
@@ -331,7 +331,8 @@ def iter_over_tasks(tasks: Tasks, set: str):
                         decision_rule = select_object_minimal(
                             emdeddings, index)
                         if decision_rule is not None:
-                            print(f"  Decision rule: {decision_rule}")
+                            if Debug:
+                                print(f"  Decision rule: {decision_rule}")
                             if common_decision_rule is None:
                                 common_decision_rule = decision_rule
                             else:
@@ -340,14 +341,16 @@ def iter_over_tasks(tasks: Tasks, set: str):
                                 if common_decision_rule is None:
                                     break
                         else:
-                            print(f"  No decision rule found")
+                            if Debug:
+                                print(f"  No decision rule found")
                             common_decision_rule = None
                             break
                     return common_decision_rule
 
                 if len(matchings) == len(examples):
-                    print(
-                        f"XXX Matched {len(matchings)}/{len(examples)} {task_name} {set}")
+                    if Debug:
+                        print(
+                            f"XXX Matched {len(matchings)}/{len(examples)} {task_name} {set}")
                     common_decision_rule = None
                     features_used = ""
                     if common_decision_rule is None:
@@ -359,7 +362,8 @@ def iter_over_tasks(tasks: Tasks, set: str):
                     if common_decision_rule is None:
                         common_decision_rule = detect_common_color_features()
                         features_used = "Color"
-                    print(f"  Common decision rule ({features_used}): {common_decision_rule}")
+                    print(
+                        f"  Common decision rule ({features_used}): {common_decision_rule}")
                     if not common_decision_rule:
                         assert False
                     num_correct += 1
