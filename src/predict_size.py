@@ -360,6 +360,8 @@ def iter_over_tasks(tasks: Tasks, set: str):
                         common_decision_rule = detect_common_color_features()
                         features_used = "Color"
                     print(f"  Common decision rule ({features_used}): {common_decision_rule}")
+                    if not common_decision_rule:
+                        assert False
                     # display_multiple(
                     #     grids, title=f"Task: {task_name} {set} matchings:{matchings}/{len(examples)}")
     return num_correct, num_incorrect
