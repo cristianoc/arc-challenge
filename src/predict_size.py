@@ -327,7 +327,7 @@ def iter_over_tasks(tasks: Tasks, set: str):
                     common_decision_rule = None
                     for input_objects, index in matchings:
                         emdeddings = [detect_shape_features(
-                            obj, input_objects) for obj in input_objects]
+                            obj, input_objects, Debug) for obj in input_objects]
                         decision_rule = select_object_minimal(
                             emdeddings, index)
                         if decision_rule is not None:
