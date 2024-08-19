@@ -31,6 +31,8 @@ class DecisionRule:
             return None
         intersection_embedding = {
             i: self.embedding[i] for i in common_features if self.embedding[i] == other.embedding[i]}
+        if not intersection_embedding:
+            return None
         return DecisionRule(intersection_embedding)
 
 
