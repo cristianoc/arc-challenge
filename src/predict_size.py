@@ -362,6 +362,8 @@ def iter_over_tasks(tasks: Tasks, set: str):
                     print(f"  Common decision rule ({features_used}): {common_decision_rule}")
                     if not common_decision_rule:
                         assert False
+                    num_correct += 1
+                    num_incorrect -= 1
                     # display_multiple(
                     #     grids, title=f"Task: {task_name} {set} matchings:{matchings}/{len(examples)}")
     return num_correct, num_incorrect
