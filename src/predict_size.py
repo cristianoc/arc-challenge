@@ -1,13 +1,21 @@
 from typing import Callable, List, Optional, Tuple
 
+
+from color_features import detect_color_features
 from grid import Grid
 from grid_data import GridData, Object, display, display_multiple
 from load_data import Example, Tasks, iter_tasks, training_data, evaluation_data
+from rule_based_selector import DecisionRule, select_object_minimal
+from shape_features import detect_shape_features
+from symmetry_features import detect_symmetry_features
 
 
 Size = Tuple[int, int]
 ExampleGrids = List[Tuple[Grid, Grid]]
 SizeXform = Callable[[ExampleGrids, Grid], Size]
+
+# returns the index of the object to pick
+ObjectPicker = Callable[[List[Object]], int]
 
 identity_xform: SizeXform = lambda grids, grid: grid.size
 always_same_output_xform: SizeXform = lambda grids, grid: grids[0][1].size
@@ -40,7 +48,8 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
             frame_objects.append(obj)
             continue
 
-        if len(frame_objects) >= 1: continue
+        if len(frame_objects) >= 1:
+            continue
 
         color = obj.main_color
         threshold = 0.2
@@ -61,7 +70,7 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
             right_col = [row[-1] for row in obj.data]
             if right_col.count(color) <= 2 or right_col.count(color) < obj.height * threshold:
                 obj = Object((obj.origin[0], obj.origin[1]), [
-                                row[:-1] for row in obj.data])
+                    row[:-1] for row in obj.data])
                 if Debug:
                     print(
                         f"Shrinking right size: {size_before} -> {obj.size}")
@@ -194,8 +203,6 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid)
     h = grid.height
     w = grid.width
     colors = grid.get_colors()
-    # remove 0 if present
-    colors = [c for c in colors if c != 0]
     ncolors = len(colors)
     return (h * ncolors, w * ncolors)
 
@@ -216,7 +223,7 @@ def check_xform_on_examples(xform: SizeXform, examples: List[Example]):
     return True
 
 
-def iter_over_tasks(tasks: Tasks):
+def iter_over_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
@@ -237,38 +244,136 @@ def iter_over_tasks(tasks: Tasks):
                     break
             else:
                 num_incorrect += 1
-                print(f"\n***Task: {task_name} {task_type}***")
+                print(f"\n***Task: {task_name} {set}***")
                 print(
-                    f"Could not find correct xform for {task_name} {task_type} examples")
+                    f"Could not find correct xform for {task_name} {set} examples")
                 grids: List[Tuple[GridData, Optional[GridData]]] = [(Grid(example['input']).data, Grid(example['output']).data)
                                                                     for example in examples]
                 if False:
                     display_multiple(
                         grids, title=f"Task: {task_name} {task_type}")
+                matchings: List[Tuple[List[Object], int]] = []
                 for example in examples:
                     input = Grid(example['input'])
                     output = Grid(example['output'])
                     print(f"  {task_type} {input.size} -> {output.size}")
-                    input_objects = input.detect_objects()
-                    output_objects = output.detect_objects()
+                    num_colors = len(output.get_colors())
+                    allow_multicolor = num_colors > 1
+                    input_objects = input.detect_rectangular_objects(
+                        allow_multicolor=allow_multicolor, debug=Debug)
+                    output_objects = output.detect_rectangular_objects(
+                        allow_multicolor=allow_multicolor, debug=Debug)
                     input_sizes = [obj.size for obj in input_objects]
                     output_sizes = [obj.size for obj in output_objects]
                     input_colors = input.get_colors()
                     output_colors = output.get_colors()
-                    print(f"  Input sizes: {input_sizes}")
-                    print(f"  Output sizes: {output_sizes}")
-                    print(f"  Input colors: {input_colors}")
-                    print(f"  Output colors: {output_colors}")
+                    if Debug:
+                        print(f"  Input sizes: {input_sizes}")
+                        print(f"  Output sizes: {output_sizes}")
+                        print(f"  Input colors: {input_colors}")
+                        print(f"  Output colors: {output_colors}")
+                    for i, io in enumerate(input_objects):
+                        if io.size == output.size and io.data == output.data:
+                            if Debug:
+                                print(f"  Input object matching output: {io}")
+                            matchings.append((input_objects, i))
+                            break
+
+                def detect_common_symmetry_features() -> Optional[DecisionRule]:
+                    common_decision_rule = None
+                    for input_objects, index in matchings:
+                        emdeddings = [detect_symmetry_features(
+                            obj.data) for obj in input_objects]
+                        decision_rule = select_object_minimal(
+                            emdeddings, index)
+                        if decision_rule is not None:
+                            print(f"  Decision rule: {decision_rule}")
+                            if common_decision_rule is None:
+                                common_decision_rule = decision_rule
+                            else:
+                                common_decision_rule = common_decision_rule.intersection(
+                                    decision_rule)
+                                if common_decision_rule is None:
+                                    break
+                        else:
+                            print(f"  No decision rule found")
+                            common_decision_rule = None
+                            break
+                    return common_decision_rule
+
+                def detect_common_color_features() -> Optional[DecisionRule]:
+                    common_decision_rule = None
+                    for input_objects, index in matchings:
+                        emdeddings = [detect_color_features(
+                            obj, input_objects) for obj in input_objects]
+                        decision_rule = select_object_minimal(
+                            emdeddings, index)
+                        if decision_rule is not None:
+                            print(f"  Decision rule: {decision_rule}")
+                            if common_decision_rule is None:
+                                common_decision_rule = decision_rule
+                            else:
+                                common_decision_rule = common_decision_rule.intersection(
+                                    decision_rule)
+                                if common_decision_rule is None:
+                                    break
+                        else:
+                            print(f"  No decision rule found")
+                            common_decision_rule = None
+                            break
+                    return common_decision_rule
+
+                def detect_common_shape_features() -> Optional[DecisionRule]:
+                    common_decision_rule = None
+                    for input_objects, index in matchings:
+                        emdeddings = [detect_shape_features(
+                            obj, input_objects) for obj in input_objects]
+                        decision_rule = select_object_minimal(
+                            emdeddings, index)
+                        if decision_rule is not None:
+                            print(f"  Decision rule: {decision_rule}")
+                            if common_decision_rule is None:
+                                common_decision_rule = decision_rule
+                            else:
+                                common_decision_rule = common_decision_rule.intersection(
+                                    decision_rule)
+                                if common_decision_rule is None:
+                                    break
+                        else:
+                            print(f"  No decision rule found")
+                            common_decision_rule = None
+                            break
+                    return common_decision_rule
+
+                if len(matchings) == len(examples):
+                    print(
+                        f"XXX Matched {len(matchings)}/{len(examples)} {task_name} {set}")
+                    common_decision_rule = None
+                    features_used = ""
+                    if common_decision_rule is None:
+                        common_decision_rule = detect_common_shape_features()
+                        features_used = "Shape"
+                    if common_decision_rule is None:
+                        common_decision_rule = detect_common_symmetry_features()
+                        features_used = "Symmetry"
+                    if common_decision_rule is None:
+                        common_decision_rule = detect_common_color_features()
+                        features_used = "Color"
+                    print(f"  Common decision rule ({features_used}): {common_decision_rule}")
+                    # display_multiple(
+                    #     grids, title=f"Task: {task_name} {set} matchings:{matchings}/{len(examples)}")
     return num_correct, num_incorrect
 
 
 def predict_sizes():
-    num_correct_tr, num_incorrect_tr = iter_over_tasks(training_data)
+    num_correct_tr, num_incorrect_tr = iter_over_tasks(
+        training_data, "traing_data")
     do_eval = True
     num_correct_ev: Optional[int] = None
     num_incorrect_ev: Optional[int] = None
     if do_eval:
-        num_correct_ev, num_incorrect_ev = iter_over_tasks(evaluation_data)
+        num_correct_ev, num_incorrect_ev = iter_over_tasks(
+            evaluation_data, "evaluation_data")
     print(
         f"Training data Correct:{num_correct_tr}, Incorrect:{num_incorrect_tr}, Score:{int(1000 * num_correct_tr / (num_correct_tr + num_incorrect_tr))/10}%")
     if num_correct_ev is not None and num_incorrect_ev is not None:

@@ -1,120 +1,124 @@
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
 # Type aliases for clarity
-Vector = List[int]
+Embedding = Dict[str, int]
+Indices = List[str]
 
 
 class DecisionRule:
-    def __init__(self, correct_object: str, unique_features: List[int], correct_vector: Vector):
-        assert unique_features, "unique_features cannot be empty"
-        self.correct_object = correct_object
-        self.unique_features = unique_features
-        self.correct_vector = correct_vector
+    def __init__(self, embedding: Embedding):
+        self.embedding = embedding
 
     def __str__(self) -> str:
         conditions = [
-            f"Feature {i+1} = {self.correct_vector[i]}" for i in self.unique_features]
+            f"{name} = {self.embedding[name]}" for name in self.embedding.keys()]
         rule = " AND ".join(conditions)
-        return f"Select {self.correct_object} if {rule}."
+        return f"{rule}."
 
-    def evaluate(self, vector: Vector) -> bool:
+    def evaluate(self, embedding: Embedding) -> bool:
         """
-        Evaluate if the given vector satisfies the decision rule.
+        Evaluate if the given embedding satisfies the decision rule.
         """
-        return all(vector[i] == self.correct_vector[i] for i in self.unique_features)
+        return all(embedding[i] == self.embedding[i] for i in self.embedding.keys())
+
+    def intersection(self, other: 'DecisionRule') -> Optional['DecisionRule']:
+        """
+        Find the intersection of two decision rules.
+        """
+        common_features = set(self.embedding.keys()) & set(
+            other.embedding.keys())
+        if not common_features:
+            return None
+        intersection_embedding = {
+            i: self.embedding[i] for i in common_features if self.embedding[i] == other.embedding[i]}
+        return DecisionRule(intersection_embedding)
 
 
-def find_minimal_unique_features(correct_vector: Vector, other_vectors: List[Vector]) -> List[int]:
+def find_unique_features(embedding: Embedding, other_embeddings: List[Embedding], minimal: bool = False) -> Indices:
     """
-    Identify the minimal set of unique features that differentiate the correct object from all other objects.
-    Returns the indices of the minimal features that are necessary to uniquely identify the correct object.
+    Identify the set of unique features that differentiate the embedding from all the others.
+    Returns the indices of the features that are necessary to uniquely identify the correct object.
+    If minimal is True, the function will return the minimal set of features that uniquely identify the object.
     """
-    all_features = [i for i in range(len(correct_vector)) if any(
-        correct_vector[i] != other[i] for other in other_vectors)]
+    all_features = [i for i in embedding if any(
+        embedding[i] != other[i] for other in other_embeddings)]
     minimal_features = all_features.copy()
 
-    for feature in all_features:
-        temp_features = [f for f in minimal_features if f != feature]
-        temp_correct_vector = [correct_vector[f] for f in temp_features]
-        temp_other_vectors = [[other[f] for f in temp_features]
-                              for other in other_vectors]
-
-        # Check if the remaining features still uniquely identify the object
-        if all(temp_correct_vector != other for other in temp_other_vectors):
-            minimal_features.remove(feature)
+    if minimal:
+        for feature in all_features:
+            temp_features = [f for f in minimal_features if f != feature]
+            temp_correct_vector = [embedding[f] for f in temp_features]
+            temp_other_vectors = [[other[f] for f in temp_features]
+                                  for other in other_embeddings]
+            # Check if the remaining features still uniquely identify the object
+            if all(temp_correct_vector != other for other in temp_other_vectors):
+                minimal_features.remove(feature)
 
     return minimal_features
 
 
-def generate_decision_rule(correct_object: str, correct_vector: Vector, unique_features: List[int]) -> Optional[DecisionRule]:
+def generate_decision_rule(embedding: Embedding, unique_features: Indices) -> Optional[DecisionRule]:
     """
     Generate the decision rule based on unique features.
     """
     if not unique_features:
         return None
-    return DecisionRule(correct_object, unique_features, correct_vector)
+    embedding = {i: embedding[i] for i in unique_features}
+    return DecisionRule(embedding)
 
 
-def select_object_minimal(experiment: Dict[str, Vector], correct_object_index: int) -> Optional[DecisionRule]:
+def select_object_minimal(embeddings: List[Embedding], correct_object_index: int) -> Optional[DecisionRule]:
     """
     Main function to process the experiment and return the minimal selection rule for a given correct object index.
     """
-    object_names = list(experiment.keys())
-    correct_object = object_names[correct_object_index]
-    correct_vector = list(experiment.values())[correct_object_index]
+    correct_vector = embeddings[correct_object_index]
 
     other_vectors = [v for i, v in enumerate(
-        experiment.values()) if i != correct_object_index]
+        embeddings) if i != correct_object_index]
 
-    minimal_unique_features = find_minimal_unique_features(
+    minimal_unique_features = find_unique_features(
         correct_vector, other_vectors)
-    return generate_decision_rule(correct_object, correct_vector, minimal_unique_features)
+    return generate_decision_rule(correct_vector, minimal_unique_features)
 
 # Testing the functions with the scenarios
 
 
 def test():
-    experiment_1 = {
-        "Object A": [1, 1, 1, 0, 1, 1, 0],
-        "Object B": [0, 1, 1, 0, 1, 0, 0],
-        "Object C": [1, 0, 0, 1, 1, 1, 0],
-    }
+    embeddings1: List[Embedding] = [
+        {"a": 1, "b": 1, "c": 1, "d": 0, "e": 1, "f": 1, "g": 0},
+        {"a": 0, "b": 1, "c": 1, "d": 0, "e": 1, "f": 0, "g": 0},
+        {"a": 1, "b": 0, "c": 0, "d": 1, "e": 1, "f": 1, "g": 0},
+    ]
 
-    experiment_2 = {
-        "Object A": [1, 0, 1, 0, 1, 1, 0],
-        "Object B": [1, 0, 1, 0, 1, 1, 0],
-        "Object C": [1, 0, 1, 0, 1, 1, 0],
-    }
+    embeddings2: List[Embedding] = [
+        {"a": 1, "b": 0, "c": 1, "d": 0, "e": 1, "f": 1, "g": 0},
+        {"a": 1, "b": 0, "c": 1, "d": 0, "e": 1, "f": 1, "g": 0},
+        {"a": 1, "b": 0, "c": 1, "d": 0, "e": 1, "f": 1, "g": 0},
+    ]
 
-    experiment_3 = {
-        "Object A": [1, 0, 1, 1, 0, 0, 1],
-        "Object B": [0, 1, 0, 0, 1, 1, 0],
-        "Object C": [0, 0, 1, 0, 1, 0, 1],
-    }
+    embeddings3: List[Embedding] = [
+        {"a": 1, "b": 0, "c": 1, "d": 0, "e": 1, "f": 1, "g": 0},
+        {"a": 0, "b": 1, "c": 0, "d": 0, "e": 1, "f": 0, "g": 0},
+        {"a": 0, "b": 0, "c": 1, "d": 0, "e": 1, "f": 0, "g": 1},
+    ]
 
-    experiments = {
-        "Experiment 1": experiment_1,
-        "Experiment 2": experiment_2,
-        "Experiment 3": experiment_3,
-    }
+    experiments = [
+        ("Experiment1", embeddings1, 0),
+        ("Experiment1", embeddings1, 2),
+        ("Experiment2", embeddings2, 0),
+        ("Experiment3", embeddings3, 0),
+    ]
 
-    results_minimal_with_indices = {
-        "Experiment 1 (Object A)": select_object_minimal(experiment_1, 0),
-        "Experiment 1 (Object C)": select_object_minimal(experiment_1, 2),
-        "Experiment 2 (Object A)": select_object_minimal(experiment_2, 0),
-        "Experiment 3 (Object A)": select_object_minimal(experiment_3, 0),
-    }
+    decision_rules = [select_object_minimal(e[1], e[2]) for e in experiments]
 
-    for r, decision_rule in results_minimal_with_indices.items():
+    for i, decision_rule in enumerate(decision_rules):
+        name, embeddings, index = experiments[i]
         if decision_rule is None:
-            print(f"{r}: No unique selection is possible.")
+            print(f"\n{name} #{index}: No unique selection is possible")
         else:
-            print(f"{r}: {decision_rule}")
-            # Test the decision rule on the correct vector
-            # Extract full experiment name like "Experiment 1"
-            experiment_name = r.split(" ")[0] + " " + r.split(" ")[1]
-            # Extracts the object name from "Object A)" format
-            correct_object_name = r.split("(")[1][:-1]
-            correct_vector = experiments[experiment_name][correct_object_name]
-            print(
-                f"Evaluation result: {decision_rule.evaluate(correct_vector)}\n")
+            print(f"\n{name} #{index}: {decision_rule}")
+            for i in range(len(embeddings)):
+                v = embeddings[i]
+                evaluation = decision_rule.evaluate(v)
+                print(f"Eval {name} #{i}: {evaluation}")
+                assert (i == index) == evaluation, f"Error in {name} #{index}"

@@ -34,7 +34,7 @@ class Object:
     @property
     def size(self) -> Tuple[int, int]:
         return (self.height, self.width)
-    
+
     @property
     def num_cells(self) -> int:
         color = self.main_color
@@ -57,6 +57,14 @@ class Object:
         new_data = [[to_color if cell != 0 else cell for cell in row]
                     for row in self.data]
         return Object(self.origin, new_data)
+
+    def contains_cell(self, cell: Cell) -> bool:
+        """
+        Checks if the cell is within the object's bounding box.
+        """
+        row, col = cell
+        r, c = self.origin
+        return r <= row < r + self.height and c <= col < c + self.width
 
     @property
     def first_color(self) -> int:
@@ -84,7 +92,7 @@ class Object:
                     color_count[color] = color_count.get(color, 0) + 1
         if not color_count:
             return self.first_color
-        return max(color_count, key=lambda item: item)
+        return max(color_count, key=lambda c: color_count.get(c, 0))
 
     def compact_left(self) -> 'Object':
         """
@@ -270,7 +278,7 @@ def display_multiple(grid_pairs: List[Tuple[GridData, Optional[GridData]]], titl
 
         if output_data is not None:
             # Plot the output grid if provided, otherwise plot the input grid again
-            plot_grid(ax_output, output_data, cmap, norm) # type: ignore
+            plot_grid(ax_output, output_data, cmap, norm)  # type: ignore
 
     plt.tight_layout()  # type: ignore
 
@@ -287,7 +295,7 @@ def display_multiple(grid_pairs: List[Tuple[GridData, Optional[GridData]]], titl
     root.mainloop()
 
 
-def plot_grid(ax, data: GridData, cmap, norm, title: Optional[str] = None):  # type: ignore
+def plot_grid(ax, data: GridData, cmap, norm, title: Optional[str] = None): # type: ignore
     ax.set_facecolor('black')  # type: ignore
     for i in range(len(data)):
         for j in range(len(data[0])):
@@ -296,6 +304,7 @@ def plot_grid(ax, data: GridData, cmap, norm, title: Optional[str] = None):  # t
             ax.add_patch(rect)  # type: ignore
 
     im = ax.imshow(data, cmap=cmap, norm=norm)  # type: ignore
+
 
 class TestSquashLeft:
 

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import copy
 from enum import Enum
 from typing import Callable, List, Tuple
-from detect_objects import ConnectedComponent, find_connected_components
+from detect_objects import ConnectedComponent, find_connected_components, find_rectangular_objects
 from flood_fill import find_enclosed_cells
 from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData, Object
 
@@ -34,11 +34,15 @@ class GridA(ABC):
         return (self.height, self.width)
 
     @abstractmethod
-    def get_colors(self) -> List[int]:
+    def get_colors(self, allow_black: bool = False) -> List[int]:
         pass
 
     @abstractmethod
     def detect_objects(self) -> List[Object]:
+        pass
+
+    @abstractmethod
+    def detect_rectangular_objects(self, debug: bool, allow_multicolor: bool = False) -> List[Object]:
         pass
 
     @staticmethod
@@ -102,11 +106,13 @@ class Grid(GridA):
     def copy(self) -> 'Grid':
         return Grid(copy.deepcopy(self.data))
 
-    def get_colors(self) -> List[int]:
+    def get_colors(self, allow_black: bool = False) -> List[int]:
         colors: set[Color] = set()
         for row in self.data:
-            for cell in row:
-                colors.add(cell)  # type: ignore
+            for color in row:
+                if color == BLACK and not allow_black:
+                    continue
+                colors.add(color)  # type: ignore
         return sorted(list(colors))
 
     def detect_objects(self: 'Grid', diagonals: bool = True, allow_black: bool = False) -> List[Object]:
@@ -127,6 +133,9 @@ class Grid(GridA):
         detected_objects = [create_object(self, component)
                             for component in connected_components]
         return detected_objects
+
+    def detect_rectangular_objects(self, debug: bool, allow_multicolor: bool = False) -> List[Object]:
+        return find_rectangular_objects(self.data, allow_multicolor=allow_multicolor, debug=debug)
 
     @staticmethod
     def empty(height: int, width: int) -> 'Grid':
@@ -243,3 +252,37 @@ def test_detect_objects():
     objects = Grid(grid).detect_objects()
     for obj in objects:
         print(f"Detected object: {obj}")
+
+
+def test_detect_rectangular_objects():
+    grid = [
+        [0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0],
+        [0, 1, 0, 0, 1, 0],
+        [0, 0, 1, 0, 1, 0],
+        [0, 0, 0, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0],
+    ]
+
+    objects: List[Object] = Grid(grid).detect_rectangular_objects(debug=False)
+    for obj in objects:
+        print(f"Detected rectangular object: {obj}")
+    object_dims = [(obj.origin, obj.size) for obj in objects]
+    assert object_dims == [((1, 1), (4, 4))]
+
+
+def test_several_rectangular_objects_of_different_color():
+    grid = [
+        [0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0],
+        [0, 1, 0, 0, 2, 0],
+        [0, 0, 1, 0, 2, 2],
+        [0, 0, 0, 1, 2, 0],
+        [0, 0, 0, 0, 0, 0],
+    ]
+
+    objects = Grid(grid).detect_rectangular_objects(debug=False)
+    for obj in objects:
+        print(f"Detected rectangular object: {obj}")
+    object_dims = [(obj.origin, obj.size) for obj in objects]
+    assert object_dims == [((1, 1), (4, 3)), ((2, 4), (3, 2))]
