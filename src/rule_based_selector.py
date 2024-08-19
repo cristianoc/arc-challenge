@@ -3,17 +3,17 @@ from typing import List, Dict, Optional
 # Type aliases for clarity
 Vector = List[int]
 
+
 class DecisionRule:
     def __init__(self, correct_object: str, unique_features: List[int], correct_vector: Vector):
+        assert unique_features, "unique_features cannot be empty"
         self.correct_object = correct_object
         self.unique_features = unique_features
         self.correct_vector = correct_vector
 
     def __str__(self) -> str:
-        if not self.unique_features:
-            return f"No unique selection is possible for {self.correct_object}."
-        
-        conditions = [f"Feature {i+1} = {self.correct_vector[i]}" for i in self.unique_features]
+        conditions = [
+            f"Feature {i+1} = {self.correct_vector[i]}" for i in self.unique_features]
         rule = " AND ".join(conditions)
         return f"Select {self.correct_object} if {rule}."
 
@@ -21,29 +21,30 @@ class DecisionRule:
         """
         Evaluate if the given vector satisfies the decision rule.
         """
-        if not self.unique_features:
-            print(f"No decision rule available for {self.correct_object}.")
-            return False
         return all(vector[i] == self.correct_vector[i] for i in self.unique_features)
+
 
 def find_minimal_unique_features(correct_vector: Vector, other_vectors: List[Vector]) -> List[int]:
     """
     Identify the minimal set of unique features that differentiate the correct object from all other objects.
     Returns the indices of the minimal features that are necessary to uniquely identify the correct object.
     """
-    all_features = [i for i in range(len(correct_vector)) if any(correct_vector[i] != other[i] for other in other_vectors)]
+    all_features = [i for i in range(len(correct_vector)) if any(
+        correct_vector[i] != other[i] for other in other_vectors)]
     minimal_features = all_features.copy()
-    
+
     for feature in all_features:
         temp_features = [f for f in minimal_features if f != feature]
         temp_correct_vector = [correct_vector[f] for f in temp_features]
-        temp_other_vectors = [[other[f] for f in temp_features] for other in other_vectors]
-        
+        temp_other_vectors = [[other[f] for f in temp_features]
+                              for other in other_vectors]
+
         # Check if the remaining features still uniquely identify the object
         if all(temp_correct_vector != other for other in temp_other_vectors):
             minimal_features.remove(feature)
-    
+
     return minimal_features
+
 
 def generate_decision_rule(correct_object: str, correct_vector: Vector, unique_features: List[int]) -> Optional[DecisionRule]:
     """
@@ -53,6 +54,7 @@ def generate_decision_rule(correct_object: str, correct_vector: Vector, unique_f
         return None
     return DecisionRule(correct_object, unique_features, correct_vector)
 
+
 def select_object_minimal(experiment: Dict[str, Vector], correct_object_index: int) -> Optional[DecisionRule]:
     """
     Main function to process the experiment and return the minimal selection rule for a given correct object index.
@@ -60,15 +62,16 @@ def select_object_minimal(experiment: Dict[str, Vector], correct_object_index: i
     object_names = list(experiment.keys())
     correct_object = object_names[correct_object_index]
     correct_vector = list(experiment.values())[correct_object_index]
-    
-    other_vectors = [v for i, v in enumerate(experiment.values()) if i != correct_object_index]
-    
-    minimal_unique_features = find_minimal_unique_features(correct_vector, other_vectors)
-    decision_rule = generate_decision_rule(correct_object, correct_vector, minimal_unique_features)
-    
-    return decision_rule
+
+    other_vectors = [v for i, v in enumerate(
+        experiment.values()) if i != correct_object_index]
+
+    minimal_unique_features = find_minimal_unique_features(
+        correct_vector, other_vectors)
+    return generate_decision_rule(correct_object, correct_vector, minimal_unique_features)
 
 # Testing the functions with the scenarios
+
 
 def test():
     experiment_1 = {
@@ -108,7 +111,10 @@ def test():
         else:
             print(f"{r}: {decision_rule}")
             # Test the decision rule on the correct vector
-            experiment_name = r.split(" ")[0] + " " + r.split(" ")[1]  # Extract full experiment name like "Experiment 1"
-            correct_object_name = r.split("(")[1][:-1]  # Extracts the object name from "Object A)" format
+            # Extract full experiment name like "Experiment 1"
+            experiment_name = r.split(" ")[0] + " " + r.split(" ")[1]
+            # Extracts the object name from "Object A)" format
+            correct_object_name = r.split("(")[1][:-1]
             correct_vector = experiments[experiment_name][correct_object_name]
-            print(f"Evaluation result: {decision_rule.evaluate(correct_vector)}\n")
+            print(
+                f"Evaluation result: {decision_rule.evaluate(correct_vector)}\n")
