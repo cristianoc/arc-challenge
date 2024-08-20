@@ -5,8 +5,10 @@ from color_features import detect_color_features
 from grid import Grid
 from grid_data import GridData, Object, display, display_multiple
 from load_data import Example, Tasks, iter_tasks, training_data, evaluation_data
-from rule_based_selector import DecisionRule, select_object_minimal
+from numeric_features import detect_numeric_features, pretty_print_numeric_features
+from rule_based_selector import DecisionRule, Features, select_object_minimal
 from shape_features import detect_shape_features
+from solve_integer_program import find_weights_and_bias
 from symmetry_features import detect_symmetry_features
 
 
@@ -225,11 +227,13 @@ def check_xform_on_examples(xform: SizeXform, examples: List[Example]):
 
 ObjectMatch = Tuple[List[Object], int]
 
-def detect_common_features(matched_objects: List[ObjectMatch], debug:bool=False):
+
+def detect_common_features(matched_objects: List[ObjectMatch], debug: bool = False):
     def detect_common_symmetry_features() -> Optional[DecisionRule]:
         common_decision_rule = None
         for input_objects, index in matched_objects:
-            embeddings = [detect_symmetry_features(obj.data) for obj in input_objects]
+            embeddings = [detect_symmetry_features(
+                obj.data) for obj in input_objects]
             decision_rule = select_object_minimal(embeddings, index)
             if decision_rule is not None:
                 if debug:
@@ -237,7 +241,8 @@ def detect_common_features(matched_objects: List[ObjectMatch], debug:bool=False)
                 if common_decision_rule is None:
                     common_decision_rule = decision_rule
                 else:
-                    common_decision_rule = common_decision_rule.intersection(decision_rule)
+                    common_decision_rule = common_decision_rule.intersection(
+                        decision_rule)
                     if common_decision_rule is None:
                         break
             else:
@@ -250,7 +255,8 @@ def detect_common_features(matched_objects: List[ObjectMatch], debug:bool=False)
     def detect_common_color_features() -> Optional[DecisionRule]:
         common_decision_rule = None
         for input_objects, index in matched_objects:
-            embeddings = [detect_color_features(obj, input_objects, debug) for obj in input_objects]
+            embeddings = [detect_color_features(
+                obj, input_objects, debug) for obj in input_objects]
             decision_rule = select_object_minimal(embeddings, index)
             if decision_rule is not None:
                 if debug:
@@ -258,7 +264,8 @@ def detect_common_features(matched_objects: List[ObjectMatch], debug:bool=False)
                 if common_decision_rule is None:
                     common_decision_rule = decision_rule
                 else:
-                    common_decision_rule = common_decision_rule.intersection(decision_rule)
+                    common_decision_rule = common_decision_rule.intersection(
+                        decision_rule)
                     if common_decision_rule is None:
                         break
             else:
@@ -271,7 +278,8 @@ def detect_common_features(matched_objects: List[ObjectMatch], debug:bool=False)
     def detect_common_shape_features() -> Optional[DecisionRule]:
         common_decision_rule = None
         for input_objects, index in matched_objects:
-            embeddings = [detect_shape_features(obj, input_objects, debug) for obj in input_objects]
+            embeddings = [detect_shape_features(
+                obj, input_objects, debug) for obj in input_objects]
             decision_rule = select_object_minimal(embeddings, index)
             if decision_rule is not None:
                 if debug:
@@ -279,7 +287,8 @@ def detect_common_features(matched_objects: List[ObjectMatch], debug:bool=False)
                 if common_decision_rule is None:
                     common_decision_rule = decision_rule
                 else:
-                    common_decision_rule = common_decision_rule.intersection(decision_rule)
+                    common_decision_rule = common_decision_rule.intersection(
+                        decision_rule)
                     if common_decision_rule is None:
                         break
             else:
@@ -319,7 +328,8 @@ def process_tasks(tasks: Tasks, set: str):
                     if False and xform == one_object_is_a_frame_xform_black:
                         title = f"Size determined by frame ({task_name})"
                         print(title)
-                        display(examples[0]['input'], output=examples[0]['output'], title=title)
+                        display(examples[0]['input'],
+                                output=examples[0]['output'], title=title)
                     num_correct += 1
                     break
             else:
@@ -329,7 +339,8 @@ def process_tasks(tasks: Tasks, set: str):
                     (Grid(example['input']).data, Grid(example['output']).data) for example in examples
                 ]
                 if False:
-                    display_multiple(grids, title=f"Task: {task_name} {task_type}")
+                    display_multiple(
+                        grids, title=f"Task: {task_name} {task_type}")
 
                 # Tracks which input examples contain objects that correctly match the output grid.
                 matched_objects: List[ObjectMatch] = []
@@ -339,8 +350,10 @@ def process_tasks(tasks: Tasks, set: str):
                     print(f"  {task_type} {input.size} -> {output.size}")
                     num_colors = len(output.get_colors())
                     allow_multicolor = num_colors > 1
-                    input_objects = input.detect_rectangular_objects(allow_multicolor=allow_multicolor, debug=Debug)
-                    output_objects = output.detect_rectangular_objects(allow_multicolor=allow_multicolor, debug=Debug)
+                    input_objects = input.detect_rectangular_objects(
+                        allow_multicolor=allow_multicolor, debug=Debug)
+                    output_objects = output.detect_rectangular_objects(
+                        allow_multicolor=allow_multicolor, debug=Debug)
                     input_sizes = [obj.size for obj in input_objects]
                     output_sizes = [obj.size for obj in output_objects]
                     input_colors = input.get_colors()
@@ -359,17 +372,49 @@ def process_tasks(tasks: Tasks, set: str):
                             matched_objects.append((input_objects, i))
                             break
 
+                # Check if all examples are matched
                 if len(matched_objects) == len(examples):
                     if Debug:
-                        print(f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}")
-                    common_decision_rule, features_used = detect_common_features(matched_objects, debug=Debug)
-                    print(f"Common decision rule ({features_used}): {common_decision_rule}")
+                        print(
+                            f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}")
+                    common_decision_rule, features_used = detect_common_features(
+                        matched_objects, debug=Debug)
+                    print(
+                        f"  Common decision rule ({features_used}): {common_decision_rule}")
                     if not common_decision_rule:
                         assert False
                     num_correct += 1
                 else:
-                    num_incorrect += 1
-                    print(f"Could not find correct xform for {task_name} {set} examples")
+                    # Attempt to determine width and height using linear programming before giving up
+                    feature_vectors: List[Features] = []
+                    target_heights: List[int] = []
+                    target_widths: List[int] = []
+
+                    for example in examples:
+                        input_grid = Grid(example['input'])
+                        output_grid = Grid(example['output'])
+
+                        input_features = detect_numeric_features(input_grid)
+                        target_height, target_width = output_grid.size
+
+                        feature_vectors.append(input_features)
+                        target_heights.append(target_height)
+                        target_widths.append(target_width)
+
+                    predicted_height = find_weights_and_bias(
+                        feature_vectors, target_heights)
+                    predicted_width = find_weights_and_bias(
+                        feature_vectors, target_widths)
+
+                    if predicted_height and predicted_width:
+                        print(
+                            f"Predicted output dimensions via LP: Width:{pretty_print_numeric_features(predicted_width)}, Height:{pretty_print_numeric_features(predicted_height)}")
+                        num_correct += 1
+                    else:
+                        # If no valid dimensions could be determined, give up
+                        print(
+                            f"Could not find correct transformation or determine dimensions via LP for {task_name} {set} examples")
+                        num_incorrect += 1
 
                 # display_multiple(
                 #     grids, title=f"Task: {task_name} {set} matchings:{matchings}/{len(examples)}")

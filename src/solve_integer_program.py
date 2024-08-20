@@ -62,7 +62,23 @@ def find_weights_and_bias(samples: List[Features], goals: List[int]) -> Optional
             is_perfect = False
             break
 
-    if is_perfect:
+    # Check if the solution is plausible
+    plausible = True
+    # bias must be an integer between 0 and 2
+    if b_solution % 1 != 0 or b_solution < 0 or b_solution > 2:
+        plausible = False
+    # weights must be integers unless there's only one weight which is 1/2 or 1/3 and the bias is 0
+    if len(W_solution) > 1:
+        for weight in W_solution.values():
+            if weight % 1 != 0:
+                plausible = False
+                break
+    # weights must be integers and bias must be nonnegative integer and at most one weight can be nonzero
+    else:
+        if b_solution % 1 != 0 or b_solution < 0 or sum(W_solution.values()) > 1:
+            plausible = False
+
+    if is_perfect and plausible:
         return W_solution, b_solution
     else:
         return None
