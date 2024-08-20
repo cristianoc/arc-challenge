@@ -225,6 +225,12 @@ def check_xform_on_examples(xform: SizeXform, examples: List[Example]):
     return True
 
 
+# ObjectMatch is a type alias representing a match between a list of detected input objects
+# and the index of the object within that list that is identical to the output object.
+#
+# The first element of the tuple (List[Object]) contains all the detected input objects,
+# while the second element (int) specifies the index of the object in this list that is
+# identical to the output object in terms of size and data.
 ObjectMatch = Tuple[List[Object], int]
 
 
@@ -335,42 +341,35 @@ def process_tasks(tasks: Tasks, set: str):
             else:
                 print(f"\n***Task: {task_name} {set}***")
 
-                grids: List[Tuple[GridData, Optional[GridData]]] = [
-                    (Grid(example['input']).data, Grid(example['output']).data) for example in examples
-                ]
-                if False:
-                    display_multiple(
-                        grids, title=f"Task: {task_name} {task_type}")
-
+                def candidate_objects_for_matching(input: Grid, output: Grid) -> List[Object]:
+                    """
+                    Detects objects in the input grid that are candidates for matching the output grid.
+                    """
+                    num_colors_output = len(output.get_colors())
+                    input_objects = input.detect_rectangular_objects(
+                        allow_multicolor=num_colors_output > 1, debug=Debug)
+                    return input_objects
+                
                 # Tracks which input examples contain objects that correctly match the output grid.
                 matched_objects: List[ObjectMatch] = []
-                for example in examples:
-                    input = Grid(example['input'])
-                    output = Grid(example['output'])
-                    print(f"  {task_type} {input.size} -> {output.size}")
-                    num_colors = len(output.get_colors())
-                    allow_multicolor = num_colors > 1
-                    input_objects = input.detect_rectangular_objects(
-                        allow_multicolor=allow_multicolor, debug=Debug)
-                    output_objects = output.detect_rectangular_objects(
-                        allow_multicolor=allow_multicolor, debug=Debug)
-                    input_sizes = [obj.size for obj in input_objects]
-                    output_sizes = [obj.size for obj in output_objects]
-                    input_colors = input.get_colors()
-                    output_colors = output.get_colors()
 
-                    if Debug:
-                        print(f"  Input sizes: {input_sizes}")
-                        print(f"  Output sizes: {output_sizes}")
-                        print(f"  Input colors: {input_colors}")
-                        print(f"  Output colors: {output_colors}")
-
+                def find_matching_input_object(input_objects: List[Object]) -> Optional[int]:
                     for i, io in enumerate(input_objects):
                         if io.size == output.size and io.data == output.data:
                             if Debug:
                                 print(f"  Input object matching output: {io}")
-                            matched_objects.append((input_objects, i))
-                            break
+                            return i
+                    return None
+
+                for example in examples:
+                    input = Grid(example['input'])
+                    output = Grid(example['output'])
+                    print(f"  {task_type} {input.size} -> {output.size}")
+                    # TODO: Should check not only rectangular objects but also frames
+                    input_objects = candidate_objects_for_matching(input, output)
+                    index = find_matching_input_object(input_objects)
+                    if index is not None:
+                        matched_objects.append((input_objects, index))
 
                 # Check if all examples are matched
                 if len(matched_objects) == len(examples):
@@ -416,8 +415,11 @@ def process_tasks(tasks: Tasks, set: str):
                             f"Could not find correct transformation or determine dimensions via LP for {task_name} {set} examples")
                         num_incorrect += 1
 
+                # grids: List[Tuple[GridData, Optional[GridData]]] = [
+                #     (Grid(example['input']).data, Grid(example['output']).data) for example in examples
+                # ]
                 # display_multiple(
-                #     grids, title=f"Task: {task_name} {set} matchings:{matchings}/{len(examples)}")
+                #     grids, title=f"Task: {task_name} {set} matched_objects:{matched_objects}/{len(examples)}")
     return num_correct, num_incorrect
 
 
