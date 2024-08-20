@@ -1,11 +1,9 @@
 from enum import Enum, auto
 from typing import List
 
-
 from grid import Grid
 from grid_data import Object
-from rule_based_selector import Embedding
-
+from rule_based_selector import Features
 
 class ColorFeatures(Enum):
     LARGEST_SIZE = auto()  # Whether the object has the largest size of the objects (bool)
@@ -13,9 +11,7 @@ class ColorFeatures(Enum):
     # Whether the object has the maximum number of non-trivial subobjects (bool)
     MAX_NUMBER_NONTRIVIAL_SUBOBJECTS = auto()
 
-
 LARGEST_SIZE, SMALLEST_SIZE, MAX_NUMBER_NONTRIVIAL_SUBOBJECTS = ColorFeatures
-
 
 # Functions to detect the features
 
@@ -24,12 +20,10 @@ def detect_has_largest_size(object: Object, all_objects: List[Object]) -> bool:
         obj.width * obj.height for obj in all_objects if obj != object)
     return object.width * object.height > max_size
 
-
 def detect_has_smallest_size(object: Object, all_objects: List[Object]) -> bool:
     min_size = min(
         obj.width * obj.height for obj in all_objects if obj != object)
     return object.width * object.height < min_size
-
 
 def detect_has_max_number_nontrivial_subobjects(object: Object, all_objects: List[Object], debug: bool) -> bool:
     """
@@ -58,12 +52,11 @@ def detect_has_max_number_nontrivial_subobjects(object: Object, all_objects: Lis
             f"num_nontrivial_subobjects: {num_nontrivial_subobjects} is_max: {res}")
     return res
 
-
-def detect_shape_features(object: Object, all_objects: List[Object], debug: bool) -> Embedding:
-    embedding: Embedding = {}
-    embedding[LARGEST_SIZE.name] = detect_has_largest_size(object, all_objects)
-    embedding[SMALLEST_SIZE.name] = detect_has_smallest_size(
+def detect_shape_features(object: Object, all_objects: List[Object], debug: bool) -> Features:
+    features: Features = {}
+    features[LARGEST_SIZE.name] = detect_has_largest_size(object, all_objects)
+    features[SMALLEST_SIZE.name] = detect_has_smallest_size(
         object, all_objects)
-    embedding[MAX_NUMBER_NONTRIVIAL_SUBOBJECTS.name] = detect_has_max_number_nontrivial_subobjects(
+    features[MAX_NUMBER_NONTRIVIAL_SUBOBJECTS.name] = detect_has_max_number_nontrivial_subobjects(
         object, all_objects, debug)
-    return embedding
+    return features
