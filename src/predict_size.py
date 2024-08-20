@@ -223,7 +223,88 @@ def check_xform_on_examples(xform: SizeXform, examples: List[Example]):
     return True
 
 
-def iter_over_tasks(tasks: Tasks, set: str):
+ObjectMatch = Tuple[List[Object], int]
+
+def detect_common_features(matched_objects: List[ObjectMatch], debug:bool=False):
+    def detect_common_symmetry_features() -> Optional[DecisionRule]:
+        common_decision_rule = None
+        for input_objects, index in matched_objects:
+            embeddings = [detect_symmetry_features(obj.data) for obj in input_objects]
+            decision_rule = select_object_minimal(embeddings, index)
+            if decision_rule is not None:
+                if debug:
+                    print(f"  Decision rule (Symmetry): {decision_rule}")
+                if common_decision_rule is None:
+                    common_decision_rule = decision_rule
+                else:
+                    common_decision_rule = common_decision_rule.intersection(decision_rule)
+                    if common_decision_rule is None:
+                        break
+            else:
+                if debug:
+                    print(f"  No decision rule found (Symmetry)")
+                common_decision_rule = None
+                break
+        return common_decision_rule
+
+    def detect_common_color_features() -> Optional[DecisionRule]:
+        common_decision_rule = None
+        for input_objects, index in matched_objects:
+            embeddings = [detect_color_features(obj, input_objects, debug) for obj in input_objects]
+            decision_rule = select_object_minimal(embeddings, index)
+            if decision_rule is not None:
+                if debug:
+                    print(f"  Decision rule (Color): {decision_rule}")
+                if common_decision_rule is None:
+                    common_decision_rule = decision_rule
+                else:
+                    common_decision_rule = common_decision_rule.intersection(decision_rule)
+                    if common_decision_rule is None:
+                        break
+            else:
+                if debug:
+                    print(f"  No decision rule found (Color)")
+                common_decision_rule = None
+                break
+        return common_decision_rule
+
+    def detect_common_shape_features() -> Optional[DecisionRule]:
+        common_decision_rule = None
+        for input_objects, index in matched_objects:
+            embeddings = [detect_shape_features(obj, input_objects, debug) for obj in input_objects]
+            decision_rule = select_object_minimal(embeddings, index)
+            if decision_rule is not None:
+                if debug:
+                    print(f"  Decision rule (Shape): {decision_rule}")
+                if common_decision_rule is None:
+                    common_decision_rule = decision_rule
+                else:
+                    common_decision_rule = common_decision_rule.intersection(decision_rule)
+                    if common_decision_rule is None:
+                        break
+            else:
+                if debug:
+                    print(f"  No decision rule found (Shape)")
+                common_decision_rule = None
+                break
+        return common_decision_rule
+
+    # Try detecting common features in the order of shape, symmetry, and color
+    common_decision_rule = detect_common_shape_features()
+    features_used = "Shape"
+
+    if common_decision_rule is None:
+        common_decision_rule = detect_common_symmetry_features()
+        features_used = "Symmetry"
+
+    if common_decision_rule is None:
+        common_decision_rule = detect_common_color_features()
+        features_used = "Color"
+
+    return common_decision_rule, features_used
+
+
+def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
@@ -238,31 +319,32 @@ def iter_over_tasks(tasks: Tasks, set: str):
                     if False and xform == one_object_is_a_frame_xform_black:
                         title = f"Size determined by frame ({task_name})"
                         print(title)
-                        display(examples[0]['input'],
-                                output=examples[0]['output'], title=title)
+                        display(examples[0]['input'], output=examples[0]['output'], title=title)
                     num_correct += 1
                     break
             else:
                 num_incorrect += 1
                 print(f"\n***Task: {task_name} {set}***")
-                print(
-                    f"Could not find correct xform for {task_name} {set} examples")
-                grids: List[Tuple[GridData, Optional[GridData]]] = [(Grid(example['input']).data, Grid(example['output']).data)
-                                                                    for example in examples]
+                print(f"Could not find correct xform for {task_name} {set} examples")
+                grids: List[Tuple[GridData, Optional[GridData]]] = [
+                    (Grid(example['input']).data, Grid(example['output']).data) for example in examples
+                ]
                 if False:
-                    display_multiple(
-                        grids, title=f"Task: {task_name} {task_type}")
-                matchings: List[Tuple[List[Object], int]] = []
+                    display_multiple(grids, title=f"Task: {task_name} {task_type}")
+
+                # Tracks which input examples contain objects that correctly match the output grid.
+                # Each entry in matched_objects is a tuple consisting of:
+                # - A list of detected objects in the input grid.
+                # - The index of the object that matches the entire output grid.
+                matched_objects: List[ObjectMatch] = []
                 for example in examples:
                     input = Grid(example['input'])
                     output = Grid(example['output'])
                     print(f"  {task_type} {input.size} -> {output.size}")
                     num_colors = len(output.get_colors())
                     allow_multicolor = num_colors > 1
-                    input_objects = input.detect_rectangular_objects(
-                        allow_multicolor=allow_multicolor, debug=Debug)
-                    output_objects = output.detect_rectangular_objects(
-                        allow_multicolor=allow_multicolor, debug=Debug)
+                    input_objects = input.detect_rectangular_objects(allow_multicolor=allow_multicolor, debug=Debug)
+                    output_objects = output.detect_rectangular_objects(allow_multicolor=allow_multicolor, debug=Debug)
                     input_sizes = [obj.size for obj in input_objects]
                     output_sizes = [obj.size for obj in output_objects]
                     input_colors = input.get_colors()
@@ -276,94 +358,14 @@ def iter_over_tasks(tasks: Tasks, set: str):
                         if io.size == output.size and io.data == output.data:
                             if Debug:
                                 print(f"  Input object matching output: {io}")
-                            matchings.append((input_objects, i))
+                            matched_objects.append((input_objects, i))
                             break
 
-                def detect_common_symmetry_features() -> Optional[DecisionRule]:
-                    common_decision_rule = None
-                    for input_objects, index in matchings:
-                        emdeddings = [detect_symmetry_features(
-                            obj.data) for obj in input_objects]
-                        decision_rule = select_object_minimal(
-                            emdeddings, index)
-                        if decision_rule is not None:
-                            print(f"  Decision rule: {decision_rule}")
-                            if common_decision_rule is None:
-                                common_decision_rule = decision_rule
-                            else:
-                                common_decision_rule = common_decision_rule.intersection(
-                                    decision_rule)
-                                if common_decision_rule is None:
-                                    break
-                        else:
-                            print(f"  No decision rule found")
-                            common_decision_rule = None
-                            break
-                    return common_decision_rule
-
-                def detect_common_color_features() -> Optional[DecisionRule]:
-                    common_decision_rule = None
-                    for input_objects, index in matchings:
-                        emdeddings = [detect_color_features(
-                            obj, input_objects, Debug) for obj in input_objects]
-                        decision_rule = select_object_minimal(
-                            emdeddings, index)
-                        if decision_rule is not None:
-                            print(f"  Decision rule: {decision_rule}")
-                            if common_decision_rule is None:
-                                common_decision_rule = decision_rule
-                            else:
-                                common_decision_rule = common_decision_rule.intersection(
-                                    decision_rule)
-                                if common_decision_rule is None:
-                                    break
-                        else:
-                            print(f"  No decision rule found")
-                            common_decision_rule = None
-                            break
-                    return common_decision_rule
-
-                def detect_common_shape_features() -> Optional[DecisionRule]:
-                    common_decision_rule = None
-                    for input_objects, index in matchings:
-                        emdeddings = [detect_shape_features(
-                            obj, input_objects, Debug) for obj in input_objects]
-                        decision_rule = select_object_minimal(
-                            emdeddings, index)
-                        if decision_rule is not None:
-                            if Debug:
-                                print(f"  Decision rule: {decision_rule}")
-                            if common_decision_rule is None:
-                                common_decision_rule = decision_rule
-                            else:
-                                common_decision_rule = common_decision_rule.intersection(
-                                    decision_rule)
-                                if common_decision_rule is None:
-                                    break
-                        else:
-                            if Debug:
-                                print(f"  No decision rule found")
-                            common_decision_rule = None
-                            break
-                    return common_decision_rule
-
-                if len(matchings) == len(examples):
+                if len(matched_objects) == len(examples):
                     if Debug:
-                        print(
-                            f"XXX Matched {len(matchings)}/{len(examples)} {task_name} {set}")
-                    common_decision_rule = None
-                    features_used = ""
-                    if common_decision_rule is None:
-                        common_decision_rule = detect_common_shape_features()
-                        features_used = "Shape"
-                    if common_decision_rule is None:
-                        common_decision_rule = detect_common_symmetry_features()
-                        features_used = "Symmetry"
-                    if common_decision_rule is None:
-                        common_decision_rule = detect_common_color_features()
-                        features_used = "Color"
-                    print(
-                        f"  Common decision rule ({features_used}): {common_decision_rule}")
+                        print(f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}")
+                    common_decision_rule, features_used = detect_common_features(matched_objects, debug=Debug)
+                    print(f"  Common decision rule ({features_used}): {common_decision_rule}")
                     if not common_decision_rule:
                         assert False
                     num_correct += 1
@@ -374,13 +376,13 @@ def iter_over_tasks(tasks: Tasks, set: str):
 
 
 def predict_sizes():
-    num_correct_tr, num_incorrect_tr = iter_over_tasks(
+    num_correct_tr, num_incorrect_tr = process_tasks(
         training_data, "traing_data")
     do_eval = True
     num_correct_ev: Optional[int] = None
     num_incorrect_ev: Optional[int] = None
     if do_eval:
-        num_correct_ev, num_incorrect_ev = iter_over_tasks(
+        num_correct_ev, num_incorrect_ev = process_tasks(
             evaluation_data, "evaluation_data")
     print(
         f"Training data Correct:{num_correct_tr}, Incorrect:{num_incorrect_tr}, Score:{int(1000 * num_correct_tr / (num_correct_tr + num_incorrect_tr))/10}%")
