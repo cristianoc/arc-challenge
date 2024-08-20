@@ -323,9 +323,8 @@ def process_tasks(tasks: Tasks, set: str):
                     num_correct += 1
                     break
             else:
-                num_incorrect += 1
                 print(f"\n***Task: {task_name} {set}***")
-                print(f"Could not find correct xform for {task_name} {set} examples")
+
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
                     (Grid(example['input']).data, Grid(example['output']).data) for example in examples
                 ]
@@ -333,9 +332,6 @@ def process_tasks(tasks: Tasks, set: str):
                     display_multiple(grids, title=f"Task: {task_name} {task_type}")
 
                 # Tracks which input examples contain objects that correctly match the output grid.
-                # Each entry in matched_objects is a tuple consisting of:
-                # - A list of detected objects in the input grid.
-                # - The index of the object that matches the entire output grid.
                 matched_objects: List[ObjectMatch] = []
                 for example in examples:
                     input = Grid(example['input'])
@@ -349,11 +345,13 @@ def process_tasks(tasks: Tasks, set: str):
                     output_sizes = [obj.size for obj in output_objects]
                     input_colors = input.get_colors()
                     output_colors = output.get_colors()
+
                     if Debug:
                         print(f"  Input sizes: {input_sizes}")
                         print(f"  Output sizes: {output_sizes}")
                         print(f"  Input colors: {input_colors}")
                         print(f"  Output colors: {output_colors}")
+
                     for i, io in enumerate(input_objects):
                         if io.size == output.size and io.data == output.data:
                             if Debug:
@@ -365,13 +363,16 @@ def process_tasks(tasks: Tasks, set: str):
                     if Debug:
                         print(f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}")
                     common_decision_rule, features_used = detect_common_features(matched_objects, debug=Debug)
-                    print(f"  Common decision rule ({features_used}): {common_decision_rule}")
+                    print(f"Common decision rule ({features_used}): {common_decision_rule}")
                     if not common_decision_rule:
                         assert False
                     num_correct += 1
-                    num_incorrect -= 1
-                    # display_multiple(
-                    #     grids, title=f"Task: {task_name} {set} matchings:{matchings}/{len(examples)}")
+                else:
+                    num_incorrect += 1
+                    print(f"Could not find correct xform for {task_name} {set} examples")
+
+                # display_multiple(
+                #     grids, title=f"Task: {task_name} {set} matchings:{matchings}/{len(examples)}")
     return num_correct, num_incorrect
 
 
