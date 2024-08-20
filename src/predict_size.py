@@ -1,10 +1,9 @@
-from re import Match
 from typing import Callable, List, Optional, Tuple
 
 
 from color_features import detect_color_features
 from grid import Grid
-from grid_data import GridData, Object, display, display_multiple
+from grid_data import Object, display
 from load_data import Example, Tasks, iter_tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
@@ -33,18 +32,7 @@ def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid):
     largest_object = max(objects, key=lambda obj: obj.num_cells)
     return largest_object.size
 
-
-def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: bool):
-    if Debug:
-        print(f"\nChecking one object is a frame xform")
-
-    # Check that all the output sizes are smaller than the input sizes
-    for input_grid, output_grid in grids:
-        if output_grid.size >= input_grid.size:
-            return (0, 0)
-
-    objects = grid.detect_objects(diagonals=False, allow_black=allow_black)
-
+def find_frame_objects(grid: Grid, objects: List[Object], allow_black: bool) -> List[Object]:
     frame_objects: List[Object] = []
     for obj in objects:
         if obj.size != grid.size and obj.has_frame() or (allow_black and obj.is_block()):
@@ -99,6 +87,20 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
 
         if obj.has_frame():
             frame_objects.append(obj)
+    return frame_objects
+
+
+def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: bool):
+    if Debug:
+        print(f"\nChecking one object is a frame xform")
+
+    # Check that all the output sizes are smaller than the input sizes
+    for input_grid, output_grid in grids:
+        if output_grid.size >= input_grid.size:
+            return (0, 0)
+
+    objects = grid.detect_objects(diagonals=False, allow_black=allow_black)
+    frame_objects = find_frame_objects(grid, objects, allow_black)
     if Debug:
         print(f"# of objects: {len(objects)}")
     if Debug:
@@ -346,6 +348,10 @@ def process_tasks(tasks: Tasks, set: str):
                     """
                     Detects objects in the input grid that are candidates for matching the output grid.
                     """
+                    output_as_object = Object((0, 0), output.data)
+                    if output_as_object.has_frame():
+                        # If the output is a frame, detect objects in the input as frames
+                        print("  Output is a frame")
                     num_colors_output = len(output.get_colors())
                     return input.detect_rectangular_objects(allow_multicolor=num_colors_output > 1, debug=Debug)
 
