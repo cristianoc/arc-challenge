@@ -1,3 +1,4 @@
+from re import Match
 from typing import Callable, List, Optional, Tuple
 
 
@@ -346,14 +347,9 @@ def process_tasks(tasks: Tasks, set: str):
                     Detects objects in the input grid that are candidates for matching the output grid.
                     """
                     num_colors_output = len(output.get_colors())
-                    input_objects = input.detect_rectangular_objects(
-                        allow_multicolor=num_colors_output > 1, debug=Debug)
-                    return input_objects
-                
-                # Tracks which input examples contain objects that correctly match the output grid.
-                matched_objects: List[ObjectMatch] = []
+                    return input.detect_rectangular_objects(allow_multicolor=num_colors_output > 1, debug=Debug)
 
-                def find_matching_input_object(input_objects: List[Object]) -> Optional[int]:
+                def find_matching_input_object(input_objects: List[Object], output: Grid) -> Optional[int]:
                     for i, io in enumerate(input_objects):
                         if io.size == output.size and io.data == output.data:
                             if Debug:
@@ -361,59 +357,68 @@ def process_tasks(tasks: Tasks, set: str):
                             return i
                     return None
 
-                for example in examples:
-                    input = Grid(example['input'])
-                    output = Grid(example['output'])
-                    print(f"  {task_type} {input.size} -> {output.size}")
-                    # TODO: Should check not only rectangular objects but also frames
-                    input_objects = candidate_objects_for_matching(input, output)
-                    index = find_matching_input_object(input_objects)
-                    if index is not None:
-                        matched_objects.append((input_objects, index))
+                def get_matched_objects(examples: List[Example]) -> Optional[List[ObjectMatch]]:
+                    matched_objects: List[ObjectMatch] = []
 
+                    for example in examples:
+                        input = Grid(example['input'])
+                        output = Grid(example['output'])
+                        print(f"  {task_type} {input.size} -> {output.size}")
+                        
+                        input_objects = candidate_objects_for_matching(input, output)
+                        matched_object_index = find_matching_input_object(input_objects, output)
+                        
+                        if matched_object_index is not None:
+                            matched_objects.append((input_objects, matched_object_index))
+                    
+                    return matched_objects if len(matched_objects) == len(examples) else None
+
+                matched_objects = get_matched_objects(examples)
                 # Check if all examples are matched
-                if len(matched_objects) == len(examples):
+                if matched_objects:
                     if Debug:
                         print(
                             f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}")
                     common_decision_rule, features_used = detect_common_features(
                         matched_objects, debug=Debug)
                     print(
-                        f"  Common decision rule ({features_used}): {common_decision_rule}")
+                        f"Common decision rule ({features_used}): {common_decision_rule}")
                     if not common_decision_rule:
+                        # rule to choose which input object to pick was not found
                         assert False
                     num_correct += 1
+                    continue
+
+                # Attempt to determine width and height using linear programming before giving up
+                feature_vectors: List[Features] = []
+                target_heights: List[int] = []
+                target_widths: List[int] = []
+
+                for example in examples:
+                    input_grid = Grid(example['input'])
+                    output_grid = Grid(example['output'])
+
+                    input_features = detect_numeric_features(input_grid)
+                    target_height, target_width = output_grid.size
+
+                    feature_vectors.append(input_features)
+                    target_heights.append(target_height)
+                    target_widths.append(target_width)
+
+                predicted_height = find_weights_and_bias(
+                    feature_vectors, target_heights)
+                predicted_width = find_weights_and_bias(
+                    feature_vectors, target_widths)
+
+                if predicted_height and predicted_width:
+                    print(
+                        f"Predicted output dimensions via LP: Width:{pretty_print_numeric_features(predicted_width)}, Height:{pretty_print_numeric_features(predicted_height)}")
+                    num_correct += 1
                 else:
-                    # Attempt to determine width and height using linear programming before giving up
-                    feature_vectors: List[Features] = []
-                    target_heights: List[int] = []
-                    target_widths: List[int] = []
-
-                    for example in examples:
-                        input_grid = Grid(example['input'])
-                        output_grid = Grid(example['output'])
-
-                        input_features = detect_numeric_features(input_grid)
-                        target_height, target_width = output_grid.size
-
-                        feature_vectors.append(input_features)
-                        target_heights.append(target_height)
-                        target_widths.append(target_width)
-
-                    predicted_height = find_weights_and_bias(
-                        feature_vectors, target_heights)
-                    predicted_width = find_weights_and_bias(
-                        feature_vectors, target_widths)
-
-                    if predicted_height and predicted_width:
-                        print(
-                            f"Predicted output dimensions via LP: Width:{pretty_print_numeric_features(predicted_width)}, Height:{pretty_print_numeric_features(predicted_height)}")
-                        num_correct += 1
-                    else:
-                        # If no valid dimensions could be determined, give up
-                        print(
-                            f"Could not find correct transformation or determine dimensions via LP for {task_name} {set} examples")
-                        num_incorrect += 1
+                    # If no valid dimensions could be determined, give up
+                    print(
+                        f"Could not find correct transformation or determine dimensions via LP for {task_name} {set} examples")
+                    num_incorrect += 1
 
                 # grids: List[Tuple[GridData, Optional[GridData]]] = [
                 #     (Grid(example['input']).data, Grid(example['output']).data) for example in examples
