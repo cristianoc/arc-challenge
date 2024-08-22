@@ -70,14 +70,14 @@ def find_frame_objects(grid: Grid, objects: List[Object], allow_black: bool, tas
     return frame_objects
 
 
-def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: bool, task_name: str):
+def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str):
     # Check that all the output sizes are smaller than the input sizes
     for input_grid, output_grid in grids:
         if output_grid.size >= input_grid.size:
             return (0, 0)
 
-    objects = grid.detect_objects(diagonals=False, allow_black=allow_black)
-    frame_objects = find_frame_objects(grid, objects, allow_black, task_name)
+    objects = grid.detect_objects(diagonals=False, allow_black=False)
+    frame_objects = find_frame_objects(grid=grid, objects=objects, allow_black=False, task_name=task_name)
     if Debug:
         print(f"  # of objects: {len(objects)}")
     if Debug:
@@ -85,19 +85,8 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
 
     if len(frame_objects) > 1:
         sorted_objects = []
-        if allow_black:
-            black_objects: List[Object] = []
-            other_objects: List[Object] = []
-            for obj in frame_objects:
-                if obj.main_color == 0:
-                    black_objects.append(obj)
-                else:
-                    other_objects.append(obj)
-            sorted_objects = sorted(black_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True) + sorted(
-                other_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True)
-        else:
-            sorted_objects = sorted(
-                frame_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True)
+        sorted_objects = sorted(
+            frame_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True)
         # if there are multiple frame objects, keep the largest one
         if Debug:
             print(f"  Sorted objects: {sorted_objects}")
@@ -144,14 +133,75 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
         print("  No frame object found")
     return (0, 0)
 
+def one_object_is_a_black_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+    # Check that all the output sizes are smaller than the input sizes
+    for input_grid, output_grid in grids:
+        if output_grid.size >= input_grid.size:
+            return (0, 0)
 
-def one_object_is_a_frame_xform_noblack(grids: ExampleGrids, grid: Grid, task_name: str):
-    return one_object_is_a_frame_xform_(grids, grid, allow_black=False, task_name=task_name)
+    objects = grid.detect_objects(diagonals=False, allow_black=True)
+    frame_objects = find_frame_objects(grid=grid, objects=objects, allow_black=True, task_name=task_name)
+    if Debug:
+        print(f"  # of objects: {len(objects)}")
+    if Debug:
+        print(f"  # of frame objects: {len(frame_objects)}")
 
+    if len(frame_objects) > 1:
+        sorted_objects = []
+        black_objects: List[Object] = []
+        other_objects: List[Object] = []
+        for obj in frame_objects:
+            if obj.main_color == 0:
+                black_objects.append(obj)
+            else:
+                other_objects.append(obj)
+        sorted_objects = sorted(black_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True) + sorted(
+            other_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True)
+        # if there are multiple frame objects, keep the largest one
+        if Debug:
+            print(f"  Sorted objects: {sorted_objects}")
+        frame = sorted_objects[0]
+        frame_objects = [frame]
 
-def one_object_is_a_frame_xform_black(grids: ExampleGrids, grid: Grid, task_name: str):
-    return one_object_is_a_frame_xform_(grids, grid, allow_black=True, task_name=task_name)
-
+    # Check if there's exactly one frame
+    if len(frame_objects) == 1:
+        frame = frame_objects[0]
+        h, w = frame.size
+        if h > 2 and w > 2:
+            # check if all the elements immediately inside the frame are of a different color
+            n_diff_color = 0
+            for i in range(1, h - 1):
+                if frame.data[i][1] == frame.first_color:
+                    n_diff_color += 1
+                if frame.data[i][w - 2] == frame.first_color:
+                    n_diff_color += 1
+            for j in range(1, w - 1):
+                if frame.data[1][j] == frame.first_color:
+                    n_diff_color += 1
+                if frame.data[h - 2][j] == frame.first_color:
+                    n_diff_color += 1
+            if n_diff_color <= 1:
+                # Reduce the frame by 1 cell on each side
+                if Debug:
+                    print(f"  Reducing frame size to {h-2}x{w-2}")
+                return (h - 2, w - 2)
+            else:
+                if Debug:
+                    print(f"  Frame size is {h}x{w}")
+                return (h, w)
+        elif frame.is_block():
+            if Debug:
+                print(f"  Frame is a block")
+            return (h, w)
+        else:
+            # Handle case where frame is too small to reduce
+            if Debug:
+                print(
+                    f"  Frame is too small to reduce origin:{frame.origin} size:{frame.size}")
+            return (0, 0)
+    if Debug:
+        print("  No frame object found")
+    return (0, 0)
 
 def size_is_multiple_xform(grids: ExampleGrids, grid: Grid, task_name: str):
     """
@@ -192,8 +242,8 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid,
 xforms = [
     identity_xform, always_same_output_xform, size_of_largest_object_xform,
     size_is_multiple_xform, size_is_multiple_determined_by_colors_xform,
-    one_object_is_a_frame_xform_noblack,
-    one_object_is_a_frame_xform_black
+    one_object_is_a_frame_xform,
+    one_object_is_a_black_frame_xform
 ]
 
 
