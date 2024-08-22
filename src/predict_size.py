@@ -1,7 +1,7 @@
 from typing import Callable, List, Optional, Tuple
 
-
 from color_features import detect_color_features
+from frames import find_largest_frame
 from grid import Grid
 from grid_data import Object, display
 from load_data import Example, Tasks, iter_tasks, training_data, evaluation_data
@@ -14,97 +14,74 @@ from symmetry_features import detect_symmetry_features
 
 Size = Tuple[int, int]
 ExampleGrids = List[Tuple[Grid, Grid]]
-SizeXform = Callable[[ExampleGrids, Grid], Size]
+SizeXform = Callable[[ExampleGrids, Grid, str], Size]
 
 # returns the index of the object to pick
 ObjectPicker = Callable[[List[Object]], int]
 
-identity_xform: SizeXform = lambda grids, grid: grid.size
-always_same_output_xform: SizeXform = lambda grids, grid: grids[0][1].size
 
 Debug = False
 
 
-def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid):
+def identity_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+    return grid.size
+
+
+def always_same_output_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+    return grids[0][1].size
+
+
+def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid, task_name: str):
     objects = grid.detect_objects()
     if not objects:
         return (0, 0)
     largest_object = max(objects, key=lambda obj: obj.num_cells)
     return largest_object.size
 
-def find_frame_objects(grid: Grid, objects: List[Object], allow_black: bool) -> List[Object]:
+
+def find_frame_objects(grid: Grid, objects: List[Object], allow_black: bool, task_name: str) -> List[Object]:
     frame_objects: List[Object] = []
     for obj in objects:
-        if obj.size != grid.size and obj.has_frame() or (allow_black and obj.is_block()):
-            frame_objects.append(obj)
+        if allow_black:
+            if obj.is_block():
+                frame_objects.append(obj)
             continue
 
-        if len(frame_objects) >= 1:
-            continue
-
-        color = obj.main_color
-        threshold = 0.2
-
-        while obj.width > 2 and obj.height > 2:
-            # Check the leftmost column and remove it if the number of cells of the color is less than the threshold
-            left_col = [row[0] for row in obj.data]
-            size_before = obj.size
-            if left_col.count(color) <= 2 or left_col.count(color) < obj.height * threshold:
-                obj = Object(
-                    (obj.origin[0], obj.origin[1] + 1), [row[1:] for row in obj.data])
-                if Debug:
-                    print(
-                        f"Shrinking left size: {size_before} -> {obj.size}")
-                continue
-
-            # Check the rightmost column and remove it if the number of cells of the color is less than the threshold
-            right_col = [row[-1] for row in obj.data]
-            if right_col.count(color) <= 2 or right_col.count(color) < obj.height * threshold:
-                obj = Object((obj.origin[0], obj.origin[1]), [
-                    row[:-1] for row in obj.data])
-                if Debug:
-                    print(
-                        f"Shrinking right size: {size_before} -> {obj.size}")
-                continue
-
-            # Check the topmost row and remove it if the number of cells of the color is less than the threshold
-            if obj.data[0].count(color) <= 2 or obj.data[0].count(color) < obj.width * threshold:
-                obj = Object(
-                    (obj.origin[0] + 1, obj.origin[1]), obj.data[1:])
-                if Debug:
-                    print(
-                        f"Shrinking top size: {size_before} -> {obj.size}")
-                continue
-
-            # Check the bottommost row and remove it if the number of cells of the color is less than the threshold
-            if obj.data[-1].count(color) <= 2 or obj.data[-1].count(color) < obj.width * threshold:
-                obj = Object((obj.origin[0], obj.origin[1]), obj.data[:-1])
-                if Debug:
-                    print(
-                        f"Shrinking bottom size: {size_before} -> {obj.size}")
-                continue
-            break
-
-        if obj.has_frame():
+        if obj.size != grid.size and obj.has_frame():
             frame_objects.append(obj)
+            continue
+        foreground = obj.main_color
+        frame = find_largest_frame(obj.data, foreground)
+
+        if frame:
+            (top, left, bottom, right) = frame
+            width = right - left + 1
+            height = bottom - top + 1
+            if Debug and width >= 2 and height >= 2:
+                print(
+                    f"Frame found: {frame} height:{height} width:{width} foreground:{foreground}")
+            data_for_frame = [row[left:right+1]
+                              for row in obj.data[top:bottom+1]]
+            obj_for_frame = Object(
+                (obj.origin[0] + top, obj.origin[1] + left), data_for_frame)
+            if obj_for_frame.has_frame():
+                frame_objects.append(obj_for_frame)
+
     return frame_objects
 
 
-def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: bool):
-    if Debug:
-        print(f"\nChecking one object is a frame xform")
-
+def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: bool, task_name: str):
     # Check that all the output sizes are smaller than the input sizes
     for input_grid, output_grid in grids:
         if output_grid.size >= input_grid.size:
             return (0, 0)
 
     objects = grid.detect_objects(diagonals=False, allow_black=allow_black)
-    frame_objects = find_frame_objects(grid, objects, allow_black)
+    frame_objects = find_frame_objects(grid, objects, allow_black, task_name)
     if Debug:
-        print(f"# of objects: {len(objects)}")
+        print(f"  # of objects: {len(objects)}")
     if Debug:
-        print(f"# of frame objects: {len(frame_objects)}")
+        print(f"  # of frame objects: {len(frame_objects)}")
 
     if len(frame_objects) > 1:
         sorted_objects = []
@@ -123,7 +100,7 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
                 frame_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True)
         # if there are multiple frame objects, keep the largest one
         if Debug:
-            print(f"Sorted objects: {sorted_objects}")
+            print(f"  Sorted objects: {sorted_objects}")
         frame = sorted_objects[0]
         frame_objects = [frame]
 
@@ -147,36 +124,36 @@ def one_object_is_a_frame_xform_(grids: ExampleGrids, grid: Grid, allow_black: b
             if n_diff_color <= 1:
                 # Reduce the frame by 1 cell on each side
                 if Debug:
-                    print(f"Reducing frame size to {h-2}x{w-2}")
+                    print(f"  Reducing frame size to {h-2}x{w-2}")
                 return (h - 2, w - 2)
             else:
                 if Debug:
-                    print(f"Frame size is {h}x{w}")
+                    print(f"  Frame size is {h}x{w}")
                 return (h, w)
         elif frame.is_block():
             if Debug:
-                print(f"Frame is a block")
+                print(f"  Frame is a block")
             return (h, w)
         else:
             # Handle case where frame is too small to reduce
             if Debug:
                 print(
-                    f"Frame is too small to reduce origin:{frame.origin} size:{frame.size}")
+                    f"  Frame is too small to reduce origin:{frame.origin} size:{frame.size}")
             return (0, 0)
     if Debug:
-        print("No frame object found")
+        print("  No frame object found")
     return (0, 0)
 
 
-def one_object_is_a_frame_xform_noblack(grids: ExampleGrids, grid: Grid):
-    return one_object_is_a_frame_xform_(grids, grid, allow_black=False)
+def one_object_is_a_frame_xform_noblack(grids: ExampleGrids, grid: Grid, task_name: str):
+    return one_object_is_a_frame_xform_(grids, grid, allow_black=False, task_name=task_name)
 
 
-def one_object_is_a_frame_xform_black(grids: ExampleGrids, grid: Grid):
-    return one_object_is_a_frame_xform_(grids, grid, allow_black=True)
+def one_object_is_a_frame_xform_black(grids: ExampleGrids, grid: Grid, task_name: str):
+    return one_object_is_a_frame_xform_(grids, grid, allow_black=True, task_name=task_name)
 
 
-def size_is_multiple_xform(grids: ExampleGrids, grid: Grid):
+def size_is_multiple_xform(grids: ExampleGrids, grid: Grid, task_name: str):
     """
     Determines if the given grid can be scaled by consistent ratios derived from example grids.
     The function checks if applying these ratios to the grid's size results in integer dimensions.
@@ -203,7 +180,7 @@ def size_is_multiple_xform(grids: ExampleGrids, grid: Grid):
 
 
 # check if the size is a multiple determined by the number of colors
-def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid):
+def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid, task_name: str):
     ncolors = 0
     h = grid.height
     w = grid.width
@@ -212,18 +189,28 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid)
     return (h * ncolors, w * ncolors)
 
 
-xforms = [identity_xform, always_same_output_xform, size_of_largest_object_xform,
-          size_is_multiple_xform, size_is_multiple_determined_by_colors_xform, one_object_is_a_frame_xform_noblack, one_object_is_a_frame_xform_black]
+xforms = [
+    identity_xform, always_same_output_xform, size_of_largest_object_xform,
+    size_is_multiple_xform, size_is_multiple_determined_by_colors_xform,
+    one_object_is_a_frame_xform_noblack,
+    one_object_is_a_frame_xform_black
+]
 
 
-def check_xform_on_examples(xform: SizeXform, examples: List[Example]):
+def check_xform_on_examples(xform: SizeXform, examples: List[Example], task_name: str, task_type: str) -> bool:
     grids = [(Grid(example['input']), Grid(example['output']))
              for example in examples]
-    for example in examples:
+    if Debug:
+        print(f"Checking xform {xform.__name__} {task_type}")
+    for i, example in enumerate(examples):
+        if Debug:
+            print(f"  Example {i+1}/{len(examples)}")
         input = Grid(example['input'])
         output = Grid(example['output'])
-        new_output_size = xform(grids, input)
+        new_output_size = xform(grids, input, task_name)
         if new_output_size != output.size:
+            if Debug:
+                print(f"  Example {i+1} failed")
             return False
     return True
 
@@ -326,23 +313,40 @@ def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
-        if Debug:
-            print(f"Task: {task_name}")
+        print(f"\n***Task: {task_name} {set}***")
+
         for task_type, examples in task.items():
             if task_type not in ['train', 'test']:
                 continue
+            if task_type == 'test':
+                continue
             # check if at least one xform is correct
+            correct_xform = None
             for xform in xforms:
-                if check_xform_on_examples(xform, examples):
-                    if False and xform == one_object_is_a_frame_xform_black:
-                        title = f"Size determined by frame ({task_name})"
+                if check_xform_on_examples(xform, examples, task_name, task_type):
+                    if False and task_name == "9f236235.json" and xform == one_object_is_a_frame_xform_black:
+                        title = f"Size determined by black frame ({task_name})"
                         print(title)
-                        display(examples[0]['input'],
-                                output=examples[0]['output'], title=title)
-                    num_correct += 1
+                        for i, e in enumerate(examples):
+                            display(e['input'], output=e['output'], title=f"Ex{i+1} " + title )
+                    correct_xform = xform
                     break
+            if correct_xform:
+                print(
+                    f"Xform {correct_xform.__name__} is correct for all examples in {task_type}")
+                test_examples = [examples for task_type,
+                                 examples in task.items() if task_type == 'test']
+                for i, test_example in enumerate(test_examples):
+                    if not check_xform_on_examples(correct_xform, test_example, task_name, 'test'):
+                        print(
+                            f"Xform {correct_xform.__name__} failed for test example {i}")
+                        correct_xform = None
+                        break
+            if correct_xform:
+                print(f"Xform {correct_xform.__name__} is correct for all examples in {task_type} and test")
+                num_correct += 1
             else:
-                print(f"\n***Task: {task_name} {set}***")
+                print(f"Checking common features for {task_name} {set}")
 
                 def candidate_objects_for_matching(input: Grid, output: Grid) -> List[Object]:
                     """
@@ -370,13 +374,16 @@ def process_tasks(tasks: Tasks, set: str):
                         input = Grid(example['input'])
                         output = Grid(example['output'])
                         print(f"  {task_type} {input.size} -> {output.size}")
-                        
-                        input_objects = candidate_objects_for_matching(input, output)
-                        matched_object_index = find_matching_input_object(input_objects, output)
-                        
+
+                        input_objects = candidate_objects_for_matching(
+                            input, output)
+                        matched_object_index = find_matching_input_object(
+                            input_objects, output)
+
                         if matched_object_index is not None:
-                            matched_objects.append((input_objects, matched_object_index))
-                    
+                            matched_objects.append(
+                                (input_objects, matched_object_index))
+
                     return matched_objects if len(matched_objects) == len(examples) else None
 
                 matched_objects = get_matched_objects(examples)
@@ -444,7 +451,7 @@ def predict_sizes():
         num_correct_ev, num_incorrect_ev = process_tasks(
             evaluation_data, "evaluation_data")
     print(
-        f"Training data Correct:{num_correct_tr}, Incorrect:{num_incorrect_tr}, Score:{int(1000 * num_correct_tr / (num_correct_tr + num_incorrect_tr))/10}%")
+        f"\nTraining data Correct:{num_correct_tr}, Incorrect:{num_incorrect_tr}, Score:{int(1000 * num_correct_tr / (num_correct_tr + num_incorrect_tr))/10}%")
     if num_correct_ev is not None and num_incorrect_ev is not None:
         print(
             f"Evaluation data Correct:{num_correct_ev}, Incorrect:{num_incorrect_ev}, Score:{int(1000 * num_correct_ev / (num_correct_ev + num_incorrect_ev))/10}%")
