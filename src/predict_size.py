@@ -425,7 +425,7 @@ def process_tasks(tasks: Tasks, set: str):
 
                 if predicted_height and predicted_width:
                     print(
-                        f"Predicted output dimensions via LP: Width:{pretty_print_numeric_features(predicted_width)}, Height:{pretty_print_numeric_features(predicted_height)}")
+                        f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
                     num_correct += 1
                 else:
                     # If no valid dimensions could be determined, give up

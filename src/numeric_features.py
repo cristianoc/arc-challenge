@@ -30,9 +30,9 @@ def pretty_print_numeric_features(prediction: Tuple[Dict[str, int], int]) -> str
 
     for feature, value in features.items():
         if value == 1:
-            res.append(feature)
+            res.append(f"in.{feature}")
         elif value > 1:
-            res.append(f"{value} * {feature}")
+            res.append(f"{value} * in.{feature}")
 
     result = " + ".join(res)
 
