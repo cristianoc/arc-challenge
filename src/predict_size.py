@@ -405,6 +405,8 @@ def process_tasks(tasks: Tasks, set: str):
                 num_correct += 1
                 continue
 
+            print(f"Trying to determine dimensions via LP for {task_name} {set}")
+
             # Attempt to determine width and height using linear programming before giving up
             feature_vectors: List[Features] = []
             target_heights: List[int] = []
