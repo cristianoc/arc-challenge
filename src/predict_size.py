@@ -65,7 +65,7 @@ def output_size_is_size_of_largest_block_object(grids: ExampleGrids, grid: Grid,
     return largest_object.size
 
 
-def output_is_largest_nonblack_block_object_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_largest_nonblack_block_object(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     objects = grid.detect_objects(allow_black=False)
     # exclude full grid size and objects smaller than 2x2
     objects = [obj for obj in objects if obj.size !=
@@ -137,7 +137,7 @@ xforms = [
     size_is_multiple_determined_by_colors_xform,
     output_size_is_size_of_object_inside_largest_frame,
     output_size_is_size_of_largest_block_object,
-    output_is_largest_nonblack_block_object_xform,
+    output_size_is_size_of_largest_nonblack_block_object,
     output_is_largest_object_xform,
 ]
 
