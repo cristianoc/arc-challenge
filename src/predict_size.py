@@ -266,7 +266,7 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
         output_as_object = Object((0, 0), output.data)
         if output_as_object.has_frame():
             # If the output is a frame, detect objects in the input as frames
-            print("  Output is a frame")
+            if Debug: print("  Output is a frame")
         num_colors_output = len(output.get_colors())
         return input.detect_rectangular_objects(allow_multicolor=num_colors_output > 1, debug=Debug)
 
@@ -300,6 +300,34 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
     matched_objects = get_matched_objects(examples)
     return matched_objects
 
+def predict_size_using_linear_programming(examples: List[Example]):
+    """
+    Predicts the output size using linear programming. The function takes a list of input-output
+    grid pairs and attempts to determine the output size by solving a linear program that minimizes
+    the sum of weights and bias for each feature.
+    """
+    feature_vectors: List[Features] = []
+    target_heights: List[int] = []
+    target_widths: List[int] = []
+
+    for example in examples:
+        input_grid = Grid(example['input'])
+        output_grid = Grid(example['output'])
+
+        input_features = detect_numeric_features(input_grid)
+        target_height, target_width = output_grid.size
+
+        feature_vectors.append(input_features)
+        target_heights.append(target_height)
+        target_widths.append(target_width)
+
+    predicted_height = find_weights_and_bias(
+        feature_vectors, target_heights)
+    predicted_width = find_weights_and_bias(
+        feature_vectors, target_widths)
+    return predicted_height, predicted_width
+
+
 def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
@@ -320,7 +348,7 @@ def process_tasks(tasks: Tasks, set: str):
                 num_correct += 1
                 continue
 
-            print(f"Checking common features for {task_name} {set}")
+            if Debug: print(f"Checking common features for {task_name} {set}")
             # Check if the input objects can be matched to the output objects
             matched_objects = find_matched_objects(examples, task_type)
             if matched_objects:
@@ -339,30 +367,9 @@ def process_tasks(tasks: Tasks, set: str):
                 num_correct += 1
                 continue
 
-            print(
+            if Debug: print(
                 f"Trying to determine dimensions via LP for {task_name} {set}")
-
-            # Attempt to determine width and height using linear programming before giving up
-            feature_vectors: List[Features] = []
-            target_heights: List[int] = []
-            target_widths: List[int] = []
-
-            for example in examples:
-                input_grid = Grid(example['input'])
-                output_grid = Grid(example['output'])
-
-                input_features = detect_numeric_features(input_grid)
-                target_height, target_width = output_grid.size
-
-                feature_vectors.append(input_features)
-                target_heights.append(target_height)
-                target_widths.append(target_width)
-
-            predicted_height = find_weights_and_bias(
-                feature_vectors, target_heights)
-            predicted_width = find_weights_and_bias(
-                feature_vectors, target_widths)
-
+            predicted_height, predicted_width = predict_size_using_linear_programming(examples)
             if predicted_height and predicted_width:
                 print(
                     f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
@@ -370,7 +377,7 @@ def process_tasks(tasks: Tasks, set: str):
             else:
                 # If no valid dimensions could be determined, give up
                 print(
-                    f"Could not find correct transformation or determine dimensions via LP for {task_name} {set} examples")
+                    f"Could not find correct transformation or determine dimensions via Linear Programming for {task_name} {set} examples")
                 num_incorrect += 1
 
             # grids: List[Tuple[GridData, Optional[GridData]]] = [
