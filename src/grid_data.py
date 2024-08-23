@@ -1,7 +1,10 @@
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import tkinter as tk
 from dataclasses import dataclass
-from typing import List, NewType, Optional, Tuple
+from typing import Dict, List, NewType, Optional, Tuple
 
 from matplotlib import colors, pyplot as plt
+from matplotlib.colors import ListedColormap
 import numpy as np
 
 Cell = Tuple[int, int]
@@ -28,6 +31,18 @@ class Object:
     def width(self) -> int:
         return len(self.data[0]) if self.data else 0
 
+    @property
+    def size(self) -> Tuple[int, int]:
+        return (self.height, self.width)
+
+    @property
+    def num_cells(self) -> int:
+        color = self.main_color
+        if color != 0:
+            return sum(cell != 0 for row in self.data for cell in row)
+        else:
+            return sum(cell == 0 for row in self.data for cell in row)
+
     def move(self, dr: int, dc: int) -> 'Object':
         """
         Moves the object by `dr` rows and `dc` columns.
@@ -43,17 +58,41 @@ class Object:
                     for row in self.data]
         return Object(self.origin, new_data)
 
+    def contains_cell(self, cell: Cell) -> bool:
+        """
+        Checks if the cell is within the object's bounding box.
+        """
+        row, col = cell
+        r, c = self.origin
+        return r <= row < r + self.height and c <= col < c + self.width
+
     @property
-    def color(self) -> int:
+    def first_color(self) -> int:
         """
         Returns the first non-0 color detected in the object
         """
         for row in range(self.height):
             for col in range(self.width):
-                    color = self.data[row][col]
-                    if color != 0:
-                        return color
+                color = self.data[row][col]
+                if color != 0:
+                    return color
         return 0
+
+    @property
+    def main_color(self) -> int:
+        """
+        Returns the most frequent color in the object.
+        Raises a ValueError if there are no non-zero colors.
+        """
+        color_count: Dict[int, int] = {}
+        for row in range(self.height):
+            for col in range(self.width):
+                color = self.data[row][col]
+                if color != 0:
+                    color_count[color] = color_count.get(color, 0) + 1
+        if not color_count:
+            return self.first_color
+        return max(color_count, key=lambda c: color_count.get(c, 0))
 
     def compact_left(self) -> 'Object':
         """
@@ -121,6 +160,40 @@ class Object:
         new_data = [squash_row(row) for row in self.data]
         return Object(self.origin, new_data)
 
+    def has_frame(self) -> bool:
+        """
+        Check if the object is a frame, i.e., has a border of 1 cell width and the color is not 0.
+
+        A frame is defined as having non-zero cells in the entire first and last row,
+        as well as the first and last column of the object. Additionally, the frame's color
+        should be consistent and non-zero.
+        """
+        if self.height < 2 or self.width < 2:
+            return False
+
+        # Determine the object's color
+        obj_color = self.main_color
+
+        # Check top and bottom rows
+        if not all(cell == obj_color for cell in self.data[0]) or not all(cell == obj_color for cell in self.data[-1]):
+            return False
+
+        # Check left and right columns
+        for row in self.data:
+            if row[0] != obj_color or row[-1] != obj_color:
+                return False
+
+        return True
+
+    def is_block(self) -> bool:
+        obj_color = self.first_color
+        # Check if all cells have the same color
+        for row in self.data:
+            if any(cell != obj_color for cell in row):
+                return False
+
+        return True
+
 
 Color = NewType('Color', int)
 
@@ -152,36 +225,85 @@ TEAL: Color = Color(9)    # #7FDBFF
 
 
 def display(input: GridData, output: Optional[GridData] = None, title: Optional[str] = None) -> None:
+    display_multiple([(input, output)], title)
+
+
+def display_multiple(grid_pairs: List[Tuple[GridData, Optional[GridData]]], title: Optional[str] = None) -> None:
+    num_pairs = len(grid_pairs)
     # Create a ListedColormap with the specified colors
-    cmap = colors.ListedColormap(color_scheme)
+    cmap: ListedColormap = colors.ListedColormap(color_scheme)
 
     # Adjust the bounds to match the number of colors
     bounds = np.arange(-0.5, len(color_scheme) - 0.5, 1)
-    norm = colors.BoundaryNorm(bounds, cmap.N)
+    norm = colors.BoundaryNorm(bounds, cmap.N)  # type: ignore
 
-    # Create a figure with one or two subplots depending on whether data2 is provided
-    num_subplots = 2 if output is not None else 1
-    fig, axes = plt.subplots(1, num_subplots, figsize=(  # type: ignore
-        5 * num_subplots, 5))  # type: ignore
+    # Create the tkinter root window with an initial size
+    root = tk.Tk()
+    if title:
+        root.title(title)
+    root.geometry("1200x1000")  # Set the initial size of the window
 
-    if num_subplots == 1:
-        # Make sure axes is iterable if there's only one subplot
-        axes = [axes]
+    # Create a frame to contain the canvas and scrollbar
+    frame = tk.Frame(root)
+    frame.pack(fill=tk.BOTH, expand=True)
 
-    for ax, data, title_suffix in zip(axes, [input, output if output is not None else input], ['Input', 'Output']):
-        ax.set_facecolor('black')
-        for i in range(len(data)):
-            for j in range(len(data[0])):
-                rect = plt.Rectangle(  # type: ignore
-                    (j - 0.5, i - 0.5), 1, 1, edgecolor='grey', facecolor='none', linewidth=1)
-                ax.add_patch(rect)
+    # Create a canvas and place it in the frame
+    canvas = tk.Canvas(frame)
+    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        im = ax.imshow(data, cmap=cmap, norm=norm)  # type: ignore
-        ax.set_title(
-            f"{title} - {title_suffix}" if title else title_suffix)
+    # Add a vertical scrollbar to the canvas
+    scrollbar = tk.Scrollbar(frame, orient=tk.VERTICAL,
+                             command=canvas.yview)  # type: ignore
+    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    canvas.configure(yscrollcommand=scrollbar.set)
 
-    plt.tight_layout()
-    plt.show()  # type: ignore
+    # Create another frame inside the canvas to hold the plots
+    plot_frame = tk.Frame(canvas)
+    canvas.create_window((0, 0), window=plot_frame, anchor="nw")
+
+    # Create a Matplotlib figure with multiple rows, two subplots per row
+    fig, axes = plt.subplots(num_pairs, 2, figsize=(  # type: ignore
+        6/2, 3 * num_pairs/2))  # Adjust figsize for smaller plots
+
+    # If there's only one pair, we need to wrap axes in a list to make iteration easier
+    if num_pairs == 1:
+        axes = [axes]  # type: ignore
+
+    for i, (input_data, output_data) in enumerate(grid_pairs):
+        # Get the axes for the current pair of grids
+        ax_input, ax_output = axes[i]  # type: ignore
+
+        # Plot the input grid
+        plot_grid(ax_input, input_data, cmap, norm)  # type: ignore
+
+        if output_data is not None:
+            # Plot the output grid if provided, otherwise plot the input grid again
+            plot_grid(ax_output, output_data, cmap, norm)  # type: ignore
+
+    plt.tight_layout()  # type: ignore
+
+    # Embed the Matplotlib figure into the tkinter window
+    canvas_fig = FigureCanvasTkAgg(fig, master=plot_frame)
+    canvas_fig.draw()
+    canvas_fig.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+    # Update the canvas scroll region to fit the figure
+    plot_frame.update_idletasks()
+    canvas.config(scrollregion=canvas.bbox("all"))
+
+    # Start the tkinter main loop
+    root.mainloop()
+
+
+def plot_grid(ax, data: GridData, cmap, norm, title: Optional[str] = None): # type: ignore
+    ax.set_facecolor('black')  # type: ignore
+    for i in range(len(data)):
+        for j in range(len(data[0])):
+            rect = plt.Rectangle(  # type: ignore
+                (j - 0.5, i - 0.5), 1, 1, edgecolor='grey', facecolor='none', linewidth=1)
+            ax.add_patch(rect)  # type: ignore
+
+    im = ax.imshow(data, cmap=cmap, norm=norm)  # type: ignore
 
 
 class TestSquashLeft:
