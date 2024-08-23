@@ -23,7 +23,7 @@ ObjectPicker = Callable[[List[Object]], int]
 Debug = False
 
 
-def identity_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+def output_size_is_input_size(grids: ExampleGrids, grid: Grid, task_name: str):
     return grid.size
 
 
@@ -131,7 +131,7 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid,
 
 
 xforms = [
-    identity_xform, always_same_output_xform,
+    output_size_is_input_size, always_same_output_xform,
     size_of_largest_object_xform,
     size_is_multiple_xform,
     size_is_multiple_determined_by_colors_xform,
