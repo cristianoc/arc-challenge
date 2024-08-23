@@ -64,6 +64,7 @@ def find_frame_objects(grid: Grid, objects: List[Object], task_name: str) -> Lis
 
     return frame_objects
 
+
 def find_frame_objects_black(grid: Grid, objects: List[Object], task_name: str) -> List[Object]:
     frame_objects: List[Object] = []
     for obj in objects:
@@ -80,7 +81,8 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str)
             return (0, 0)
 
     objects = grid.detect_objects(diagonals=False, allow_black=False)
-    frame_objects = find_frame_objects(grid=grid, objects=objects, task_name=task_name)
+    frame_objects = find_frame_objects(
+        grid=grid, objects=objects, task_name=task_name)
     if Debug:
         print(f"  # of objects: {len(objects)}")
     if Debug:
@@ -99,6 +101,13 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str)
     # Check if there's exactly one frame
     if len(frame_objects) == 1:
         frame = frame_objects[0]
+
+        fr = (frame.origin[0], frame.origin[1], frame.origin[0] +
+              frame.height - 1, frame.origin[1] + frame.width - 1)
+        is_lattice = is_frame_part_of_lattice(grid.data, fr, frame.main_color)
+        if is_lattice:
+            display(grid.data, title=f"black frame: {fr} lattice")
+
         h, w = frame.size
         if h > 2 and w > 2:
             # check if all the elements immediately inside the frame are of a different color
@@ -136,6 +145,7 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str)
         print("  No frame object found")
     return (0, 0)
 
+
 def one_object_is_a_black_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str):
     # Check that all the output sizes are smaller than the input sizes
     for input_grid, output_grid in grids:
@@ -143,7 +153,8 @@ def one_object_is_a_black_frame_xform(grids: ExampleGrids, grid: Grid, task_name
             return (0, 0)
 
     objects = grid.detect_objects(diagonals=False, allow_black=True)
-    frame_objects = find_frame_objects_black(grid=grid, objects=objects, task_name=task_name)
+    frame_objects = find_frame_objects_black(
+        grid=grid, objects=objects, task_name=task_name)
     if Debug:
         print(f"  # of objects: {len(objects)}")
     if Debug:
@@ -205,6 +216,7 @@ def one_object_is_a_black_frame_xform(grids: ExampleGrids, grid: Grid, task_name
     if Debug:
         print("  No frame object found")
     return (0, 0)
+
 
 def size_is_multiple_xform(grids: ExampleGrids, grid: Grid, task_name: str):
     """
@@ -460,7 +472,8 @@ def process_tasks(tasks: Tasks, set: str):
                 num_correct += 1
                 continue
 
-            print(f"Trying to determine dimensions via LP for {task_name} {set}")
+            print(
+                f"Trying to determine dimensions via LP for {task_name} {set}")
 
             # Attempt to determine width and height using linear programming before giving up
             feature_vectors: List[Features] = []
