@@ -120,21 +120,10 @@ def output_size_is_constant_times_input_size(grids: ExampleGrids, grid: Grid, ta
     return (0, 0)
 
 
-# check if the size is a multiple determined by the number of colors
-def output_size_is_input_size_times_number_of_colors(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
-    ncolors = 0
-    h = grid.height
-    w = grid.width
-    colors = grid.get_colors()
-    ncolors = len(colors)
-    return (h * ncolors, w * ncolors)
-
-
 xforms = [
     output_size_is_input_size,
     output_size_is_constant,
     output_size_is_constant_times_input_size,
-    output_size_is_input_size_times_number_of_colors,
     output_size_is_size_of_object_inside_largest_frame,
     output_size_is_size_of_largest_block_object,
     output_size_is_size_of_largest_nonblack_block_object,
