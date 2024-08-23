@@ -110,6 +110,8 @@ def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> b
     start_y = top % frame_height
     start_x = left % frame_width
 
+    if frame_height <= 1 or frame_width <= 1:
+        return False
     for y in range(start_y, rows, frame_height-1):
         for x in range(start_x, cols, frame_width-1):
             # Check if the frame fits within the grid bounds

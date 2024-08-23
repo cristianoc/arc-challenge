@@ -1,7 +1,7 @@
 from typing import Callable, List, Optional, Tuple
 
 from color_features import detect_color_features
-from frames import find_largest_frame
+from visual_cortex import find_largest_frame, is_frame_part_of_lattice
 from grid import Grid
 from grid_data import Object, display
 from load_data import Example, Tasks, iter_tasks, training_data, evaluation_data
@@ -54,6 +54,10 @@ def find_frame_objects(grid: Grid, objects: List[Object], allow_black: bool, tas
         frame = find_largest_frame(obj.data, foreground)
 
         if frame:
+            is_lattice = is_frame_part_of_lattice(grid.data, frame, foreground)
+            if is_lattice:
+                display(grid.data, title="lattice")
+
             (top, left, bottom, right) = frame
             width = right - left + 1
             height = bottom - top + 1
@@ -363,6 +367,8 @@ def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
+        # if task_name != "9f236235.json":
+        #     continue
         print(f"\n***Task: {task_name} {set}***")
 
         for task_type, examples in task.items():
