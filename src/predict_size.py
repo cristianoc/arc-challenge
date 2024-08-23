@@ -244,6 +244,49 @@ def find_xform(examples: List[Example], task: Task, task_name: str, task_type: s
     return correct_xform
 
 
+def find_matched_objects(examples: List[Example], task_type: str) -> Optional[List[ObjectMatch]]:
+
+    def candidate_objects_for_matching(input: Grid, output: Grid) -> List[Object]:
+        """
+        Detects objects in the input grid that are candidates for matching the output grid.
+        """
+        output_as_object = Object((0, 0), output.data)
+        if output_as_object.has_frame():
+            # If the output is a frame, detect objects in the input as frames
+            print("  Output is a frame")
+        num_colors_output = len(output.get_colors())
+        return input.detect_rectangular_objects(allow_multicolor=num_colors_output > 1, debug=Debug)
+
+    def find_matching_input_object(input_objects: List[Object], output: Grid) -> Optional[int]:
+        for i, io in enumerate(input_objects):
+            if io.size == output.size and io.data == output.data:
+                if Debug:
+                    print(f"  Input object matching output: {io}")
+                return i
+        return None
+
+    def get_matched_objects(examples: List[Example]) -> Optional[List[ObjectMatch]]:
+        matched_objects: List[ObjectMatch] = []
+
+        for example in examples:
+            input = Grid(example['input'])
+            output = Grid(example['output'])
+            print(f"  {task_type} {input.size} -> {output.size}")
+
+            input_objects = candidate_objects_for_matching(
+                input, output)
+            matched_object_index = find_matching_input_object(
+                input_objects, output)
+
+            if matched_object_index is not None:
+                matched_objects.append(
+                    (input_objects, matched_object_index))
+
+        return matched_objects if len(matched_objects) == len(examples) else None
+
+    matched_objects = get_matched_objects(examples)
+    return matched_objects
+
 def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
@@ -265,47 +308,7 @@ def process_tasks(tasks: Tasks, set: str):
                 continue
 
             print(f"Checking common features for {task_name} {set}")
-
-            def candidate_objects_for_matching(input: Grid, output: Grid) -> List[Object]:
-                """
-                Detects objects in the input grid that are candidates for matching the output grid.
-                """
-                output_as_object = Object((0, 0), output.data)
-                if output_as_object.has_frame():
-                    # If the output is a frame, detect objects in the input as frames
-                    print("  Output is a frame")
-                num_colors_output = len(output.get_colors())
-                return input.detect_rectangular_objects(allow_multicolor=num_colors_output > 1, debug=Debug)
-
-            def find_matching_input_object(input_objects: List[Object], output: Grid) -> Optional[int]:
-                for i, io in enumerate(input_objects):
-                    if io.size == output.size and io.data == output.data:
-                        if Debug:
-                            print(f"  Input object matching output: {io}")
-                        return i
-                return None
-
-            def get_matched_objects(examples: List[Example]) -> Optional[List[ObjectMatch]]:
-                matched_objects: List[ObjectMatch] = []
-
-                for example in examples:
-                    input = Grid(example['input'])
-                    output = Grid(example['output'])
-                    print(f"  {task_type} {input.size} -> {output.size}")
-
-                    input_objects = candidate_objects_for_matching(
-                        input, output)
-                    matched_object_index = find_matching_input_object(
-                        input_objects, output)
-
-                    if matched_object_index is not None:
-                        matched_objects.append(
-                            (input_objects, matched_object_index))
-
-                return matched_objects if len(matched_objects) == len(examples) else None
-
-            matched_objects = get_matched_objects(examples)
-            # Check if all examples are matched
+            matched_objects = find_matched_objects(examples, task_type)
             if matched_objects:
                 if Debug:
                     print(
