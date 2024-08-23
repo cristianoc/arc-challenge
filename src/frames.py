@@ -73,7 +73,62 @@ def is_frame_dp(row_sum: GridData, col_sum: GridData, top: int, left: int, botto
     return True
 
 
-def eval():
+def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> bool:
+    """
+    Determines whether the rectangular frame defined by the coordinates (top, left) to (bottom, right) can be part of a 
+    repeating pattern in the grid, where all the borders of the frame match the specified foreground color.
+
+    This function checks if all the border cells of the frame, with dimensions (bottom - top + 1, right - left + 1), 
+    match the given foreground color. The function aligns the starting points within the grid based on the frame's 
+    height and width, ensuring that the check covers all possible locations where a full frame fits within the grid.
+
+    The function iterates over the grid in steps of the frame's height and width. It checks only the regions where 
+    the entire frame fits within the grid bounds. If any border cell of the frame does not match the foreground color, 
+    the function returns False. The function returns True only if all checked frames match the foreground color.
+
+    Note: The function does not enforce that the entire grid forms a uniform lattice pattern, only that the specified 
+    frame could be part of such a repeating pattern. 
+
+    Parameters:
+    - grid (GridData): The 2D grid where each cell contains an integer representing a color.
+    - top (int): The top row index of the frame.
+    - left (int): The left column index of the frame.
+    - bottom (int): The bottom row index of the frame.
+    - right (int): The right column index of the frame.
+    - foreground (int): The integer representing the color that the frame borders should match.
+
+    Returns:
+    - bool: True if the frame could be part of a repeating pattern in the grid; False otherwise.
+    """
+    top, left, bottom, right = frame
+    frame_height = bottom - top + 1
+    frame_width = right - left + 1
+    rows = len(grid)
+    cols = len(grid[0])
+
+    # Adjust the starting points to ensure alignment with the top-left corner
+    start_y = top % frame_height
+    start_x = left % frame_width
+
+    for y in range(start_y, rows, frame_height-1):
+        for x in range(start_x, cols, frame_width-1):
+            # Check if the frame fits within the grid bounds
+            if y + frame_height > rows or x + frame_width > cols:
+                continue
+            # Check top and bottom borders of the frame
+            for i in range(frame_width):
+                if y < rows and (x + i) < cols:
+                    if grid[y][x + i] != foreground or grid[y + frame_height - 1][x + i] != foreground:
+                        return False
+            # Check left and right borders of the frame
+            for j in range(frame_height):
+                if y + j < rows and x < cols:
+                    if grid[y + j][x] != foreground or grid[y + j][x + frame_width - 1] != foreground:
+                        return False
+    return True
+
+
+def eval_with_lattice_check():
     # Define sizes
     width = 50
     height = 30
@@ -106,6 +161,8 @@ def eval():
         foreground = 1
         max_frame = find_largest_frame(grid, foreground)
         max_area = calculate_area(*max_frame) if max_frame else 0
+        is_lattice = is_frame_part_of_lattice(
+            grid, max_frame, foreground) if max_frame else False
         end_time = time.time()
 
         execution_time = end_time - start_time
@@ -119,4 +176,50 @@ def eval():
             frame_width = end_col - start_col + 1
             print(f"{grid_name}: Frame at ({start_row},{start_col}) to ({end_row},{end_col}), "
                   f"Size: {frame_height}x{frame_width}, Area: {max_area}, "
+                  f"Part of lattice: {is_lattice}, "
                   f"Time: {execution_time:.6f} seconds\n")
+
+
+
+def test_lattices():
+    # Correct Lattice Grid
+    grid = [
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0]
+    ]
+    frame = (2, 2, 5, 8)
+    is_lattice = is_frame_part_of_lattice(grid, frame, 1)
+    assert is_lattice == True, f"Correct Lattice Grid: Frame {frame}"
+
+    # Interrupted Lattice Grid
+    grid = [
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+        [1, 1, 1, 1, 1, 1, 1, 9, 1, 0],  # Break in the lattice pattern
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0]
+    ]
+    frame = (2, 2, 5, 5)
+    is_lattice = is_frame_part_of_lattice(grid, frame, 1)
+    assert is_lattice == False, f"Interrupted Lattice Grid: Frame {frame}"
+
+    # Break outside frames that fit in the grid does not affect lattice check
+    grid = [
+        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
+        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
+        [2, 2, 2, 2, 2, 2, 2, 2, 2, 0],
+        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
+        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
+        [2, 2, 2, 2, 2, 2, 2, 2, 2, 9],  # Break near edge
+        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0]
+    ]
+    frame = (2, 2, 5, 5)
+    is_lattice = is_frame_part_of_lattice(grid, frame, 2)
+    assert is_lattice == True, f"Break outside frames: Frame {frame}"
