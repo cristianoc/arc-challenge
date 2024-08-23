@@ -14,7 +14,7 @@ from symmetry_features import detect_symmetry_features
 
 Size = Tuple[int, int]
 ExampleGrids = List[Tuple[Grid, Grid]]
-SizeXform = Callable[[ExampleGrids, Grid, str], Size]
+SizeXform = Callable[[ExampleGrids, Grid, str], Optional[Size]]
 
 # returns the index of the object to pick
 ObjectPicker = Callable[[List[Object]], int]
@@ -31,7 +31,7 @@ def always_same_output_xform(grids: ExampleGrids, grid: Grid, task_name: str):
     return grids[0][1].size
 
 
-def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     objects = grid.detect_objects()
     if not objects:
         return (0, 0)
@@ -73,20 +73,42 @@ def find_frame_objects_black(grid: Grid, objects: List[Object], task_name: str) 
         continue
     return frame_objects
 
-def output_inside_largest_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+
+def output_inside_largest_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     largest_frame = find_largest_frame(grid.data, None)
     if largest_frame:
         (top, left, bottom, right) = largest_frame
         width = right - left + 1
         height = bottom - top + 1
         if Debug and width >= 2 and height >= 2:
-            print(f"Largest frame found: {largest_frame} height:{height} width:{width}")
+            print(
+                f"Largest frame found: {largest_frame} height:{height} width:{width}")
         height_without_frame = height - 2
         width_without_frame = width - 2
         return (height_without_frame, width_without_frame)
     return (0, 0)
 
-def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+def output_is_largest_block_object_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+    objects = grid.detect_objects(allow_black=True)
+    # exclude full grid size
+    objects = [obj for obj in objects if obj.size != grid.size and obj.is_block()]
+    if not objects:
+        return None
+    largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
+    return largest_object.size
+
+
+def output_is_largest_object_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+    objects = grid.detect_objects(allow_black=True)
+    # exclude full grid size
+    objects = [obj for obj in objects if obj.size != grid.size]
+    if not objects:
+        return None
+    largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
+    return largest_object.size
+
+
+def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     # Check that all the output sizes are smaller than the input sizes
     for input_grid, output_grid in grids:
         if output_grid.size >= input_grid.size:
@@ -158,7 +180,7 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str)
     return (0, 0)
 
 
-def one_object_is_a_black_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+def one_object_is_a_black_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     # Check that all the output sizes are smaller than the input sizes
     for input_grid, output_grid in grids:
         if output_grid.size >= input_grid.size:
@@ -230,7 +252,7 @@ def one_object_is_a_black_frame_xform(grids: ExampleGrids, grid: Grid, task_name
     return (0, 0)
 
 
-def size_is_multiple_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+def size_is_multiple_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     """
     Determines if the given grid can be scaled by consistent ratios derived from example grids.
     The function checks if applying these ratios to the grid's size results in integer dimensions.
@@ -257,7 +279,7 @@ def size_is_multiple_xform(grids: ExampleGrids, grid: Grid, task_name: str):
 
 
 # check if the size is a multiple determined by the number of colors
-def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     ncolors = 0
     h = grid.height
     w = grid.width
@@ -270,6 +292,8 @@ xforms = [
     identity_xform, always_same_output_xform, size_of_largest_object_xform,
     size_is_multiple_xform, size_is_multiple_determined_by_colors_xform,
     output_inside_largest_frame_xform,
+    output_is_largest_block_object_xform,
+    output_is_largest_object_xform,
     one_object_is_a_frame_xform,
     one_object_is_a_black_frame_xform
 ]
@@ -404,7 +428,7 @@ def process_tasks(tasks: Tasks, set: str):
             correct_xform = None
             for xform in xforms:
                 if check_xform_on_examples(xform, examples, task_name, task_type):
-                    if False and xform == output_inside_largest_frame_xform:
+                    if False and xform == output_is_largest_object_xform:
                         title = f"{xform.__name__} ({task_name})"
                         print(title)
                         for i, e in enumerate(examples):
