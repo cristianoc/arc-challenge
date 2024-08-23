@@ -117,6 +117,14 @@ def output_is_largest_object_xform(grids: ExampleGrids, grid: Grid, task_name: s
     if not objects:
         return None
     largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
+    largest_frame = find_largest_frame(largest_object.data, None)
+    if largest_frame:
+        # handle case where the largest object has a few extra cells around it
+        # so we need to consider the frame inside
+        (top, left, bottom, right) = largest_frame
+        width = right - left + 1
+        height = bottom - top + 1
+        return (height, width)
     return largest_object.size
 
 
