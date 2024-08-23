@@ -27,7 +27,7 @@ def output_size_is_input_size(grids: ExampleGrids, grid: Grid, task_name: str):
     return grid.size
 
 
-def always_same_output_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+def output_size_is_constant(grids: ExampleGrids, grid: Grid, task_name: str):
     return grids[0][1].size
 
 
@@ -131,7 +131,7 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid,
 
 
 xforms = [
-    output_size_is_input_size, always_same_output_xform,
+    output_size_is_input_size, output_size_is_constant,
     size_of_largest_object_xform,
     size_is_multiple_xform,
     size_is_multiple_determined_by_colors_xform,
