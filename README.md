@@ -1,48 +1,82 @@
-# Grid Transformation DSL
 
-This DSL provides a structured and efficient way to perform complex grid transformations. It is designed to facilitate collaboration, ensure correctness, and support a wide range of grid manipulation tasks with a simple and intuitive API.
+# SizeARC and Grid Transformation DSL
 
-## Key Components
+This repository explores a simplified version of the Abstraction and Reasoning Corpus (ARC) challenge, called SizeARC, along with the symbolic, specification-driven approach developed to solve it. The Grid Transformation DSL, a key component of this approach, is also described in some detail to illustrate the grid manipulation techniques.
 
-### `Grid` Class
+## SizeARC: A Simplified ARC Challenge
 
-The `Grid` class is the core of this DSL, offering a flexible interface to manipulate grid data. It supports various transformations, such as rotations, flips, translations, color changes, and more.
+**SizeARC** is a task derived from the ARC challenge, where the objective is to predict the dimensions of the output grid based on a given input grid. Unlike the full ARC challenge, which requires determining the entire content of the output grid, SizeARC simplifies the problem by focusing solely on predicting the size. This task utilizes the public ARC datasets and is agnostic to the methods used to solve it, making it an interesting case for testing various approaches to abstract reasoning.
 
-- **Create**: Initialize grids of specific dimensions with defined patterns or empty states.
-- **Transform**: Rotate, flip, and translate grids to achieve desired spatial configurations.
-- **Color Manipulation**: Change colors based on conditions, enabling dynamic visual transformations.
-- **Object Detection**: Identify and manipulate distinct objects within grids for complex transformations.
+### Problem Context
 
-**Basic Usage:**
+The ARC challenge is designed to test a system's ability to generalize from few examples, mimicking aspects of human cognition. SizeARC isolates a specific facet of the problem—predicting grid dimensions—to create a more focused challenge. While simpler, SizeARC contains a spectrum of difficulties, ranging from trivial cases to those as challenging as the original ARC tasks. This makes it a valuable benchmark for exploring generalization, abstraction, and reasoning in artificial intelligence.
 
-```python
-grid = Grid(data)
-rotated_grid = grid.rotate(Clockwise)
-flipped_grid = rotated_grid.flip(Horizontal)
-final_grid = flipped_grid.color_change(from_color="red", to_color="blue")
-```
+## Solution Approach: Symbolic, Specification-Driven Method
 
-### `Object` Class
+To tackle SizeARC, we developed a purely symbolic, specification-driven approach. This method is based on selecting appropriate transformation specifications based on detected properties, rather than directly constructing programs through exhaustive enumeration or learning.
 
-The `Object` class encapsulates individual grid entities, allowing for refined operations like movement, color changes, and compacting. It is particularly useful for scenarios where distinct entities within a grid require independent transformations.
+### Key Properties of the Approach
 
-- **Movement**: Shift objects within the grid without altering others.
-- **Color Changes**: Alter the color of entire objects.
-- **Compacting**: Reduce object size or move them in specific directions for optimized layouts.
+1. **Specification-Driven Selection**: The approach leverages predefined, high-level transformation rules. Rather than iteratively constructing solutions, it identifies which transformation rules apply to the detected features of the grid, guided by domain-specific priors.
 
-**Basic Usage:**
+2. **Domain-Specific Priors**: The approach incorporates priors about the domain to inform the selection of transformation rules, integrating knowledge that can guide the reasoning process.
 
-```python
-objects = grid.detect_objects()
-for obj in objects:
-    transformed_obj = obj.change_color("yellow").move(0, 1)
-```
+3. **Semantic Reasoning**: By focusing on the "what" rather than the "how," the method emphasizes understanding the necessary transformations at a high level, relying on semantic reasoning rather than procedural construction.
 
-### Types and Enums
+4. **Layered Complexity**: While the initial stages of problem-solving are straightforward, progressively mode advanced techniques are applied only when the earlier stage fails.
 
-- **`Direction`**: Used for operations like rotation and translation. Values include `Clockwise`, `CounterClockwise`, `Left`, `Right`, `Up`, and `Down`.
-- **`Axis`**: Used for flipping operations. Values include `Horizontal` and `Vertical`.
-- **`Color`**: Colors are represented as integers, allowing for flexible color manipulation.
+### Results Summary
+
+The method was tested across various configurations, showing a progession in tackling the SizeARC challenge:
+
+- **Basic Predefined Transformations Only**: Achieved around 88% accuracy.
+- **Adding Decision Rules on Matched Objects**: Improved accuracy to nearly 90%.
+- **Also using Linear Programming**: Further increased accuracy to over 93%.
+
+These results illustrate the potential of symbolic approaches in abstract reasoning tasks, particularly when combined with semantic reasoning and domain-specific knowledge. It remains to be seen whether this generalizes to the hidden data set, or whether it can be extended with at least some success to the full ARC problem.
+
+### Key Techniques Used
+
+1. **Basic Predefined Transformations**: The approach starts with predefined transformations that apply to input grids, guided by specific rules about how grid properties relate to the output size.
+
+2. **Decision Rules on Matched Objects**: The method enhances accuracy by detecting objects within the grid, matching them across examples, and applying decision rules that leverage these matches to predict the output size.
+
+3. **Linear Programming**: In more complex cases, linear programming is employed to refine predictions. This involves solving for weights and biases that best fit the observed data, allowing for a more accurate determination of grid dimensions.
+
+4. **Layered Complexity**: The solution evolves from simple transformations to more complex techniques, addressing the increasing difficulty of SizeARC tasks as they approach the complexity of full ARC problems.
+
+
+## Implementation
+
+For more details on the implementation of the methods used, start with the [predict_size.py](https://github.com/cristianoc/arc-challenge/blob/main/src/predict_size.py) file. This file provides a practical entry point into understanding how the symbolic approach was applied to solve the SizeARC challenge.
+
+
+## Grid Transformation DSL
+
+For those interested in the underlying mechanisms that support the SizeARC solution, the Grid Transformation DSL provides a robust framework for grid manipulations. The DSL enables various transformations such as rotations, flips, translations, and color changes, all of which are integral to the symbolic approach used.
+
+### Key Components of the DSL
+
+#### `Grid` Class
+
+The `Grid` class serves as the core of the DSL, providing an interface for manipulating grid data. It supports operations that are essential for implementing transformation rules, such as:
+
+- **Create**: Initialize grids with specific dimensions and patterns.
+- **Transform**: Perform rotations, flips, and translations.
+- **Color Manipulation**: Change colors based on defined conditions.
+- **Object Detection**: Identify distinct objects within grids for targeted transformations.
+
+#### `Object` Class
+
+The `Object` class encapsulates grid entities, allowing for operations like movement, color changes, and compacting—crucial for scenarios where individual grid elements need independent handling.
+
+#### Types and Enums
+
+To facilitate grid operations, the DSL includes various types and enums, such as:
+
+- **`Direction`**: Used for operations like rotation and translation.
+- **`Axis`**: Used for flipping operations.
+- **`Color`**: Colors represented as integers for flexible manipulation.
 
 ## Illustrative Examples
 
