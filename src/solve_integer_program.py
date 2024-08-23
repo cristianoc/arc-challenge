@@ -44,8 +44,9 @@ def find_weights_and_bias(samples: List[Features], goals: List[int]) -> Optional
         constraint = pulp.lpSum(samples[i][feature] * W[feature] for feature in feature_names) + b == goals[i]
         problem += constraint
 
-    # Objective: Minimize the sum of W
-    problem += pulp.lpSum(W[feature] for feature in feature_names)
+    # Objective: Minimize the sum of W and bias
+    problem += pulp.lpSum(W[feature] for feature in feature_names) + b
+    
 
     # Solve the problem using the CBC solver with suppressed output
     problem.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -66,6 +67,7 @@ def find_weights_and_bias(samples: List[Features], goals: List[int]) -> Optional
     plausible = True
     # bias must be an integer between 0 and 2
     if b_solution % 1 != 0 or b_solution < 0 or b_solution > 2:
+        print("Bias is not an integer between 0 and 2")
         plausible = False
     # weights must be integers unless there's only one weight which is 1/2 or 1/3 and the bias is 0
     if len(W_solution) > 1:
