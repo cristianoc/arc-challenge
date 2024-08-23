@@ -128,78 +128,6 @@ def output_is_largest_object_xform(grids: ExampleGrids, grid: Grid, task_name: s
     return largest_object.size
 
 
-def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
-    # Check that all the output sizes are smaller than the input sizes
-    for input_grid, output_grid in grids:
-        if output_grid.size >= input_grid.size:
-            return (0, 0)
-
-    objects = grid.detect_objects(diagonals=False, allow_black=False)
-    frame_objects = find_frame_objects(
-        grid=grid, objects=objects, task_name=task_name)
-    if Debug:
-        print(f"  # of objects: {len(objects)}")
-    if Debug:
-        print(f"  # of frame objects: {len(frame_objects)}")
-
-    if len(frame_objects) > 1:
-        sorted_objects = []
-        sorted_objects = sorted(
-            frame_objects, key=lambda obj: obj.size[0] * obj.size[1], reverse=True)
-        # if there are multiple frame objects, keep the largest one
-        if Debug:
-            print(f"  Sorted objects: {sorted_objects}")
-        frame = sorted_objects[0]
-        frame_objects = [frame]
-
-    # Check if there's exactly one frame
-    if len(frame_objects) == 1:
-        frame = frame_objects[0]
-
-        fr = (frame.origin[0], frame.origin[1], frame.origin[0] +
-              frame.height - 1, frame.origin[1] + frame.width - 1)
-        is_lattice = is_frame_part_of_lattice(grid.data, fr, frame.main_color)
-        if False and is_lattice:
-            display(grid.data, title=f"black frame: {fr} lattice")
-
-        h, w = frame.size
-        if h > 2 and w > 2:
-            # check if all the elements immediately inside the frame are of a different color
-            n_diff_color = 0
-            for i in range(1, h - 1):
-                if frame.data[i][1] == frame.first_color:
-                    n_diff_color += 1
-                if frame.data[i][w - 2] == frame.first_color:
-                    n_diff_color += 1
-            for j in range(1, w - 1):
-                if frame.data[1][j] == frame.first_color:
-                    n_diff_color += 1
-                if frame.data[h - 2][j] == frame.first_color:
-                    n_diff_color += 1
-            if n_diff_color <= 1:
-                # Reduce the frame by 1 cell on each side
-                if Debug:
-                    print(f"  Reducing frame size to {h-2}x{w-2}")
-                return (h - 2, w - 2)
-            else:
-                if Debug:
-                    print(f"  Frame size is {h}x{w}")
-                return (h, w)
-        elif frame.is_block():
-            if Debug:
-                print(f"  Frame is a block")
-            return (h, w)
-        else:
-            # Handle case where frame is too small to reduce
-            if Debug:
-                print(
-                    f"  Frame is too small to reduce origin:{frame.origin} size:{frame.size}")
-            return (0, 0)
-    if Debug:
-        print("  No frame object found")
-    return (0, 0)
-
-
 def one_object_is_a_black_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     # Check that all the output sizes are smaller than the input sizes
     for input_grid, output_grid in grids:
@@ -315,7 +243,6 @@ xforms = [
     output_is_largest_block_object_xform,
     output_is_largest_block_noblack_xform,
     output_is_largest_object_xform,
-    one_object_is_a_frame_xform,
     one_object_is_a_black_frame_xform
 ]
 
@@ -449,7 +376,7 @@ def process_tasks(tasks: Tasks, set: str):
             correct_xform = None
             for xform in xforms:
                 if check_xform_on_examples(xform, examples, task_name, task_type):
-                    if xform == one_object_is_a_frame_xform:
+                    if False and xform == one_object_is_a_frame_xform:
                         title = f"{xform.__name__} ({task_name})"
                         print(title)
                         for i, e in enumerate(examples):
