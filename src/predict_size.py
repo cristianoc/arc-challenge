@@ -4,7 +4,7 @@ from color_features import detect_color_features
 from visual_cortex import find_largest_frame
 from grid import Grid
 from grid_data import Object, display
-from load_data import Example, Tasks, iter_tasks, training_data, evaluation_data
+from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
 from shape_features import detect_shape_features
@@ -217,6 +217,33 @@ def detect_common_features(matched_objects: List[ObjectMatch], debug: bool = Fal
     return common_decision_rule, features_used
 
 
+def find_xform(examples: List[Example], task: Task, task_name: str, task_type: str) -> Optional[SizeXform]:
+    # check if at least one xform is correct
+    correct_xform = None
+    for xform in xforms:
+        if check_xform_on_examples(xform, examples, task_name, task_type):
+            if False and xform == output_size_is_constant_times_input_size:
+                title = f"{xform.__name__} ({task_name})"
+                print(title)
+                for i, e in enumerate(examples):
+                    display(e['input'], output=e['output'],
+                            title=f"Ex{i+1} " + title)
+            correct_xform = xform
+            break
+    if correct_xform:
+        print(
+            f"Xform {correct_xform.__name__} is correct for all examples in {task_type}")
+        test_examples = [examples for task_type,
+                            examples in task.items() if task_type == 'test']
+        for i, test_example in enumerate(test_examples):
+            if not check_xform_on_examples(correct_xform, test_example, task_name, 'test'):
+                print(
+                    f"Xform {correct_xform.__name__} failed for test example {i}")
+                correct_xform = None
+                break
+    return correct_xform
+
+
 def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
@@ -230,29 +257,7 @@ def process_tasks(tasks: Tasks, set: str):
                 continue
             if task_type == 'test':
                 continue
-            # check if at least one xform is correct
-            correct_xform = None
-            for xform in xforms:
-                if check_xform_on_examples(xform, examples, task_name, task_type):
-                    if False and xform == output_size_is_constant_times_input_size:
-                        title = f"{xform.__name__} ({task_name})"
-                        print(title)
-                        for i, e in enumerate(examples):
-                            display(e['input'], output=e['output'],
-                                    title=f"Ex{i+1} " + title)
-                    correct_xform = xform
-                    break
-            if correct_xform:
-                print(
-                    f"Xform {correct_xform.__name__} is correct for all examples in {task_type}")
-                test_examples = [examples for task_type,
-                                 examples in task.items() if task_type == 'test']
-                for i, test_example in enumerate(test_examples):
-                    if not check_xform_on_examples(correct_xform, test_example, task_name, 'test'):
-                        print(
-                            f"Xform {correct_xform.__name__} failed for test example {i}")
-                        correct_xform = None
-                        break
+            correct_xform = find_xform(examples, task, task_name, task_type)
             if correct_xform:
                 print(
                     f"Xform {correct_xform.__name__} is correct for all examples in {task_type} and test")
