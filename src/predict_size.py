@@ -39,7 +39,7 @@ def output_size_is_size_of_largest_object(grids: ExampleGrids, grid: Grid, task_
     return largest_object.size
 
 
-def output_inside_largest_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_object_inside_largest_frame(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     largest_frame = find_largest_frame(grid.data, None)
     if largest_frame:
         (top, left, bottom, right) = largest_frame
@@ -135,7 +135,7 @@ xforms = [
     output_size_is_size_of_largest_object,
     size_is_multiple_xform,
     size_is_multiple_determined_by_colors_xform,
-    output_inside_largest_frame_xform,
+    output_size_is_size_of_object_inside_largest_frame,
     output_size_is_size_of_largest_block_object,
     output_is_largest_nonblack_block_object_xform,
     output_is_largest_object_xform,
