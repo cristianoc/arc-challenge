@@ -18,7 +18,7 @@ def calculate_area(top: int, left: int, bottom: int, right: int) -> int:
     return (bottom - top + 1) * (right - left + 1)
 
 
-def precompute_sums(grid: GridData, foreground: int) -> Tuple[GridData, GridData]:
+def precompute_sums(grid: GridData, color: int) -> Tuple[GridData, GridData]:
     """Precompute the row and column sums for the grid to optimize the frame-checking process."""
     rows = len(grid)
     cols = len(grid[0])
@@ -28,36 +28,11 @@ def precompute_sums(grid: GridData, foreground: int) -> Tuple[GridData, GridData
 
     for i in range(rows):
         for j in range(cols):
-            if grid[i][j] == foreground:
+            if grid[i][j] == color:
                 row_sum[i][j] = row_sum[i][j-1] + 1 if j > 0 else 1
                 col_sum[i][j] = col_sum[i-1][j] + 1 if i > 0 else 1
 
     return row_sum, col_sum
-
-
-def find_largest_frame(grid: GridData, foreground: int) -> Optional[Frame]:
-    """Find the largest frame (rectangle with a fully filled border) in the grid."""
-    row_sum, col_sum = precompute_sums(grid, foreground)
-    max_area = 0
-    max_frame = None
-
-    rows = len(grid)
-    cols = len(grid[0])
-
-    for top in range(rows):
-        for left in range(cols):
-            for bottom in range(top, rows):
-                # Early termination if the potential max area is less than the current max_area
-                if (rows - top) * (cols - left) <= max_area:
-                    break
-                for right in range(left, cols):
-                    if is_frame_dp(row_sum, col_sum, top, left, bottom, right):
-                        area = calculate_area(top, left, bottom, right)
-                        if area > max_area:
-                            max_area = area
-                            max_frame = (top, left, bottom, right)
-
-    return max_frame
 
 
 def is_frame_dp(row_sum: GridData, col_sum: GridData, top: int, left: int, bottom: int, right: int) -> bool:
@@ -71,6 +46,46 @@ def is_frame_dp(row_sum: GridData, col_sum: GridData, top: int, left: int, botto
     if col_sum[bottom][right] - (col_sum[top-1][right] if top > 0 else 0) != bottom - top + 1:
         return False
     return True
+
+
+def is_frame(grid: GridData, top: int, left: int, bottom: int, right: int, color: int) -> bool:
+    """Check if the rectangle defined by (top, left) to (bottom, right) forms a frame."""
+    for i in range(left, right + 1):
+        if grid[top][i] != color or grid[bottom][i] != color:
+            return False
+    for i in range(top, bottom + 1):
+        if grid[i][left] != color or grid[i][right] != color:
+            return False
+    return True
+
+
+def find_largest_frame(grid: GridData, color: Optional[int]) -> Optional[Frame]:
+    """
+    Find the largest frame in the grid that has all border cells matching the specified color.
+    If the color is None, the function will find the largest frame with any color.
+    """
+    row_sum, col_sum = precompute_sums(grid, color) if color else (None, None)
+    max_area = 0
+    max_frame = None
+
+    rows = len(grid)
+    cols = len(grid[0])
+
+    for top in range(rows):
+        for left in range(cols):
+            for bottom in range(top, rows):
+                # Early termination if the potential max area is less than the current max_area
+                if (rows - top) * (cols - left) <= max_area:
+                    break
+                for right in range(left, cols):
+                    top_left_corner_color = grid[top][left]
+                    if is_frame_dp(row_sum, col_sum, top, left, bottom, right) if row_sum and col_sum else is_frame(grid, top, left, bottom, right, top_left_corner_color):
+                        area = calculate_area(top, left, bottom, right)
+                        if area > max_area:
+                            max_area = area
+                            max_frame = (top, left, bottom, right)
+
+    return max_frame
 
 
 def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> bool:
@@ -180,7 +195,6 @@ def eval_with_lattice_check():
                   f"Size: {frame_height}x{frame_width}, Area: {max_area}, "
                   f"Part of lattice: {is_lattice}, "
                   f"Time: {execution_time:.6f} seconds\n")
-
 
 
 def test_lattices():

@@ -73,6 +73,18 @@ def find_frame_objects_black(grid: Grid, objects: List[Object], task_name: str) 
         continue
     return frame_objects
 
+def output_inside_largest_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str):
+    largest_frame = find_largest_frame(grid.data, None)
+    if largest_frame:
+        (top, left, bottom, right) = largest_frame
+        width = right - left + 1
+        height = bottom - top + 1
+        if Debug and width >= 2 and height >= 2:
+            print(f"Largest frame found: {largest_frame} height:{height} width:{width}")
+        height_without_frame = height - 2
+        width_without_frame = width - 2
+        return (height_without_frame, width_without_frame)
+    return (0, 0)
 
 def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str):
     # Check that all the output sizes are smaller than the input sizes
@@ -105,7 +117,7 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str)
         fr = (frame.origin[0], frame.origin[1], frame.origin[0] +
               frame.height - 1, frame.origin[1] + frame.width - 1)
         is_lattice = is_frame_part_of_lattice(grid.data, fr, frame.main_color)
-        if is_lattice:
+        if False and is_lattice:
             display(grid.data, title=f"black frame: {fr} lattice")
 
         h, w = frame.size
@@ -257,6 +269,7 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid,
 xforms = [
     identity_xform, always_same_output_xform, size_of_largest_object_xform,
     size_is_multiple_xform, size_is_multiple_determined_by_colors_xform,
+    output_inside_largest_frame_xform,
     one_object_is_a_frame_xform,
     one_object_is_a_black_frame_xform
 ]
@@ -391,8 +404,8 @@ def process_tasks(tasks: Tasks, set: str):
             correct_xform = None
             for xform in xforms:
                 if check_xform_on_examples(xform, examples, task_name, task_type):
-                    if False and task_name == "9f236235.json" and xform == one_object_is_a_frame_xform_black:
-                        title = f"Size determined by black frame ({task_name})"
+                    if False and xform == output_inside_largest_frame_xform:
+                        title = f"{xform.__name__} ({task_name})"
                         print(title)
                         for i, e in enumerate(examples):
                             display(e['input'], output=e['output'],
