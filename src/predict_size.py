@@ -94,7 +94,7 @@ def output_size_is_size_of_largest_object_with_flexible_contours(grids: ExampleG
     return largest_object.size
 
 
-def size_is_multiple_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_constant_times_input_size(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     """
     Determines if the given grid can be scaled by consistent ratios derived from example grids.
     The function checks if applying these ratios to the grid's size results in integer dimensions.
@@ -133,7 +133,7 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid,
 xforms = [
     output_size_is_input_size,
     output_size_is_constant,
-    size_is_multiple_xform,
+    output_size_is_constant_times_input_size,
     size_is_multiple_determined_by_colors_xform,
     output_size_is_size_of_object_inside_largest_frame,
     output_size_is_size_of_largest_block_object,
