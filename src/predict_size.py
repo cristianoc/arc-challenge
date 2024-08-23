@@ -94,7 +94,7 @@ def output_size_is_size_of_largest_object_with_flexible_contours(grids: ExampleG
     return largest_object.size
 
 
-def output_size_is_constant_times_input_size(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_constant_times_input_size(examples: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     """
     Determines if the given grid can be scaled by consistent ratios derived from example grids.
     The function checks if applying these ratios to the grid's size results in integer dimensions.
@@ -104,9 +104,9 @@ def output_size_is_constant_times_input_size(grids: ExampleGrids, grid: Grid, ta
     """
     ratios_height: List[float] = []
     ratios_width: List[float] = []
-    for input_grid, output_grid in grids:
-        ratios_height.append(output_grid.size[0] / input_grid.size[0])
-        ratios_width.append(output_grid.size[1] / input_grid.size[1])
+    for input, output in examples:
+        ratios_height.append(output.size[0] / input.size[0])
+        ratios_width.append(output.size[1] / input.size[1])
 
     # Check if applying the ratios to the grid's size results in integers
     transformed_height = [ratio * grid.size[0] for ratio in ratios_height]
