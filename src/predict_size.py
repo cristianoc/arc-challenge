@@ -39,14 +39,9 @@ def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid, task_name: str
     return largest_object.size
 
 
-def find_frame_objects(grid: Grid, objects: List[Object], allow_black: bool, task_name: str) -> List[Object]:
+def find_frame_objects(grid: Grid, objects: List[Object], task_name: str) -> List[Object]:
     frame_objects: List[Object] = []
     for obj in objects:
-        if allow_black:
-            if obj.is_block():
-                frame_objects.append(obj)
-            continue
-
         if obj.size != grid.size and obj.has_frame():
             frame_objects.append(obj)
             continue
@@ -54,10 +49,6 @@ def find_frame_objects(grid: Grid, objects: List[Object], allow_black: bool, tas
         frame = find_largest_frame(obj.data, foreground)
 
         if frame:
-            is_lattice = is_frame_part_of_lattice(grid.data, frame, foreground)
-            if is_lattice:
-                display(grid.data, title="lattice")
-
             (top, left, bottom, right) = frame
             width = right - left + 1
             height = bottom - top + 1
@@ -73,6 +64,14 @@ def find_frame_objects(grid: Grid, objects: List[Object], allow_black: bool, tas
 
     return frame_objects
 
+def find_frame_objects_black(grid: Grid, objects: List[Object], task_name: str) -> List[Object]:
+    frame_objects: List[Object] = []
+    for obj in objects:
+        if obj.is_block():
+            frame_objects.append(obj)
+        continue
+    return frame_objects
+
 
 def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str):
     # Check that all the output sizes are smaller than the input sizes
@@ -81,7 +80,7 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str)
             return (0, 0)
 
     objects = grid.detect_objects(diagonals=False, allow_black=False)
-    frame_objects = find_frame_objects(grid=grid, objects=objects, allow_black=False, task_name=task_name)
+    frame_objects = find_frame_objects(grid=grid, objects=objects, task_name=task_name)
     if Debug:
         print(f"  # of objects: {len(objects)}")
     if Debug:
@@ -144,7 +143,7 @@ def one_object_is_a_black_frame_xform(grids: ExampleGrids, grid: Grid, task_name
             return (0, 0)
 
     objects = grid.detect_objects(diagonals=False, allow_black=True)
-    frame_objects = find_frame_objects(grid=grid, objects=objects, allow_black=True, task_name=task_name)
+    frame_objects = find_frame_objects_black(grid=grid, objects=objects, task_name=task_name)
     if Debug:
         print(f"  # of objects: {len(objects)}")
     if Debug:
