@@ -234,7 +234,7 @@ def find_xform(examples: List[Example], task: Task, task_name: str, task_type: s
         print(
             f"Xform {correct_xform.__name__} is correct for all examples in {task_type}")
         test_examples = [examples for task_type,
-                            examples in task.items() if task_type == 'test']
+                         examples in task.items() if task_type == 'test']
         for i, test_example in enumerate(test_examples):
             if not check_xform_on_examples(correct_xform, test_example, task_name, 'test'):
                 print(
@@ -250,7 +250,7 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
     in the given examples. For each example, it detects candidate objects in the input grid 
     and matches them with the output grid based on size and data. If all examples have a match, 
     the function returns the list of matched objects; otherwise, it returns None.
-    
+
     Args:
         examples: A list of examples, each containing an input and output grid.
         task_type: A string indicating the type of task (e.g., 'train' or 'test').
@@ -266,7 +266,8 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
         output_as_object = Object((0, 0), output.data)
         if output_as_object.has_frame():
             # If the output is a frame, detect objects in the input as frames
-            if Debug: print("  Output is a frame")
+            if Debug:
+                print("  Output is a frame")
         num_colors_output = len(output.get_colors())
         return input.detect_rectangular_objects(allow_multicolor=num_colors_output > 1, debug=Debug)
 
@@ -300,6 +301,7 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
     matched_objects = get_matched_objects(examples)
     return matched_objects
 
+
 def predict_size_using_linear_programming(examples: List[Example]):
     """
     Predicts the output size using linear programming. The function takes a list of input-output
@@ -328,6 +330,12 @@ def predict_size_using_linear_programming(examples: List[Example]):
     return predicted_height, predicted_width
 
 
+class Config:
+    find_xform = True
+    find_matched_objects = True
+    predict_size_using_linear_programming = True
+
+
 def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
@@ -341,16 +349,19 @@ def process_tasks(tasks: Tasks, set: str):
                 continue
             if task_type == 'test':
                 continue
-            correct_xform = find_xform(examples, task, task_name, task_type)
+            correct_xform = find_xform(
+                examples, task, task_name, task_type) if Config.find_xform else None
             if correct_xform:
                 print(
                     f"Xform {correct_xform.__name__} is correct for all examples in {task_type} and test")
                 num_correct += 1
                 continue
 
-            if Debug: print(f"Checking common features for {task_name} {set}")
+            if Debug:
+                print(f"Checking common features for {task_name} {set}")
             # Check if the input objects can be matched to the output objects
-            matched_objects = find_matched_objects(examples, task_type)
+            matched_objects = find_matched_objects(
+                examples, task_type) if Config.find_matched_objects else None
             if matched_objects:
                 if Debug:
                     print(
@@ -367,9 +378,11 @@ def process_tasks(tasks: Tasks, set: str):
                 num_correct += 1
                 continue
 
-            if Debug: print(
-                f"Trying to determine dimensions via LP for {task_name} {set}")
-            predicted_height, predicted_width = predict_size_using_linear_programming(examples)
+            if Debug:
+                print(
+                    f"Trying to determine dimensions via LP for {task_name} {set}")
+            predicted_height, predicted_width = predict_size_using_linear_programming(
+                examples) if Config.predict_size_using_linear_programming else (None, None)
             if predicted_height and predicted_width:
                 print(
                     f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
