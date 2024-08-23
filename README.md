@@ -43,9 +43,6 @@ These results illustrate the potential of symbolic approaches in abstract reason
 
 3. **Linear Programming**: In more complex cases, linear programming is employed to refine predictions. This involves solving for weights and biases that best fit the observed data, allowing for a more accurate determination of grid dimensions.
 
-4. **Layered Complexity**: The solution evolves from simple transformations to more complex techniques, addressing the increasing difficulty of SizeARC tasks as they approach the complexity of full ARC problems.
-
-
 ## Implementation
 
 For more details on the implementation of the methods used, start with the [predict_size.py](https://github.com/cristianoc/arc-challenge/blob/main/src/predict_size.py) file. This file provides a practical entry point into understanding how the symbolic approach was applied to solve the SizeARC challenge.
