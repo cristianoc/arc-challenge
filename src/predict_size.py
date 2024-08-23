@@ -245,6 +245,19 @@ def find_xform(examples: List[Example], task: Task, task_name: str, task_type: s
 
 
 def find_matched_objects(examples: List[Example], task_type: str) -> Optional[List[ObjectMatch]]:
+    """
+    Identifies and returns a list of matched input objects that correspond to the output objects
+    in the given examples. For each example, it detects candidate objects in the input grid 
+    and matches them with the output grid based on size and data. If all examples have a match, 
+    the function returns the list of matched objects; otherwise, it returns None.
+    
+    Args:
+        examples: A list of examples, each containing an input and output grid.
+        task_type: A string indicating the type of task (e.g., 'train' or 'test').
+
+    Returns:
+        A list of ObjectMatch tuples if matches are found for all examples, otherwise None.
+    """
 
     def candidate_objects_for_matching(input: Grid, output: Grid) -> List[Object]:
         """
@@ -308,11 +321,14 @@ def process_tasks(tasks: Tasks, set: str):
                 continue
 
             print(f"Checking common features for {task_name} {set}")
+            # Check if the input objects can be matched to the output objects
             matched_objects = find_matched_objects(examples, task_type)
             if matched_objects:
                 if Debug:
                     print(
                         f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}")
+                # If the input objects can be matched to the output objects, try to detect common features
+                # to determine the correct object to pick
                 common_decision_rule, features_used = detect_common_features(
                     matched_objects, debug=Debug)
                 print(
