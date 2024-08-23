@@ -31,7 +31,7 @@ def output_size_is_constant(grids: ExampleGrids, grid: Grid, task_name: str):
     return grids[0][1].size
 
 
-def size_of_largest_object_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_largest_object(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     objects = grid.detect_objects()
     if not objects:
         return (0, 0)
@@ -54,7 +54,7 @@ def output_inside_largest_frame_xform(grids: ExampleGrids, grid: Grid, task_name
     return (0, 0)
 
 
-def output_is_largest_block_object_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_largest_block_object(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     objects = grid.detect_objects(allow_black=True)
     # exclude full grid size
     objects = [obj for obj in objects if obj.size !=
@@ -132,11 +132,11 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid,
 
 xforms = [
     output_size_is_input_size, output_size_is_constant,
-    size_of_largest_object_xform,
+    output_size_is_size_of_largest_object,
     size_is_multiple_xform,
     size_is_multiple_determined_by_colors_xform,
     output_inside_largest_frame_xform,
-    output_is_largest_block_object_xform,
+    output_size_is_size_of_largest_block_object,
     output_is_largest_nonblack_block_object_xform,
     output_is_largest_object_xform,
 ]
