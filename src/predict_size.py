@@ -131,8 +131,10 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid,
 
 
 xforms = [
-    identity_xform, always_same_output_xform, size_of_largest_object_xform,
-    size_is_multiple_xform, size_is_multiple_determined_by_colors_xform,
+    identity_xform, always_same_output_xform,
+    size_of_largest_object_xform,
+    size_is_multiple_xform,
+    size_is_multiple_determined_by_colors_xform,
     output_inside_largest_frame_xform,
     output_is_largest_block_object_xform,
     output_is_largest_nonblack_block_object_xform,
