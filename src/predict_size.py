@@ -88,10 +88,22 @@ def output_inside_largest_frame_xform(grids: ExampleGrids, grid: Grid, task_name
         return (height_without_frame, width_without_frame)
     return (0, 0)
 
+
 def output_is_largest_block_object_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     objects = grid.detect_objects(allow_black=True)
     # exclude full grid size
-    objects = [obj for obj in objects if obj.size != grid.size and obj.is_block()]
+    objects = [obj for obj in objects if obj.size !=
+               grid.size and obj.is_block()]
+    if not objects:
+        return None
+    largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
+    return largest_object.size
+
+def output_is_largest_block_noblack_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+    objects = grid.detect_objects(allow_black=False)
+    # exclude full grid size and objects smaller than 2x2
+    objects = [obj for obj in objects if obj.size !=
+               grid.size and obj.size[0] >= 2 and obj.size[1] >= 2  and obj.is_block()]
     if not objects:
         return None
     largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
@@ -293,6 +305,7 @@ xforms = [
     size_is_multiple_xform, size_is_multiple_determined_by_colors_xform,
     output_inside_largest_frame_xform,
     output_is_largest_block_object_xform,
+    output_is_largest_block_noblack_xform,
     output_is_largest_object_xform,
     one_object_is_a_frame_xform,
     one_object_is_a_black_frame_xform
@@ -428,7 +441,7 @@ def process_tasks(tasks: Tasks, set: str):
             correct_xform = None
             for xform in xforms:
                 if check_xform_on_examples(xform, examples, task_name, task_type):
-                    if False and xform == output_is_largest_object_xform:
+                    if xform == one_object_is_a_frame_xform:
                         title = f"{xform.__name__} ({task_name})"
                         print(title)
                         for i, e in enumerate(examples):
