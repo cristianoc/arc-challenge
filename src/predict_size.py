@@ -1,7 +1,7 @@
 from typing import Callable, List, Optional, Tuple
 
 from color_features import detect_color_features
-from visual_cortex import find_largest_frame, is_frame_part_of_lattice
+from visual_cortex import find_largest_frame
 from grid import Grid
 from grid_data import Object, display
 from load_data import Example, Tasks, iter_tasks, training_data, evaluation_data
@@ -31,7 +31,7 @@ def output_size_is_constant(grids: ExampleGrids, grid: Grid, task_name: str):
     return grids[0][1].size
 
 
-def output_size_is_size_of_largest_object(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_largest_nonblack_object(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     objects = grid.detect_objects()
     if not objects:
         return (0, 0)
@@ -76,7 +76,7 @@ def output_size_is_size_of_largest_nonblack_block_object(grids: ExampleGrids, gr
     return largest_object.size
 
 
-def output_is_largest_object_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_largest_object_with_flexible_contours(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     objects = grid.detect_objects(allow_black=True)
     # exclude full grid size
     objects = [obj for obj in objects if obj.size != grid.size]
@@ -131,14 +131,15 @@ def size_is_multiple_determined_by_colors_xform(grids: ExampleGrids, grid: Grid,
 
 
 xforms = [
-    output_size_is_input_size, output_size_is_constant,
-    output_size_is_size_of_largest_object,
+    output_size_is_input_size,
+    output_size_is_constant,
     size_is_multiple_xform,
     size_is_multiple_determined_by_colors_xform,
     output_size_is_size_of_object_inside_largest_frame,
     output_size_is_size_of_largest_block_object,
     output_size_is_size_of_largest_nonblack_block_object,
-    output_is_largest_object_xform,
+    output_size_is_size_of_largest_nonblack_object,
+    output_size_is_size_of_largest_object_with_flexible_contours,
 ]
 
 
@@ -271,7 +272,7 @@ def process_tasks(tasks: Tasks, set: str):
             correct_xform = None
             for xform in xforms:
                 if check_xform_on_examples(xform, examples, task_name, task_type):
-                    if False and xform == one_object_is_a_black_frame_xform:
+                    if False and xform == output_size_is_size_of_largest_nonblack_object:
                         title = f"{xform.__name__} ({task_name})"
                         print(title)
                         for i, e in enumerate(examples):
