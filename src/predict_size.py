@@ -94,36 +94,9 @@ def output_size_is_size_of_largest_object_with_flexible_contours(grids: ExampleG
     return largest_object.size
 
 
-def output_size_is_constant_times_input_size(examples: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
-    """
-    Determines if the given grid can be scaled by consistent ratios derived from example grids.
-    The function checks if applying these ratios to the grid's size results in integer dimensions.
-
-    If the transformation is valid and consistent across all example grids, it returns the new size.
-    Otherwise, it returns (0, 0).
-    """
-    ratios_height: List[float] = []
-    ratios_width: List[float] = []
-    for input, output in examples:
-        ratios_height.append(output.size[0] / input.size[0])
-        ratios_width.append(output.size[1] / input.size[1])
-
-    # Check if applying the ratios to the grid's size results in integers
-    transformed_height = [ratio * grid.size[0] for ratio in ratios_height]
-    transformed_width = [ratio * grid.size[1] for ratio in ratios_width]
-
-    if all(height.is_integer() for height in transformed_height) and all(width.is_integer() for width in transformed_width):
-        # Ensure all ratios are the same
-        if all(ratio == ratios_height[0] for ratio in ratios_height) and all(ratio == ratios_width[0] for ratio in ratios_width):
-            return (int(ratios_height[0] * grid.size[0]), int(ratios_width[0] * grid.size[1]))
-
-    return (0, 0)
-
-
 xforms = [
     output_size_is_input_size,
     output_size_is_constant,
-    output_size_is_constant_times_input_size,
     output_size_is_size_of_object_inside_largest_frame,
     output_size_is_size_of_largest_block_object,
     output_size_is_size_of_largest_nonblack_block_object,
@@ -248,8 +221,8 @@ def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
-        # if task_name != "9f236235.json":
-        #     continue
+        if False and task_name != "963e52fc.json":
+            continue
         print(f"\n***Task: {task_name} {set}***")
 
         for task_type, examples in task.items():
@@ -261,7 +234,7 @@ def process_tasks(tasks: Tasks, set: str):
             correct_xform = None
             for xform in xforms:
                 if check_xform_on_examples(xform, examples, task_name, task_type):
-                    if False and xform == output_size_is_size_of_largest_nonblack_object:
+                    if False and xform == output_size_is_constant_times_input_size:
                         title = f"{xform.__name__} ({task_name})"
                         print(title)
                         for i, e in enumerate(examples):
