@@ -195,7 +195,7 @@ def one_object_is_a_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str)
 def one_object_is_a_black_frame_xform(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     # Check that all the output sizes are smaller than the input sizes
     for input_grid, output_grid in grids:
-        if output_grid.size >= input_grid.size:
+        if output_grid.size[0] >= input_grid.size[0] and output_grid.size[1] >= input_grid.size[1]:
             return (0, 0)
 
     objects = grid.detect_objects(diagonals=False, allow_black=True)
