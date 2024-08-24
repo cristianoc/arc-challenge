@@ -7,7 +7,7 @@ from rule_based_selector import Features
 pulp: Any = pulp
 random: Any = random
 
-def find_weights_and_bias(samples: List[Features], goals: List[int]) -> Optional[Tuple[Features, int]]:
+def find_weights_and_bias(samples: List[Features], goals: List[int], debug: bool = False) -> Optional[Tuple[Features, int]]:
     """
     Finds integer weights and bias such that:
     
@@ -63,6 +63,9 @@ def find_weights_and_bias(samples: List[Features], goals: List[int]) -> Optional
             is_perfect = False
             break
 
+    if debug:
+        print(f"Solution: Weights: {W_solution}, Bias: {b_solution}")
+
     # Check if the solution is plausible
     plausible = True
     # bias must be an integer between 0 and 2
@@ -73,8 +76,10 @@ def find_weights_and_bias(samples: List[Features], goals: List[int]) -> Optional
     if len(W_solution) > 1:
         for weight in W_solution.values():
             if weight % 1 != 0:
-                plausible = False
-                break
+                if weight != 0.5 and weight != 1/3:
+                    print(f"One of the weights is not an integer: {weight} and not 1/2 or 1/3")
+                    plausible = False
+                    break
     # weights must be integers and bias must be nonnegative integer and at most one weight can be nonzero
     else:
         if b_solution % 1 != 0 or b_solution < 0 or sum(W_solution.values()) > 1:
