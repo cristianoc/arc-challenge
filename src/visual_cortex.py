@@ -88,6 +88,38 @@ def find_largest_frame(grid: GridData, color: Optional[int]) -> Optional[Frame]:
     return max_frame
 
 
+def find_smallest_frame(grid: GridData, color: Optional[int], min_size: Optional[Tuple[int, int]] = None) -> Optional[Frame]:
+    """
+    Find the smallest frame in the grid that has all border cells matching the specified color.
+    If the color is None, the function will find the smallest frame with any color.
+    """
+    row_sum, col_sum = precompute_sums(grid, color) if color else (None, None)
+    min_area = float('inf')
+    min_frame = None
+
+    rows = len(grid)
+    cols = len(grid[0])
+
+    for top in range(rows):
+        for left in range(cols):
+            for bottom in range(top, rows):
+                # Early termination if the potential min area is greater than the current min_area
+                if (rows - top) * (cols - left) >= min_area:
+                    break
+                for right in range(left, cols):
+                    height = bottom - top + 1
+                    width = right - left + 1
+                    if min_size and (height < min_size[0] or width < min_size[1]):
+                        continue
+                    top_left_corner_color = grid[top][left]
+                    if is_frame_dp(row_sum, col_sum, top, left, bottom, right) if row_sum and col_sum else is_frame(grid, top, left, bottom, right, top_left_corner_color):
+                        area = calculate_area(top, left, bottom, right)
+                        if area < min_area:
+                            min_area = area
+                            min_frame = (top, left, bottom, right)
+
+    return min_frame
+
 def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> bool:
     """
     Determines whether the rectangular frame defined by the coordinates (top, left) to (bottom, right) can be part of a 
