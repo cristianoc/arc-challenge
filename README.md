@@ -37,6 +37,9 @@ These results illustrate the potential of symbolic approaches in abstract reason
 
 ### Key Techniques Used
 
+<img width="607" alt="Screenshot_2024-08-23_at_23 00 44" src="https://github.com/user-attachments/assets/4112f991-a296-456b-838f-88574200a8d2">
+
+
 1. **Basic Predefined Transformations**: The approach starts with predefined transformations that apply to input grids, guided by specific rules about how grid properties relate to the output size.
 
 2. **Decision Rules on Matched Objects**: The method enhances accuracy by detecting objects within the grid, matching them across examples, and applying decision rules that leverage these matches to predict the output size.
