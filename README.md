@@ -37,14 +37,28 @@ These results illustrate the potential of symbolic approaches in abstract reason
 
 ### Key Techniques Used
 
-<img width="607" alt="Screenshot_2024-08-23_at_23 00 44" src="https://github.com/user-attachments/assets/4112f991-a296-456b-838f-88574200a8d2">
-
-
 1. **Basic Predefined Transformations**: The approach starts with predefined transformations that apply to input grids, guided by specific rules about how grid properties relate to the output size.
 
 2. **Decision Rules on Matched Objects**: The method enhances accuracy by detecting objects within the grid, matching them across examples, and applying decision rules that leverage these matches to predict the output size.
 
 3. **Linear Programming**: In more complex cases, linear programming is employed to refine predictions. This involves solving for weights and biases that best fit the observed data, allowing for a more accurate determination of grid dimensions.
+
+## Example
+
+<img width="607" alt="Screenshot_2024-08-23_at_23 00 44" src="https://github.com/user-attachments/assets/4112f991-a296-456b-838f-88574200a8d2">
+
+An interesting category is where the output is a copy of an object in the input (or at least, its size is). These are handled in two phases:
+
+- **Matching**: Objects in the input are found and matched against the one in the output.
+- **Find a common decision rule**: A combination of features that uniquely identify which one is selected.
+
+In this case, a single feature is detected as distinguishing the output:
+
+```
+Common decision rule (Symmetry): VERTICAL = False.
+```
+
+So the selected object is the only one that is not symmetric across the vertical axis.
 
 ## Implementation
 
