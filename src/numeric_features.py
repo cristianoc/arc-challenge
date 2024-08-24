@@ -1,12 +1,16 @@
 from typing import Dict, List, Tuple
+
 from grid import Grid
+from grid_data import Object
 from rule_based_selector import Features
 
 
 def detect_numeric_features(grid: Grid) -> Features:
     height, width = grid.size
     num_colors = len(grid.get_colors())
-    features = {"grid_height": height, "grid_width": width, "num_colors": num_colors}
+    grid_as_object = Object((0,0), grid.data)
+    num_cells = grid_as_object.num_cells
+    features = {"grid_height": height, "grid_width": width, "num_colors": num_colors, "num_cells": num_cells}
     return features
 
 
@@ -31,7 +35,7 @@ def pretty_print_numeric_features(prediction: Tuple[Dict[str, int], int]) -> str
     for feature, value in features.items():
         if value == 1:
             res.append(f"in.{feature}")
-        elif value > 1:
+        elif value != 0:
             res.append(f"{value} * in.{feature}")
 
     result = " + ".join(res)

@@ -302,7 +302,7 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
     return matched_objects
 
 
-def predict_size_using_linear_programming(examples: List[Example]):
+def predict_size_using_linear_programming(examples: List[Example], debug: bool):
     """
     Predicts the output size using linear programming. The function takes a list of input-output
     grid pairs and attempts to determine the output size by solving a linear program that minimizes
@@ -324,9 +324,9 @@ def predict_size_using_linear_programming(examples: List[Example]):
         target_widths.append(target_width)
 
     predicted_height = find_weights_and_bias(
-        feature_vectors, target_heights)
+        feature_vectors, target_heights, debug)
     predicted_width = find_weights_and_bias(
-        feature_vectors, target_widths)
+        feature_vectors, target_widths, debug)
     return predicted_height, predicted_width
 
 
@@ -340,7 +340,7 @@ def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
-        if False and task_name != "963e52fc.json":
+        if False and task_name != "bbc9ae5d.json":
             continue
         print(f"\n***Task: {task_name} {set}***")
 
@@ -382,7 +382,7 @@ def process_tasks(tasks: Tasks, set: str):
                 print(
                     f"Trying to determine dimensions via LP for {task_name} {set}")
             predicted_height, predicted_width = predict_size_using_linear_programming(
-                examples) if Config.predict_size_using_linear_programming else (None, None)
+                examples, Debug) if Config.predict_size_using_linear_programming else (None, None)
             if predicted_height and predicted_width:
                 print(
                     f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
