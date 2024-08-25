@@ -7,10 +7,18 @@ from rule_based_selector import Features
 
 def detect_numeric_features(grid: Grid) -> Features:
     height, width = grid.size
-    num_colors = len(grid.get_colors())
-    grid_as_object = Object((0,0), grid.data)
-    num_cells = grid_as_object.num_cells
-    features = {"grid_height": height, "grid_width": width, "num_colors": num_colors, "num_cells": num_cells}
+    colors = grid.get_colors()
+    num_colors = len(colors)
+    grid_as_object = Object((0, 0), grid.data)
+    num_cells = grid_as_object.num_cells(color=None)
+
+    objects = grid.detect_objects()
+    main_color = grid_as_object.main_color
+    num_objects_of_main_color = sum(
+        1 for obj in objects if obj.main_color == main_color)
+
+    features = {"grid_height": height, "grid_width": width, "num_colors": num_colors,
+                "num_cells": num_cells, "num_objects_of_main_color": num_objects_of_main_color}
     return features
 
 
