@@ -295,8 +295,7 @@ def display_multiple(grid_pairs: List[Tuple[GridData, Optional[GridData]]], titl
     root.mainloop()
 
 
-# type: ignore
-def plot_grid(ax, data: GridData, cmap, norm, title: Optional[str] = None):
+def plot_grid(ax, data: GridData, cmap, norm, title: Optional[str] = None): # type: ignore
     ax.set_facecolor('black')  # type: ignore
     for i in range(len(data)):
         for j in range(len(data[0])):

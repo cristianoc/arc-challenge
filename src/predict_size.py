@@ -3,7 +3,7 @@ from typing import Callable, List, Optional, Tuple
 from color_features import detect_color_features
 from visual_cortex import Frame, find_largest_frame, find_smallest_frame, is_frame_part_of_lattice
 from grid import Grid
-from grid_data import GridData, Object, display, display_multiple
+from grid_data import BLACK, GridData, Object, display, display_multiple
 from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
@@ -21,6 +21,11 @@ ObjectPicker = Callable[[List[Object]], int]
 
 
 Debug = False
+class Config:
+    find_xform = True
+    find_matched_objects = True
+    predict_size_using_linear_programming = True
+
 
 
 def output_size_is_input_size(grids: ExampleGrids, grid: Grid, task_name: str):
@@ -396,17 +401,10 @@ def predict_size_using_linear_programming(examples: List[Example], debug: bool):
         target_widths.append(target_width)
 
     predicted_height = find_weights_and_bias(
-        feature_vectors, target_heights, debug)
+        feature_vectors, target_heights, "height", debug)
     predicted_width = find_weights_and_bias(
-        feature_vectors, target_widths, debug)
+        feature_vectors, target_widths, "width" , debug)
     return predicted_height, predicted_width
-
-
-class Config:
-    find_xform = True
-    find_matched_objects = True
-    predict_size_using_linear_programming = True
-
 
 def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
