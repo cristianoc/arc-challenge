@@ -25,7 +25,7 @@ class Config:
     find_xform = True
     find_matched_objects = True
     predict_size_using_linear_programming = True
-    try_remove_main_color = False
+    try_remove_main_color = True
     # task_name = "81c0276b.json"
     task_name = None
 
