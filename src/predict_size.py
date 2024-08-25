@@ -1,9 +1,9 @@
 from typing import Callable, List, Optional, Tuple
 
 from color_features import detect_color_features
-from visual_cortex import find_largest_frame
+from visual_cortex import Frame, find_largest_frame, find_smallest_frame, is_frame_part_of_lattice
 from grid import Grid
-from grid_data import Object, display
+from grid_data import GridData, Object, display, display_multiple
 from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
@@ -93,6 +93,61 @@ def output_size_is_size_of_largest_object_with_flexible_contours(grids: ExampleG
         return (height, width)
     return largest_object.size
 
+def output_size_is_size_of_repeating_subgrid_forming_a_lattice(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+    def find_lattice(grid: Grid) -> Optional[Frame]:
+        largest_frame = find_largest_frame(grid.data, None)
+        if Debug: print(f"largest_frame:{largest_frame}")
+        if largest_frame is None:
+            return None
+        (top, left, bottom, right) = largest_frame
+        width = right - left + 1
+        height = bottom - top + 1
+        if Debug: print(
+            f"Largest frame found: {largest_frame} height:{height} width:{width}")
+        foreground = grid.data[top][left]
+        is_lattice = is_frame_part_of_lattice(grid.data, largest_frame, foreground)
+        # find minimal frame inside and see if it forms a lattice
+        print(f"is_lattice:{is_lattice} foreground:{foreground}")
+        smallest_frame = find_smallest_frame(grid.data, foreground, min_size=(2,2))
+        if smallest_frame is None:
+            return None
+        is_lattice = is_frame_part_of_lattice(grid.data, smallest_frame, foreground)
+        if Debug: print(f"smallest_frame:{smallest_frame} is_lattice:{is_lattice} foreground:{foreground}")
+        if is_lattice:
+            return smallest_frame
+        else:
+            return None
+    
+    lattice = find_lattice(grid)
+    if lattice is None:
+        return None
+    (top, left, bottom, right) = lattice
+    repeating_obj_height = bottom - top
+    repeating_obj_width = right - left
+    repeating_obj_height -= 1 # remove the frame
+    repeating_obj_width -= 1 # remove the frame
+    num_repeating_obj_rows = grid.height // repeating_obj_height
+    num_repeating_obj_cols = grid.width // repeating_obj_width
+    
+    # check that the size is correct when accounting for the frame
+    frame_part_in_rows = num_repeating_obj_cols
+    frame_part_in_cols = num_repeating_obj_rows
+    if Debug:
+        print(f"num_repeating_obj_rows:{num_repeating_obj_rows} num_repeating_obj_cols:{num_repeating_obj_cols}")
+
+    # check that the size is correct when accounting for the frame
+    # where -1 is to account for the overlap of the frames
+    expected_height = num_repeating_obj_rows * repeating_obj_height + frame_part_in_rows - 1
+    if Debug: print(f"grid.height:{grid.height} expected height:{expected_height}")
+    if grid.height != expected_height:
+        return None
+    expected_width = num_repeating_obj_cols * repeating_obj_width + frame_part_in_cols - 1
+    if Debug: print(f"grid.width:{grid.width} expected width:{expected_width}")
+    if grid.width != expected_width:
+        return None
+
+    return (num_repeating_obj_rows, num_repeating_obj_cols)
+
 
 xforms = [
     output_size_is_input_size,
@@ -102,6 +157,7 @@ xforms = [
     output_size_is_size_of_largest_nonblack_block_object,
     output_size_is_size_of_largest_nonblack_object,
     output_size_is_size_of_largest_object_with_flexible_contours,
+    output_size_is_size_of_repeating_subgrid_forming_a_lattice
 ]
 
 
@@ -221,6 +277,7 @@ def find_xform(examples: List[Example], task: Task, task_name: str, task_type: s
     # check if at least one xform is correct
     correct_xform = None
     for xform in xforms:
+        if Debug: print(f"Checking xform {xform.__name__} {task_type}")
         if check_xform_on_examples(xform, examples, task_name, task_type):
             if False and xform == output_size_is_constant_times_input_size:
                 title = f"{xform.__name__} ({task_name})"
@@ -229,17 +286,18 @@ def find_xform(examples: List[Example], task: Task, task_name: str, task_type: s
                     display(e['input'], output=e['output'],
                             title=f"Ex{i+1} " + title)
             correct_xform = xform
-            break
-    if correct_xform:
-        print(
-            f"Xform {correct_xform.__name__} is correct for all examples in {task_type}")
-        test_examples = [examples for task_type,
-                         examples in task.items() if task_type == 'test']
-        for i, test_example in enumerate(test_examples):
-            if not check_xform_on_examples(correct_xform, test_example, task_name, 'test'):
-                print(
-                    f"Xform {correct_xform.__name__} failed for test example {i}")
-                correct_xform = None
+
+            print(
+                f"Xform {correct_xform.__name__} is correct for all examples in {task_type}")
+            test_examples = [examples for task_type,
+                            examples in task.items() if task_type == 'test']
+            for i, test_example in enumerate(test_examples):
+                if not check_xform_on_examples(correct_xform, test_example, task_name, 'test'):
+                    print(
+                        f"Xform {correct_xform.__name__} failed for test example {i}")
+                    correct_xform = None
+                    break
+            if correct_xform:
                 break
     return correct_xform
 
@@ -340,7 +398,7 @@ def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
-        if False and task_name != "bbc9ae5d.json":
+        if False and task_name != "9f236235.json":
             continue
         print(f"\n***Task: {task_name} {set}***")
 
@@ -388,16 +446,18 @@ def process_tasks(tasks: Tasks, set: str):
                     f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
                 num_correct += 1
             else:
+                if False:
+                    grids: List[Tuple[GridData, Optional[GridData]]] = [
+                        (Grid(example['input']).data, Grid(example['output']).data) for example in examples
+                    ]
+                    display_multiple(
+                        grids, title=f"Task: {task_name} {set} matched_objects:{matched_objects}/{len(examples)}")
+
                 # If no valid dimensions could be determined, give up
                 print(
                     f"Could not find correct transformation or determine dimensions via Linear Programming for {task_name} {set} examples")
                 num_incorrect += 1
 
-            # grids: List[Tuple[GridData, Optional[GridData]]] = [
-            #     (Grid(example['input']).data, Grid(example['output']).data) for example in examples
-            # ]
-            # display_multiple(
-            #     grids, title=f"Task: {task_name} {set} matched_objects:{matched_objects}/{len(examples)}")
     return num_correct, num_incorrect
 
 
