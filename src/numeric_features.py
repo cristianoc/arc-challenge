@@ -1,11 +1,13 @@
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 from grid import Grid
 from grid_data import Object
 from rule_based_selector import Features
 
 
-def detect_numeric_features(grid: Grid) -> Features:
+num_difficulties = 3
+
+def detect_numeric_features(grid: Grid, initial_difficulty: int) -> Features:
     height, width = grid.size
     colors = grid.get_colors()
     num_colors = len(colors)
@@ -17,12 +19,18 @@ def detect_numeric_features(grid: Grid) -> Features:
     num_objects_of_main_color = sum(
         1 for obj in objects if obj.main_color == main_color)
 
-    features = {"grid_height": height, "grid_width": width, "num_colors": num_colors,
-                "num_cells": num_cells, "num_objects_of_main_color": num_objects_of_main_color}
+    features : Features = {
+        "grid_height": {"value": height, "difficulty": 1 + initial_difficulty},
+        "grid_width": {"value": width, "difficulty": 1 + initial_difficulty},
+        "num_colors": {"value": num_colors, "difficulty": 2 + initial_difficulty},
+        "num_cells": {"value": num_cells, "difficulty": 2 + initial_difficulty},
+        "num_objects_of_main_color": {"value": num_objects_of_main_color, "difficulty": 3 + initial_difficulty},
+    }
+    assert num_difficulties == 3
     return features
 
 
-def pretty_print_numeric_features(prediction: Tuple[Dict[str, int], int]) -> str:
+def pretty_print_numeric_features(prediction: Tuple[Features, int]) -> str:
     """
     Pretty prints the numeric features.
     For each feature, write just the name if the value is 1, 
