@@ -25,7 +25,7 @@ class Config:
     find_xform = True
     find_matched_objects = True
     predict_size_using_linear_programming = True
-    remove_main_color = False
+    try_remove_main_color = False
     # task_name = "81c0276b.json"
     task_name = None
 
@@ -454,24 +454,36 @@ def process_tasks(tasks: Tasks, set: str):
                         print(
                             f"Could not find common decision rule for {task_name} {set}")
 
-            if Config.predict_size_using_linear_programming:
+            def try_linear_programming(exs : List[Example]):
                 if Debug:
                     print(
-                        f"Trying to determine dimensions via LP for {task_name} {set}")
-                if Config.remove_main_color:
+                        f"Trying to determine dimensions via LP for {task_name} {set}")                    
+                predicted_height, predicted_width = predict_size_using_linear_programming(
+                    exs, Debug)
+                if predicted_height and predicted_width:
+                    print(
+                        f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
+                return predicted_height, predicted_width
+            if Config.predict_size_using_linear_programming:
+                predicted_height, predicted_width = try_linear_programming(examples)
+                if predicted_height and predicted_width:
+                    num_correct += 1
+                    continue
+                if Config.try_remove_main_color:
+                    # try to remove main color and try again
+                    examples2: List[Example] = []
                     for example in examples:
                         input_obj = Object((0, 0), example['input'])
                         # change the main color to black
                         example['input'] = input_obj.change_color(input_obj.main_color, BLACK).data
-                    
-                    
-                predicted_height, predicted_width = predict_size_using_linear_programming(
-                    examples, Debug)
-                if predicted_height and predicted_width:
-                    print(
-                        f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
-                    num_correct += 1
-                    continue
+                        # make a copt of example where you change the input
+                        example_copy = example.copy()
+                        example_copy['input'] = example['input']
+                        examples2.append(example_copy)
+                    predicted_height, predicted_width = try_linear_programming(examples2)
+                    if predicted_height and predicted_width:
+                        num_correct += 1
+                        continue
 
             if False:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
