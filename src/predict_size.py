@@ -93,56 +93,69 @@ def output_size_is_size_of_largest_object_with_flexible_contours(grids: ExampleG
         return (height, width)
     return largest_object.size
 
+
 def output_size_is_size_of_repeating_subgrid_forming_a_lattice(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     def find_lattice(grid: Grid) -> Optional[Frame]:
         largest_frame = find_largest_frame(grid.data, None)
-        if Debug: print(f"largest_frame:{largest_frame}")
+        if Debug:
+            print(f"largest_frame:{largest_frame}")
         if largest_frame is None:
             return None
         (top, left, bottom, right) = largest_frame
         width = right - left + 1
         height = bottom - top + 1
-        if Debug: print(
-            f"Largest frame found: {largest_frame} height:{height} width:{width}")
+        if Debug:
+            print(
+                f"Largest frame found: {largest_frame} height:{height} width:{width}")
         foreground = grid.data[top][left]
-        is_lattice = is_frame_part_of_lattice(grid.data, largest_frame, foreground)
+        is_lattice = is_frame_part_of_lattice(
+            grid.data, largest_frame, foreground)
         # find minimal frame inside and see if it forms a lattice
         print(f"is_lattice:{is_lattice} foreground:{foreground}")
-        smallest_frame = find_smallest_frame(grid.data, foreground, min_size=(2,2))
+        smallest_frame = find_smallest_frame(
+            grid.data, foreground, min_size=(3, 3))
         if smallest_frame is None:
             return None
-        is_lattice = is_frame_part_of_lattice(grid.data, smallest_frame, foreground)
-        if Debug: print(f"smallest_frame:{smallest_frame} is_lattice:{is_lattice} foreground:{foreground}")
+        is_lattice = is_frame_part_of_lattice(
+            grid.data, smallest_frame, foreground)
+        if Debug:
+            print(
+                f"smallest_frame:{smallest_frame} is_lattice:{is_lattice} foreground:{foreground}")
         if is_lattice:
             return smallest_frame
         else:
             return None
-    
+
     lattice = find_lattice(grid)
     if lattice is None:
         return None
     (top, left, bottom, right) = lattice
     repeating_obj_height = bottom - top
     repeating_obj_width = right - left
-    repeating_obj_height -= 1 # remove the frame
-    repeating_obj_width -= 1 # remove the frame
+    repeating_obj_height -= 1  # remove the frame
+    repeating_obj_width -= 1  # remove the frame
     num_repeating_obj_rows = grid.height // repeating_obj_height
     num_repeating_obj_cols = grid.width // repeating_obj_width
-    
+
     # check that the size is correct when accounting for the frame
     frame_part_in_rows = num_repeating_obj_cols
     frame_part_in_cols = num_repeating_obj_rows
     if Debug:
-        print(f"num_repeating_obj_rows:{num_repeating_obj_rows} num_repeating_obj_cols:{num_repeating_obj_cols}")
+        print(
+            f"num_repeating_obj_rows:{num_repeating_obj_rows} num_repeating_obj_cols:{num_repeating_obj_cols}")
 
     # check that the size is correct when accounting for the frame
     # where -1 is to account for the overlap of the frames
-    expected_height = num_repeating_obj_rows * repeating_obj_height + frame_part_in_rows - 1
-    if Debug: print(f"grid.height:{grid.height} expected height:{expected_height}")
+    expected_height = num_repeating_obj_rows * \
+        repeating_obj_height + frame_part_in_rows - 1
+    if Debug:
+        print(f"grid.height:{grid.height} expected height:{expected_height}")
     if grid.height != expected_height:
         return None
-    expected_width = num_repeating_obj_cols * repeating_obj_width + frame_part_in_cols - 1
-    if Debug: print(f"grid.width:{grid.width} expected width:{expected_width}")
+    expected_width = num_repeating_obj_cols * \
+        repeating_obj_width + frame_part_in_cols - 1
+    if Debug:
+        print(f"grid.width:{grid.width} expected width:{expected_width}")
     if grid.width != expected_width:
         return None
 
@@ -277,7 +290,8 @@ def find_xform(examples: List[Example], task: Task, task_name: str, task_type: s
     # check if at least one xform is correct
     correct_xform = None
     for xform in xforms:
-        if Debug: print(f"Checking xform {xform.__name__} {task_type}")
+        if Debug:
+            print(f"Checking xform {xform.__name__} {task_type}")
         if check_xform_on_examples(xform, examples, task_name, task_type):
             if False and xform == output_size_is_constant_times_input_size:
                 title = f"{xform.__name__} ({task_name})"
@@ -290,7 +304,7 @@ def find_xform(examples: List[Example], task: Task, task_name: str, task_type: s
             print(
                 f"Xform {correct_xform.__name__} is correct for all examples in {task_type}")
             test_examples = [examples for task_type,
-                            examples in task.items() if task_type == 'test']
+                             examples in task.items() if task_type == 'test']
             for i, test_example in enumerate(test_examples):
                 if not check_xform_on_examples(correct_xform, test_example, task_name, 'test'):
                     print(
@@ -398,7 +412,7 @@ def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
-        if False and task_name != "9f236235.json":
+        if False and task_name != "81c0276b.json":
             continue
         print(f"\n***Task: {task_name} {set}***")
 
@@ -407,56 +421,60 @@ def process_tasks(tasks: Tasks, set: str):
                 continue
             if task_type == 'test':
                 continue
-            correct_xform = find_xform(
-                examples, task, task_name, task_type) if Config.find_xform else None
-            if correct_xform:
-                print(
-                    f"Xform {correct_xform.__name__} is correct for all examples in {task_type} and test")
-                num_correct += 1
-                continue
 
-            if Debug:
-                print(f"Checking common features for {task_name} {set}")
-            # Check if the input objects can be matched to the output objects
-            matched_objects = find_matched_objects(
-                examples, task_type) if Config.find_matched_objects else None
-            if matched_objects:
+            if Config.find_xform:
+                correct_xform = find_xform(
+                    examples, task, task_name, task_type)
+                if correct_xform:
+                    print(
+                        f"Xform {correct_xform.__name__} is correct for all examples in {task_type} and test")
+                    num_correct += 1
+                    continue
+
+            if Config.find_matched_objects:
+                if Debug:
+                    print(f"Checking common features for {task_name} {set}")
+                # Check if the input objects can be matched to the output objects
+                matched_objects = find_matched_objects(examples, task_type)
+                if matched_objects:
+                    if Debug:
+                        print(
+                            f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}")
+                    # If the input objects can be matched to the output objects, try to detect common features
+                    # to determine the correct object to pick
+                    common_decision_rule, features_used = detect_common_features(
+                        matched_objects, debug=Debug)
+                    print(
+                        f"Common decision rule ({features_used}): {common_decision_rule}")
+                    if not common_decision_rule:
+                        # rule to choose which input object to pick was not found
+                        assert False
+                    num_correct += 1
+                    continue
+
+            if Config.predict_size_using_linear_programming:
                 if Debug:
                     print(
-                        f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}")
-                # If the input objects can be matched to the output objects, try to detect common features
-                # to determine the correct object to pick
-                common_decision_rule, features_used = detect_common_features(
-                    matched_objects, debug=Debug)
-                print(
-                    f"Common decision rule ({features_used}): {common_decision_rule}")
-                if not common_decision_rule:
-                    # rule to choose which input object to pick was not found
-                    assert False
-                num_correct += 1
-                continue
+                        f"Trying to determine dimensions via LP for {task_name} {set}")
+                predicted_height, predicted_width = predict_size_using_linear_programming(
+                    examples, Debug)
+                if predicted_height and predicted_width:
+                    print(
+                        f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
+                    num_correct += 1
+                    continue
 
-            if Debug:
-                print(
-                    f"Trying to determine dimensions via LP for {task_name} {set}")
-            predicted_height, predicted_width = predict_size_using_linear_programming(
-                examples, Debug) if Config.predict_size_using_linear_programming else (None, None)
-            if predicted_height and predicted_width:
-                print(
-                    f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
-                num_correct += 1
-            else:
-                if False:
-                    grids: List[Tuple[GridData, Optional[GridData]]] = [
-                        (Grid(example['input']).data, Grid(example['output']).data) for example in examples
-                    ]
-                    display_multiple(
-                        grids, title=f"Task: {task_name} {set} matched_objects:{matched_objects}/{len(examples)}")
+            if False:
+                grids: List[Tuple[GridData, Optional[GridData]]] = [
+                    (Grid(example['input']).data, Grid(example['output']).data) for example in examples
+                ]
+                display_multiple(
+                    grids, title=f"Task: {task_name} {set} matched_objects:{matched_objects}/{len(examples)}")
 
-                # If no valid dimensions could be determined, give up
-                print(
-                    f"Could not find correct transformation or determine dimensions via Linear Programming for {task_name} {set} examples")
-                num_incorrect += 1
+            # If no valid dimensions could be determined, give up
+            print(
+                f"Could not find correct transformation or determine dimensions via Linear Programming for {task_name} {set} examples")
+            num_incorrect += 1
 
     return num_correct, num_incorrect
 
