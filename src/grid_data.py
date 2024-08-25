@@ -35,13 +35,11 @@ class Object:
     def size(self) -> Tuple[int, int]:
         return (self.height, self.width)
 
-    @property
-    def num_cells(self) -> int:
-        color = self.main_color
-        if color != 0:
+    def num_cells(self, color: Optional[int]) -> int:
+        if color is None:
             return sum(cell != 0 for row in self.data for cell in row)
         else:
-            return sum(cell == 0 for row in self.data for cell in row)
+            return sum(cell == color for row in self.data for cell in row)
 
     def move(self, dr: int, dc: int) -> 'Object':
         """

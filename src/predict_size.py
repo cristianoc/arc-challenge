@@ -25,7 +25,9 @@ class Config:
     find_xform = True
     find_matched_objects = True
     predict_size_using_linear_programming = True
-
+    remove_main_color = False
+    # task_name = "81c0276b.json"
+    task_name = None
 
 
 def output_size_is_input_size(grids: ExampleGrids, grid: Grid, task_name: str):
@@ -40,7 +42,7 @@ def output_size_is_size_of_largest_nonblack_object(grids: ExampleGrids, grid: Gr
     objects = grid.detect_objects()
     if not objects:
         return (0, 0)
-    largest_object = max(objects, key=lambda obj: obj.num_cells)
+    largest_object = max(objects, key=lambda obj: obj.num_cells(color=None))
     return largest_object.size
 
 
@@ -410,7 +412,7 @@ def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in iter_tasks(tasks):
-        if False and task_name != "81c0276b.json":
+        if Config.task_name and task_name != Config.task_name:
             continue
         print(f"\n***Task: {task_name} {set}***")
 
@@ -456,6 +458,13 @@ def process_tasks(tasks: Tasks, set: str):
                 if Debug:
                     print(
                         f"Trying to determine dimensions via LP for {task_name} {set}")
+                if Config.remove_main_color:
+                    for example in examples:
+                        input_obj = Object((0, 0), example['input'])
+                        # change the main color to black
+                        example['input'] = input_obj.change_color(input_obj.main_color, BLACK).data
+                    
+                    
                 predicted_height, predicted_width = predict_size_using_linear_programming(
                     examples, Debug)
                 if predicted_height and predicted_width:
@@ -495,7 +504,7 @@ def predict_sizes():
     perc_correct_ev = None
     if num_correct_ev + num_incorrect_ev > 0:
         perc_correct_ev = int(1000 * num_correct_ev /
-                              (num_correct_tr + num_incorrect_ev)) / 10
+                              (num_correct_ev + num_incorrect_ev)) / 10
         print(
             f"Evaluation data Correct:{num_correct_ev}, Incorrect:{num_incorrect_ev}, Score:{perc_correct_ev}%")
 
