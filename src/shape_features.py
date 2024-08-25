@@ -16,11 +16,15 @@ LARGEST_SIZE, SMALLEST_SIZE, MAX_NUMBER_NONTRIVIAL_SUBOBJECTS = ColorFeatures
 # Functions to detect the features
 
 def detect_has_largest_size(object: Object, all_objects: List[Object]) -> bool:
+    if len(all_objects) == 1:
+        return True
     max_size = max(
         obj.width * obj.height for obj in all_objects if obj != object)
     return object.width * object.height > max_size
 
 def detect_has_smallest_size(object: Object, all_objects: List[Object]) -> bool:
+    if len(all_objects) == 1:
+        return True
     min_size = min(
         obj.width * obj.height for obj in all_objects if obj != object)
     return object.width * object.height < min_size
