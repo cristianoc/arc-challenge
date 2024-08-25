@@ -50,11 +50,11 @@ class Object:
         new_origin = (self.origin[0] + dr, self.origin[1] + dc)
         return Object(new_origin, self.data)
 
-    def change_color(self, to_color: int) -> 'Object':
+    def change_color(self, from_color: Optional[int], to_color: int) -> 'Object':
         """
         Changes the color of all cells in the object to `to_color`.
         """
-        new_data = [[to_color if cell != 0 else cell for cell in row]
+        new_data = [[to_color if color == from_color or (color != 0 and from_color is None) else color for color in row]
                     for row in self.data]
         return Object(self.origin, new_data)
 
@@ -295,7 +295,8 @@ def display_multiple(grid_pairs: List[Tuple[GridData, Optional[GridData]]], titl
     root.mainloop()
 
 
-def plot_grid(ax, data: GridData, cmap, norm, title: Optional[str] = None): # type: ignore
+# type: ignore
+def plot_grid(ax, data: GridData, cmap, norm, title: Optional[str] = None):
     ax.set_facecolor('black')  # type: ignore
     for i in range(len(data)):
         for j in range(len(data[0])):

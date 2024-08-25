@@ -83,7 +83,7 @@ def transform(input: Grid) -> Grid:
 
             # Create a new object with the specified color and new origin
             new_object = current_object.move(
-                4 * dr, 4 * dc).change_color(color)
+                4 * dr, 4 * dc).change_color(None, color)
 
             # Add the new object to the grid
             new_grid.add_object(new_object)
