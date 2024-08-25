@@ -493,7 +493,10 @@ def predict_sizes():
     if num_correct_ev is not None and num_incorrect_ev is not None:
         print(
             f"Evaluation data Correct:{num_correct_ev}, Incorrect:{num_incorrect_ev}, Score:{int(1000 * num_correct_ev / (num_correct_ev + num_incorrect_ev))/10}%")
-
+    # write summary of results to json file
+    with open("predict_sizes.json", "w") as f:
+        f.write(
+            f'{{"training_data":{{"correct":{num_correct_tr},"incorrect":{num_incorrect_tr}}},"evaluation_data":{{"correct":{num_correct_ev},"incorrect":{num_incorrect_ev}}}}}')    
 
 if __name__ == "__main__":
     predict_sizes()
