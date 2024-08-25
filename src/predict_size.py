@@ -444,13 +444,14 @@ def process_tasks(tasks: Tasks, set: str):
                     # to determine the correct object to pick
                     common_decision_rule, features_used = detect_common_features(
                         matched_objects, debug=Debug)
-                    print(
-                        f"Common decision rule ({features_used}): {common_decision_rule}")
-                    if not common_decision_rule:
+                    if common_decision_rule:
+                        print(
+                            f"Common decision rule ({features_used}): {common_decision_rule}")
+                        num_correct += 1
+                        continue
+                    else:
                         # rule to choose which input object to pick was not found
-                        assert False
-                    num_correct += 1
-                    continue
+                        print(f"Could not find common decision rule for {task_name} {set}") 
 
             if Config.predict_size_using_linear_programming:
                 if Debug:
