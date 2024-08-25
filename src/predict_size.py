@@ -521,32 +521,59 @@ def process_tasks(tasks: Tasks, set: str):
     return num_correct, num_incorrect
 
 
+def process_and_evaluate(tasks: Tasks, set: str, difficulty_level:Optional[int]=None):
+    """
+    Processes tasks and calculates the number of correct and incorrect predictions.
+    Returns the percentage of correct predictions.
+    """
+    if difficulty_level is not None:
+        Config.difficulty = difficulty_level
+    num_correct, num_incorrect = process_tasks(tasks, set)
+    
+    perc_correct = None
+    if num_correct + num_incorrect > 0:
+        perc_correct = int(1000 * num_correct / (num_correct + num_incorrect)) / 10
+        print(
+            f"{set.capitalize()} data - Difficulty Level {difficulty_level}: "
+            f"Correct: {num_correct}, Incorrect: {num_incorrect}, Score: {perc_correct}%"
+        )
+    
+    return perc_correct
+
+
 def predict_sizes():
-    num_correct_tr, num_incorrect_tr = process_tasks(
-        training_data, "traing_data")
-    num_correct_ev, num_incorrect_ev = process_tasks(
-        evaluation_data, "evaluation_data")
-
-    perc_correct_tr = None
-    if num_correct_tr + num_incorrect_tr > 0:
-        perc_correct_tr = int(1000 * num_correct_tr /
-                              (num_correct_tr + num_incorrect_tr)) / 10
-        print(
-            f"\nTraining data Correct:{num_correct_tr}, Incorrect:{num_incorrect_tr}, Score:{perc_correct_tr}%")
-
-    perc_correct_ev = None
-    if num_correct_ev + num_incorrect_ev > 0:
-        perc_correct_ev = int(1000 * num_correct_ev /
-                              (num_correct_ev + num_incorrect_ev)) / 10
-        print(
-            f"Evaluation data Correct:{num_correct_ev}, Incorrect:{num_incorrect_ev}, Score:{perc_correct_ev}%")
-
-    # write summary of results to json file
+    num_correct_tr = process_and_evaluate(training_data, "training_data")
+    num_correct_ev = process_and_evaluate(evaluation_data, "evaluation_data")
+    
+    # Write summary of results to JSON file
     with open("predict_sizes.json", "w") as f:
-        # only write percentages
         f.write(
-            f'{{"training_data":{perc_correct_tr},"evaluation_data":{perc_correct_ev}}}')
+            f'{{"training_data":{num_correct_tr},"evaluation_data":{num_correct_ev}}}'
+        )
+
+def ablation_study():
+    results = {}
+
+    # Iterate over difficulty levels from 1 to 12
+    for difficulty_level in range(1, 13):
+        print(f"\nEvaluating difficulty level: {difficulty_level}")
+        
+        perc_correct_tr = process_and_evaluate(training_data, "training_data", difficulty_level)
+        perc_correct_ev = process_and_evaluate(evaluation_data, "evaluation_data", difficulty_level)
+        
+        # Store results for this difficulty level
+        results[difficulty_level] = {
+            "training_data": perc_correct_tr,
+            "evaluation_data": perc_correct_ev
+        }
+    
+    # Write summary of results to JSON file
+    with open("ablation_results.json", "w") as f:
+        import json
+        json.dump(results, f, indent=4)
+    
+    print("\nAblation study completed. Results saved to 'ablation_results.json'.")
 
 
 if __name__ == "__main__":
-    predict_sizes()
+    ablation_study()
