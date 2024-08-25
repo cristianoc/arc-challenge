@@ -451,7 +451,8 @@ def process_tasks(tasks: Tasks, set: str):
                         continue
                     else:
                         # rule to choose which input object to pick was not found
-                        print(f"Could not find common decision rule for {task_name} {set}") 
+                        print(
+                            f"Could not find common decision rule for {task_name} {set}")
 
             if Config.predict_size_using_linear_programming:
                 if Debug:
@@ -483,21 +484,21 @@ def process_tasks(tasks: Tasks, set: str):
 def predict_sizes():
     num_correct_tr, num_incorrect_tr = process_tasks(
         training_data, "traing_data")
-    do_eval = True
-    num_correct_ev: Optional[int] = None
-    num_incorrect_ev: Optional[int] = None
-    if do_eval:
-        num_correct_ev, num_incorrect_ev = process_tasks(
-            evaluation_data, "evaluation_data")
+    num_correct_ev, num_incorrect_ev = process_tasks(
+        evaluation_data, "evaluation_data")
+    perc_correct_tr = int(1000 * num_correct_tr /
+                          (num_correct_tr + num_incorrect_tr)) / 10
+    perc_correct_ev = int(1000 * num_correct_ev /
+                          (num_correct_tr + num_incorrect_ev)) / 10
     print(
-        f"\nTraining data Correct:{num_correct_tr}, Incorrect:{num_incorrect_tr}, Score:{int(1000 * num_correct_tr / (num_correct_tr + num_incorrect_tr))/10}%")
-    if num_correct_ev is not None and num_incorrect_ev is not None:
-        print(
-            f"Evaluation data Correct:{num_correct_ev}, Incorrect:{num_incorrect_ev}, Score:{int(1000 * num_correct_ev / (num_correct_ev + num_incorrect_ev))/10}%")
+        f"\nTraining data Correct:{num_correct_tr}, Incorrect:{num_incorrect_tr}, Score:{perc_correct_tr}%")
+    print(
+        f"Evaluation data Correct:{num_correct_ev}, Incorrect:{num_incorrect_ev}, Score:{perc_correct_ev}%")
     # write summary of results to json file
     with open("predict_sizes.json", "w") as f:
         f.write(
-            f'{{"training_data":{{"correct":{num_correct_tr},"incorrect":{num_incorrect_tr}}},"evaluation_data":{{"correct":{num_correct_ev},"incorrect":{num_incorrect_ev}}}}}')    
+            f'{{"training_data":{{"correct":{num_correct_tr},"incorrect":{num_incorrect_tr}}},"evaluation_data":{{"correct":{num_correct_ev},"incorrect":{num_incorrect_ev}}}}}')
+
 
 if __name__ == "__main__":
     predict_sizes()
