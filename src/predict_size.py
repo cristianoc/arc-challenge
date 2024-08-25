@@ -1,6 +1,7 @@
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, List, Optional, Tuple, TypedDict
 
 from color_features import detect_color_features
+import numeric_features
 from visual_cortex import Frame, find_largest_frame, find_smallest_frame, is_frame_part_of_lattice
 from grid import Grid
 from grid_data import BLACK, GridData, Object, display, display_multiple
@@ -14,7 +15,6 @@ from symmetry_features import detect_symmetry_features
 
 Size = Tuple[int, int]
 ExampleGrids = List[Tuple[Grid, Grid]]
-SizeXform = Callable[[ExampleGrids, Grid, str], Optional[Size]]
 
 # returns the index of the object to pick
 ObjectPicker = Callable[[List[Object]], int]
@@ -26,6 +26,7 @@ class Config:
     find_matched_objects = True
     predict_size_using_linear_programming = True
     try_remove_main_color = True
+    difficulty = 1000
     # task_name = "81c0276b.json"
     task_name = None
 
@@ -169,15 +170,20 @@ def output_size_is_size_of_repeating_subgrid_forming_a_lattice(grids: ExampleGri
     return (num_repeating_obj_rows, num_repeating_obj_cols)
 
 
-xforms = [
-    output_size_is_input_size,
-    output_size_is_constant,
-    output_size_is_size_of_object_inside_largest_frame,
-    output_size_is_size_of_largest_block_object,
-    output_size_is_size_of_largest_nonblack_block_object,
-    output_size_is_size_of_largest_nonblack_object,
-    output_size_is_size_of_largest_object_with_flexible_contours,
-    output_size_is_size_of_repeating_subgrid_forming_a_lattice
+SizeXform = Callable[[ExampleGrids, Grid, str], Optional[Size]]
+class XformEntry(TypedDict):
+    function: SizeXform
+    difficulty: int
+    
+xforms: List[XformEntry] = [
+    {"function": output_size_is_input_size, "difficulty": 1},  # Level 1: Very Simple
+    {"function": output_size_is_constant, "difficulty": 2},  # Level 2: Simple with External Dependency
+    {"function": output_size_is_size_of_object_inside_largest_frame, "difficulty": 4},  # Level 4: Complex
+    {"function": output_size_is_size_of_largest_block_object, "difficulty": 3},  # Level 3: Moderate
+    {"function": output_size_is_size_of_largest_nonblack_block_object, "difficulty": 3},  # Level 3: Moderate
+    {"function": output_size_is_size_of_largest_nonblack_object, "difficulty": 3},  # Level 3: Moderate
+    {"function": output_size_is_size_of_largest_object_with_flexible_contours, "difficulty": 4},  # Level 4: Complex
+    {"function": output_size_is_size_of_repeating_subgrid_forming_a_lattice, "difficulty": 4}  # Level 4: Complex
 ]
 
 
@@ -198,6 +204,38 @@ def check_xform_on_examples(xform: SizeXform, examples: List[Example], task_name
             return False
     return True
 
+def find_xform(examples: List[Example], task: Task, task_name: str, task_type: str) -> Optional[XformEntry]:
+    # check if at least one xform is correct
+    correct_xform = None
+    for xform in xforms:
+        if Config.difficulty < xform["difficulty"]:
+            continue
+        func = xform["function"]
+        if Debug:
+            print(f"Checking xform {func.__name__} {task_type}")
+        if check_xform_on_examples(func, examples, task_name, task_type):
+            if False and xform == output_size_is_constant_times_input_size:
+                title = f"{xform.__name__} ({task_name})"
+                print(title)
+                for i, e in enumerate(examples):
+                    display(e['input'], output=e['output'],
+                            title=f"Ex{i+1} " + title)
+            correct_xform = xform
+
+            print(
+                f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type}")
+            test_examples = [examples for task_type,
+                             examples in task.items() if task_type == 'test']
+            for i, test_example in enumerate(test_examples):
+                if not check_xform_on_examples(correct_xform["function"], test_example, task_name, 'test'):
+                    print(
+                        f"Xform {correct_xform['function'].__name__} failed for test example {i}")
+                    correct_xform = None
+                    break
+            if correct_xform:
+                break
+    return correct_xform
+
 
 # ObjectMatch is a type alias representing a match between a list of detected input objects
 # and the index of the object within that list that is identical to the output object.
@@ -208,7 +246,7 @@ def check_xform_on_examples(xform: SizeXform, examples: List[Example], task_name
 ObjectMatch = Tuple[List[Object], int]
 
 
-def detect_common_features(matched_objects: List[ObjectMatch], debug: bool = False):
+def detect_common_features(matched_objects: List[ObjectMatch], initial_difficulty: int, debug: bool = False):
     def detect_common_symmetry_features() -> Optional[DecisionRule]:
         common_decision_rule = None
         for input_objects, index in matched_objects:
@@ -255,11 +293,11 @@ def detect_common_features(matched_objects: List[ObjectMatch], debug: bool = Fal
                 break
         return common_decision_rule
 
-    def detect_common_shape_features() -> Optional[DecisionRule]:
+    def detect_common_shape_features(level: int) -> Optional[DecisionRule]:
         common_decision_rule = None
         for input_objects, index in matched_objects:
             embeddings = [detect_shape_features(
-                obj, input_objects, debug) for obj in input_objects]
+                obj, input_objects, level, debug) for obj in input_objects]
             decision_rule = select_object_minimal(embeddings, index)
             if decision_rule is not None:
                 if debug:
@@ -278,49 +316,24 @@ def detect_common_features(matched_objects: List[ObjectMatch], debug: bool = Fal
                 break
         return common_decision_rule
 
-    # Try detecting common features in the order of shape, symmetry, and color
-    common_decision_rule = detect_common_shape_features()
-    features_used = "Shape"
+    common_decision_rule = None
+    features_used = None
 
-    if common_decision_rule is None:
-        common_decision_rule = detect_common_symmetry_features()
-        features_used = "Symmetry"
+    # Try detecting common features in the order of shape, color, and symmetry
 
-    if common_decision_rule is None:
+    if common_decision_rule is None and Config.difficulty >= initial_difficulty + 1:
+        common_decision_rule = detect_common_shape_features(initial_difficulty+1)
+        features_used = "Shape"
+
+    if common_decision_rule is None and Config.difficulty >= initial_difficulty + 2:
         common_decision_rule = detect_common_color_features()
         features_used = "Color"
 
+    if common_decision_rule is None and Config.difficulty >= initial_difficulty + 3:
+        common_decision_rule = detect_common_symmetry_features()
+        features_used = "Symmetry"
+
     return common_decision_rule, features_used
-
-
-def find_xform(examples: List[Example], task: Task, task_name: str, task_type: str) -> Optional[SizeXform]:
-    # check if at least one xform is correct
-    correct_xform = None
-    for xform in xforms:
-        if Debug:
-            print(f"Checking xform {xform.__name__} {task_type}")
-        if check_xform_on_examples(xform, examples, task_name, task_type):
-            if False and xform == output_size_is_constant_times_input_size:
-                title = f"{xform.__name__} ({task_name})"
-                print(title)
-                for i, e in enumerate(examples):
-                    display(e['input'], output=e['output'],
-                            title=f"Ex{i+1} " + title)
-            correct_xform = xform
-
-            print(
-                f"Xform {correct_xform.__name__} is correct for all examples in {task_type}")
-            test_examples = [examples for task_type,
-                             examples in task.items() if task_type == 'test']
-            for i, test_example in enumerate(test_examples):
-                if not check_xform_on_examples(correct_xform, test_example, task_name, 'test'):
-                    print(
-                        f"Xform {correct_xform.__name__} failed for test example {i}")
-                    correct_xform = None
-                    break
-            if correct_xform:
-                break
-    return correct_xform
 
 
 def find_matched_objects(examples: List[Example], task_type: str) -> Optional[List[ObjectMatch]]:
@@ -381,7 +394,7 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
     return matched_objects
 
 
-def predict_size_using_linear_programming(examples: List[Example], debug: bool):
+def predict_size_using_linear_programming(examples: List[Example], initial_difficulty: int, debug: bool):
     """
     Predicts the output size using linear programming. The function takes a list of input-output
     grid pairs and attempts to determine the output size by solving a linear program that minimizes
@@ -395,7 +408,7 @@ def predict_size_using_linear_programming(examples: List[Example], debug: bool):
         input_grid = Grid(example['input'])
         output_grid = Grid(example['output'])
 
-        input_features = detect_numeric_features(input_grid)
+        input_features = detect_numeric_features(input_grid, initial_difficulty)
         target_height, target_width = output_grid.size
 
         feature_vectors.append(input_features)
@@ -427,9 +440,11 @@ def process_tasks(tasks: Tasks, set: str):
                     examples, task, task_name, task_type)
                 if correct_xform:
                     print(
-                        f"Xform {correct_xform.__name__} is correct for all examples in {task_type} and test")
+                        f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type} and test")
                     num_correct += 1
                     continue
+            current_difficulty = max(xform["difficulty"] for xform in xforms)
+
 
             if Config.find_matched_objects:
                 if Debug:
@@ -443,7 +458,7 @@ def process_tasks(tasks: Tasks, set: str):
                     # If the input objects can be matched to the output objects, try to detect common features
                     # to determine the correct object to pick
                     common_decision_rule, features_used = detect_common_features(
-                        matched_objects, debug=Debug)
+                        matched_objects, current_difficulty, debug=Debug)
                     if common_decision_rule:
                         print(
                             f"Common decision rule ({features_used}): {common_decision_rule}")
@@ -454,22 +469,25 @@ def process_tasks(tasks: Tasks, set: str):
                         print(
                             f"Could not find common decision rule for {task_name} {set}")
 
+            current_difficulty += 3 # difficulty levels for detecting common features
+
             def try_linear_programming(exs : List[Example]):
                 if Debug:
                     print(
                         f"Trying to determine dimensions via LP for {task_name} {set}")                    
                 predicted_height, predicted_width = predict_size_using_linear_programming(
-                    exs, Debug)
+                    exs, current_difficulty, Debug)
                 if predicted_height and predicted_width:
                     print(
                         f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
                 return predicted_height, predicted_width
-            if Config.predict_size_using_linear_programming:
+            current_difficulty += numeric_features.num_difficulties
+            if Config.predict_size_using_linear_programming and Config.difficulty >= current_difficulty:
                 predicted_height, predicted_width = try_linear_programming(examples)
                 if predicted_height and predicted_width:
                     num_correct += 1
                     continue
-                if Config.try_remove_main_color:
+                if Config.try_remove_main_color and Config.difficulty >= current_difficulty + 1:
                     # try to remove main color and try again
                     examples2: List[Example] = []
                     for example in examples:
@@ -484,6 +502,9 @@ def process_tasks(tasks: Tasks, set: str):
                     if predicted_height and predicted_width:
                         num_correct += 1
                         continue
+            current_difficulty += 1 # difficulty level for trying to remove main color
+
+            # print(f"Currrent difficulty: {current_difficulty}")
 
             if False:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [

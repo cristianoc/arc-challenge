@@ -5,15 +5,18 @@ from grid import Grid
 from grid_data import Object
 from rule_based_selector import Features
 
+
 class ColorFeatures(Enum):
     LARGEST_SIZE = auto()  # Whether the object has the largest size of the objects (bool)
     SMALLEST_SIZE = auto()  # Whether the object has the smallest size of the objects (bool)
     # Whether the object has the maximum number of non-trivial subobjects (bool)
     MAX_NUMBER_NONTRIVIAL_SUBOBJECTS = auto()
 
+
 LARGEST_SIZE, SMALLEST_SIZE, MAX_NUMBER_NONTRIVIAL_SUBOBJECTS = ColorFeatures
 
 # Functions to detect the features
+
 
 def detect_has_largest_size(object: Object, all_objects: List[Object]) -> bool:
     if len(all_objects) == 1:
@@ -22,12 +25,14 @@ def detect_has_largest_size(object: Object, all_objects: List[Object]) -> bool:
         obj.width * obj.height for obj in all_objects if obj != object)
     return object.width * object.height > max_size
 
+
 def detect_has_smallest_size(object: Object, all_objects: List[Object]) -> bool:
     if len(all_objects) == 1:
         return True
     min_size = min(
         obj.width * obj.height for obj in all_objects if obj != object)
     return object.width * object.height < min_size
+
 
 def detect_has_max_number_nontrivial_subobjects(object: Object, all_objects: List[Object], debug: bool) -> bool:
     """
@@ -56,11 +61,11 @@ def detect_has_max_number_nontrivial_subobjects(object: Object, all_objects: Lis
             f"num_nontrivial_subobjects: {num_nontrivial_subobjects} is_max: {res}")
     return res
 
-def detect_shape_features(object: Object, all_objects: List[Object], debug: bool) -> Features:
-    features: Features = {}
-    features[LARGEST_SIZE.name] = detect_has_largest_size(object, all_objects)
-    features[SMALLEST_SIZE.name] = detect_has_smallest_size(
-        object, all_objects)
-    features[MAX_NUMBER_NONTRIVIAL_SUBOBJECTS.name] = detect_has_max_number_nontrivial_subobjects(
-        object, all_objects, debug)
+
+def detect_shape_features(object: Object, all_objects: List[Object], level: int, debug: bool) -> Features:
+    features: Features = {
+        LARGEST_SIZE.name: {"value": detect_has_largest_size(object, all_objects), "difficulty": level},
+        SMALLEST_SIZE.name: {"value": detect_has_smallest_size(object, all_objects), "difficulty": level},
+        MAX_NUMBER_NONTRIVIAL_SUBOBJECTS.name: {"value": detect_has_max_number_nontrivial_subobjects(object, all_objects, debug), "difficulty": level},
+    }
     return features
