@@ -496,9 +496,8 @@ def predict_sizes():
         f"Evaluation data Correct:{num_correct_ev}, Incorrect:{num_incorrect_ev}, Score:{perc_correct_ev}%")
     # write summary of results to json file
     with open("predict_sizes.json", "w") as f:
-        f.write(
-            f'{{"training_data":{{"correct":{num_correct_tr},"incorrect":{num_incorrect_tr}}},"evaluation_data":{{"correct":{num_correct_ev},"incorrect":{num_incorrect_ev}}}}}')
-
+        # only write percentages
+        f.write(f'{{"training_data":{perc_correct_tr},"evaluation_data":{perc_correct_ev}}}')
 
 if __name__ == "__main__":
     predict_sizes()
