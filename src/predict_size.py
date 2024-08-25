@@ -486,18 +486,27 @@ def predict_sizes():
         training_data, "traing_data")
     num_correct_ev, num_incorrect_ev = process_tasks(
         evaluation_data, "evaluation_data")
-    perc_correct_tr = int(1000 * num_correct_tr /
-                          (num_correct_tr + num_incorrect_tr)) / 10
-    perc_correct_ev = int(1000 * num_correct_ev /
-                          (num_correct_tr + num_incorrect_ev)) / 10
-    print(
-        f"\nTraining data Correct:{num_correct_tr}, Incorrect:{num_incorrect_tr}, Score:{perc_correct_tr}%")
-    print(
-        f"Evaluation data Correct:{num_correct_ev}, Incorrect:{num_incorrect_ev}, Score:{perc_correct_ev}%")
+
+    perc_correct_tr = None
+    if num_correct_tr + num_incorrect_tr > 0:
+        perc_correct_tr = int(1000 * num_correct_tr /
+                              (num_correct_tr + num_incorrect_tr)) / 10
+        print(
+            f"\nTraining data Correct:{num_correct_tr}, Incorrect:{num_incorrect_tr}, Score:{perc_correct_tr}%")
+
+    perc_correct_ev = None
+    if num_correct_ev + num_incorrect_ev > 0:
+        perc_correct_ev = int(1000 * num_correct_ev /
+                              (num_correct_tr + num_incorrect_ev)) / 10
+        print(
+            f"Evaluation data Correct:{num_correct_ev}, Incorrect:{num_incorrect_ev}, Score:{perc_correct_ev}%")
+
     # write summary of results to json file
     with open("predict_sizes.json", "w") as f:
         # only write percentages
-        f.write(f'{{"training_data":{perc_correct_tr},"evaluation_data":{perc_correct_ev}}}')
+        f.write(
+            f'{{"training_data":{perc_correct_tr},"evaluation_data":{perc_correct_ev}}}')
+
 
 if __name__ == "__main__":
     predict_sizes()
