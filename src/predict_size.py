@@ -28,6 +28,7 @@ class Config:
     task_name = None
     # task_name = "8e1813be.json"
     find_xform_color = True
+    display_not_found = False
 
 
 def output_size_is_input_size(grids: ExampleGrids, grid: Grid, task_name: str):
@@ -513,7 +514,7 @@ def process_tasks(tasks: Tasks, set: str):
                         continue
             current_difficulty += num_difficulties_linear_programming
 
-            if False:
+            if Config.display_not_found:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
                     (Grid(example['input']).data, Grid(example['output']).data) for example in examples
                 ]
@@ -629,7 +630,7 @@ def process_tasks_color(tasks: Tasks, set: str):
 
             num_incorrect += 1
             logger.warning(f"Could not find correct color transformation for {task_name} {set}")
-            if False:
+            if Config.display_not_found:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
                     (Grid(example['input']).data, Grid(example['output']).data) for example in examples
                 ]
