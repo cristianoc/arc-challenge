@@ -19,7 +19,7 @@ To tackle SizeARC, we developed a purely symbolic, specification-driven approach
 
 ### Results Accuracy
 
-The final configuration of the SizeARC solution achieved over 94% accuracy on both the training and evaluation datasets.
+The final configuration of the SizeARC solution achieved 94-95% accuracy on the training and evaluation datasets.
 
 
 ### Key Techniques Used
