@@ -1,8 +1,7 @@
 
 # SizeARC and Grid Transformation DSL
 
-This repository explores a simplified version of the Abstraction and Reasoning Corpus (ARC) challenge, called SizeARC, along with the symbolic, specification-driven approach developed to solve it. The Grid Transformation DSL, a key component of this approach, is also described in some detail to illustrate the grid manipulation techniques.
-
+This repository explores a simplified version of the [Abstraction and Reasoning Corpus (ARC) challenge](https://www.kaggle.com/c/abstraction-and-reasoning-challenge), called SizeARC, along with the symbolic, specification-driven approach developed to solve it.
 
 ## Solution Approach: Symbolic, Specification-Driven Method
 
