@@ -25,15 +25,10 @@ To tackle SizeARC, we developed a purely symbolic, specification-driven approach
 
 4. **Layered Complexity**: While the initial stages of problem-solving are straightforward, progressively mode advanced techniques are applied only when the earlier stage fails.
 
-### Results Summary
+### Results Accuracy
 
-The method was tested across various configurations, showing a progession in tackling the SizeARC challenge:
+The final configuration of the SizeARC solution achieved over 94% accuracy on both the training and evaluation datasets.
 
-- **Basic Predefined Transformations Only**: Achieved around 88% accuracy.
-- **Adding Decision Rules on Matched Objects**: Improved accuracy to nearly 90%.
-- **Also using Linear Programming**: Further increased accuracy to over 93%.
-
-These results illustrate the potential of symbolic approaches in abstract reasoning tasks, particularly when combined with semantic reasoning and domain-specific knowledge. It remains to be seen whether this generalizes to the hidden data set, or whether it can be extended with at least some success to the full ARC problem.
 
 ### Key Techniques Used
 
