@@ -262,6 +262,13 @@ def output_colors_are_inout_colors_minus_one_color_plus_another_color(grids: Exa
         return None
     return (set(grid.get_colors()) - {candidate_removed_color}) | {candidate_added_color}
 
+def output_colors_are_input_colors_minus_color_of_largest_object(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    objects = grid.detect_objects()
+    if not objects:
+        return None
+    largest_object = max(objects, key=lambda obj: obj.num_cells(color=None))
+    return set(grid.get_colors()) - {largest_object.main_color}
+
 xforms_color: List[ColorXformEntry] = [
         {"function": output_colors_are_input_colors, "difficulty": 1},
         {"function": output_colors_are_input_colors_plus_black, "difficulty": 1},
@@ -272,6 +279,7 @@ xforms_color: List[ColorXformEntry] = [
         {"function": output_colors_are_input_colors_plus_one_color, "difficulty": 3},
         {"function": output_colors_are_input_colors_plus_two_colors, "difficulty": 3},
         {"function": output_colors_are_inout_colors_minus_one_color_plus_another_color, "difficulty": 4},
+        {"function": output_colors_are_input_colors_minus_color_of_largest_object, "difficulty": 5},
     ]
 
 def check_xform_on_examples(xform: SizeXform, examples: List[Example], task_name: str, task_type: str) -> bool:
