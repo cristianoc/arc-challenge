@@ -42,9 +42,5 @@
     "11": {
         "training_data": 93.9,
         "evaluation_data": 94.7
-    },
-    "12": {
-        "training_data": 93.9,
-        "evaluation_data": 94.7
     }
 }

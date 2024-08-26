@@ -4,7 +4,7 @@ from typing import Any, Dict
 from matplotlib import pyplot as plt
 from grid_data import logger
 from load_data import training_data, evaluation_data
-from predict_size import Config, compute_perc_correct, process_tasks
+from predict_size import Config, compute_perc_correct, num_difficulties_total, process_tasks
 
 from datetime import datetime
 import concurrent.futures
@@ -48,7 +48,7 @@ def ablation_study():
     # Run evaluations in parallel for each difficulty level
     with concurrent.futures.ProcessPoolExecutor() as executor:
         futures = [executor.submit(evaluate_difficulty, difficulty_level)
-                   for difficulty_level in range(1, 13)]
+                   for difficulty_level in range(1, num_difficulties_total+1)]
         for future in concurrent.futures.as_completed(futures):
             difficulty_level, perc_correct_tr, perc_correct_ev = future.result()
             results[difficulty_level] = {

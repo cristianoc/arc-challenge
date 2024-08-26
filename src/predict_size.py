@@ -375,6 +375,10 @@ def predict_size_using_linear_programming(examples: List[Example], relative_diff
     predicted_width = find_weights_and_bias(feature_vectors, target_widths, "width")
     return predicted_height, predicted_width
 
+num_difficulties_xform = max(xform["difficulty"] for xform in xforms)
+num_difficulties_matching = 3
+num_difficulties_linear_programming = numeric_features.num_difficulties + 1
+num_difficulties_total = num_difficulties_xform + num_difficulties_matching + num_difficulties_linear_programming
 
 def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
@@ -390,6 +394,8 @@ def process_tasks(tasks: Tasks, set: str):
             if task_type == 'test':
                 continue
 
+            current_difficulty = 0
+
             if Config.find_xform:
                 correct_xform = find_xform(examples, task, task_name, task_type)
                 if correct_xform:
@@ -397,11 +403,8 @@ def process_tasks(tasks: Tasks, set: str):
                     num_correct += 1
                     continue
 
-            difficulty_after_find_xform = max(xform["difficulty"] for xform in xforms)
-            current_difficulty = difficulty_after_find_xform
-            print(f"Currrent difficulty: {current_difficulty}")
+            current_difficulty += num_difficulties_xform
 
-            difficulty_after_detecting_common_features = current_difficulty + 3 # difficulty levels for detecting common features
             if Config.find_matched_objects:
                 # Check if the input objects can be matched to the output objects
                 logger.debug(f"Checking common features for {task_name} {set}")
@@ -417,9 +420,7 @@ def process_tasks(tasks: Tasks, set: str):
                         continue
                     else:
                         logger.warning(f"Could not find common decision rule for {task_name} {set}")
-
-            current_difficulty = difficulty_after_detecting_common_features
-            print(f"Currrent difficulty: {current_difficulty}")
+            current_difficulty += num_difficulties_matching
 
             def try_linear_programming(exs: List[Example]):
                 logger.debug(f"Trying to determine dimensions via LP for {task_name} {set}")
@@ -449,8 +450,7 @@ def process_tasks(tasks: Tasks, set: str):
                     if predicted_height and predicted_width:
                         num_correct += 1
                         continue
-            current_difficulty = difficulty_after_linear_programming
-            print(f"Currrent difficulty: {current_difficulty}")
+            current_difficulty += num_difficulties_linear_programming
 
             if False:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
