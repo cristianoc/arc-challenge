@@ -206,6 +206,30 @@ def output_colors_are_input_colors_minus_one_color(grids: ExampleGrids, grid: Gr
 def output_colors_are_input_colors_minus_two_colors(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return output_colors_are_input_colors_minus_num_colors(grids, grid, task_name, 2)
 
+def output_colors_are_inout_colors_minus_one_color_plus_another_color(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    # Check in grids if there is one color that is always removed from the input to the output
+    # and another color that is always added
+    # If found, remove the removed color and add the added color to the grid colors
+    candidate_removed_color: Optional[int] = None
+    candidate_added_color: Optional[int] = None
+    for (input, output) in grids:
+        input_colors = set(input.get_colors())
+        output_colors = set(output.get_colors())
+        removed_colors = input_colors - output_colors
+        added_colors = output_colors - input_colors
+        if len(removed_colors) != 1 or len(added_colors) != 1:
+            return None
+        removed_color = next(iter(removed_colors))
+        added_color = next(iter(added_colors))
+        if candidate_removed_color is None:
+            candidate_removed_color = removed_color
+        if candidate_added_color is None:
+            candidate_added_color = added_color
+        if candidate_removed_color != removed_color or candidate_added_color != added_color:
+            return None
+    if candidate_removed_color is None or candidate_added_color is None:
+        return None
+    return (set(grid.get_colors()) - {candidate_removed_color}) | {candidate_added_color}
 
 def output_colors_are_input_colors_plus_num_colors(grids: ExampleGrids, grid: Grid, task_name: str, num: int) -> Optional[Set[int]]:
     # Check in grids if there are num colors that are always added from the input to the output
@@ -248,6 +272,7 @@ xforms_color: List[ColorXformEntry] = [
         {"function": output_colors_are_input_colors_minus_two_colors, "difficulty": 3},
         {"function": output_colors_are_constant_plus_one_color, "difficulty": 3},
         {"function": output_colors_are_constant_plus_two_colors, "difficulty": 3},
+        {"function": output_colors_are_inout_colors_minus_one_color_plus_another_color, "difficulty": 4},
     ]
 
 def check_xform_on_examples(xform: SizeXform, examples: List[Example], task_name: str, task_type: str) -> bool:
