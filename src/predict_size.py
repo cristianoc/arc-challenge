@@ -4,7 +4,7 @@ from color_features import detect_color_features
 import numeric_features
 from visual_cortex import Frame, find_largest_frame, find_smallest_frame, is_frame_part_of_lattice
 from grid import Grid
-from grid_data import BLACK, BLUE, GREY, TEAL, GridData, Object, display, display_multiple, logger
+from grid_data import BLACK, BLUE, GREY, LIGHTBLUE, GridData, Object, display, display_multiple, logger
 from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
@@ -26,7 +26,7 @@ class Config:
     try_remove_main_color = True
     difficulty = 1000
     task_name = None
-    # task_name = "8e1813be.json"
+    # task_name = "50cb2852.json"
     find_xform_color = True
     display_not_found = False
 
@@ -187,8 +187,8 @@ def output_colors_are_input_colors_plus_black(grids: ExampleGrids, grid: Grid, t
 def output_colors_are_input_colors_plus_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=True)) | {GREY}
 
-def output_colors_are_input_colors_plus_teal(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    return set(grid.get_colors(allow_black=True)) | {TEAL}
+def output_colors_are_input_colors_plus_lightblue(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grid.get_colors(allow_black=True)) | {LIGHTBLUE}
 
 def output_colors_are_input_colors_minus_black(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=False))
@@ -206,6 +206,7 @@ xforms_color: List[ColorXformEntry] = [
         {"function": output_colors_are_input_colors, "difficulty": 1},
         {"function": output_colors_are_input_colors_plus_black, "difficulty": 1},
         {"function": output_colors_are_input_colors_plus_grey, "difficulty": 1},
+        {"function": output_colors_are_input_colors_plus_lightblue, "difficulty": 1},
         {"function": output_colors_are_input_colors_minus_black, "difficulty": 1},
         {"function": output_colors_are_input_colors_minus_grey, "difficulty": 1},
         {"function": output_colors_are_input_colors_minus_blue, "difficulty": 1},
@@ -234,7 +235,9 @@ def check_xform_on_examples_color(xform: ColorXform, examples: List[Example], ta
         input = Grid(example['input'])
         output = Grid(example['output'])
         output_colors = set(output.get_colors())
+        logger.debug(f"output_colors:{output_colors}")
         new_output_colors = xform(grids, input, task_name)
+        logger.debug(f"new_output_colors:{new_output_colors}")
         if new_output_colors is None:
             logger.debug(f"  Example {i+1} failed")
             return False
