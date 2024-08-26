@@ -1,7 +1,7 @@
 from enum import Enum, auto
 from typing import List
 
-from grid_data import RED, Object
+from grid_data import RED, Object, logger
 from rule_based_selector import Features
 
 
@@ -25,34 +25,34 @@ def detect_color_unique(object: Object, all_objects: List[Object]) -> bool:
     color = object.main_color
     return all(obj.main_color != color for obj in all_objects if obj != object)
 
-def detect_has_max_red_cells(object: Object, all_objects: List[Object], debug: bool) -> bool:
+def detect_has_max_red_cells(object: Object, all_objects: List[Object]) -> bool:
     def count_red_cells(obj: Object) -> int:
         return sum(1 for j in range(obj.width) for i in range(obj.height) if obj.data[i][j] == RED)
     num_red_cells = count_red_cells(object)
-    if debug: print(f"red_color: {RED} num_red_cells: {num_red_cells} object: {object}")
+    logger.debug(f"red_color: {RED} num_red_cells: {num_red_cells} object: {object}")
     return all(count_red_cells(obj) < num_red_cells for obj in all_objects if obj != object)
 
-def detect_has_max_non_background_cells(object: Object, all_objects: List[Object], debug: bool) -> bool:
+def detect_has_max_non_background_cells(object: Object, all_objects: List[Object]) -> bool:
     background_color = object.main_color
     def count_non_background_cells(obj: Object) -> int:
         return sum(1 for j in range(obj.width) for i in range(obj.height) if obj.data[i][j] != background_color)
     num_non_background_cells = count_non_background_cells(object)
-    if debug: print(f"background_color: {background_color} num_non_background_cells: {num_non_background_cells} object: {object}")
+    logger.debug(f"background_color: {background_color} num_non_background_cells: {num_non_background_cells} object: {object}")
     return all(count_non_background_cells(obj) < num_non_background_cells for obj in all_objects if obj != object)
 
-def detect_has_min_non_background_cells(object: Object, all_objects: List[Object], debug: bool) -> bool:
+def detect_has_min_non_background_cells(object: Object, all_objects: List[Object]) -> bool:
     background_color = object.main_color
     def count_non_background_cells(obj: Object) -> int:
         return sum(1 for j in range(obj.width) for i in range(obj.height) if obj.data[i][j] != background_color)
     num_non_background_cells = count_non_background_cells(object)
-    if debug: print(f"background_color: {background_color} num_non_background_cells: {num_non_background_cells} object: {object}")
+    logger.debug(f"background_color: {background_color} num_non_background_cells: {num_non_background_cells} object: {object}")
     return all(count_non_background_cells(obj) > num_non_background_cells for obj in all_objects if obj != object)
 
-def detect_color_features(object: Object, all_objects: List[Object], debug: bool) -> Features:
+def detect_color_features(object: Object, all_objects: List[Object]) -> Features:
     features: Features = {}
-    features[COLOR.name] = detect_color(object, all_objects)
-    features[COLOR_UNIQUE.name] = detect_color_unique(object, all_objects)
-    features[MAX_RED_CELLS.name] = detect_has_max_red_cells(object, all_objects, debug)
-    features[MAX_NON_BACKGROUND_CELLS.name] = detect_has_max_non_background_cells(object, all_objects, debug)
-    features[MIN_NON_BACKGROUND_CELLS.name] = detect_has_min_non_background_cells(object, all_objects, debug)
+    features[COLOR.name] = {'value': detect_color(object, all_objects), 'difficulty': 1}
+    features[COLOR_UNIQUE.name] = {'value': detect_color_unique(object, all_objects), 'difficulty': 1}
+    features[MAX_RED_CELLS.name] = {'value': detect_has_max_red_cells(object, all_objects), 'difficulty': 1}
+    features[MAX_NON_BACKGROUND_CELLS.name] = {'value': detect_has_max_non_background_cells(object, all_objects), 'difficulty': 1}
+    features[MIN_NON_BACKGROUND_CELLS.name] = {'value': detect_has_min_non_background_cells(object, all_objects), 'difficulty': 1}
     return features

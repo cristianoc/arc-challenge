@@ -2,7 +2,7 @@ from enum import Enum, auto
 from typing import List
 
 from grid import Grid
-from grid_data import Object
+from grid_data import Object, logger
 from rule_based_selector import Features
 
 
@@ -34,7 +34,7 @@ def detect_has_smallest_size(object: Object, all_objects: List[Object]) -> bool:
     return object.width * object.height < min_size
 
 
-def detect_has_max_number_nontrivial_subobjects(object: Object, all_objects: List[Object], debug: bool) -> bool:
+def detect_has_max_number_nontrivial_subobjects(object: Object, all_objects: List[Object]) -> bool:
     """
     Detects if the given object has the maximum number of nontrivial subobjects among all provided objects.
 
@@ -56,16 +56,15 @@ def detect_has_max_number_nontrivial_subobjects(object: Object, all_objects: Lis
     num_nontrivial_subobjects = obj_count_nontrivial_subobjects(object)
     res = all(obj_count_nontrivial_subobjects(obj) <
               num_nontrivial_subobjects for obj in all_objects if obj != object)
-    if debug:
-        print(
-            f"num_nontrivial_subobjects: {num_nontrivial_subobjects} is_max: {res}")
+    logger.debug(
+        f"num_nontrivial_subobjects: {num_nontrivial_subobjects} is_max: {res}")
     return res
 
 
-def detect_shape_features(object: Object, all_objects: List[Object], level: int, debug: bool) -> Features:
+def detect_shape_features(object: Object, all_objects: List[Object], level: int) -> Features:
     features: Features = {
         LARGEST_SIZE.name: {"value": detect_has_largest_size(object, all_objects), "difficulty": level},
         SMALLEST_SIZE.name: {"value": detect_has_smallest_size(object, all_objects), "difficulty": level},
-        MAX_NUMBER_NONTRIVIAL_SUBOBJECTS.name: {"value": detect_has_max_number_nontrivial_subobjects(object, all_objects, debug), "difficulty": level},
+        MAX_NUMBER_NONTRIVIAL_SUBOBJECTS.name: {"value": detect_has_max_number_nontrivial_subobjects(object, all_objects), "difficulty": level},
     }
     return features

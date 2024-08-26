@@ -1,9 +1,10 @@
 from typing import Dict, List, Optional, TypedDict
+from grid_data import logger
 
 # Type aliases for clarity
 
 class Feature(TypedDict):
-    value: int
+    value: int | bool
     difficulty: int
 Features = Dict[str, Feature]
 Indices = List[str]
@@ -122,11 +123,11 @@ def test():
     for i, decision_rule in enumerate(decision_rules):
         name, features_list, index = experiments[i]
         if decision_rule is None:
-            print(f"\n{name} #{index}: No unique selection is possible")
+            logger.info(f"\n{name} #{index}: No unique selection is possible")
         else:
-            print(f"\n{name} #{index}: {decision_rule}")
+            logger.info(f"\n{name} #{index}: {decision_rule}")
             for i in range(len(features_list)):
                 v = features_list[i]
                 evaluation = decision_rule.evaluate(v)
-                print(f"Eval {name} #{i}: {evaluation}")
+                logger.info(f"Eval {name} #{i}: {evaluation}")
                 assert (i == index) == evaluation, f"Error in {name} #{index}"

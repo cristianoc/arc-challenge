@@ -3,11 +3,12 @@ import pulp  # type: ignore
 import random
 
 from rule_based_selector import Features
+from grid_data import logger
 
 pulp: Any = pulp
 random: Any = random
 
-def find_weights_and_bias(samples: List[Features], goals: List[int], desc:str, debug: bool = False) -> Optional[Tuple[Features, int]]:
+def find_weights_and_bias(samples: List[Features], goals: List[int], desc:str) -> Optional[Tuple[Features, int]]:
     """
     Finds integer weights and bias such that:
     
@@ -63,21 +64,20 @@ def find_weights_and_bias(samples: List[Features], goals: List[int], desc:str, d
             is_perfect = False
             break
 
-    if debug:
-        print(f"Solution {desc}: Weights: {W_solution}, Bias: {b_solution}")
+    logger.debug(f"Solution {desc}: Weights: {W_solution}, Bias: {b_solution}")
 
     # Check if the solution is plausible
     plausible = True
     # bias must be an integer between 0 and 2
     if b_solution % 1 != 0 or b_solution < 0 or b_solution > 2:
-        print("Bias is not an integer between 0 and 2")
+        logger.info("Bias is not an integer between 0 and 2")
         plausible = False
     # weights must be integers unless there's only one weight which is 1/2 or 1/3 and the bias is 0
     if len(W_solution) > 1:
         for weight in W_solution.values():
             if weight % 1 != 0:
                 if weight != 0.5 and weight != 1/3:
-                    print(f"One of the weights is not an integer: {weight} and not 1/2 or 1/3")
+                    logger.info(f"One of the weights is not an integer: {weight} and not 1/2 or 1/3")
                     plausible = False
                     break
     # weights must be integers and bias must be nonnegative integer and at most one weight can be nonzero
@@ -110,17 +110,17 @@ def test_find_weights_and_bias():
     result = find_weights_and_bias(samples, goals, "Test")
 
     # Output the generated data, solution, and check result
-    print("Samples:")
+    logger.info("Samples:")
     for sample in samples:
-        print(sample)
+        logger.info(sample)
 
     if result:
         weights, bias = result
-        print("\nWeights:", weights)
-        print("Bias:", bias)
-        print("\nThe solution perfectly satisfies all the constraints!")
+        logger.info(f"\nWeights:{weights}")
+        logger.info(f"Bias:{bias}")
+        logger.info("\nThe solution perfectly satisfies all the constraints!")
     else:
-        print("\nNo exact solution was found.")
+        logger.info("\nNo exact solution was found.")
 
 # Run the test function
 if __name__ == "__main__":

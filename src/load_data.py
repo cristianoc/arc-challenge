@@ -2,7 +2,7 @@ import os
 import json
 from typing import List, Dict
 
-from grid_data import GridData
+from grid_data import GridData, logger
 
 Example = Dict[str, GridData]  # {input, output} -> grid data
 Task = Dict[str, List[Example]]  # {train, test} -> examples
@@ -38,7 +38,6 @@ def iter_tasks(tasks: Tasks):
 
 # Access train and test sets for the first task in the training data
 training_1 = training_data.popitem()
-print(f"First training task: {training_1[0]}")
 tr_task_1: Task = training_1[1]
 eval_1 = evaluation_data.popitem()
 ev_task_1: Task = eval_1[1]
@@ -47,6 +46,5 @@ train_set = tr_task_1['train']
 test_set = tr_task_1['test']
 
 
-# Print the number of tasks loaded and an example from each dataset
-print(f"Loaded {len(training_data)} training tasks")
-print(f"Loaded {len(evaluation_data)} evaluation tasks")
+logger.debug(f"Loaded {len(training_data)} training tasks")
+logger.debug(f"Loaded {len(evaluation_data)} evaluation tasks")

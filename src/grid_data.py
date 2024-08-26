@@ -1,3 +1,4 @@
+import logging
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 from dataclasses import dataclass
@@ -6,6 +7,13 @@ from typing import Dict, List, NewType, Optional, Tuple
 from matplotlib import colors, pyplot as plt
 from matplotlib.colors import ListedColormap
 import numpy as np
+
+logging.basicConfig(
+    level=logging.INFO, # change to logging.DEBUG for more verbose output
+    format='%(message)s'
+)
+logger = logging.getLogger(__name__)
+
 
 Cell = Tuple[int, int]
 GridData = List[List[int]]

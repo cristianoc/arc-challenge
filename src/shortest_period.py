@@ -1,4 +1,5 @@
 from typing import List, TypeVar
+from grid_data import logger
 
 T = TypeVar('T')
 
@@ -73,4 +74,4 @@ def test():
     for ex in examples:
         period = find_shortest_period(ex)
         sublist = ex[:period]
-        print(f"The shortest period of the list {ex} is: {sublist}")
+        logger.info(f"The shortest period of the list {ex} is: {sublist}")
