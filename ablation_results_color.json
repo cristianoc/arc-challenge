@@ -1,0 +1,30 @@
+{
+    "1": {
+        "training_data": 44.1,
+        "evaluation_data": 46.6
+    },
+    "2": {
+        "training_data": 68.1,
+        "evaluation_data": 70.6
+    },
+    "3": {
+        "training_data": 81.4,
+        "evaluation_data": 83.7
+    },
+    "4": {
+        "training_data": 81.9,
+        "evaluation_data": 83.9
+    },
+    "5": {
+        "training_data": 82.9,
+        "evaluation_data": 84.2
+    },
+    "6": {
+        "training_data": 82.9,
+        "evaluation_data": 84.9
+    },
+    "7": {
+        "training_data": 83.4,
+        "evaluation_data": 85.4
+    }
+}

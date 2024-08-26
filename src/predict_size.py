@@ -647,7 +647,8 @@ def find_xform_color(examples: List[Example], task: Task, task_name: str, task_t
                 break
     return correct_xform
 
-num_difficulties_xform_colors = max(xform["difficulty"] for xform in xforms_color)
+num_difficulties_xform_color = max(xform["difficulty"] for xform in xforms_color)
+num_difficulties_total_color = num_difficulties_xform_color + num_difficulties_matching
 
 def process_tasks_color(tasks: Tasks, set: str):
     num_correct = 0
@@ -672,7 +673,7 @@ def process_tasks_color(tasks: Tasks, set: str):
                     num_correct += 1
                     continue
 
-            current_difficulty += num_difficulties_xform_colors
+            current_difficulty += num_difficulties_xform_color
 
             if Config.find_matched_objects:
                 # Check if the input objects can be matched to the output objects
