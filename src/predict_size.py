@@ -251,10 +251,10 @@ def output_colors_are_input_colors_plus_num_colors(grids: ExampleGrids, grid: Gr
     return set(grid.get_colors()) | candidate_colors
 
 
-def output_colors_are_constant_plus_one_color(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+def output_colors_are_input_colors_plus_one_color(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return output_colors_are_input_colors_plus_num_colors(grids, grid, task_name, 1)
 
-def output_colors_are_constant_plus_two_colors(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+def output_colors_are_input_colors_plus_two_colors(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return output_colors_are_input_colors_plus_num_colors(grids, grid, task_name, 2)
 
 def output_colors_are_input_colors_plus_black(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
@@ -270,8 +270,8 @@ xforms_color: List[ColorXformEntry] = [
         {"function": output_colors_are_constant, "difficulty": 2},
         {"function": output_colors_are_input_colors_minus_one_color, "difficulty": 3},
         {"function": output_colors_are_input_colors_minus_two_colors, "difficulty": 3},
-        {"function": output_colors_are_constant_plus_one_color, "difficulty": 3},
-        {"function": output_colors_are_constant_plus_two_colors, "difficulty": 3},
+        {"function": output_colors_are_input_colors_plus_one_color, "difficulty": 3},
+        {"function": output_colors_are_input_colors_plus_two_colors, "difficulty": 3},
         {"function": output_colors_are_inout_colors_minus_one_color_plus_another_color, "difficulty": 4},
     ]
 
