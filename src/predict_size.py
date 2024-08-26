@@ -1,10 +1,10 @@
-from typing import Callable, List, Optional, Tuple, TypedDict
+from typing import Callable, List, Optional, Set, Tuple, TypedDict
 
 from color_features import detect_color_features
 import numeric_features
 from visual_cortex import Frame, find_largest_frame, find_smallest_frame, is_frame_part_of_lattice
 from grid import Grid
-from grid_data import BLACK, GridData, Object, display, display_multiple, logger
+from grid_data import BLACK, BLUE, GREY, TEAL, GridData, Object, display, display_multiple, logger
 from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
@@ -27,6 +27,7 @@ class Config:
     difficulty = 1000
     # task_name = "81c0276b.json"
     task_name = None
+    find_xform_color = True
 
 
 def output_size_is_input_size(grids: ExampleGrids, grid: Grid, task_name: str):
@@ -167,6 +168,54 @@ xforms: List[XformEntry] = [
     {"function": output_size_is_size_of_repeating_subgrid_forming_a_lattice, "difficulty": 4}  # Level 4: Complex
 ]
 
+ColorXform = Callable[[ExampleGrids, Grid, str], Optional[Set[int]]]  # List[int] for color indexes
+class ColorXformEntry(TypedDict):
+    function: ColorXform
+    difficulty: int
+
+def output_colors_are_input_colors(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grid.get_colors())
+
+def output_colors_are_constant(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grids[0][1].get_colors())
+
+
+def output_colors_are_input_colors_plus_black(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grid.get_colors(allow_black=True)) | {BLACK}
+
+def output_colors_are_input_colors_plus_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grid.get_colors(allow_black=True)) | {GREY}
+
+def output_colors_are_input_colors_plus_teal(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grid.get_colors(allow_black=True)) | {TEAL}
+
+
+# def output_colors_are_input_colors_plus_black_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+#     return set(grid.get_colors(allow_black=True)) | {BLACK | GREY}
+
+def output_colors_are_input_colors_minus_black(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grid.get_colors(allow_black=False))
+
+def output_colors_are_input_colors_minus_blue(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grid.get_colors(allow_black=True)) - {BLUE}
+
+# def output_colors_are_input_colors_minus_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+#     return set(grid.get_colors(allow_black=True)) - {GREY}
+
+def output_colors_are_input_colors_minus_black_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grid.get_colors(allow_black=True)) - {GREY}
+
+xforms_color: List[ColorXformEntry] = [
+        {"function": output_colors_are_input_colors, "difficulty": 1},
+        {"function": output_colors_are_input_colors_plus_black, "difficulty": 1},
+        {"function": output_colors_are_input_colors_plus_grey, "difficulty": 1},
+        # {"function": output_colors_are_input_colors_plus_black_grey, "difficulty": 1},
+        {"function": output_colors_are_input_colors_minus_black, "difficulty": 1},
+        # {"function": output_colors_are_input_colors_minus_grey, "difficulty": 1},
+        {"function": output_colors_are_input_colors_minus_blue, "difficulty": 1},
+        {"function": output_colors_are_input_colors_minus_black_grey, "difficulty": 1},
+        {"function": output_colors_are_constant, "difficulty": 2},
+    ]
 
 def check_xform_on_examples(xform: SizeXform, examples: List[Example], task_name: str, task_type: str) -> bool:
     grids = [(Grid(example['input']), Grid(example['output'])) for example in examples]
@@ -181,6 +230,22 @@ def check_xform_on_examples(xform: SizeXform, examples: List[Example], task_name
             return False
     return True
 
+def check_xform_on_examples_color(xform: ColorXform, examples: List[Example], task_name: str, task_type: str) -> bool:
+    grids = [(Grid(example['input']), Grid(example['output'])) for example in examples]
+    logger.debug(f"Checking xform {xform.__name__} {task_type}")
+    for i, example in enumerate(examples):
+        logger.debug(f"  Example {i+1}/{len(examples)}")
+        input = Grid(example['input'])
+        output = Grid(example['output'])
+        output_colors = set(output.get_colors())
+        new_output_colors = xform(grids, input, task_name)
+        if new_output_colors is None:
+            logger.debug(f"  Example {i+1} failed")
+            return False
+        if new_output_colors != output_colors:
+            logger.debug(f"  Example {i+1} failed")
+            return False
+    return True
 
 def find_xform(examples: List[Example], task: Task, task_name: str, task_type: str) -> Optional[XformEntry]:
     # check if at least one xform is correct
@@ -321,7 +386,7 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
         if output_as_object.has_frame():
             # If the output is a frame, detect objects in the input as frames
             logger.debug("  Output is a frame")
-        num_colors_output = len(output.get_colors())
+        num_colors_output = len(output.get_colors(allow_black=True))
         return input.detect_rectangular_objects(allow_multicolor=num_colors_output > 1)
 
     def find_matching_input_object(input_objects: List[Object], output: Grid) -> Optional[int]:
@@ -495,5 +560,88 @@ def predict_sizes():
             f'{{"training_data":{perc_correct_tr},"evaluation_data":{perc_correct_ev}}}'
         )
 
+def find_xform_color(examples: List[Example], task: Task, task_name: str, task_type: str) -> Optional[ColorXformEntry]:
+    # check if at least one xform is correct
+    correct_xform = None
+    for xform in xforms_color:
+        if Config.difficulty < xform["difficulty"]:
+            continue
+        func = xform["function"]
+        logger.debug(f"Checking xform {func.__name__} {task_type}")
+        if check_xform_on_examples_color(func, examples, task_name, task_type):
+            if False and xform == output_size_is_constant_times_input_size:
+                title = f"{xform.__name__} ({task_name})"
+                logger.info(title)
+                for i, e in enumerate(examples):
+                    display(e['input'], output=e['output'],
+                            title=f"Ex{i+1} " + title)
+            correct_xform = xform
+            logger.info(f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type}")
+            test_examples = [examples for task_type, examples in task.items() if task_type == 'test']
+            for i, test_example in enumerate(test_examples):
+                if not check_xform_on_examples_color(correct_xform["function"], test_example, task_name, 'test'):
+                    logger.warning(f"Xform {correct_xform['function'].__name__} failed for test example {i}")
+                    correct_xform = None
+                    break
+            if correct_xform:
+                break
+    return correct_xform
+
+def process_tasks_color(tasks: Tasks, set: str):
+    num_correct = 0
+    num_incorrect = 0
+    for task_name, task in iter_tasks(tasks):
+        if Config.task_name and task_name != Config.task_name:
+            continue
+        logger.info(f"\n***Task: {task_name} {set}***")
+
+        for task_type, examples in task.items():
+            if task_type not in ['train', 'test']:
+                continue
+            if task_type == 'test':
+                continue
+
+            correct_xform = None
+            if Config.find_xform_color:
+                correct_xform = find_xform_color(examples, task, task_name, task_type)
+                if correct_xform:
+                    logger.info(f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type} and test")
+                    num_correct += 1
+                    continue
+            if correct_xform is None:
+                num_incorrect += 1
+                logger.warning(f"Could not find correct color transformation for {task_name} {set}")
+                if False:
+                    grids: List[Tuple[GridData, Optional[GridData]]] = [
+                        (Grid(example['input']).data, Grid(example['output']).data) for example in examples
+                    ]
+                    display_multiple(
+                        grids, title=f"Examples")
+
+    return num_correct, num_incorrect
+
+def predict_colors():
+    num_correct_tr, num_incorrect_tr = process_tasks_color(training_data, "training_data")
+    num_correct_ev, num_incorrect_ev = process_tasks_color(evaluation_data, "evaluation_data")
+    perc_correct_tr = compute_perc_correct(num_correct_tr, num_incorrect_tr)
+    perc_correct_ev = compute_perc_correct(num_correct_ev, num_incorrect_ev)
+
+    def log_evaluation_results(set: str, num_correct: int, num_incorrect: int):
+        perc_correct = compute_perc_correct(num_correct, num_incorrect)
+        if perc_correct is not None:
+            logger.error(
+                f"{set.capitalize()} data: "
+                f"Correct: {num_correct}, Incorrect: {num_incorrect}, Score: {perc_correct}%")
+
+    logger.error("\n***Summary***")
+    log_evaluation_results("training", num_correct_tr, num_incorrect_tr)
+    log_evaluation_results("evaluation", num_correct_ev, num_incorrect_ev)
+    
+    # Write summary of results to JSON file
+    with open("predict_colors.json", "w") as f:
+        f.write(
+            f'{{"training_data":{perc_correct_tr},"evaluation_data":{perc_correct_ev}}}'
+        )
+
 if __name__ == "__main__":
-    predict_sizes()
+    predict_colors()

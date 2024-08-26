@@ -106,7 +106,7 @@ class Grid(GridA):
     def copy(self) -> 'Grid':
         return Grid(copy.deepcopy(self.data))
 
-    def get_colors(self, allow_black: bool = False) -> List[int]:
+    def get_colors(self, allow_black: bool = True) -> List[int]:
         colors: set[Color] = set()
         for row in self.data:
             for color in row:

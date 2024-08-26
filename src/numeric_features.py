@@ -9,7 +9,7 @@ num_difficulties = 3
 
 def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     height, width = grid.size
-    colors = grid.get_colors()
+    colors = grid.get_colors(allow_black=False)
     num_colors = len(colors)
     grid_as_object = Object((0, 0), grid.data)
     num_cells = grid_as_object.num_cells(color=None)
