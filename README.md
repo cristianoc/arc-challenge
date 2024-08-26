@@ -71,7 +71,7 @@ The study incrementally activated synthetic techniques and feature sets across d
 
 The graph below summarizes the performance of the model on both the training and evaluation datasets across the different difficulty levels.
 
-<img width="577" alt="Screenshot 2024-08-26 at 04 00 58" src="https://github.com/user-attachments/assets/b59eb10e-3e58-4d74-849c-c2bd4f151f4e">
+<img width="866" alt="Screenshot 2024-08-26 at 06 38 49" src="https://github.com/user-attachments/assets/0a0b6e7c-6c79-433f-a8f0-193afafb592c">
 
 ### Key Insights
 
