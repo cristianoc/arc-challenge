@@ -3,13 +3,6 @@
 
 This repository explores a simplified version of the Abstraction and Reasoning Corpus (ARC) challenge, called SizeARC, along with the symbolic, specification-driven approach developed to solve it. The Grid Transformation DSL, a key component of this approach, is also described in some detail to illustrate the grid manipulation techniques.
 
-## SizeARC: A Simplified ARC Challenge
-
-**SizeARC** is a task derived from the ARC challenge, where the objective is to predict the dimensions of the output grid based on a given input grid. Unlike the full ARC challenge, which requires determining the entire content of the output grid, SizeARC simplifies the problem by focusing solely on predicting the size. This task utilizes the public ARC datasets and is agnostic to the methods used to solve it, making it an interesting case for testing various approaches to abstract reasoning.
-
-### Problem Context
-
-The ARC challenge is designed to test a system's ability to generalize from few examples, mimicking aspects of human cognition. SizeARC isolates a specific facet of the problem—predicting grid dimensions—to create a more focused challenge. While simpler, SizeARC contains a spectrum of difficulties, ranging from trivial cases to those as challenging as the original ARC tasks. This makes it a valuable benchmark for exploring generalization, abstraction, and reasoning in artificial intelligence.
 
 ## Solution Approach: Symbolic, Specification-Driven Method
 
@@ -38,7 +31,16 @@ The final configuration of the SizeARC solution achieved over 94% accuracy on bo
 
 3. **Linear Programming**: In more complex cases, linear programming is employed to refine predictions. This involves solving for weights and biases that best fit the observed data, allowing for a more accurate determination of grid dimensions.
 
-## Example
+## SizeARC: A Simplified ARC Challenge
+
+**SizeARC** is a task derived from the ARC challenge, where the objective is to predict the dimensions of the output grid based on a given input grid. Unlike the full ARC challenge, which requires determining the entire content of the output grid, SizeARC simplifies the problem by focusing solely on predicting the size. This task utilizes the public ARC datasets and is agnostic to the methods used to solve it, making it an interesting case for testing various approaches to abstract reasoning.
+
+### Problem Context
+
+The ARC challenge is designed to test a system's ability to generalize from few examples, mimicking aspects of human cognition. SizeARC isolates a specific facet of the problem—predicting grid dimensions—to create a more focused challenge. While simpler, SizeARC contains a spectrum of difficulties, ranging from trivial cases to those as challenging as the original ARC tasks. This makes it a valuable benchmark for exploring generalization, abstraction, and reasoning in artificial intelligence.
+
+
+### Example
 
 <img width="607" alt="Screenshot_2024-08-23_at_23 00 44" src="https://github.com/user-attachments/assets/4112f991-a296-456b-838f-88574200a8d2">
 
@@ -86,7 +88,7 @@ The graph below summarizes the performance of the model on both the training and
 For more details on the implementation of the methods used, start with the [predict_size.py](https://github.com/cristianoc/arc-challenge/blob/main/src/predict_size.py) file. This file provides a practical entry point into understanding how the symbolic approach was applied to solve the SizeARC challenge.
 
 
-## Grid Transformation DSL
+### Grid Transformation DSL
 
 For those interested in the underlying mechanisms that support the SizeARC solution, the Grid Transformation DSL provides a robust framework for grid manipulations. The DSL enables various transformations such as rotations, flips, translations, and color changes, all of which are integral to the symbolic approach used.
 
