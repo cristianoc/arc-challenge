@@ -174,6 +174,13 @@ class ColorXformEntry(TypedDict):
     function: ColorXform
     difficulty: int
 
+
+def output_colors_are_input_colors(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grid.get_colors())
+
+def output_colors_are_constant(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grids[0][1].get_colors())
+
 def output_colors_are_input_colors_minus_one_color(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     # Check in grids if there's a color that is always removed from the input to the output
     # If found, remove it from the grid color
@@ -192,12 +199,6 @@ def output_colors_are_input_colors_minus_one_color(grids: ExampleGrids, grid: Gr
     if candidate_color is not None:
         return set(grid.get_colors()) - {candidate_color}
 
-def output_colors_are_input_colors(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    return set(grid.get_colors())
-
-def output_colors_are_constant(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    return set(grids[0][1].get_colors())
-
 
 def output_colors_are_input_colors_plus_black(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=True)) | {BLACK}
@@ -208,15 +209,6 @@ def output_colors_are_input_colors_plus_grey(grids: ExampleGrids, grid: Grid, ta
 def output_colors_are_input_colors_plus_lightblue(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=True)) | {LIGHTBLUE}
 
-def output_colors_are_input_colors_minus_black(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    return set(grid.get_colors(allow_black=False))
-
-def output_colors_are_input_colors_minus_blue(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    return set(grid.get_colors(allow_black=True)) - {BLUE}
-
-def output_colors_are_input_colors_minus_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    return set(grid.get_colors(allow_black=True)) - {GREY}
-
 def output_colors_are_input_colors_minus_black_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=True)) - {BLACK, GREY}
 
@@ -225,9 +217,6 @@ xforms_color: List[ColorXformEntry] = [
         {"function": output_colors_are_input_colors_plus_black, "difficulty": 1},
         {"function": output_colors_are_input_colors_plus_grey, "difficulty": 1},
         {"function": output_colors_are_input_colors_plus_lightblue, "difficulty": 1},
-        {"function": output_colors_are_input_colors_minus_black, "difficulty": 1},
-        {"function": output_colors_are_input_colors_minus_grey, "difficulty": 1},
-        {"function": output_colors_are_input_colors_minus_blue, "difficulty": 1},
         {"function": output_colors_are_input_colors_minus_black_grey, "difficulty": 1},
         {"function": output_colors_are_constant, "difficulty": 2},
         {"function": output_colors_are_input_colors_minus_one_color, "difficulty": 3}
