@@ -1,0 +1,50 @@
+{
+    "1": {
+        "training_data": 65.4,
+        "evaluation_data": 67.6
+    },
+    "2": {
+        "training_data": 84.4,
+        "evaluation_data": 84.4
+    },
+    "3": {
+        "training_data": 87.4,
+        "evaluation_data": 87.9
+    },
+    "4": {
+        "training_data": 88.4,
+        "evaluation_data": 88.4
+    },
+    "5": {
+        "training_data": 88.9,
+        "evaluation_data": 88.9
+    },
+    "6": {
+        "training_data": 89.4,
+        "evaluation_data": 89.7
+    },
+    "7": {
+        "training_data": 89.7,
+        "evaluation_data": 89.9
+    },
+    "8": {
+        "training_data": 89.7,
+        "evaluation_data": 89.9
+    },
+    "9": {
+        "training_data": 89.7,
+        "evaluation_data": 89.9
+    },
+    "10": {
+        "training_data": 93.4,
+        "evaluation_data": 93.9
+    },
+    "11": {
+        "training_data": 93.9,
+        "evaluation_data": 94.7
+    },
+    "12": {
+        "training_data": 93.9,
+        "evaluation_data": 94.7
+    }
+}
