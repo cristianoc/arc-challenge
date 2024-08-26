@@ -181,15 +181,15 @@ def output_colors_are_input_colors(grids: ExampleGrids, grid: Grid, task_name: s
 def output_colors_are_constant(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grids[0][1].get_colors())
 
-def output_colors_are_input_colors_minus_one_color(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    # Check in grids if there are is one colors that is always removed from the input to the output
-    # If found, remove it from the grid colors
+def output_colors_are_input_colors_minus_num_colors(grids: ExampleGrids, grid: Grid, task_name: str, num: int) -> Optional[Set[int]]:
+    # Check in grids if there are num colors that are always removed from the input to the output
+    # If found, remove them from the grid colors
     candidate_colors: Optional[Set[int]] = None
     for (input, output) in grids:
         input_colors = set(input.get_colors())
         output_colors = set(output.get_colors())
         removed_colors = input_colors - output_colors
-        if len(removed_colors) != 1:
+        if len(removed_colors) != num:
             return None
         if candidate_colors is None:
             candidate_colors = removed_colors
@@ -200,25 +200,12 @@ def output_colors_are_input_colors_minus_one_color(grids: ExampleGrids, grid: Gr
         return None
     return set(grid.get_colors()) - candidate_colors
 
+
+def output_colors_are_input_colors_minus_one_color(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return output_colors_are_input_colors_minus_num_colors(grids, grid, task_name, 1)
 
 def output_colors_are_input_colors_minus_two_colors(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    # Check in grids if there are two colors that are always removed from the input to the output
-    # If found, remove them from the grid color
-    candidate_colors: Optional[Set[int]] = None
-    for (input, output) in grids:
-        input_colors = set(input.get_colors())
-        output_colors = set(output.get_colors())
-        removed_colors = input_colors - output_colors
-        if len(removed_colors) != 2:
-            return None
-        if candidate_colors is None:
-            candidate_colors = removed_colors
-            continue
-        if candidate_colors != removed_colors:
-            return None
-    if candidate_colors is None:
-        return None
-    return set(grid.get_colors()) - candidate_colors
+    return output_colors_are_input_colors_minus_num_colors(grids, grid, task_name, 2)
 
 def output_colors_are_input_colors_plus_black(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=True)) | {BLACK}
