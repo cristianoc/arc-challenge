@@ -42,7 +42,7 @@ def find_weights_and_bias(samples: List[Features], goals: List[int], desc:str) -
 
     # Constraints: Σ (W[feature] * f[feature]) + b = goal_i for each features dictionary
     for i in range(num_samples):
-        constraint = pulp.lpSum(samples[i][feature]['value'] * W[feature] for feature in feature_names) + b == goals[i]
+        constraint = pulp.lpSum(samples[i][feature] * W[feature] for feature in feature_names) + b == goals[i]
         problem += constraint
 
     # Objective: Minimize the sum of W and bias
@@ -59,7 +59,7 @@ def find_weights_and_bias(samples: List[Features], goals: List[int], desc:str) -
     # Check if the solution is perfect
     is_perfect = True
     for i in range(num_samples):
-        calculated_value = sum(samples[i][feature]['value'] * W_solution[feature] for feature in feature_names) + b_solution
+        calculated_value = sum(samples[i][feature] * W_solution[feature] for feature in feature_names) + b_solution
         if calculated_value != goals[i]:
             is_perfect = False
             break
@@ -101,10 +101,10 @@ def test_find_weights_and_bias():
     # Generate random features and corresponding goals
     feature_names = [f"feature_{i}" for i in range(num_features)]
     samples : List[Features] = [
-        {feature: {"value": random.randint(1, 10), "difficulty": 0} for feature in feature_names} 
+        {feature: random.randint(1, 10) for feature in feature_names} 
         for _ in range(num_samples)
     ]
-    goals = [2 * samples[i]["feature_0"]["value"] + samples[i]["feature_1"]["value"] for i in range(num_samples)]
+    goals = [2 * samples[i]["feature_0"] + samples[i]["feature_1"] for i in range(num_samples)]
 
     # Call the library function
     result = find_weights_and_bias(samples, goals, "Test")
