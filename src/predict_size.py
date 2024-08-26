@@ -174,6 +174,24 @@ class ColorXformEntry(TypedDict):
     function: ColorXform
     difficulty: int
 
+def output_colors_are_input_colors_minus_one_color(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    # Check in grids if there's a color that is always removed from the input to the output
+    # If found, remove it from the grid color
+    candidate_color = None
+    for (input, output) in grids:
+        input_colors = set(input.get_colors())
+        output_colors = set(output.get_colors())
+        removed_colors = input_colors - output_colors
+        if len(removed_colors) == 1:
+            color = list(removed_colors)[0]
+            if candidate_color is None:
+                candidate_color = color
+                continue
+            if candidate_color != color:
+                return None
+    if candidate_color is not None:
+        return set(grid.get_colors()) - {candidate_color}
+
 def output_colors_are_input_colors(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grid.get_colors())
 
@@ -212,6 +230,7 @@ xforms_color: List[ColorXformEntry] = [
         {"function": output_colors_are_input_colors_minus_blue, "difficulty": 1},
         {"function": output_colors_are_input_colors_minus_black_grey, "difficulty": 1},
         {"function": output_colors_are_constant, "difficulty": 2},
+        {"function": output_colors_are_input_colors_minus_one_color, "difficulty": 3}
     ]
 
 def check_xform_on_examples(xform: SizeXform, examples: List[Example], task_name: str, task_type: str) -> bool:
