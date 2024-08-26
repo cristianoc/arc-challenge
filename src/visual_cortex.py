@@ -2,7 +2,7 @@ import time
 from typing import Optional, Tuple
 import random
 
-from grid_data import GridData
+from grid_data import GridData, logger
 
 """
 A Frame represents a rectangular region in a grid, defined by the coordinates (top, left, bottom, right).
@@ -217,13 +217,13 @@ def eval_with_lattice_check():
         execution_time = end_time - start_time
 
         if not max_frame:
-            print(f"{grid_name}: No valid frame found. "
+            logger.info(f"{grid_name}: No valid frame found. "
                   f"Time: {execution_time:.6f} seconds\n")
         else:
             start_row, start_col, end_row, end_col = max_frame
             frame_height = end_row - start_row + 1
             frame_width = end_col - start_col + 1
-            print(f"{grid_name}: Frame at ({start_row},{start_col}) to ({end_row},{end_col}), "
+            logger.info(f"{grid_name}: Frame at ({start_row},{start_col}) to ({end_row},{end_col}), "
                   f"Size: {frame_height}x{frame_width}, Area: {max_area}, "
                   f"Part of lattice: {is_lattice}, "
                   f"Time: {execution_time:.6f} seconds\n")

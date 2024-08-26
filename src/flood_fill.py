@@ -1,7 +1,7 @@
 from collections import deque
 from typing import List
 
-from grid_data import DIRECTIONS4, GridData
+from grid_data import DIRECTIONS4, GridData, logger
 
 EnclosedCells = List[List[bool]]
 
@@ -64,8 +64,8 @@ def test():
     # Find all enclosed areas
     enclosed_grid = find_enclosed_cells(grid)
 
-    print("Result:")
+    logger.info("Result:")
 
     # Print the result
     for row in enclosed_grid:
-        print(' '.join(['x' if cell else '-' for cell in row]))
+        logger.info(' '.join(['x' if cell else '-' for cell in row]))

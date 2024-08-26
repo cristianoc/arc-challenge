@@ -1,6 +1,6 @@
 from typing import List
 
-from grid_data import DIRECTIONS4, DIRECTIONS8, Cell, GridData, Object
+from grid_data import DIRECTIONS4, DIRECTIONS8, Cell, GridData, Object, logger
 
 # Type alias for the id of visited objects
 VISITED = List[List[bool]]
@@ -50,7 +50,7 @@ def find_connected_components(data: GridData, diagonals: bool, allow_black: bool
     return connected_components
 
 
-def find_rectangular_objects(data: GridData, allow_multicolor: bool, debug: bool) -> List[Object]:
+def find_rectangular_objects(data: GridData, allow_multicolor: bool) -> List[Object]:
     objects: List[Object] = []
     rows, cols = len(data), len(data[0])
 
@@ -83,8 +83,7 @@ def find_rectangular_objects(data: GridData, allow_multicolor: bool, debug: bool
                 origin: Cell = (r, c)
                 height, width = 1, 1
 
-                if debug:
-                    print(f"\nstarting new object at {origin}")
+                logger.debug(f"\nstarting new object at {origin}")
 
                 while True:
                     expanded = False
@@ -93,44 +92,34 @@ def find_rectangular_objects(data: GridData, allow_multicolor: bool, debug: bool
                     if is_valid_rectangle(origin, height, width + 1, main_color):
                         width += 1
                         expanded = True
-                        if debug:
-                            print(
-                                f"expanded rightwards new dimensions: {origin, height, width}")
+                        logger.debug(f"expanded rightwards new dimensions: {origin, height, width}")
 
                     # Try expanding downwards
                     if is_valid_rectangle(origin, height + 1, width, main_color):
                         height += 1
                         expanded = True
-                        if debug:
-                            print(
-                                f"expanded downwards new dimensions: {origin, height, width}")
+                        logger.debug(f"expanded downwards new dimensions: {origin, height, width}")
 
                     # Try expanding right-downwards
                     if is_valid_rectangle(origin, height + 1, width + 1, main_color):
                         height += 1
                         width += 1
                         expanded = True
-                        if debug:
-                            print(
-                                f"expanded right-downwards new dimensions: {origin, height, width}")
+                        logger.debug(f"expanded right-downwards new dimensions: {origin, height, width}")
 
                     # Try expanding leftwards
                     if is_valid_rectangle((origin[0], origin[1] - 1), height, width, main_color):
                         origin = (origin[0], origin[1] - 1)
                         width += 1
                         expanded = True
-                        if debug:
-                            print(
-                                f"expanded leftwards new dimensions: {origin, height, width}")
+                        logger.debug(f"expanded leftwards new dimensions: {origin, height, width}")
 
                     # Try expanding upwards
                     if is_valid_rectangle((origin[0] - 1, origin[1]), height, width, main_color):
                         origin = (origin[0] - 1, origin[1])
                         height += 1
                         expanded = True
-                        if debug:
-                            print(
-                                f"expanded upwards new dimensions: {origin, height, width}")
+                        logger.debug(f"expanded upwards new dimensions: {origin, height, width}")
 
                     # If no further expansion is possible, break the loop
                     if not expanded:
