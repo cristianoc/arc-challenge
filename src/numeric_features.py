@@ -7,7 +7,7 @@ from rule_based_selector import Features
 
 num_difficulties = 3
 
-def detect_numeric_features(grid: Grid, initial_difficulty: int) -> Features:
+def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     height, width = grid.size
     colors = grid.get_colors()
     num_colors = len(colors)
@@ -20,12 +20,17 @@ def detect_numeric_features(grid: Grid, initial_difficulty: int) -> Features:
         1 for obj in objects if obj.main_color == main_color)
 
     features : Features = {
-        "grid_height": {"value": height, "difficulty": 1 + initial_difficulty},
-        "grid_width": {"value": width, "difficulty": 1 + initial_difficulty},
-        "num_colors": {"value": num_colors, "difficulty": 2 + initial_difficulty},
-        "num_cells": {"value": num_cells, "difficulty": 2 + initial_difficulty},
-        "num_objects_of_main_color": {"value": num_objects_of_main_color, "difficulty": 3 + initial_difficulty},
     }
+    # relative_difficulty is the difficulty minus the level before using linear programming
+    if relative_difficulty >= 1:
+        features["grid_height"] = height
+        features["grid_width"] = width
+    if relative_difficulty >= 2:
+        features["num_colors"] = num_colors
+        features["num_cells"] = num_cells
+    if relative_difficulty >= 3:
+        features["num_objects_of_main_color"] = num_objects_of_main_color
+
     assert num_difficulties == 3
     return features
 

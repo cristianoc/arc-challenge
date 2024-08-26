@@ -1,12 +1,9 @@
-from typing import Dict, List, Optional, TypedDict
+from typing import Dict, List, Optional
 from grid_data import logger
 
 # Type aliases for clarity
 
-class Feature(TypedDict):
-    value: int | bool
-    difficulty: int
-Features = Dict[str, Feature]
+Features = Dict[str, int | bool]
 Indices = List[str]
 
 
@@ -91,24 +88,22 @@ def select_object_minimal(features_list: List[Features], correct_object_index: i
 
 
 def test():
-    v0: Feature = {"value": 0, "difficulty": 0}
-    v1: Feature = {"value": 1, "difficulty": 1}
     features1: List[Features] = [
-        {"a": v1, "b": v1, "c": v1, "d": v0, "e": v1, "f": v1, "g": v0},
-        {"a": v0, "b": v1, "c": v1, "d": v0, "e": v1, "f": v0, "g": v0},
-        {"a": v1, "b": v0, "c": v0, "d": v1, "e": v1, "f": v1, "g": v0},
+        {"a": 1, "b": 1, "c": 1, "d": 0, "e": 1, "f": 1, "g": 0},
+        {"a": 0, "b": 1, "c": 1, "d": 0, "e": 1, "f": 0, "g": 0},
+        {"a": 1, "b": 0, "c": 0, "d": 1, "e": 1, "f": 1, "g": 0},
     ]
 
     features2: List[Features] = [
-        {"a": v1, "b": v0, "c": v1, "d": v0, "e": v1, "f": v1, "g": v0},
-        {"a": v1, "b": v0, "c": v1, "d": v0, "e": v1, "f": v1, "g": v0},
-        {"a": v1, "b": v0, "c": v1, "d": v0, "e": v1, "f": v1, "g": v0},
+        {"a": 1, "b": 0, "c": 1, "d": 0, "e": 1, "f": 1, "g": 0},
+        {"a": 1, "b": 0, "c": 1, "d": 0, "e": 1, "f": 1, "g": 0},
+        {"a": 1, "b": 0, "c": 1, "d": 0, "e": 1, "f": 1, "g": 0},
     ]
 
     features3: List[Features] = [
-        {"a": v1, "b": v0, "c": v1, "d": v0, "e": v1, "f": v1, "g": v0},
-        {"a": v0, "b": v1, "c": v0, "d": v0, "e": v1, "f": v0, "g": v0},
-        {"a": v0, "b": v0, "c": v1, "d": v0, "e": v1, "f": v0, "g": v1},
+        {"a": 1, "b": 0, "c": 1, "d": 0, "e": 1, "f": 1, "g": 0},
+        {"a": 0, "b": 1, "c": 0, "d": 0, "e": 1, "f": 0, "g": 0},
+        {"a": 0, "b": 0, "c": 1, "d": 0, "e": 1, "f": 0, "g": 1},
     ]
 
     experiments = [

@@ -350,7 +350,7 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
     return matched_objects
 
 
-def predict_size_using_linear_programming(examples: List[Example], initial_difficulty: int):
+def predict_size_using_linear_programming(examples: List[Example], relative_difficulty: int):
     """
     Predicts the output size using linear programming. The function takes a list of input-output
     grid pairs and attempts to determine the output size by solving a linear program that minimizes
@@ -364,7 +364,7 @@ def predict_size_using_linear_programming(examples: List[Example], initial_diffi
         input_grid = Grid(example['input'])
         output_grid = Grid(example['output'])
 
-        input_features = detect_numeric_features(input_grid, initial_difficulty)
+        input_features = detect_numeric_features(input_grid, relative_difficulty)
         target_height, target_width = output_grid.size
 
         feature_vectors.append(input_features)
@@ -397,8 +397,11 @@ def process_tasks(tasks: Tasks, set: str):
                     num_correct += 1
                     continue
 
-            current_difficulty = max(xform["difficulty"] for xform in xforms)
+            difficulty_after_find_xform = max(xform["difficulty"] for xform in xforms)
+            current_difficulty = difficulty_after_find_xform
+            print(f"Currrent difficulty: {current_difficulty}")
 
+            difficulty_after_detecting_common_features = current_difficulty + 3 # difficulty levels for detecting common features
             if Config.find_matched_objects:
                 # Check if the input objects can be matched to the output objects
                 logger.debug(f"Checking common features for {task_name} {set}")
@@ -415,22 +418,23 @@ def process_tasks(tasks: Tasks, set: str):
                     else:
                         logger.warning(f"Could not find common decision rule for {task_name} {set}")
 
-            current_difficulty += 3 # difficulty levels for detecting common features
+            current_difficulty = difficulty_after_detecting_common_features
+            print(f"Currrent difficulty: {current_difficulty}")
 
             def try_linear_programming(exs: List[Example]):
                 logger.debug(f"Trying to determine dimensions via LP for {task_name} {set}")
-                predicted_height, predicted_width = predict_size_using_linear_programming(exs, current_difficulty)
+                predicted_height, predicted_width = predict_size_using_linear_programming(exs, relative_difficulty=Config.difficulty - current_difficulty)
                 if predicted_height and predicted_width:
                     logger.info(f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
                 return predicted_height, predicted_width
 
-            current_difficulty += numeric_features.num_difficulties
+            difficulty_after_linear_programming = current_difficulty + numeric_features.num_difficulties + 1
             if Config.predict_size_using_linear_programming and Config.difficulty >= current_difficulty:
                 predicted_height, predicted_width = try_linear_programming(examples)
                 if predicted_height and predicted_width:
                     num_correct += 1
                     continue
-                if Config.try_remove_main_color and Config.difficulty >= current_difficulty + 1:
+                if Config.try_remove_main_color and Config.difficulty >= difficulty_after_linear_programming:
                     # try to remove main color and try again
                     examples2: List[Example] = []
                     for example in examples:
@@ -445,7 +449,8 @@ def process_tasks(tasks: Tasks, set: str):
                     if predicted_height and predicted_width:
                         num_correct += 1
                         continue
-            # logger.info(f"Currrent difficulty: {current_difficulty}")
+            current_difficulty = difficulty_after_linear_programming
+            print(f"Currrent difficulty: {current_difficulty}")
 
             if False:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [

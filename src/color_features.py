@@ -50,9 +50,9 @@ def detect_has_min_non_background_cells(object: Object, all_objects: List[Object
 
 def detect_color_features(object: Object, all_objects: List[Object]) -> Features:
     features: Features = {}
-    features[COLOR.name] = {'value': detect_color(object, all_objects), 'difficulty': 1}
-    features[COLOR_UNIQUE.name] = {'value': detect_color_unique(object, all_objects), 'difficulty': 1}
-    features[MAX_RED_CELLS.name] = {'value': detect_has_max_red_cells(object, all_objects), 'difficulty': 1}
-    features[MAX_NON_BACKGROUND_CELLS.name] = {'value': detect_has_max_non_background_cells(object, all_objects), 'difficulty': 1}
-    features[MIN_NON_BACKGROUND_CELLS.name] = {'value': detect_has_min_non_background_cells(object, all_objects), 'difficulty': 1}
+    features[COLOR.name] = detect_color(object, all_objects)
+    features[COLOR_UNIQUE.name] = detect_color_unique(object, all_objects)
+    features[MAX_RED_CELLS.name] = detect_has_max_red_cells(object, all_objects)
+    features[MAX_NON_BACKGROUND_CELLS.name] = detect_has_max_non_background_cells(object, all_objects)
+    features[MIN_NON_BACKGROUND_CELLS.name] = detect_has_min_non_background_cells(object, all_objects)
     return features
