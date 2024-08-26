@@ -587,6 +587,8 @@ def find_xform_color(examples: List[Example], task: Task, task_name: str, task_t
                 break
     return correct_xform
 
+num_difficulties_xform_colors = max(xform["difficulty"] for xform in xforms_color)
+
 def process_tasks_color(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
@@ -601,22 +603,43 @@ def process_tasks_color(tasks: Tasks, set: str):
             if task_type == 'test':
                 continue
 
-            correct_xform = None
+            current_difficulty = 0
+
             if Config.find_xform_color:
                 correct_xform = find_xform_color(examples, task, task_name, task_type)
                 if correct_xform:
                     logger.info(f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type} and test")
                     num_correct += 1
                     continue
-            if correct_xform is None:
-                num_incorrect += 1
-                logger.warning(f"Could not find correct color transformation for {task_name} {set}")
-                if False:
-                    grids: List[Tuple[GridData, Optional[GridData]]] = [
-                        (Grid(example['input']).data, Grid(example['output']).data) for example in examples
-                    ]
-                    display_multiple(
-                        grids, title=f"Examples")
+
+            current_difficulty += num_difficulties_xform_colors
+
+            if Config.find_matched_objects:
+                # Check if the input objects can be matched to the output objects
+                logger.debug(f"Checking common features for {task_name} {set}")
+                matched_objects = find_matched_objects(examples, task_type)
+                if matched_objects:
+                    # If the input objects can be matched to the output objects, try to detect common features
+                    # to determine the correct object to pick
+                    logger.debug(f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}")
+                    common_decision_rule, features_used = detect_common_features(matched_objects, current_difficulty)
+                    if common_decision_rule:
+                        logger.info(f"Common decision rule ({features_used}): {common_decision_rule}")
+                        num_correct += 1
+                        continue
+                    else:
+                        logger.warning(f"Could not find common decision rule for {task_name} {set}")
+
+            current_difficulty += num_difficulties_matching
+
+            num_incorrect += 1
+            logger.warning(f"Could not find correct color transformation for {task_name} {set}")
+            if False:
+                grids: List[Tuple[GridData, Optional[GridData]]] = [
+                    (Grid(example['input']).data, Grid(example['output']).data) for example in examples
+                ]
+                display_multiple(
+                    grids, title=f"Examples")
 
     return num_correct, num_incorrect
 
