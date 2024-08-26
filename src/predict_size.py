@@ -4,7 +4,7 @@ from color_features import detect_color_features
 import numeric_features
 from visual_cortex import Frame, find_largest_frame, find_smallest_frame, is_frame_part_of_lattice
 from grid import Grid
-from grid_data import BLACK, BLUE, GREY, LIGHTBLUE, GridData, Object, display, display_multiple, logger
+from grid_data import BLACK, GREY, LIGHTBLUE, GridData, Object, display, display_multiple, logger
 from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
@@ -182,23 +182,43 @@ def output_colors_are_constant(grids: ExampleGrids, grid: Grid, task_name: str) 
     return set(grids[0][1].get_colors())
 
 def output_colors_are_input_colors_minus_one_color(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    # Check in grids if there's a color that is always removed from the input to the output
-    # If found, remove it from the grid color
-    candidate_color = None
+    # Check in grids if there are is one colors that is always removed from the input to the output
+    # If found, remove it from the grid colors
+    candidate_colors: Optional[Set[int]] = None
     for (input, output) in grids:
         input_colors = set(input.get_colors())
         output_colors = set(output.get_colors())
         removed_colors = input_colors - output_colors
-        if len(removed_colors) == 1:
-            color = list(removed_colors)[0]
-            if candidate_color is None:
-                candidate_color = color
-                continue
-            if candidate_color != color:
-                return None
-    if candidate_color is not None:
-        return set(grid.get_colors()) - {candidate_color}
+        if len(removed_colors) != 1:
+            return None
+        if candidate_colors is None:
+            candidate_colors = removed_colors
+            continue
+        if candidate_colors != removed_colors:
+            return None
+    if candidate_colors is None:
+        return None
+    return set(grid.get_colors()) - candidate_colors
 
+
+def output_colors_are_input_colors_minus_two_colors(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    # Check in grids if there are two colors that are always removed from the input to the output
+    # If found, remove them from the grid color
+    candidate_colors: Optional[Set[int]] = None
+    for (input, output) in grids:
+        input_colors = set(input.get_colors())
+        output_colors = set(output.get_colors())
+        removed_colors = input_colors - output_colors
+        if len(removed_colors) != 2:
+            return None
+        if candidate_colors is None:
+            candidate_colors = removed_colors
+            continue
+        if candidate_colors != removed_colors:
+            return None
+    if candidate_colors is None:
+        return None
+    return set(grid.get_colors()) - candidate_colors
 
 def output_colors_are_input_colors_plus_black(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=True)) | {BLACK}
@@ -219,7 +239,8 @@ xforms_color: List[ColorXformEntry] = [
         {"function": output_colors_are_input_colors_plus_lightblue, "difficulty": 1},
         {"function": output_colors_are_input_colors_minus_black_grey, "difficulty": 1},
         {"function": output_colors_are_constant, "difficulty": 2},
-        {"function": output_colors_are_input_colors_minus_one_color, "difficulty": 3}
+        {"function": output_colors_are_input_colors_minus_one_color, "difficulty": 3},
+        {"function": output_colors_are_input_colors_minus_two_colors, "difficulty": 3},
     ]
 
 def check_xform_on_examples(xform: SizeXform, examples: List[Example], task_name: str, task_type: str) -> bool:
