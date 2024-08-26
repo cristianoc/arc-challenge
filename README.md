@@ -60,6 +60,32 @@ Common decision rule (Symmetry): VERTICAL = False.
 
 So the selected object is the only one that is not symmetric across the vertical axis.
 
+
+## Ablation Study
+
+### Overview
+
+An ablation study was conducted to evaluate how different combinations of synthetic techniques and feature sets impact the performance of the SizeARC solution. The study examined the model's accuracy across various levels of complexity, ranging from basic transformations to advanced feature combinations.
+
+### Methodology
+
+The study incrementally activated synthetic techniques and feature sets across difficulty levels from 1 to 12. Each level represents a progressively more complex configuration, allowing for an analysis of how each feature or transformation influences the model’s accuracy.
+
+### Results
+
+The graph below summarizes the performance of the model on both the training and evaluation datasets across the different difficulty levels.
+
+![Ablation Study Results](path_to_your_plot_image.png)
+
+### Key Insights
+
+- **Consistent Generalization**: The mechanism used in the SizeARC solution consistently generalizes well across both training and evaluation datasets, with similar accuracy scores observed at each difficulty level.
+
+- **Significant Early Gains**: A notable improvement in accuracy is observed early on, particularly between levels 1 and 2, showing how the problem is very easy initially but gets harder later.
+
+- **Robust Performance**: As more advanced techniques are introduced, the model maintains robust performance, with accuracy steadily improving or stabilizing as complexity increases.
+
+
 ## Implementation
 
 For more details on the implementation of the methods used, start with the [predict_size.py](https://github.com/cristianoc/arc-challenge/blob/main/src/predict_size.py) file. This file provides a practical entry point into understanding how the symbolic approach was applied to solve the SizeARC challenge.
