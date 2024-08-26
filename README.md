@@ -75,7 +75,7 @@ The study incrementally activated synthetic techniques and feature sets across d
 
 The graph below summarizes the performance of the model on both the training and evaluation datasets across the different difficulty levels.
 
-![Ablation Study Results](path_to_your_plot_image.png)
+<img width="577" alt="Screenshot 2024-08-26 at 04 00 58" src="https://github.com/user-attachments/assets/b59eb10e-3e58-4d74-849c-c2bd4f151f4e">
 
 ### Key Insights
 
