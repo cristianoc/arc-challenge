@@ -266,7 +266,7 @@ def output_colors_are_input_colors_minus_color_of_largest_object(grids: ExampleG
     objects = grid.detect_objects()
     if not objects:
         return None
-    largest_object = max(objects, key=lambda obj: obj.num_cells(color=None))
+    largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
     return set(grid.get_colors()) - {largest_object.main_color}
 
 xforms_color: List[ColorXformEntry] = [
