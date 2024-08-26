@@ -293,6 +293,7 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
     if common_decision_rule is None and Config.difficulty >= initial_difficulty + 3:
         common_decision_rule = detect_common_symmetry_features()
         features_used = "Symmetry"
+    assert num_difficulties_matching == 3
 
     return common_decision_rule, features_used
 
