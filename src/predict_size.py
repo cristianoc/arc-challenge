@@ -4,7 +4,7 @@ from color_features import detect_color_features
 import numeric_features
 from visual_cortex import Frame, find_largest_frame, find_smallest_frame, is_frame_part_of_lattice
 from grid import Grid
-from grid_data import BLACK, GREY, LIGHTBLUE, GridData, Object, display, display_multiple, logger
+from grid_data import BLACK, GREY, GridData, Object, display, display_multiple, logger
 from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
