@@ -521,8 +521,8 @@ def process_tasks(tasks: Tasks, set: str):
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
                     (Grid(example['input']).data, Grid(example['output']).data) for example in examples
                 ]
-                display_multiple(
-                    grids, title=f"Task: {task_name} {set} matched_objects:{matched_objects}/{len(examples)}")
+                
+                display_multiple(grids, title=f"{task_name} {set}")
 
             # If no valid dimensions could be determined, give up
             logger.warning(f"Could not find correct transformation or determine dimensions via Linear Programming for {task_name} {set} examples")
@@ -637,8 +637,7 @@ def process_tasks_color(tasks: Tasks, set: str):
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
                     (Grid(example['input']).data, Grid(example['output']).data) for example in examples
                 ]
-                display_multiple(
-                    grids, title=f"Examples")
+                display_multiple(grids, title=f"{task_name} {set}")
 
     return num_correct, num_incorrect
 

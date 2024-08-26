@@ -1,8 +1,6 @@
 import logging
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import tkinter as tk
 from dataclasses import dataclass
-from typing import Dict, List, NewType, Optional, Tuple
+from typing import Any, Dict, List, NewType, Optional, Tuple
 
 from matplotlib import colors, pyplot as plt
 from matplotlib.colors import ListedColormap
@@ -233,83 +231,47 @@ BROWN: Color = Color(9)   # #870C25
 def display(input: GridData, output: Optional[GridData] = None, title: Optional[str] = None) -> None:
     display_multiple([(input, output)], title)
 
+plt: Any = plt
 
 def display_multiple(grid_pairs: List[Tuple[GridData, Optional[GridData]]], title: Optional[str] = None) -> None:
     num_pairs = len(grid_pairs)
-    # Create a ListedColormap with the specified colors
-    cmap: ListedColormap = colors.ListedColormap(color_scheme)
-
-    # Adjust the bounds to match the number of colors
-    bounds = np.arange(-0.5, len(color_scheme) - 0.5, 1)
-    norm = colors.BoundaryNorm(bounds, cmap.N)  # type: ignore
-
-    # Create the tkinter root window with an initial size
-    root = tk.Tk()
-    if title:
-        root.title(title)
-    root.geometry("1200x1000")  # Set the initial size of the window
-
-    # Create a frame to contain the canvas and scrollbar
-    frame = tk.Frame(root)
-    frame.pack(fill=tk.BOTH, expand=True)
-
-    # Create a canvas and place it in the frame
-    canvas = tk.Canvas(frame)
-    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-    # Add a vertical scrollbar to the canvas
-    scrollbar = tk.Scrollbar(frame, orient=tk.VERTICAL,
-                             command=canvas.yview)  # type: ignore
-    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-    canvas.configure(yscrollcommand=scrollbar.set)
-
-    # Create another frame inside the canvas to hold the plots
-    plot_frame = tk.Frame(canvas)
-    canvas.create_window((0, 0), window=plot_frame, anchor="nw")
 
     # Create a Matplotlib figure with multiple rows, two subplots per row
-    fig, axes = plt.subplots(num_pairs, 2, figsize=(  # type: ignore
-        6/2, 3 * num_pairs/2))  # Adjust figsize for smaller plots
+    fig, axes = plt.subplots(num_pairs, 2, figsize=(4, 2 * num_pairs))  # Adjust figsize as needed
 
-    # If there's only one pair, we need to wrap axes in a list to make iteration easier
+    # If there's only one pair, axes won't be a list, so we wrap it in a list
     if num_pairs == 1:
-        axes = [axes]  # type: ignore
+        axes = [axes]
 
     for i, (input_data, output_data) in enumerate(grid_pairs):
-        # Get the axes for the current pair of grids
-        ax_input, ax_output = axes[i]  # type: ignore
+        ax_input, ax_output = axes[i]
 
         # Plot the input grid
-        plot_grid(ax_input, input_data, cmap, norm)  # type: ignore
+        cmap: ListedColormap = colors.ListedColormap(color_scheme)
+        # Adjust the bounds to match the number of colors
+        bounds = np.arange(-0.5, len(color_scheme) - 0.5, 1)
+        norm = colors.BoundaryNorm(bounds, cmap.N)  # type: ignore
+        ax_input.imshow(input_data, cmap=cmap, norm=norm)
+        ax_input.set_title(f'Input Grid {i+1}')
+        ax_input.axis('off')  # Hide the axes
 
         if output_data is not None:
-            # Plot the output grid if provided, otherwise plot the input grid again
-            plot_grid(ax_output, output_data, cmap, norm)  # type: ignore
+            # Plot the output grid if provided
+            ax_output.imshow(output_data, cmap=cmap, norm=norm)
+            ax_output.set_title(f'Output Grid {i+1}')
+        else:
+            # If output_data is None, just show a blank plot
+            ax_output.imshow(np.zeros_like(input_data), cmap='gray') # type: ignore
+            ax_output.set_title(f'Output Grid {i+1} (None)')
 
-    plt.tight_layout()  # type: ignore
+        ax_output.axis('off')  # Hide the axes
 
-    # Embed the Matplotlib figure into the tkinter window
-    canvas_fig = FigureCanvasTkAgg(fig, master=plot_frame)
-    canvas_fig.draw()
-    canvas_fig.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+    if title:
+        fig.suptitle(title, fontsize=16)
 
-    # Update the canvas scroll region to fit the figure
-    plot_frame.update_idletasks()
-    canvas.config(scrollregion=canvas.bbox("all"))
+    plt.tight_layout(rect=[0, 0, 1, 0.96])  # Adjust layout to make room for title
+    plt.show()
 
-    # Start the tkinter main loop
-    root.mainloop()
-
-
-def plot_grid(ax, data: GridData, cmap, norm, title: Optional[str] = None): # type: ignore
-    ax.set_facecolor('black')  # type: ignore
-    for i in range(len(data)):
-        for j in range(len(data[0])):
-            rect = plt.Rectangle(  # type: ignore
-                (j - 0.5, i - 0.5), 1, 1, edgecolor='grey', facecolor='none', linewidth=1)
-            ax.add_patch(rect)  # type: ignore
-
-    im = ax.imshow(data, cmap=cmap, norm=norm)  # type: ignore
 
 
 class TestSquashLeft:
