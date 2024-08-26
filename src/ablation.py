@@ -56,12 +56,17 @@ def ablation_study():
                 "evaluation_data": perc_correct_ev
             }
 
+    # Sort results by difficulty level
+    # Sorting ensures the difficulty levels are in order after parallel processing.
+    results = dict(sorted(results.items()))
+      
+
     # Write summary of results to JSON file with sorted keys
     with open("ablation_results.json", "w") as f:
-        json.dump(results, f, indent=4, sort_keys=True)
+        json.dump(results, f, indent=4)
 
     # Extracting levels and corresponding accuracies
-    levels = list(map(int, results.keys()))
+    levels = list(results.keys())  # Ensure levels are sorted
     training_accuracies = [results[level]["training_data"] for level in levels]
     evaluation_accuracies = [results[level]
                              ["evaluation_data"] for level in levels]
