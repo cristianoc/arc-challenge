@@ -25,8 +25,8 @@ class Config:
     predict_size_using_linear_programming = True
     try_remove_main_color = True
     difficulty = 1000
-    # task_name = "81c0276b.json"
     task_name = None
+    # task_name = "8e1813be.json"
     find_xform_color = True
 
 
@@ -199,11 +199,11 @@ def output_colors_are_input_colors_minus_black(grids: ExampleGrids, grid: Grid, 
 def output_colors_are_input_colors_minus_blue(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=True)) - {BLUE}
 
-# def output_colors_are_input_colors_minus_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-#     return set(grid.get_colors(allow_black=True)) - {GREY}
+def output_colors_are_input_colors_minus_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+    return set(grid.get_colors(allow_black=True)) - {GREY}
 
 def output_colors_are_input_colors_minus_black_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    return set(grid.get_colors(allow_black=True)) - {GREY}
+    return set(grid.get_colors(allow_black=True)) - {BLACK, GREY}
 
 xforms_color: List[ColorXformEntry] = [
         {"function": output_colors_are_input_colors, "difficulty": 1},
@@ -211,7 +211,7 @@ xforms_color: List[ColorXformEntry] = [
         {"function": output_colors_are_input_colors_plus_grey, "difficulty": 1},
         # {"function": output_colors_are_input_colors_plus_black_grey, "difficulty": 1},
         {"function": output_colors_are_input_colors_minus_black, "difficulty": 1},
-        # {"function": output_colors_are_input_colors_minus_grey, "difficulty": 1},
+        {"function": output_colors_are_input_colors_minus_grey, "difficulty": 1},
         {"function": output_colors_are_input_colors_minus_blue, "difficulty": 1},
         {"function": output_colors_are_input_colors_minus_black_grey, "difficulty": 1},
         {"function": output_colors_are_constant, "difficulty": 2},
