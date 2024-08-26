@@ -463,34 +463,32 @@ def process_tasks(tasks: Tasks, set: str):
     return num_correct, num_incorrect
 
 
-def process_and_evaluate(tasks: Tasks, set: str, difficulty_level:Optional[int]=None):
-    """
-    Processes tasks and calculates the number of correct and incorrect predictions.
-    Returns the percentage of correct predictions.
-    """
-    if difficulty_level is not None:
-        Config.difficulty = difficulty_level
-    num_correct, num_incorrect = process_tasks(tasks, set)
-
-    perc_correct = None
+def compute_perc_correct(num_correct: int, num_incorrect: int) -> Optional[float]:
     if num_correct + num_incorrect > 0:
-        perc_correct = int(1000 * num_correct / (num_correct + num_incorrect)) / 10
-        logger.info(
-            f"{set.capitalize()} data - Difficulty Level {difficulty_level}: "
-            f"Correct: {num_correct}, Incorrect: {num_incorrect}, Score: {perc_correct}%"
-        )
-    
-    return perc_correct
-
+        return int(1000 * num_correct / (num_correct + num_incorrect)) / 10
+    return None
 
 def predict_sizes():
-    num_correct_tr = process_and_evaluate(training_data, "training_data")
-    num_correct_ev = process_and_evaluate(evaluation_data, "evaluation_data")
+    num_correct_tr, num_incorrect_tr = process_tasks(training_data, "training_data")
+    num_correct_ev, num_incorrect_ev = process_tasks(evaluation_data, "evaluation_data")
+    perc_correct_tr = compute_perc_correct(num_correct_tr, num_incorrect_tr)
+    perc_correct_ev = compute_perc_correct(num_correct_ev, num_incorrect_ev)
+
+    def log_evaluation_results(set: str, num_correct: int, num_incorrect: int):
+        perc_correct = compute_perc_correct(num_correct, num_incorrect)
+        if perc_correct is not None:
+            logger.error(
+                f"{set.capitalize()} data: "
+                f"Correct: {num_correct}, Incorrect: {num_incorrect}, Score: {perc_correct}%")
+
+    logger.error("\n***Summary***")
+    log_evaluation_results("training", num_correct_tr, num_incorrect_tr)
+    log_evaluation_results("evaluation", num_correct_ev, num_incorrect_ev)
     
     # Write summary of results to JSON file
     with open("predict_sizes.json", "w") as f:
         f.write(
-            f'{{"training_data":{num_correct_tr},"evaluation_data":{num_correct_ev}}}'
+            f'{{"training_data":{perc_correct_tr},"evaluation_data":{perc_correct_ev}}}'
         )
 
 
@@ -516,10 +514,13 @@ def ablation_study():
         current_time = datetime.now().strftime('%H:%M:%S.%f')[:-3] # type: ignore
         logger.error(f"{get_current_time()} - Evaluating difficulty level: {difficulty_level}")
 
-        perc_correct_tr = process_and_evaluate(training_data, "training_data", difficulty_level)
-        perc_correct_ev = process_and_evaluate(evaluation_data, "evaluation_data", difficulty_level)
-        # Store results for this difficulty level
+        Config.difficulty = difficulty_level
+        num_correct_tr, num_incorrect_tr = process_tasks(training_data, "training_data")
+        num_correct_ev, num_incorrect_ev = process_tasks(evaluation_data, "evaluation_data")
+        perc_correct_tr = compute_perc_correct(num_correct_tr, num_incorrect_tr)
+        perc_correct_ev = compute_perc_correct(num_correct_ev, num_incorrect_ev)
 
+        # Store results for this difficulty level
         results[difficulty_level] = {
             "training_data": perc_correct_tr,
             "evaluation_data": perc_correct_ev
