@@ -77,9 +77,9 @@ def ablation_study():
              label="Training Data Accuracy", marker='o')
     plt.plot(levels, evaluation_accuracies,
              label="Evaluation Data Accuracy", marker='o')
-    plt.xlabel("Difficulty Level")
+    plt.xlabel("Model's Difficulty Level")
     plt.ylabel("Accuracy (%)")
-    plt.title("Ablation Study: Accuracy vs. Difficulty Level")
+    plt.title("Ablation Study: Accuracy vs. Model's Difficulty Level")
     plt.legend()
     plt.grid(True)
     plt.xticks(levels)
