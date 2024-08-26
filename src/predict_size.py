@@ -236,20 +236,12 @@ def output_colors_are_constant_plus_two_colors(grids: ExampleGrids, grid: Grid, 
 def output_colors_are_input_colors_plus_black(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=True)) | {BLACK}
 
-def output_colors_are_input_colors_plus_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    return set(grid.get_colors(allow_black=True)) | {GREY}
-
-def output_colors_are_input_colors_plus_lightblue(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
-    return set(grid.get_colors(allow_black=True)) | {LIGHTBLUE}
-
 def output_colors_are_input_colors_minus_black_grey(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=True)) - {BLACK, GREY}
 
 xforms_color: List[ColorXformEntry] = [
         {"function": output_colors_are_input_colors, "difficulty": 1},
         {"function": output_colors_are_input_colors_plus_black, "difficulty": 1},
-        {"function": output_colors_are_input_colors_plus_grey, "difficulty": 1},
-        {"function": output_colors_are_input_colors_plus_lightblue, "difficulty": 1},
         {"function": output_colors_are_input_colors_minus_black_grey, "difficulty": 1},
         {"function": output_colors_are_constant, "difficulty": 2},
         {"function": output_colors_are_input_colors_minus_one_color, "difficulty": 3},
