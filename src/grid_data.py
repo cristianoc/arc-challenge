@@ -211,8 +211,8 @@ color_scheme = [
     '#AAAAAA',  # grey
     '#F012BE',  # fuschia
     '#FF851B',  # orange
-    '#870C25',  # brown
     '#7FDBFF',  # ligthblue
+    '#870C25',  # brown
 ]
 
 # Definitions using the indices
@@ -224,7 +224,7 @@ YELLOW: Color = Color(4)  # #FFDC00
 GREY: Color = Color(5)    # #AAAAAA
 FUSCHIA: Color = Color(6)  # F012BE
 ORANGE: Color = Color(7)  # #FF851B
-LIGHTBLUE: Color = Color(8)    # #7FDBFF
+LIGHTBLUE: Color = Color(8) # #7FDBFF
 BROWN: Color = Color(9)   # #870C25
 
 
@@ -249,7 +249,7 @@ def display_multiple(grid_pairs: List[Tuple[GridData, Optional[GridData]]], titl
         # Plot the input grid
         cmap: ListedColormap = colors.ListedColormap(color_scheme)
         # Adjust the bounds to match the number of colors
-        bounds = np.arange(-0.5, len(color_scheme) - 0.5, 1)
+        bounds = np.arange(-0.5, len(color_scheme) + 0.5, 1)
         norm = colors.BoundaryNorm(bounds, cmap.N)  # type: ignore
         ax_input.imshow(input_data, cmap=cmap, norm=norm)
         ax_input.set_title(f'Input Grid {i+1}')
