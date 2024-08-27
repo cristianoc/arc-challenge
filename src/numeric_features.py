@@ -5,7 +5,7 @@ from grid_data import Object
 from rule_based_selector import Features
 
 
-num_difficulties = 4
+num_difficulties = 5
 
 
 def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
@@ -19,15 +19,18 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
 
     objects = grid.detect_objects()
     num_objects_of_main_color = 0
-    number_of_cells_in_largest_object = 0
+    num_cells_in_largest_object = 0
+    num_objects_of_max_size = 0
     if objects:
         largest_object = max(
             objects, key=lambda obj: obj.num_cells(color=None), default=None)
         num_objects_of_main_color = sum(
             1 for obj in objects if obj.main_color == main_color)
         if largest_object:
-            number_of_cells_in_largest_object = largest_object.num_cells(
+            num_cells_in_largest_object = largest_object.num_cells(
                 color=None)
+            num_objects_of_max_size = sum(1 for obj in objects if obj.num_cells(
+                color=None) == largest_object.num_cells(color=None))
 
     features: Features = {
     }
@@ -41,9 +44,11 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     if relative_difficulty >= 3:
         features["num_objects_of_main_color"] = num_objects_of_main_color
     if relative_difficulty >= 4:
-        features["number_of_cells_in_largest_object"] = number_of_cells_in_largest_object
+        features["num_cells_in_largest_object"] = num_cells_in_largest_object
+    if relative_difficulty >= 5:
+        features["num_objects_of_max_size"] = num_objects_of_max_size
 
-    assert num_difficulties == 4
+    assert num_difficulties == 5
     return features
 
 
