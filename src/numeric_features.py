@@ -49,7 +49,7 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
 
     features: Features = {
     }
-    # relative_difficulty is the difficulty minus the level before using linear programming
+    # relative_difficulty is the difficulty minus the level before using regularized regression
     if relative_difficulty >= 1:
         features["grid_height"] = height
         features["grid_width"] = width

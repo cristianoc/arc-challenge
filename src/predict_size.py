@@ -22,7 +22,7 @@ ObjectPicker = Callable[[List[Object]], int]
 class Config:
     find_xform = True
     find_matched_objects = True
-    predict_size_using_linear_programming = True
+    predict_size_using_regularized_regression = True
     try_remove_main_color = True
     difficulty = 1000
     task_name = None
@@ -388,11 +388,11 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
     return matched_objects
 
 
-def predict_size_using_linear_programming(examples: List[Example], relative_difficulty: int):
+def predict_size_using_regularized_regression(examples: List[Example], relative_difficulty: int):
     """
-    Predicts the output size using linear programming. The function takes a list of input-output
-    grid pairs and attempts to determine the output size by solving a linear program that minimizes
-    the sum of weights and bias for each feature.
+    Predicts the output size using regularized regression. This function takes a list of input-output
+    grid pairs and determines the output size by solving a regression problem that minimizes the sum 
+    of weights and bias, subject to regularization constraints, to ensure simplicity and generalization.
     """
     feature_vectors: List[Features] = []
     target_heights: List[int] = []
@@ -419,9 +419,9 @@ def predict_size_using_linear_programming(examples: List[Example], relative_diff
 
 num_difficulties_xform = max(xform["difficulty"] for xform in xforms)
 num_difficulties_matching = 3
-num_difficulties_linear_programming = numeric_features.num_difficulties + 1
+num_difficulties_regularized_regression = numeric_features.num_difficulties + 1
 num_difficulties_total = num_difficulties_xform + \
-    num_difficulties_matching + num_difficulties_linear_programming
+    num_difficulties_matching + num_difficulties_regularized_regression
 
 
 def process_tasks(tasks: Tasks, set: str):
@@ -472,25 +472,25 @@ def process_tasks(tasks: Tasks, set: str):
                             f"Could not find common decision rule for {task_name} {set}")
             current_difficulty += num_difficulties_matching
 
-            def try_linear_programming(exs: List[Example]):
+            def try_regularized_regression(exs: List[Example]):
                 logger.debug(
                     f"Trying to determine dimensions via LP for {task_name} {set}")
-                predicted_height, predicted_width = predict_size_using_linear_programming(
+                predicted_height, predicted_width = predict_size_using_regularized_regression(
                     exs, relative_difficulty=Config.difficulty - current_difficulty)
                 if predicted_height and predicted_width:
                     logger.info(
                         f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
                 return predicted_height, predicted_width
 
-            difficulty_after_linear_programming = current_difficulty + \
+            difficulty_after_regularized_regression = current_difficulty + \
                 numeric_features.num_difficulties + 1
-            if Config.predict_size_using_linear_programming and Config.difficulty >= current_difficulty:
-                predicted_height, predicted_width = try_linear_programming(
+            if Config.predict_size_using_regularized_regression and Config.difficulty >= current_difficulty:
+                predicted_height, predicted_width = try_regularized_regression(
                     examples)
                 if predicted_height and predicted_width:
                     num_correct += 1
                     continue
-                if Config.try_remove_main_color and Config.difficulty >= difficulty_after_linear_programming:
+                if Config.try_remove_main_color and Config.difficulty >= difficulty_after_regularized_regression:
                     # try to remove main color and try again
                     examples2: List[Example] = []
                     for example in examples:
@@ -502,12 +502,12 @@ def process_tasks(tasks: Tasks, set: str):
                         example_copy = example.copy()
                         example_copy['input'] = example['input']
                         examples2.append(example_copy)
-                    predicted_height, predicted_width = try_linear_programming(
+                    predicted_height, predicted_width = try_regularized_regression(
                         examples2)
                     if predicted_height and predicted_width:
                         num_correct += 1
                         continue
-            current_difficulty += num_difficulties_linear_programming
+            current_difficulty += num_difficulties_regularized_regression
 
             if Config.display_not_found:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [

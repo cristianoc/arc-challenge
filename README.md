@@ -28,7 +28,7 @@ The final configuration of the SizeARC solution achieved 94-95% accuracy on the 
 
 2. **Decision Rules on Matched Objects**: The method enhances accuracy by detecting objects within the grid, matching them across examples, and applying decision rules that leverage these matches to predict the output size.
 
-3. **Linear Programming**: In more complex cases, linear programming is employed to refine predictions. This involves solving for weights and biases that best fit the observed data, allowing for a more accurate determination of grid dimensions.
+3. **Regularized Regression**: In more complex cases, regularized regression is employed to refine predictions. This involves solving for weights and biases that best fit the observed data while adhering to regularization constraints. These constraints ensure the model remains simple, interpretable, and generalizable, leading to more accurate and reliable predictions of grid dimensions.
 
 ## SizeARC: A Simplified ARC Challenge
 
