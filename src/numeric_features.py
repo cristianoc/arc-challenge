@@ -5,7 +5,7 @@ from grid_data import Object
 from rule_based_selector import Features
 
 
-num_difficulties = 3
+num_difficulties = 4
 
 def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     height, width = grid.size
@@ -18,6 +18,10 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     main_color = grid_as_object.main_color
     num_objects_of_main_color = sum(
         1 for obj in objects if obj.main_color == main_color)
+    if objects:
+        number_of_cells_in_largest_object = max(obj.num_cells(color=None) for obj in objects)
+    else:
+        number_of_cells_in_largest_object = 0
 
     features : Features = {
     }
@@ -30,8 +34,11 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
         features["num_cells"] = num_cells
     if relative_difficulty >= 3:
         features["num_objects_of_main_color"] = num_objects_of_main_color
+    if relative_difficulty >= 4:
+        features["number_of_cells_in_largest_object"] = number_of_cells_in_largest_object
 
-    assert num_difficulties == 3
+
+    assert num_difficulties == 4
     return features
 
 
