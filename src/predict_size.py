@@ -9,7 +9,7 @@ from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluatio
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
 from shape_features import detect_shape_features
-from solve_integer_program import find_weights_and_bias
+from solve_integer_program import solve_regularized_regression
 from symmetry_features import detect_symmetry_features
 
 Size = Tuple[int, int]
@@ -410,9 +410,9 @@ def predict_size_using_linear_programming(examples: List[Example], relative_diff
         target_heights.append(target_height)
         target_widths.append(target_width)
 
-    predicted_height = find_weights_and_bias(
+    predicted_height = solve_regularized_regression(
         feature_vectors, target_heights, "height")
-    predicted_width = find_weights_and_bias(
+    predicted_width = solve_regularized_regression(
         feature_vectors, target_widths, "width")
     return predicted_height, predicted_width
 

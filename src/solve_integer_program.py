@@ -8,120 +8,134 @@ from grid_data import logger
 pulp: Any = pulp
 random: Any = random
 
-def find_weights_and_bias(samples: List[Features], goals: List[int], desc:str) -> Optional[Tuple[Features, int]]:
+def solve_regularized_regression(features: List[Features], targets: List[int], description: str) -> Optional[Tuple[Features, int]]:
     """
-    Finds integer weights and bias such that:
+    Solves for integer weights and bias that minimize the regularized objective:
     
-        Σ (W[feature] * f[feature]) + b = goal_i
+        minimize ||W||_1 + |b|
     
-    for each features dictionary `f` in `samples`.
+    subject to:
+    
+        Σ (W[f] * x[f]) + b = y_i
+    
+    for each feature vector `x` in `features`.
     
     Args:
-        samples: List of feature-value dictionaries.
-        goals: List of target values.
+        features: List of feature-value dictionaries.
+        targets: List of target values.
 
     Returns:
         A tuple (W, b) where:
             W: Dictionary of weights.
             b: Integer bias.
-        Returns None if no exact solution is found.
+        Returns None if no feasible solution is found after applying the regularization constraints.
     """
-    if not samples or len(samples) != len(goals):
+    if not features or len(features) != len(targets):
         return None
 
-    feature_names = list(samples[0].keys())
-    num_samples = len(samples)
+    feature_names = list(features[0].keys())
+    num_samples = len(features)
 
-    # Create a linear programming problem
-    problem = pulp.LpProblem("Integer_Programming_Example", pulp.LpMinimize)
+    # Define the linear programming problem with an objective to minimize (L1 regularization)
+    optimization_problem = pulp.LpProblem("Regularized_Linear_Regression", pulp.LpMinimize)
 
-    # Variables: W vector of integers (one for each feature) and b as an integer
-    W = {feature: pulp.LpVariable(f"W_{feature}", lowBound=0, upBound=None, cat='Integer')
-         for feature in feature_names}
-    b = pulp.LpVariable("b", lowBound=0, upBound=None, cat='Integer')
+    # Define the weight vector W (one variable per feature) and bias term b
+    weights = {feature: pulp.LpVariable(f"W_{feature}", lowBound=0, upBound=None, cat='Integer')
+               for feature in feature_names}
+    bias = pulp.LpVariable("bias", lowBound=0, upBound=None, cat='Integer')
 
-    # Constraints: Σ (W[feature] * f[feature]) + b = goal_i for each features dictionary
+    # Add equality constraints for each sample
     for i in range(num_samples):
-        constraint = pulp.lpSum(samples[i][feature] * W[feature] for feature in feature_names) + b == goals[i]
-        problem += constraint
+        constraint = pulp.lpSum(features[i][feature] * weights[feature] for feature in feature_names) + bias == targets[i]
+        optimization_problem += constraint
 
-    # Objective: Minimize the sum of W and bias
-    problem += pulp.lpSum(W[feature] for feature in feature_names) + b
-    
+    # Objective function: minimize L1 norm of weights and bias (regularization term)
+    optimization_problem += pulp.lpSum(weights[feature] for feature in feature_names) + bias
 
-    # Solve the problem using the CBC solver with suppressed output
-    problem.solve(pulp.PULP_CBC_CMD(msg=False))
+    # Solve the optimization problem using the CBC solver with suppressed output
+    optimization_problem.solve(pulp.PULP_CBC_CMD(msg=False))
 
-    # Retrieve results
-    W_solution = {feature: pulp.value(W[feature]) for feature in feature_names}
-    b_solution = pulp.value(b)
+    # Extract the optimized weights and bias
+    optimized_weights = {feature: pulp.value(weights[feature]) for feature in feature_names}
+    optimized_bias = pulp.value(bias)
 
-    # Check if the solution is perfect
-    is_perfect = True
-    for i in range(num_samples):
-        calculated_value = sum(samples[i][feature] * W_solution[feature] for feature in feature_names) + b_solution
-        if calculated_value != goals[i]:
-            is_perfect = False
-            break
+    # Verify if the solution perfectly fits the data
+    is_perfect_solution = all(
+        sum(features[i][feature] * optimized_weights[feature] for feature in feature_names) + optimized_bias == targets[i]
+        for i in range(num_samples)
+    )
 
-    logger.debug(f"Solution {desc}: Weights: {W_solution}, Bias: {b_solution}")
+    logger.debug(f"Solution {description}: Weights: {optimized_weights}, Bias: {optimized_bias}")
 
-    # Check if the solution is plausible
-    plausible = True
-    # bias must be an integer between 0 and 2
-    if b_solution % 1 != 0 or b_solution < 0 or b_solution > 2:
+    # Apply post-optimization regularization checks
+    if is_perfect_solution and is_regularized_solution(optimized_weights, optimized_bias):
+        return optimized_weights, optimized_bias
+    else:
+        return None
+
+def is_regularized_solution(weights: Features, bias: int) -> bool:
+    """
+    Post-optimization regularization: Enforce additional constraints on the solution to ensure
+    simplicity and generalization.
+
+    Args:
+        weights: Dictionary of optimized weights.
+        bias: Optimized bias.
+
+    Returns:
+        True if the solution meets all regularization constraints, False otherwise.
+    """
+
+    # Regularization Constraint 1: Bias must be an integer between 0 and 2
+    if bias % 1 != 0 or bias < 0 or bias > 2:
         logger.info("Bias is not an integer between 0 and 2")
-        plausible = False
-    # weights must be integers unless there's only one weight which is 1/2 or 1/3 and the bias is 0
-    if len(W_solution) > 1:
-        for weight in W_solution.values():
-            if weight % 1 != 0:
-                if weight != 0.5 and weight != 1/3:
-                    logger.info(f"One of the weights is not an integer: {weight} and not 1/2 or 1/3")
-                    plausible = False
-                    break
-    # weights must be integers and bias must be nonnegative integer and at most one weight can be nonzero
-    else:
-        if b_solution % 1 != 0 or b_solution < 0 or sum(W_solution.values()) > 1:
-            plausible = False
+        return False
 
-    if is_perfect and plausible:
-        return W_solution, b_solution
+    # Regularization Constraint 2: Weights must be integers unless special cases (e.g., single weight scenario)
+    if len(weights) > 1:
+        for weight in weights.values():
+            if weight % 1 != 0 and weight not in [0.5, 1/3]:
+                logger.info(f"One of the weights is not an integer: {weight} and not 1/2 or 1/3")
+                return False
+    # Regularization Constraint 3: Weights and bias checks for specific scenarios
     else:
-        return None
+        if bias % 1 != 0 or bias < 0 or sum(weights.values()) > 1:
+            return False
 
-# Test function
-def test_find_weights_and_bias():
+    return True
+
+# Test function for the regularized linear regression solver
+def test_solve_regularized_regression():
     random.seed(42)
     
     # Parameters
     num_samples = 10
     num_features = 5
 
-    # Generate random features and corresponding goals
+    # Generate random feature vectors and corresponding target values
     feature_names = [f"feature_{i}" for i in range(num_features)]
-    samples : List[Features] = [
+    features: List[Features] = [
         {feature: random.randint(1, 10) for feature in feature_names} 
         for _ in range(num_samples)
     ]
-    goals = [2 * samples[i]["feature_0"] + samples[i]["feature_1"] for i in range(num_samples)]
+    targets = [2 * features[i]["feature_0"] + features[i]["feature_1"] for i in range(num_samples)]
 
-    # Call the library function
-    result = find_weights_and_bias(samples, goals, "Test")
+    # Call the regularized regression solver
+    result = solve_regularized_regression(features, targets, "Test")
 
     # Output the generated data, solution, and check result
-    logger.info("Samples:")
-    for sample in samples:
-        logger.info(sample)
+    logger.info("Feature Vectors:")
+    for feature in features:
+        logger.info(feature)
 
     if result:
         weights, bias = result
-        logger.info(f"\nWeights:{weights}")
-        logger.info(f"Bias:{bias}")
+        logger.info(f"\nOptimized Weights: {weights}")
+        logger.info(f"Optimized Bias: {bias}")
         logger.info("\nThe solution perfectly satisfies all the constraints!")
     else:
         logger.info("\nNo exact solution was found.")
 
 # Run the test function
 if __name__ == "__main__":
-    test_find_weights_and_bias()
+    test_solve_regularized_regression()
