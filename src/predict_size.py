@@ -9,7 +9,7 @@ from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluatio
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
 from shape_features import detect_shape_features
-from solve_integer_program import solve_regularized_regression
+from solve_regularized_regression import solve_regularized_regression
 from symmetry_features import detect_symmetry_features
 
 Size = Tuple[int, int]
