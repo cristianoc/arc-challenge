@@ -11,16 +11,15 @@ To tackle SizeARC, we developed a purely symbolic, specification-driven approach
 
 1. **Specification-Driven Selection**: The approach leverages predefined, high-level transformation rules. Rather than iteratively constructing solutions, it identifies which transformation rules apply to the detected features of the grid, guided by domain-specific priors.
 
-2. **Domain-Specific Priors**: The approach incorporates priors about the domain to inform the selection of transformation rules, integrating knowledge that can guide the reasoning process.
+2. **Domain-Specific Priors**: The approach incorporates domain-specific knowledge to inform the selection of transformation rules, using predefined expectations about grid patterns and structures to guide the reasoning process.
 
-3. **Semantic Reasoning**: By focusing on the "what" rather than the "how," the method emphasizes understanding the necessary transformations at a high level, relying on semantic reasoning rather than procedural construction.
+3. **Semantic Reasoning**: This approach emphasizes understanding the required transformations at a conceptual level ("what" needs to be done) rather than focusing on the specific steps ("how" to do it). For example, it identifies that a grid needs to be resized based on object symmetry, rather than enumerating every possible transformation.
 
-4. **Layered Complexity**: While the initial stages of problem-solving are straightforward, progressively mode advanced techniques are applied only when the earlier stage fails.
+4. **Layered Complexity**: The approach is designed to apply progressively more sophisticated techniques only when simpler methods fail. Initial layers may involve straightforward transformations and object matching, while more complex layers use regularized regression and advanced feature combinations to handle challenging cases.
 
 ### Results Accuracy
 
 The final configuration of the SizeARC solution achieved 94-95% accuracy on the training and evaluation datasets.
-
 
 ### Key Techniques Used
 
@@ -28,7 +27,7 @@ The final configuration of the SizeARC solution achieved 94-95% accuracy on the 
 
 2. **Decision Rules on Matched Objects**: The method enhances accuracy by detecting objects within the grid, matching them across examples, and applying decision rules that leverage these matches to predict the output size.
 
-3. **Regularized Regression**: In more complex cases, regularized regression is employed to refine predictions. This involves solving for weights and biases that best fit the observed data while adhering to regularization constraints. These constraints ensure the model remains simple, interpretable, and generalizable, leading to more accurate and reliable predictions of grid dimensions.
+3. **Regularized Regression**: In more complex cases, regularized regression is employed to refine predictions. This involves solving for weights and biases that best fit the observed data while adhering to regularization constraints. By integrating this regression with the symbolic reasoning approach, the model ensures that selected transformations are both accurate and generalizable, leading to reliable predictions of grid dimensions.
 
 ## SizeARC: A Simplified ARC Challenge
 
@@ -37,7 +36,6 @@ The final configuration of the SizeARC solution achieved 94-95% accuracy on the 
 ### Problem Context
 
 The ARC challenge is designed to test a system's ability to generalize from few examples, mimicking aspects of human cognition. SizeARC isolates a specific facet of the problem—predicting grid dimensions—to create a more focused challenge. While simpler, SizeARC contains a spectrum of difficulties, ranging from trivial cases to those as challenging as the original ARC tasks. This makes it a valuable benchmark for exploring generalization, abstraction, and reasoning in artificial intelligence.
-
 
 ### Example
 
@@ -55,7 +53,6 @@ Common decision rule (Symmetry): VERTICAL = False.
 ```
 
 So the selected object is the only one that is not symmetric across the vertical axis.
-
 
 ## Ablation Study
 
@@ -77,15 +74,13 @@ The graph below summarizes the performance of the model on both the training and
 
 - **Consistent Generalization**: The mechanism used in the SizeARC solution consistently generalizes well across both training and evaluation datasets, with similar accuracy scores observed at each difficulty level.
 
-- **Significant Early Gains**: A notable improvement in accuracy is observed early on, particularly between levels 1 and 2, showing how the problem is very easy initially but gets harder later.
+- **Significant Early Gains**: A notable improvement in accuracy is observed early on, particularly between levels 1 and 2, showing how the problem is very easy initially but gets harder later. This insight led to the decision to prioritize simpler transformations in the initial stages of the model.
 
-- **Robust Performance**: As more advanced techniques are introduced, the model maintains robust performance, with accuracy steadily improving or stabilizing as complexity increases.
-
+- **Robust Performance**: As more advanced techniques are introduced, the model maintains robust performance, with accuracy steadily improving or stabilizing as complexity increases. These results guided the integration of regularized regression at higher complexity levels to ensure stability and accuracy in difficult cases.
 
 ## Implementation
 
 For more details on the implementation of the methods used, start with the [predict_size.py](https://github.com/cristianoc/arc-challenge/blob/main/src/predict_size.py) file. This file provides a practical entry point into understanding how the symbolic approach was applied to solve the SizeARC challenge.
-
 
 ### Grid Transformation DSL
 
