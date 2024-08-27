@@ -62,7 +62,7 @@ def ablation_study():
       
 
     # Write summary of results to JSON file with sorted keys
-    with open("ablation_results.json", "w") as f:
+    with open("ablation_size.json", "w") as f:
         json.dump(results, f, indent=4)
 
     # Extracting levels and corresponding accuracies

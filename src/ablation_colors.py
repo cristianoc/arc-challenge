@@ -4,7 +4,8 @@ from typing import Any, Dict
 from matplotlib import pyplot as plt
 from grid_data import logger
 from load_data import training_data, evaluation_data
-from predict_size import Config, compute_perc_correct, num_difficulties_total_color, process_tasks_color
+from predict_size import Config, compute_perc_correct
+from predict_colors import num_difficulties_total, process_tasks
 
 from datetime import datetime
 import concurrent.futures
@@ -12,13 +13,14 @@ import json
 
 plt: Any = plt
 
+
 def evaluate_difficulty(difficulty_level: int):
     """Evaluate the model on the training and evaluation data for a given difficulty level."""
     Config.difficulty = difficulty_level
     logger.setLevel("ERROR")
-    num_correct_tr, num_incorrect_tr = process_tasks_color(
+    num_correct_tr, num_incorrect_tr = process_tasks(
         training_data, "training_data")
-    num_correct_ev, num_incorrect_ev = process_tasks_color(
+    num_correct_ev, num_incorrect_ev = process_tasks(
         evaluation_data, "evaluation_data")
 
     perc_correct_tr = compute_perc_correct(num_correct_tr, num_incorrect_tr)
@@ -48,7 +50,7 @@ def ablation_study():
     # Run evaluations in parallel for each difficulty level
     with concurrent.futures.ProcessPoolExecutor() as executor:
         futures = [executor.submit(evaluate_difficulty, difficulty_level)
-                   for difficulty_level in range(1, num_difficulties_total_color+1)]
+                   for difficulty_level in range(1, num_difficulties_total+1)]
         for future in concurrent.futures.as_completed(futures):
             difficulty_level, perc_correct_tr, perc_correct_ev = future.result()
             results[difficulty_level] = {
@@ -59,10 +61,9 @@ def ablation_study():
     # Sort results by difficulty level
     # Sorting ensures the difficulty levels are in order after parallel processing.
     results = dict(sorted(results.items()))
-      
 
     # Write summary of results to JSON file with sorted keys
-    with open("ablation_results_color.json", "w") as f:
+    with open("ablation_colors.json", "w") as f:
         json.dump(results, f, indent=4)
 
     # Extracting levels and corresponding accuracies
