@@ -23,11 +23,11 @@ The final configuration of the SizeARC solution achieved 94-95% accuracy on the 
 
 ### Key Techniques Used
 
-1. **Predefined Transformations**: The method applies a series of predefined transformations to the input grids, which are designed to relate input properties to the output grid size. These transformations range from basic operations, like directly using the input size, to more complex analyses that involve object properties and grid patterns. The transformations are applied in a sequence, starting with simpler ones and progressing to more complex methods as needed, depending on the characteristics of the grid.
+1. **Predefined Transformations**: The method applies a series of predefined transformations to the input grids, designed to relate input properties to the output grid size. These transformations range from basic operations, like directly using the input size, to more complex analyses involving object properties and grid patterns. The transformations are applied sequentially, starting with simpler ones and progressing to more complex methods as needed, based on the characteristics of the grid.
 
-2. **Object Matching and Feature Detection**: After applying transformations, the method attempts to match objects between the input and output grids. When objects can be matched, the method detects common features that could determine the correct output size. This process uses these detected features to make a more informed prediction.
+2. **Object Matching and Feature Detection**: After applying transformations, the method attempts to match objects between the input and output grids. When objects can be matched, the method detects common features to identify which object in the input corresponds to the output. This process uses these detected features to select the correct object.
 
-3. **Regularized Regression**: In cases where object matching and feature detection are insufficient to fully determine the output size, regularized regression is applied. This involves solving a regression problem to find weights and biases that best fit the observed data, while also incorporating regularization constraints to prevent overfitting and ensure model simplicity.
+3. **Regularized Regression**: In cases where object matching and feature detection are insufficient to fully determine the output size, regularized regression is applied. This involves solving a regression problem to find weights and biases that best fit the observed data, while also incorporating regularization constraints to ensure model simplicity and prevent overfitting.
 
 ## SizeARC: A Simplified ARC Challenge
 
