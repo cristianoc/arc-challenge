@@ -118,7 +118,7 @@ def output_colors_are_input_colors_minus_color_of_max_black_cells_object(grids: 
     if not objects:
         return None
     max_black_cells_object = max(objects, key=lambda obj: obj.num_cells(color=0))
-    return set(grid.get_colors()) - {max_black_cells_object.main_color}
+    return set(grid.get_colors()) - {max_black_cells_object.main_color()}
 
 
 xforms: List[ColorXformEntry] = [

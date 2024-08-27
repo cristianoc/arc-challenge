@@ -18,12 +18,12 @@ COLOR, COLOR_UNIQUE, MAX_RED_CELLS, MAX_NON_BACKGROUND_CELLS, MIN_NON_BACKGROUND
 # Functions to detect the features
 
 def detect_color(object: Object, all_objects: List[Object]) -> int:
-    return object.main_color
+    return object.main_color()
 
 # Check if the color of the object distinguishes it from the others
 def detect_color_unique(object: Object, all_objects: List[Object]) -> bool:
-    color = object.main_color
-    return all(obj.main_color != color for obj in all_objects if obj != object)
+    color = object.main_color()
+    return all(obj.main_color() != color for obj in all_objects if obj != object)
 
 def detect_has_max_red_cells(object: Object, all_objects: List[Object]) -> bool:
     def count_red_cells(obj: Object) -> int:
@@ -33,7 +33,7 @@ def detect_has_max_red_cells(object: Object, all_objects: List[Object]) -> bool:
     return all(count_red_cells(obj) < num_red_cells for obj in all_objects if obj != object)
 
 def detect_has_max_non_background_cells(object: Object, all_objects: List[Object]) -> bool:
-    background_color = object.main_color
+    background_color = object.main_color()
     def count_non_background_cells(obj: Object) -> int:
         return sum(1 for j in range(obj.width) for i in range(obj.height) if obj.data[i][j] != background_color)
     num_non_background_cells = count_non_background_cells(object)
@@ -41,7 +41,7 @@ def detect_has_max_non_background_cells(object: Object, all_objects: List[Object
     return all(count_non_background_cells(obj) < num_non_background_cells for obj in all_objects if obj != object)
 
 def detect_has_min_non_background_cells(object: Object, all_objects: List[Object]) -> bool:
-    background_color = object.main_color
+    background_color = object.main_color()
     def count_non_background_cells(obj: Object) -> int:
         return sum(1 for j in range(obj.width) for i in range(obj.height) if obj.data[i][j] != background_color)
     num_non_background_cells = count_non_background_cells(object)
