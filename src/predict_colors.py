@@ -113,12 +113,12 @@ def output_colors_are_inout_colors_minus_one_color_plus_another_color(grids: Exa
     return (set(grid.get_colors()) - {candidate_removed_color}) | {candidate_added_color}
 
 
-def output_colors_are_input_colors_minus_color_of_largest_object(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
+def output_colors_are_input_colors_minus_color_of_max_black_cells_object(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Set[int]]:
     objects = grid.detect_objects()
     if not objects:
         return None
-    largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
-    return set(grid.get_colors()) - {largest_object.main_color}
+    max_black_cells_object = max(objects, key=lambda obj: obj.num_cells(color=0))
+    return set(grid.get_colors()) - {max_black_cells_object.main_color}
 
 
 xforms: List[ColorXformEntry] = [
@@ -131,7 +131,7 @@ xforms: List[ColorXformEntry] = [
     {"function": output_colors_are_input_colors_plus_one_color, "difficulty": 3},
     {"function": output_colors_are_input_colors_plus_two_colors, "difficulty": 3},
     {"function": output_colors_are_inout_colors_minus_one_color_plus_another_color, "difficulty": 4},
-    {"function": output_colors_are_input_colors_minus_color_of_largest_object, "difficulty": 5},
+    {"function": output_colors_are_input_colors_minus_color_of_max_black_cells_object, "difficulty": 5},
 ]
 
 
