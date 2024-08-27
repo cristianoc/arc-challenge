@@ -7,6 +7,7 @@ from rule_based_selector import Features
 
 num_difficulties = 4
 
+
 def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     height, width = grid.size
     colors = grid.get_colors(allow_black=False)
@@ -14,16 +15,21 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     grid_as_object = Object((0, 0), grid.data)
     num_cells = grid_as_object.num_cells(color=None)
 
-    objects = grid.detect_objects()
     main_color = grid_as_object.main_color
-    num_objects_of_main_color = sum(
-        1 for obj in objects if obj.main_color == main_color)
-    if objects:
-        number_of_cells_in_largest_object = max(obj.num_cells(color=None) for obj in objects)
-    else:
-        number_of_cells_in_largest_object = 0
 
-    features : Features = {
+    objects = grid.detect_objects()
+    num_objects_of_main_color = 0
+    number_of_cells_in_largest_object = 0
+    if objects:
+        largest_object = max(
+            objects, key=lambda obj: obj.num_cells(color=None), default=None)
+        num_objects_of_main_color = sum(
+            1 for obj in objects if obj.main_color == main_color)
+        if largest_object:
+            number_of_cells_in_largest_object = largest_object.num_cells(
+                color=None)
+
+    features: Features = {
     }
     # relative_difficulty is the difficulty minus the level before using linear programming
     if relative_difficulty >= 1:
@@ -36,7 +42,6 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
         features["num_objects_of_main_color"] = num_objects_of_main_color
     if relative_difficulty >= 4:
         features["number_of_cells_in_largest_object"] = number_of_cells_in_largest_object
-
 
     assert num_difficulties == 4
     return features
