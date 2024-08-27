@@ -5,7 +5,7 @@ from grid_data import Object
 from rule_based_selector import Features
 
 
-num_difficulties = 5
+num_difficulties = 6
 
 
 def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
@@ -21,6 +21,8 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     num_objects_of_main_color = 0
     num_cells_in_largest_object = 0
     num_objects_of_max_size = 0
+    max_area_object_height = 0
+    max_area_object_width = 0
     if objects:
         largest_object = max(
             objects, key=lambda obj: obj.num_cells(color=None), default=None)
@@ -31,6 +33,10 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
                 color=None)
             num_objects_of_max_size = sum(1 for obj in objects if obj.num_cells(
                 color=None) == largest_object.num_cells(color=None))
+        max_area_object = max(objects, key=lambda obj: obj.area, default=None)
+        if max_area_object:
+            max_area_object_height = max_area_object.height
+            max_area_object_width = max_area_object.width
 
     features: Features = {
     }
@@ -47,8 +53,11 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
         features["num_cells_in_largest_object"] = num_cells_in_largest_object
     if relative_difficulty >= 5:
         features["num_objects_of_max_size"] = num_objects_of_max_size
+    if relative_difficulty >= 6:
+        features["max_area_object_height"] = max_area_object_height
+        features["max_area_object_width"] = max_area_object_width
 
-    assert num_difficulties == 5
+    assert num_difficulties == 6
     return features
 
 
