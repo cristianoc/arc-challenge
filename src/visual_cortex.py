@@ -1,7 +1,8 @@
 import time
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 import random
 
+from grid import Grid
 from grid_data import GridData, logger
 
 """
@@ -120,6 +121,7 @@ def find_smallest_frame(grid: GridData, color: Optional[int], min_size: Optional
 
     return min_frame
 
+
 def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> bool:
     """
     Determines whether the rectangular frame defined by the coordinates (top, left) to (bottom, right) can be part of a 
@@ -177,6 +179,66 @@ def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> b
     return True
 
 
+# A Subgrid is a list of lists of grids
+Subgrid = List[List[Grid]]
+
+
+def find_dividing_lines(grid: Grid, color: int) -> Tuple[List[int], List[int]]:
+    """Find the indices of vertical and horizontal lines that span the entire grid."""
+
+    horizontal_lines: List[int] = []
+    vertical_lines: List[int] = []
+
+    for i in range(grid.height):
+        if all(grid.data[i][j] == color for j in range(grid.width)):
+            horizontal_lines.append(i)
+
+    for j in range(grid.width):
+        if all(grid.data[i][j] == color for i in range(grid.height)):
+            vertical_lines.append(j)
+
+    return horizontal_lines, vertical_lines
+
+
+def extract_subgrid_of_color(grid: Grid, color: int) -> Optional[Subgrid]:
+    """Extract a subgrid from the grid based on vertical and horizontal dividing lines of the same color."""
+    horizontal_lines, vertical_lines = find_dividing_lines(grid, color)
+
+    if not horizontal_lines or not vertical_lines:
+        return None  # No dividing lines found
+    for i in range(len(horizontal_lines) - 1):
+        if horizontal_lines[i] + 1 == horizontal_lines[i + 1]:
+            return None
+    for j in range(len(vertical_lines) - 1):
+        if vertical_lines[j] + 1 == vertical_lines[j + 1]:
+            return None
+
+    subgrid: Subgrid = []
+    prev_h = 0
+
+    for h in horizontal_lines + [grid.height]:
+        row: List[Grid] = []
+        prev_v = 0
+        for v in vertical_lines + [grid.width]:
+            # Extract the subgrid bounded by (prev_h, prev_v) and (h-1, v-1)
+            if prev_v == v or prev_h == h:
+                continue
+            sub_grid_data = [row[prev_v:v] for row in grid.data[prev_h:h]]
+            row.append(Grid(sub_grid_data))
+            prev_v = v+1
+        subgrid.append(row)
+        prev_h = h+1
+
+    return subgrid
+
+def extract_subgrid(grid: Grid, color: Optional[int]) -> Optional[Subgrid]:
+    if color is not None:
+        return extract_subgrid_of_color(grid, color)
+    for c in grid.get_colors():
+        subgrid = extract_subgrid_of_color(grid, c)
+        if subgrid:
+            return subgrid
+
 def eval_with_lattice_check():
     # Define sizes
     width = 50
@@ -218,15 +280,15 @@ def eval_with_lattice_check():
 
         if not max_frame:
             logger.info(f"{grid_name}: No valid frame found. "
-                  f"Time: {execution_time:.6f} seconds\n")
+                        f"Time: {execution_time:.6f} seconds\n")
         else:
             start_row, start_col, end_row, end_col = max_frame
             frame_height = end_row - start_row + 1
             frame_width = end_col - start_col + 1
             logger.info(f"{grid_name}: Frame at ({start_row},{start_col}) to ({end_row},{end_col}), "
-                  f"Size: {frame_height}x{frame_width}, Area: {max_area}, "
-                  f"Part of lattice: {is_lattice}, "
-                  f"Time: {execution_time:.6f} seconds\n")
+                        f"Size: {frame_height}x{frame_width}, Area: {max_area}, "
+                        f"Part of lattice: {is_lattice}, "
+                        f"Time: {execution_time:.6f} seconds\n")
 
 
 def test_lattices():
@@ -271,3 +333,32 @@ def test_lattices():
     frame = (2, 2, 5, 5)
     is_lattice = is_frame_part_of_lattice(grid, frame, 2)
     assert is_lattice == True, f"Break outside frames: Frame {frame}"
+
+
+def test_subgrid_extraction():
+    # Example grid with dividing lines
+    grid = Grid([
+        [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
+        [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
+        [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [2, 2, 1, 3, 3, 1, 4, 4, 1, 5]
+    ])
+
+    subgrid = extract_subgrid(grid, 1)
+    assert subgrid is not None, "Test failed: No subgrid extracted"
+    height = len(subgrid)
+    width = len(subgrid[0])
+    logger.info(
+        f"Subgrid height: {height}, Subgrid width: {width}")
+    assert (height, width) == (
+        3, 4), f"Test failed: Subgrid dimensions: {height}x{width}"
+    assert subgrid[0][0] == Grid(
+        [[2, 2], [2, 2]]), "Test failed: Subgrid[0][0]"
+    assert subgrid[0][1] == Grid(
+        [[3, 3], [3, 3]]), "Test failed: Subgrid[0][1]"
+    assert subgrid[0][3] == Grid([[5], [5]]), "Test failed: Subgrid[0][3]"
+    assert subgrid[2][3] == Grid([[5]]), "Test failed: Subgrid[2][3]"
+

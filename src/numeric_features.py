@@ -3,6 +3,7 @@ from typing import List, Tuple
 from grid import Grid
 from grid_data import Object
 from rule_based_selector import Features
+from visual_cortex import extract_subgrid
 
 
 num_difficulties = 6
@@ -38,6 +39,13 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
         if max_area_object:
             max_area_object_height = max_area_object.height
             max_area_object_width = max_area_object.width
+    subgrid = extract_subgrid(grid, color=None)
+    subgrid_width = 0
+    subgrid_height = 0
+    if subgrid:
+        subgrid_height = len(subgrid)
+        subgrid_width = len(subgrid[0])
+
 
     features: Features = {
     }
@@ -57,6 +65,9 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     if relative_difficulty >= 6:
         features["max_area_object_height"] = max_area_object_height
         features["max_area_object_width"] = max_area_object_width
+    if relative_difficulty >= 7:
+        features["subgrid_height"] = subgrid_height
+        features["subgrid_width"] = subgrid_width
 
     assert num_difficulties == 6
     return features

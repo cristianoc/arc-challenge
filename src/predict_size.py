@@ -26,7 +26,7 @@ class Config:
     try_remove_main_color = True
     difficulty = 1000
     task_name = None
-    # task_name = "50cb2852.json"
+    # task_name = "7039b2d7.json"
     find_xform_color = True
     display_not_found = False
 
