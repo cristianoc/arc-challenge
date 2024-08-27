@@ -23,11 +23,11 @@ The final configuration of the SizeARC solution achieved 94-95% accuracy on the 
 
 ### Key Techniques Used
 
-1. **Basic Predefined Transformations**: The approach starts with predefined transformations that apply to input grids, guided by specific rules about how grid properties relate to the output size.
+1. **Predefined Transformations**: The method applies a series of predefined transformations to the input grids, which are designed to relate input properties to the output grid size. These transformations range from basic operations, like directly using the input size, to more complex analyses that involve object properties and grid patterns. The transformations are applied in a sequence, starting with simpler ones and progressing to more complex methods as needed, depending on the characteristics of the grid.
 
-2. **Decision Rules on Matched Objects**: The method enhances accuracy by detecting objects within the grid, matching them across examples, and applying decision rules that leverage these matches to predict the output size.
+2. **Object Matching and Feature Detection**: After applying transformations, the method attempts to match objects between the input and output grids. When objects can be matched, the method detects common features that could determine the correct output size. This process uses these detected features to make a more informed prediction.
 
-3. **Regularized Regression**: In more complex cases, regularized regression is employed to refine predictions. This involves solving for weights and biases that best fit the observed data while adhering to regularization constraints. By integrating this regression with the symbolic reasoning approach, the model ensures that selected transformations are both accurate and generalizable, leading to reliable predictions of grid dimensions.
+3. **Regularized Regression**: In cases where object matching and feature detection are insufficient to fully determine the output size, regularized regression is applied. This involves solving a regression problem to find weights and biases that best fit the observed data, while also incorporating regularization constraints to prevent overfitting and ensure model simplicity.
 
 ## SizeARC: A Simplified ARC Challenge
 
@@ -41,9 +41,10 @@ The ARC challenge is designed to test a system's ability to generalize from few 
 
 <img width="607" alt="Screenshot_2024-08-23_at_23 00 44" src="https://github.com/user-attachments/assets/4112f991-a296-456b-838f-88574200a8d2">
 
-An interesting category is where the output is a copy of an object in the input (or at least, its size is). These are handled in two phases:
+An interesting category is where the output is a copy of an object in the input (or at least, its size is). These are handled in three phases:
 
 - **Matching**: Objects in the input are found and matched against the one in the output.
+- **Feature Detection**: If objects are successfully matched, the system detects common features that could determine which object to select.
 - **Find a common decision rule**: A combination of features that uniquely identify which one is selected.
 
 In this case, a single feature is detected as distinguishing the output:
