@@ -69,7 +69,7 @@ def output_size_is_size_of_largest_block_object(grids: ExampleGrids, grid: Grid,
                grid.size and obj.is_block()]
     if not objects:
         return None
-    largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
+    largest_object = max(objects, key=lambda obj: obj.area)
     return largest_object.size
 
 
@@ -80,26 +80,26 @@ def output_size_is_size_of_largest_nonblack_block_object(grids: ExampleGrids, gr
                grid.size and obj.size[0] >= 2 and obj.size[1] >= 2 and obj.is_block()]
     if not objects:
         return None
-    largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
+    largest_object = max(objects, key=lambda obj: obj.area)
     return largest_object.size
 
 
-def output_size_is_size_of_largest_object_with_flexible_contours(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_max_area_object_with_flexible_contours(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
     objects = grid.detect_objects(allow_black=True)
     # exclude full grid size
     objects = [obj for obj in objects if obj.size != grid.size]
     if not objects:
         return None
-    largest_object = max(objects, key=lambda obj: obj.size[0] * obj.size[1])
-    largest_frame = find_largest_frame(largest_object.data, None)
-    if largest_frame:
+    max_area_object = max(objects, key=lambda obj: obj.area)
+    max_area_frame = find_largest_frame(max_area_object.data, None)
+    if max_area_frame:
         # handle case where the largest object has a few extra cells around it
         # so we need to consider the frame inside
-        (top, left, bottom, right) = largest_frame
+        (top, left, bottom, right) = max_area_frame
         width = right - left + 1
         height = bottom - top + 1
         return (height, width)
-    return largest_object.size
+    return max_area_object.size
 
 
 def output_size_is_size_of_repeating_subgrid_forming_a_lattice(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
@@ -186,7 +186,7 @@ xforms: List[XformEntry] = [
         "difficulty": 3},  # Level 3: Moderate
     {"function": output_size_is_size_of_largest_nonblack_object,
         "difficulty": 3},  # Level 3: Moderate
-    {"function": output_size_is_size_of_largest_object_with_flexible_contours,
+    {"function": output_size_is_size_of_max_area_object_with_flexible_contours,
         "difficulty": 4},  # Level 4: Complex
     {"function": output_size_is_size_of_repeating_subgrid_forming_a_lattice,
         "difficulty": 4}  # Level 4: Complex

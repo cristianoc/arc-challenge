@@ -38,6 +38,10 @@ class Object:
         return len(self.data[0]) if self.data else 0
 
     @property
+    def area(self) -> int:
+        return self.height * self.width
+
+    @property
     def size(self) -> Tuple[int, int]:
         return (self.height, self.width)
 
