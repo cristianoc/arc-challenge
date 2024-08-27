@@ -16,19 +16,19 @@
         "evaluation_data": 83.9
     },
     "5": {
-        "training_data": 83.9,
-        "evaluation_data": 85.2
-    },
-    "6": {
-        "training_data": 84.9,
+        "training_data": 84.2,
         "evaluation_data": 85.4
     },
+    "6": {
+        "training_data": 85.2,
+        "evaluation_data": 85.7
+    },
     "7": {
-        "training_data": 84.9,
-        "evaluation_data": 86.2
+        "training_data": 85.2,
+        "evaluation_data": 86.4
     },
     "8": {
-        "training_data": 85.4,
-        "evaluation_data": 86.7
+        "training_data": 85.7,
+        "evaluation_data": 86.9
     }
 }
