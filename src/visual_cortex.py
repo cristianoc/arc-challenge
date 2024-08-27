@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 import random
 
 from grid import Grid
-from grid_data import GridData, logger
+from grid_data import GridData, Object, logger
 
 """
 A Frame represents a rectangular region in a grid, defined by the coordinates (top, left, bottom, right).
@@ -231,6 +231,7 @@ def extract_subgrid_of_color(grid: Grid, color: int) -> Optional[Subgrid]:
 
     return subgrid
 
+
 def extract_subgrid(grid: Grid, color: Optional[int]) -> Optional[Subgrid]:
     if color is not None:
         return extract_subgrid_of_color(grid, color)
@@ -238,6 +239,7 @@ def extract_subgrid(grid: Grid, color: Optional[int]) -> Optional[Subgrid]:
         subgrid = extract_subgrid_of_color(grid, c)
         if subgrid:
             return subgrid
+
 
 def eval_with_lattice_check():
     # Define sizes
@@ -362,3 +364,47 @@ def test_subgrid_extraction():
     assert subgrid[0][3] == Grid([[5], [5]]), "Test failed: Subgrid[0][3]"
     assert subgrid[2][3] == Grid([[5]]), "Test failed: Subgrid[2][3]"
 
+
+def extract_object_by_color(grid: Grid, color: int) -> Object:
+    # find the bounding box of the object with the given color
+    rows = grid.height
+    cols = grid.width
+    top = rows
+    left = cols
+    bottom = 0
+    right = 0
+    for i in range(rows):
+        for j in range(cols):
+            if grid.data[i][j] == color:
+                top = min(top, i)
+                left = min(left, j)
+                bottom = max(bottom, i)
+                right = max(right, j)
+    origin = (top, left)
+    data = [row[left:right+1] for row in grid.data[top:bottom+1]]
+    # remove other colors
+    for i in range(len(data)):
+        for j in range(len(data[0])):
+            if data[i][j] != color:
+                data[i][j] = 0
+    return Object(origin, data)
+
+
+def find_colored_objects(grid: Grid) -> List[Object]:
+    """
+    Finds and returns a list of all distinct objects within the grid based on color.
+
+    This function scans the grid, identifies all unique colors (excluding the 
+    background color), and extracts each object corresponding to these colors. 
+    Each object is represented as an instance of the `Object` class.
+    """
+    grid_as_object = Object((0, 0), grid.data)
+    background_color = grid_as_object.main_color(allow_black=True)
+    colors = grid.get_colors(allow_black=True)
+    objects: List[Object] = []
+    for color in colors:
+        if color == background_color:
+            continue
+        object = extract_object_by_color(grid, color)
+        objects.append(object)
+    return objects

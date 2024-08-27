@@ -86,8 +86,7 @@ class Object:
                     return color
         return 0
 
-    @property
-    def main_color(self) -> int:
+    def main_color(self, allow_black:bool = False) -> int:
         """
         Returns the most frequent color in the object.
         Raises a ValueError if there are no non-zero colors.
@@ -96,7 +95,7 @@ class Object:
         for row in range(self.height):
             for col in range(self.width):
                 color = self.data[row][col]
-                if color != 0:
+                if allow_black or color != 0:
                     color_count[color] = color_count.get(color, 0) + 1
         if not color_count:
             return self.first_color
@@ -180,7 +179,7 @@ class Object:
             return False
 
         # Determine the object's color
-        obj_color = self.main_color
+        obj_color = self.main_color()
 
         # Check top and bottom rows
         if not all(cell == obj_color for cell in self.data[0]) or not all(cell == obj_color for cell in self.data[-1]):

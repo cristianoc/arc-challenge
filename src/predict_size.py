@@ -2,7 +2,7 @@ from typing import Callable, List, Optional, Tuple, TypedDict
 
 from color_features import detect_color_features
 import numeric_features
-from visual_cortex import Frame, find_largest_frame, find_smallest_frame, is_frame_part_of_lattice
+from visual_cortex import Frame, find_colored_objects, find_largest_frame, find_smallest_frame, is_frame_part_of_lattice
 from grid import Grid
 from grid_data import BLACK, GridData, Object, display, display_multiple, logger
 from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluation_data
@@ -26,7 +26,7 @@ class Config:
     try_remove_main_color = True
     difficulty = 1000
     task_name = None
-    # task_name = "7039b2d7.json"
+    # task_name = "4290ef0e.json"
     find_xform_color = True
     display_not_found = False
 
@@ -497,7 +497,7 @@ def process_tasks(tasks: Tasks, set: str):
                         input_obj = Object((0, 0), example['input'])
                         # change the main color to black
                         example['input'] = input_obj.change_color(
-                            input_obj.main_color, BLACK).data
+                            input_obj.main_color(), BLACK).data
                         # make a copt of example where you change the input
                         example_copy = example.copy()
                         example_copy['input'] = example['input']
@@ -513,8 +513,11 @@ def process_tasks(tasks: Tasks, set: str):
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
                     (Grid(example['input']).data, Grid(example['output']).data) for example in examples
                 ]
-
+                colored_objects = find_colored_objects(Grid(grids[0][0]))
                 display_multiple(grids, title=f"{task_name} {set}")
+                if colored_objects:
+                    display_multiple([(o.data, None) for o in colored_objects], title=f"colored objects")
+
 
             # If no valid dimensions could be determined, give up
             logger.warning(

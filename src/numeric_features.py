@@ -3,10 +3,10 @@ from typing import List, Tuple
 from grid import Grid
 from grid_data import Object
 from rule_based_selector import Features
-from visual_cortex import extract_subgrid
+from visual_cortex import extract_subgrid, find_colored_objects
 
 
-num_difficulties = 6
+num_difficulties = 8
 
 
 def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
@@ -16,7 +16,7 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     grid_as_object = Object((0, 0), grid.data)
     num_cells = grid_as_object.num_cells(color=None)
 
-    main_color = grid_as_object.main_color
+    main_color = grid_as_object.main_color()
 
     objects = grid.detect_objects()
     objects =  [obj for obj in objects if obj.area < grid_as_object.area]
@@ -29,7 +29,7 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
         largest_object = max(
             objects, key=lambda obj: obj.num_cells(color=None), default=None)
         num_objects_of_main_color = sum(
-            1 for obj in objects if obj.main_color == main_color)
+            1 for obj in objects if obj.main_color() == main_color)
         if largest_object:
             num_cells_in_largest_object = largest_object.num_cells(
                 color=None)
@@ -45,7 +45,16 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     if subgrid:
         subgrid_height = len(subgrid)
         subgrid_width = len(subgrid[0])
-
+    colored_objects = find_colored_objects(grid)
+    colored_object_max_height = 0
+    colored_object_max_width = 0
+    if len(colored_objects) >= 2:
+        obj: Object | None = max(colored_objects, key=lambda obj: obj.height, default=None)
+        if obj:
+            colored_object_max_height = obj.height
+        obj: Object | None = max(colored_objects, key=lambda obj: obj.width, default=None)
+        if obj:
+            colored_object_max_width = obj.width
 
     features: Features = {
     }
@@ -68,8 +77,11 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     if relative_difficulty >= 7:
         features["subgrid_height"] = subgrid_height
         features["subgrid_width"] = subgrid_width
+    if relative_difficulty >= 8:
+            features["colored_object_max_height"] = colored_object_max_height
+            features["colored_object_max_width"] = colored_object_max_width
 
-    assert num_difficulties == 6
+    assert num_difficulties == 8
     return features
 
 
