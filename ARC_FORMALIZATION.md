@@ -66,6 +66,8 @@ In other words, among all the expressible specs that solve the task, the correct
 
 A **Well-Defined Task** is a task that is guaranteed to have a unique minimal solution within the set of expressible specs.
 
+More precisely, given input $`I`$ for the test, we can consider all outputs $`O`$ and all correct solutions for the resulting task. The requirement is that such solution is unique. (Therefore, $`O`$ is also unique).
+
 
 ## Example Instantiation of the Theory
 
@@ -157,12 +159,31 @@ Since the **Invert Colors Spec** is the only spec that can correctly solve both 
     0 1
     ```
 
+- **Test:**
+  - **Input:**
+    ```
+    1 0
+    0 0
+    ```
+
+  The expected output for the test is not specified, as the task is to determine which transformation should be applied. The **Vertical Flip Spec** and **Horizontal Flip Spec** produce different outputs for this input:
+    - **Vertical Flip Spec:** 
+      ```
+      0 0
+      1 0
+      ```
+    - **Horizontal Flip Spec:** 
+      ```
+      0 1
+      0 0
+      ```
+
 **Analysis:**
 
-- **Vertical Flip Spec**: Flipping the input grid vertically yields the correct output.
-- **Horizontal Flip Spec**: Flipping the input grid horizontally also yields the correct output.
-- **Identity Spec**: The Identity Spec would leave the grid unchanged, so it is not a solution for this task.
+- **Vertical Flip Spec:** Flipping the input grid vertically yields the correct output on the examples.
+- **Horizontal Flip Spec:** Flipping the input grid horizontally also yields the correct output on the examples.
+- **Identity Spec:** The Identity Spec would leave the grid unchanged, so it is not a solution for the examples.
 
 **Why This Task is Not Well-Defined:**
 
-This task is not well-defined because it has multiple minimal solutions within the set of expressible specs. Both the **Vertical Flip Spec** and **Horizontal Flip Spec** are valid solutions for the task, and neither is simpler than the other in the partial order. Therefore, there is no unique minimal solution, leading to ambiguity in determining the correct spec. This contrasts with a well-defined task, where only one spec would meet the criteria for being the simplest correct solution.
+This task is not well-defined because it has multiple minimal solutions within the set of expressible specs. The **Vertical Flip Spec** and **Horizontal Flip Spec** are valid solutions for the task, and neither is simpler than the other in the partial order. In the test case, these two specs produce different outputs, further illustrating the ambiguity. Therefore, there is no unique minimal solution, leading to ambiguity in determining the correct spec. This contrasts with a well-defined task, where only one spec would meet the criteria for being the simplest correct solution.
