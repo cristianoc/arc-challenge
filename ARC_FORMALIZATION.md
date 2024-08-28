@@ -7,7 +7,7 @@ A **Spec** is a subset of GridxGrid.
 - Example: "The output width and height are both equal to the input width."
 
 ### Example
-An **Example** is a pair (I, O) of input and output grid.
+An **Example** is a pair $`(I, O)`$ of input and output grid.
 
 ### Task
 A **Task** is a set of examples and one test.
@@ -16,14 +16,14 @@ A **Task** is a set of examples and one test.
 ### Spec as a Partial Function
 
 A **Spec** determines a **partial function** from input to output:
-- Given an input \( I \), the partial function defined by the Spec returns an output \( O \) only if there exists a unique output \( O \) related to \( I \). 
+- Given an input $`I`$, the partial function defined by the Spec returns an output $`O`$ only if there exists a unique output $`O`$ related to $`I`$. 
 - If there is no such unique output (i.e., if multiple outputs are possible or no output exists), the function returns nothing.
 
 ### Spec as a Solution to a Task
 
 A **Spec** defines a solution to a task if:
 - The partial function it determines correctly maps the inputs to outputs in all provided examples. 
-  - For each input \( I \) in the examples, the spec's function should return the correct output \( O \) as specified in the example.
+  - For each input $`I`$ in the examples, the spec's function should return the correct output $`O`$ as specified in the example.
 - The partial function also correctly maps the input to the output in the test case(s) associated with the task.
 
 ### Expressible Specifications
@@ -34,7 +34,7 @@ A **Spec** defines a solution to a task if:
 
 - There exists a **partial order** on expressible specs, denoted as "simpler."
 - This partial order must satisfy the following property:
-  - If one spec \( S_1 \) is a superset of another spec \( S_2 \) (i.e., \( S_1 \) is more general or inclusive), then \( S_1 \) is considered "simpler" than \( S_2 \).
+  - If one spec $`S_1`$ is a superset of another spec $`S_2`$ (i.e., $`S_1`$ is more general or inclusive), then $`S_1`$ is considered "simpler" than $`S_2`$.
 
 #### Mechanisms for Defining Expressible Specs
 
