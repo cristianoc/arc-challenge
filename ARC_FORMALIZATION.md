@@ -186,4 +186,4 @@ Since the **Invert Colors Spec** is the only spec that can correctly solve both 
 
 **Why This Task is Not Well-Defined:**
 
-This task is not well-defined because it has multiple minimal solutions within the set of expressible specs. The **Vertical Flip Spec** and **Horizontal Flip Spec** are valid solutions for the task, and neither is simpler than the other in the partial order. In the test case, these two specs produce different outputs, further illustrating the ambiguity. Therefore, there is no unique minimal solution, leading to ambiguity in determining the correct spec. This contrasts with a well-defined task, where only one spec would meet the criteria for being the simplest correct solution.
+This task is not well-defined because it has multiple minimal solutions within the set of expressible specs. Both the **Vertical Flip Spec** and **Horizontal Flip Spec** are valid solutions and are equally minimal in the partial order. In the test case, these specs produce different outputs, highlighting the ambiguity.
