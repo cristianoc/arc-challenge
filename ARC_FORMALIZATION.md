@@ -62,6 +62,10 @@ An **Expressible Specification** (or **Spec**) is considered the **correct solut
 
 In other words, among all the expressible specs that solve the task, the correct solution is the one that is considered simplest by the partial order.
 
+### Well-Defined Task
+
+A **Well-Defined Task** is a task that is guaranteed to have a unique minimal solution within the set of expressible specs.
+
 
 ## Example Instantiation of the Theory
 
@@ -82,7 +86,7 @@ In other words, among all the expressible specs that solve the task, the correct
   - **Vertical Flip** and **Horizontal Flip** are equally simple and simpler than **Invert Colors**.
   - **Invert Colors** is the most complex.
 
-#### Task Definition
+#### Example Task Definition
 
 **Task:** Determine the correct transformation based on the following examples and apply it to a test case.
 
@@ -134,3 +138,31 @@ In other words, among all the expressible specs that solve the task, the correct
   - **Example 2** clearly involves color inversion.
   
 - **Test Case:** Applying the **Invert Colors Spec** to the test input yields the correct output, validating it as the simplest and correct solution.
+
+Since the **Invert Colors Spec** is the only spec that can correctly solve both examples, the task is well-defined.
+
+### Example of a Task That is Not Well-Defined
+
+**Task Definition:**
+
+- **Example:**
+  - **Input:**
+    ```
+    0 1
+    1 0
+    ```
+  - **Output:**
+    ```
+    1 0
+    0 1
+    ```
+
+**Analysis:**
+
+- **Vertical Flip Spec**: Flipping the input grid vertically yields the correct output.
+- **Horizontal Flip Spec**: Flipping the input grid horizontally also yields the correct output.
+- **Identity Spec**: The Identity Spec would leave the grid unchanged, so it is not a solution for this task.
+
+**Why This Task is Not Well-Defined:**
+
+This task is not well-defined because it has multiple minimal solutions within the set of expressible specs. Both the **Vertical Flip Spec** and **Horizontal Flip Spec** are valid solutions for the task, and neither is simpler than the other in the partial order. Therefore, there is no unique minimal solution, leading to ambiguity in determining the correct spec. This contrasts with a well-defined task, where only one spec would meet the criteria for being the simplest correct solution.
