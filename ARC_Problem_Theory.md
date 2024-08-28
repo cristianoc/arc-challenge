@@ -1,4 +1,4 @@
-# A Theory of ARC Problems
+# A Theory of Well-Defined ARC Problems
 
 ## Definitions
 
