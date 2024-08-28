@@ -47,19 +47,17 @@ class GridTask:
         else:
             return None  # They are equally minimal
 
-
     def find_correct_spec(self):
         solutions = []
         for spec in self.specs:
             if self.is_spec_solution(spec):
                 solutions.append(spec)
 
-        # Print solutions
-        print("Solutions:")
+        # Return formatted solutions
+        solution_output = "Identified Solutions:\n"
         for i, spec in enumerate(solutions):
-            print(f"Solution {i+1}:")
-            print(spec.__name__)
-            print()
+            solution_output += f"  Solution {i+1}: {spec.__name__}\n"
+        solution_output += "\n"
 
         # Only keep minimal solutions
         minimal_solutions = []
@@ -71,12 +69,15 @@ class GridTask:
                     break
             if is_minimal:
                 minimal_solutions.append(spec1)
-        
-        print("Minimal Solutions:")
+
+        # Return formatted minimal solutions
+        minimal_solution_output = "Minimal Solutions:\n"
         for i, spec in enumerate(minimal_solutions):
-            print(f"Minimal Solution {i+1}:")
-            print(spec.__name__)
-            print()
+            minimal_solution_output += f"  Minimal Solution {i+1}: {spec.__name__}\n"
+        minimal_solution_output += "\n"
+
+        print(solution_output)
+        print(minimal_solution_output)
 
         # Check if there is a unique minimal spec
         if len(minimal_solutions) == 1:
@@ -92,14 +93,13 @@ class GridTask:
             return "Task is not well-defined"
 
 # Function to print grids in a readable format
-
-
 def print_grid(grid):
     for row in grid:
-        print(" ".join(map(str, row)))
+        print("  " + " ".join(map(str, row)))
 
 # Example of a well-defined task
 
+print("### Well-Defined Task Analysis ###\n")
 
 examples = [
     ([[1, 0, 1], [0, 1, 0], [1, 0, 1]], [[0, 1, 0], [1, 0, 1], [0, 1, 0]]),
@@ -111,28 +111,30 @@ test_case = [[0, 0, 1], [1, 1, 0], [0, 0, 1]]
 task = GridTask(examples, test_case)
 
 # Print examples
-print("Examples for well-defined task:")
+print("Examples:")
 for i, (input_grid, output_grid) in enumerate(examples):
-    print(f"Example {i+1} - Input:")
+    print(f"  Example {i+1} - Input:")
     print_grid(input_grid)
-    print("Expected Output:")
+    print("  Expected Output:")
     print_grid(output_grid)
     print()
 
 # Print the test case input
-print("Test Case Input for well-defined task:")
+print("Test Case Input:")
 print_grid(test_case)
 print()
 
 output = task.test_solution()
-print("Output for well-defined task:")
+print("Output for Test Case:")
 if isinstance(output, list):
     print_grid(output)
 else:
-    print(output)
-print()
+    print("  " + output)
+print("\n" + "#" * 30 + "\n")
 
 # Example of a task that is not well-defined
+
+print("### Not Well-Defined Task Analysis ###\n")
 
 examples_not_well_defined = [
     ([[0, 1], [1, 0]], [[1, 0], [0, 1]])
@@ -144,18 +146,22 @@ task_not_well_defined = GridTask(
     examples_not_well_defined, test_case_not_well_defined)
 
 # Print examples
-print("Examples for not well-defined task:")
+print("Examples:")
 for i, (input_grid, output_grid) in enumerate(examples_not_well_defined):
-    print(f"Example {i+1} - Input:")
+    print(f"  Example {i+1} - Input:")
     print_grid(input_grid)
-    print("Expected Output:")
+    print("  Expected Output:")
     print_grid(output_grid)
     print()
 
 # Print the test case input
-print("Test Case Input for not well-defined task:")
+print("Test Case Input:")
 print_grid(test_case_not_well_defined)
 print()
 
 output_not_well_defined = task_not_well_defined.test_solution()
-print("Output for not well-defined task:", output_not_well_defined)
+print("Output for Test Case:")
+if isinstance(output_not_well_defined, list):
+    print_grid(output_not_well_defined)
+else:
+    print("  " + output_not_well_defined)

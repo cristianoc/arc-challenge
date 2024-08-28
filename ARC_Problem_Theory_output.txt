@@ -1,0 +1,68 @@
+### Well-Defined Task Analysis ###
+
+Examples:
+  Example 1 - Input:
+  1 0 1
+  0 1 0
+  1 0 1
+  Expected Output:
+  0 1 0
+  1 0 1
+  0 1 0
+
+  Example 2 - Input:
+  1 1 0
+  0 0 1
+  1 1 0
+  Expected Output:
+  0 0 1
+  1 1 0
+  0 0 1
+
+Test Case Input:
+  0 0 1
+  1 1 0
+  0 0 1
+
+Identified Solutions:
+  Solution 1: invert_colors_spec
+
+
+Minimal Solutions:
+  Minimal Solution 1: invert_colors_spec
+
+
+Output for Test Case:
+  1 1 0
+  0 0 1
+  1 1 0
+
+##############################
+
+### Not Well-Defined Task Analysis ###
+
+Examples:
+  Example 1 - Input:
+  0 1
+  1 0
+  Expected Output:
+  1 0
+  0 1
+
+Test Case Input:
+  1 0
+  0 0
+
+Identified Solutions:
+  Solution 1: invert_colors_spec
+  Solution 2: vertical_flip_spec
+  Solution 3: horizontal_flip_spec
+
+
+Minimal Solutions:
+  Minimal Solution 1: vertical_flip_spec
+  Minimal Solution 2: horizontal_flip_spec
+
+
+Output for Test Case:
+  Task is not well-defined
