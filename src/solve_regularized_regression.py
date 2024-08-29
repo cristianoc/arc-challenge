@@ -1,3 +1,4 @@
+import logging
 from typing import Any, List, Tuple, Optional
 import pulp  # type: ignore
 import random
@@ -7,6 +8,9 @@ from grid_data import logger
 
 pulp: Any = pulp
 random: Any = random
+
+# Suppress the verbose output from the pulp solver
+logging.getLogger('pulp').setLevel(logging.WARNING)
 
 def solve_regularized_regression(features: List[Features], targets: List[int], description: str) -> Optional[Tuple[Features, int]]:
     """
