@@ -3,6 +3,7 @@ from typing import Any, List, Tuple, Optional
 import pulp  # type: ignore
 import random
 
+from numeric_features import BooleanSolution, Solution
 from rule_based_selector import Features
 from grid_data import logger
 
@@ -12,7 +13,7 @@ random: Any = random
 # Suppress the verbose output from the pulp solver
 logging.getLogger('pulp').setLevel(logging.WARNING)
 
-def solve_regularized_regression(features: List[Features], targets: List[int], description: str) -> Optional[Tuple[Features, int]]:
+def solver(feature_names: List[str], features: List[Features], targets: List[int], description: str) -> Optional[Tuple[Features, int]]:
     """
     Solves for integer weights and bias that minimize the regularized objective:
     
@@ -37,8 +38,6 @@ def solve_regularized_regression(features: List[Features], targets: List[int], d
     if not features or len(features) != len(targets):
         return None
 
-    # find feature names as keys present in all features
-    feature_names : List[str] = list(set.intersection(*[set(f.keys()) for f in features])) # type: ignore
     
     num_samples = len(features)
 
@@ -78,6 +77,39 @@ def solve_regularized_regression(features: List[Features], targets: List[int], d
         return optimized_weights, optimized_bias
     else:
         return None
+
+
+def solve_regularized_regression(features: List[Features], targets: List[int], description: str) -> Optional[Solution | BooleanSolution]:
+    # Find feature names that are present in all features
+    feature_names : List[str] = list(set.intersection(*[set(f.keys()) for f in features]))  # type: ignore
+    feature_names.sort()
+
+    # Check if there's a feature whose value is a boolean
+    boolean_feature_names = [n for n in feature_names if all(isinstance(f[n], bool) for f in features)]
+    assert len(boolean_feature_names) <= 1
+    
+    solution = solver(feature_names, features, targets, description)
+    if solution:
+        return solution
+
+    if len(boolean_feature_names) == 1:
+        name = boolean_feature_names[0]
+        
+        # Split features and corresponding targets into true and false lists
+        features_true = [f for f in features if f[name]]
+        features_false = [f for f in features if not f[name]]
+        targets_true = [t for f, t in zip(features, targets) if f[name]]
+        targets_false = [t for f, t in zip(features, targets) if not f[name]]
+                
+        # Remove the boolean feature name from the features list
+        feature_names.remove(name)
+        
+        # Solve the problem for both splits
+        solution_true = solver(feature_names, features_true, targets_true, f"{description} true")
+        solution_false = solver(feature_names, features_false, targets_false, f"{description} false")
+        
+        if solution_true and solution_false:
+            return (name, solution_true, solution_false)
 
 def is_regularized_solution(weights: Features, bias: int) -> bool:
     """
@@ -127,7 +159,8 @@ def test_solve_regularized_regression():
     targets = [2 * features[i]["feature_0"] + features[i]["feature_1"] for i in range(num_samples)]
 
     # Call the regularized regression solver
-    result = solve_regularized_regression(features, targets, "Test")
+    result = solve_regularized_regression(features, targets, "Test") # type: ignore
+
 
     # Output the generated data, solution, and check result
     logger.info("Feature Vectors:")
@@ -135,6 +168,7 @@ def test_solve_regularized_regression():
         logger.info(feature)
 
     if result:
+        result:Solution = result
         weights, bias = result
         logger.info(f"\nOptimized Weights: {weights}")
         logger.info(f"Optimized Bias: {bias}")

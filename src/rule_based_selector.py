@@ -9,7 +9,7 @@ Indices = List[str]
 
 class DecisionRule:
     def __init__(self, features: Features):
-        self.features = features
+        self.features = {key: features[key] for key in sorted(features.keys())}
 
     def __str__(self) -> str:
         conditions = [
