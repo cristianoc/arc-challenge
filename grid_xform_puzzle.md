@@ -74,3 +74,13 @@ The goal is to find the **simplest transformation** that explains all the exampl
 6. If more than one transformation remains, the problem statement is ambiguous, suggesting multiple possible solutions.
 
 This puzzle-solving approach systematically narrows down the possible transformations until the simplest valid one is identified.
+
+## Puzzle 1 ##
+
+![puzzle 1](https://github.com/user-attachments/assets/85f5f4e5-01b2-4390-9f2e-e494d159fc49)
+
+Crossing out:
+
+<img width="1694" alt="Puzzle1" src="https://github.com/user-attachments/assets/de085b5c-b0d0-4b7d-9590-643515bb5953">
+
+Simplest solution: it's an inversion $`I`$.
