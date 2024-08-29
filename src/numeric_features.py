@@ -40,7 +40,6 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
         if max_area_object:
             max_area_object_height = max_area_object.height
             max_area_object_width = max_area_object.width
-        print(f"objects:{len(objects)}")
         if len(objects) >= 2:
             def is_vertical(obj: Object) -> bool:
                 return obj.height >= obj.width
@@ -54,7 +53,6 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
                 objects_are_vertical = all_vertical
             else:
                 objects_are_vertical = None
-            print(f"objects_are_vertical:{objects_are_vertical}")
     subgrid = extract_subgrid(grid, color=None)
     subgrid_width = None
     subgrid_height = None
