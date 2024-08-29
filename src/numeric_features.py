@@ -24,7 +24,9 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     max_area_object_height = None
     max_area_object_width = None
     objects_are_vertical = None
+    num_objects = None
     if objects:
+        num_objects = len(objects)
         largest_object = max(
             objects, key=lambda obj: obj.num_cells(color=None), default=None)
         num_objects_of_main_color = sum(
@@ -38,18 +40,21 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
         if max_area_object:
             max_area_object_height = max_area_object.height
             max_area_object_width = max_area_object.width
-        def is_vertical(obj: Object) -> bool:
-            return obj.height >= obj.width
-        def is_horizontal(obj: Object) -> bool:
-            return obj.width >= obj.height
-        all_vertical = all(is_vertical(obj) for obj in objects)
-        all_horizontal = all(is_horizontal(obj) for obj in objects)
-        if all_vertical and all_horizontal:
-            objects_are_vertical = None
-        elif all_vertical or all_horizontal:
-            objects_are_vertical = all_vertical
-        else:
-            objects_are_vertical = None
+        print(f"objects:{len(objects)}")
+        if len(objects) >= 2:
+            def is_vertical(obj: Object) -> bool:
+                return obj.height >= obj.width
+            def is_horizontal(obj: Object) -> bool:
+                return obj.width >= obj.height
+            all_vertical = all(is_vertical(obj) for obj in objects)
+            all_horizontal = all(is_horizontal(obj) for obj in objects)
+            if all_vertical and all_horizontal:
+                objects_are_vertical = None
+            elif all_vertical or all_horizontal:
+                objects_are_vertical = all_vertical
+            else:
+                objects_are_vertical = None
+            print(f"objects_are_vertical:{objects_are_vertical}")
     subgrid = extract_subgrid(grid, color=None)
     subgrid_width = None
     subgrid_height = None
@@ -78,6 +83,8 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     if relative_difficulty >= 2:
         features["num_colors"] = num_colors
         features["num_cells"] = num_cells
+        if num_objects is not None:
+            features["num_objects"] = num_objects
     if relative_difficulty >= 3:
         if num_objects_of_main_color is not None:
             features["num_objects_of_main_color"] = num_objects_of_main_color

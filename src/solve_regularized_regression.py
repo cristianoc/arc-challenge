@@ -72,12 +72,13 @@ def solver(feature_names: List[str], features: List[Features], targets: List[int
 
     logger.debug(f"Solution {description}: Weights: {optimized_weights}, Bias: {optimized_bias}")
 
+    if not is_perfect_solution:
+        logger.debug(f"Solution is not perfect")
+        return None
+
     # Apply post-optimization regularization checks
     if is_perfect_solution and is_regularized_solution(optimized_weights, optimized_bias):
         return optimized_weights, optimized_bias
-    else:
-        return None
-
 
 def solve_regularized_regression(features: List[Features], targets: List[int], description: str) -> Optional[Solution | BooleanSolution]:
     # Find feature names that are present in all features
