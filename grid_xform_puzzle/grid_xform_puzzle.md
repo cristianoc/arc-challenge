@@ -96,3 +96,7 @@ This approach systematically narrows down the possible transformations to identi
 **Simplest solution**: Horizontal flip $`X`$ followed by Inversion $`I`$.
 
 **Wrong solution**: 180 rotation $`R2`$, followed by vertical flip $`Y`$, followed by Inversion $`I`$.
+
+Number of solutions without applying normalization:
+
+<img width="300" alt="Screenshot 2024-08-29 at 16 47 25" src="https://github.com/user-attachments/assets/da18a2a0-f458-49d2-8b66-084ab8810b02">
