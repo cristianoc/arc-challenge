@@ -37,7 +37,9 @@ def solve_regularized_regression(features: List[Features], targets: List[int], d
     if not features or len(features) != len(targets):
         return None
 
-    feature_names = list(features[0].keys())
+    # find feature names as keys present in all features
+    feature_names : List[str] = list(set.intersection(*[set(f.keys()) for f in features])) # type: ignore
+    
     num_samples = len(features)
 
     # Define the linear programming problem with an objective to minimize (L1 regularization)

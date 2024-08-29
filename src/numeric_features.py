@@ -19,11 +19,11 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     main_color = grid_as_object.main_color()
 
     objects = grid.detect_objects()
-    num_objects_of_main_color = 0
-    num_cells_in_largest_object = 0
-    num_objects_of_max_size = 0
-    max_area_object_height = 0
-    max_area_object_width = 0
+    num_objects_of_main_color = None
+    num_cells_in_largest_object = None
+    num_objects_of_max_size = None
+    max_area_object_height = None
+    max_area_object_width = None
     if objects:
         largest_object = max(
             objects, key=lambda obj: obj.num_cells(color=None), default=None)
@@ -39,14 +39,14 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
             max_area_object_height = max_area_object.height
             max_area_object_width = max_area_object.width
     subgrid = extract_subgrid(grid, color=None)
-    subgrid_width = 0
-    subgrid_height = 0
+    subgrid_width = None
+    subgrid_height = None
     if subgrid:
         subgrid_height = len(subgrid)
         subgrid_width = len(subgrid[0])
     colored_objects = find_colored_objects(grid)
-    colored_object_max_height = 0
-    colored_object_max_width = 0
+    colored_object_max_height = None
+    colored_object_max_width = None
     if len(colored_objects) >= 2:
         obj: Object | None = max(colored_objects, key=lambda obj: obj.height, default=None)
         if obj:
@@ -67,20 +67,29 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
         features["num_colors"] = num_colors
         features["num_cells"] = num_cells
     if relative_difficulty >= 3:
-        features["num_objects_of_main_color"] = num_objects_of_main_color
+        if num_objects_of_main_color is not None:
+            features["num_objects_of_main_color"] = num_objects_of_main_color
     if relative_difficulty >= 4:
-        features["num_cells_in_largest_object"] = num_cells_in_largest_object
+        if num_cells_in_largest_object is not None:
+            features["num_cells_in_largest_object"] = num_cells_in_largest_object
     if relative_difficulty >= 5:
-        features["num_objects_of_max_size"] = num_objects_of_max_size
+        if num_objects_of_max_size is not None:
+            features["num_objects_of_max_size"] = num_objects_of_max_size
     if relative_difficulty >= 6:
-        features["max_area_object_height"] = max_area_object_height
-        features["max_area_object_width"] = max_area_object_width
+        if max_area_object_height is not None:
+            features["max_area_object_height"] = max_area_object_height
+        if max_area_object_width is not None:
+            features["max_area_object_width"] = max_area_object_width
     if relative_difficulty >= 7:
-        features["subgrid_height"] = subgrid_height
-        features["subgrid_width"] = subgrid_width
+        if subgrid_height is not None:
+           features["subgrid_height"] = subgrid_height
+        if subgrid_width is not None:
+            features["subgrid_width"] = subgrid_width
     if relative_difficulty >= 8:
-            features["colored_object_max_height"] = colored_object_max_height
-            features["colored_object_max_width"] = colored_object_max_width
+            if colored_object_max_height is not None:
+                features["colored_object_max_height"] = colored_object_max_height
+            if colored_object_max_width is not None:
+                features["colored_object_max_width"] = colored_object_max_width
     if relative_difficulty >= 9:
         features["grid_height_squared"] = grid_height_squared
         features["grid_width_squared"] = grid_width_squared
