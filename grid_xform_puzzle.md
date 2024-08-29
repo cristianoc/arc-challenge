@@ -75,12 +75,27 @@ The goal is to find the **simplest transformation** that explains all the exampl
 
 This puzzle-solving approach systematically narrows down the possible transformations until the simplest valid one is identified.
 
-## Puzzle 1 ##
+## Puzzles ##
 
-![puzzle 1](https://github.com/user-attachments/assets/85f5f4e5-01b2-4390-9f2e-e494d159fc49)
+![puzzles](https://github.com/user-attachments/assets/6b047589-ad61-42e8-abb2-2d40792d3ecc)
 
-Crossing out:
+## Puzzle1 ##
 
-<img width="1694" alt="Puzzle1" src="https://github.com/user-attachments/assets/de085b5c-b0d0-4b7d-9590-643515bb5953">
+<img width="1694" alt="Puzzle1" src="https://github.com/user-attachments/assets/d8300687-791b-40ab-8f24-7390606f399e">
 
 Simplest solution: it's an inversion $`I`$.
+
+
+## Puzzle2 ##
+
+<img width="1694" alt="Puzzle2" src="https://github.com/user-attachments/assets/63e7b788-83ee-44f7-8c97-f529119e5a13">
+
+Simplest solution: it's an inversion $`I`$.
+
+
+## Puzzle3 ##
+
+<img width="1694" alt="Puzzle3" src="https://github.com/user-attachments/assets/686bc595-f90e-444d-9973-60a2ef5e5d36">
+
+Simplest solution: it's a horizontal flip $`X`$ and an inversion $`I`$.
+
