@@ -19,7 +19,6 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     main_color = grid_as_object.main_color()
 
     objects = grid.detect_objects()
-    objects =  [obj for obj in objects if obj.area < grid_as_object.area]
     num_objects_of_main_color = 0
     num_cells_in_largest_object = 0
     num_objects_of_max_size = 0
