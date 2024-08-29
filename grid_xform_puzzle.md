@@ -50,15 +50,10 @@ There are 32 possible normal forms, categorized by length:
 
 #### Visualization
 
-To better understand these transformations, a visualization can be created by applying all 32 normal forms to a black-and-white, non-symmetric image. The results will be displayed in rows, organized by the length of the transformation sequence:
+To better understand these transformations, a visualization can be created by applying all 32 normal forms to a black-and-white, non-symmetric image. The results will be displayed in rows, organized by the length of the transformation sequence. This is generated with `grid_xform_puzzle.py`:
 
-1. **Row 1**: Length 0 (1 form)
-2. **Row 2**: Length 1 (6 forms)
-3. **Row 3**: Length 2 (12 forms)
-4. **Row 4**: Length 3 (10 forms)
-5. **Row 5**: Length 4 (3 forms)
+<img width="1718" alt="Screenshot 2024-08-29 at 14 26 01" src="https://github.com/user-attachments/assets/25c94be0-d4e7-4d01-9d97-5bef8980122e">
 
-This visual representation will help in understanding how different transformations affect the grid.
 
 #### The Puzzle Game
 
