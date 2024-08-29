@@ -94,3 +94,5 @@ This approach systematically narrows down the possible transformations to identi
 ![Puzzle 3](https://github.com/user-attachments/assets/686bc595-f90e-444d-9973-60a2ef5e5d36)
 
 **Simplest solution**: Horizontal flip $`X`$ followed by Inversion $`I`$.
+
+**Wrong solution**: 180 rotation $`R2`$, followed by vertical flip $`Y`$, followed by Inversion $`I`$.
