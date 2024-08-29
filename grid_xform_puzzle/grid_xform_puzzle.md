@@ -74,7 +74,8 @@ This approach systematically narrows down the possible transformations to identi
 
 ### Puzzles
 
-![Puzzles](https://github.com/user-attachments/assets/6b047589-ad61-42e8-abb2-2d40792d3ecc)
+![puzzles](https://github.com/user-attachments/assets/e2dc5f3a-0293-4169-b482-fb4f595d2e9b)
+
 
 #### Puzzle 1
 
