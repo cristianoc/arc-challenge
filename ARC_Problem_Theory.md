@@ -28,7 +28,7 @@ A **Spec** defines a solution to a task if:
 
 ### Expressible Specifications
 
-**Expressible Specifications** are a subset of all possible specs, defined within a certain framework or system, that can be explicitly stated, described, or generated. 
+**Expressible Specifications** are a subset of all possible specs, defined within a certain framework or system, that can be explicitly stated, described, or generated.
 
 #### Partial Order: "Simpler"
 
@@ -68,14 +68,13 @@ A **Well-Defined Task** is a task that is guaranteed to have a unique minimal so
 
 More precisely, given input $`I`$ for the test, we can consider all outputs $`O`$ and all correct solutions for the resulting task. The requirement is that such solution is unique. (Therefore, $`O`$ is also unique).
 
+## Example Instantiation: MicroARC
 
-## Example Instantiation of the Theory
+### Grid Representation
 
-#### Grid Representation
+- **Grid:** A 3x3 matrix where each cell contains a value from $`\{0, 1\}`$, representing two colors (e.g., 0 = black, 1 = white).
 
-- **Grid:** A 3x3 matrix where each cell contains a value from {0, 1}, representing two colors (e.g., 0 = black, 1 = white).
-
-#### Expressible Specifications
+### Expressible Specifications
 
 - **Set of Expressible Specs:**
   1. **Identity Spec:** The output grid is identical to the input grid.
@@ -88,7 +87,7 @@ More precisely, given input $`I`$ for the test, we can consider all outputs $`O`
   - **Vertical Flip** and **Horizontal Flip** are equally simple and simpler than **Invert Colors**.
   - **Invert Colors** is the most complex.
 
-#### Example Task Definition
+### Example Task Definition
 
 **Task:** Determine the correct transformation based on the following examples and apply it to a test case.
 
@@ -133,7 +132,7 @@ More precisely, given input $`I`$ for the test, we can consider all outputs $`O`
     0 1 0
     ```
 
-#### Solution
+### Solution
 
 - The correct expressible spec for this task is the **Invert Colors Spec**:
   - **Example 1** is symmetrical under color inversion.
@@ -193,3 +192,27 @@ Since the **Invert Colors Spec** is the only spec that can correctly solve both 
 **Why This Task is Not Well-Defined:**
 
 This task is not well-defined because the provided example can be solved by multiple minimal specifications, each of which produces different outputs for the test input. Specifically, both the **Vertical Flip Spec** and **Horizontal Flip Spec** are minimal, but they produce different outputs when applied to the test input. Additionally, the **Invert Colors Spec** offers another solution, though it is more complex and not minimal compared to the flip specs. The existence of these multiple minimal solutions, combined with their differing outputs for the test case, introduces ambiguity and prevents the determination of a unique minimal solution. Therefore, the task is not well-defined.
+
+
+## Additional Example: MiniARC
+
+### Description of MiniARC
+
+[MiniARC](miniARC) is a variant of the ARC problem where the task involves identifying a sequence of transformations from a set of operations, including flips, rotations, and inversions, to correctly map input grids to output grids. 
+
+### Expressible Specifications in MiniARC
+
+- **Core Specifications**:
+  1. **Invert Colors:** Inverts all cell colors.
+  2. **Vertical Flip:** Flips the grid vertically.
+  3. **Horizontal Flip:** Flips the grid horizontally.
+  4. **Rotate 90:** Rotates the grid 90 degrees clockwise.
+  5. **Rotate 180:** Rotates the grid 180 degrees.
+  6. **Rotate 270:** Rotates the grid 270 degrees clockwise.
+- **Sequences**: Any valid sequence, including possibly empty sequences, composed of the Core Specifications.
+
+### Why MiniARC is an Instance of the Theory
+
+- **Expressible Specifications**: The MiniARC variant fits within the theory as it utilizes a defined set of expressible specifications (transformations like flips, rotations, and color inversions). Each transformation functions as a specific case of a relation between input and output grids, making it a concrete example of the relational concept used in the theory.
+
+- **Partial Order**: MiniARC also incorporates a notion of simpler specifications. Since transformations can be reduced to normal forms with a defined size, the partial order is determined by the size of these forms: a specification is simpler than another if it has a strictly smaller size. Thus, the identity transformation is the simplest, and specifications of the same size are considered equivalent in complexity but not directly comparable to each other.
