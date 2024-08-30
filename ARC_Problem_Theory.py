@@ -1,4 +1,4 @@
-class GridTask:
+class MicroARCGridTask:
     def __init__(self, examples, test_case):
         self.examples = examples
         self.test_case = test_case
@@ -29,7 +29,7 @@ class GridTask:
 
     @staticmethod
     def compare_specs(spec1, spec2):
-        # Define an arbitrary complexity order
+        # Define the complexity order based on MicroARC partial order
         spec_order = {
             'identity_spec': 0,
             'vertical_flip_spec': 1,
@@ -99,7 +99,7 @@ def print_grid(grid):
 
 # Example of a well-defined task
 
-print("### Well-Defined Task Analysis ###\n")
+print("### Well-Defined Task Analysis (MicroARC) ###\n")
 
 examples = [
     ([[1, 0, 1], [0, 1, 0], [1, 0, 1]], [[0, 1, 0], [1, 0, 1], [0, 1, 0]]),
@@ -108,7 +108,7 @@ examples = [
 
 test_case = [[0, 0, 1], [1, 1, 0], [0, 0, 1]]
 
-task = GridTask(examples, test_case)
+task = MicroARCGridTask(examples, test_case)
 
 # Print examples
 print("Examples:")
@@ -134,7 +134,7 @@ print("\n" + "#" * 30 + "\n")
 
 # Example of a task that is not well-defined
 
-print("### Not Well-Defined Task Analysis ###\n")
+print("### Not Well-Defined Task Analysis (MicroARC) ###\n")
 
 examples_not_well_defined = [
     ([[0, 1], [1, 0]], [[1, 0], [0, 1]])
@@ -142,7 +142,7 @@ examples_not_well_defined = [
 
 test_case_not_well_defined = [[1, 0], [0, 0]]
 
-task_not_well_defined = GridTask(
+task_not_well_defined = MicroARCGridTask(
     examples_not_well_defined, test_case_not_well_defined)
 
 # Print examples
