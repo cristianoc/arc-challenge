@@ -1,4 +1,4 @@
-### Well-Defined Task Analysis ###
+### Well-Defined Task Analysis (MicroARC) ###
 
 Examples:
   Example 1 - Input:
@@ -39,7 +39,7 @@ Output for Test Case:
 
 ##############################
 
-### Not Well-Defined Task Analysis ###
+### Not Well-Defined Task Analysis (MicroARC) ###
 
 Examples:
   Example 1 - Input:
