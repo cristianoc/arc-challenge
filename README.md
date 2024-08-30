@@ -62,7 +62,7 @@ An ablation study was conducted to evaluate how different combinations of synthe
 
 ### Methodology
 
-The study incrementally activated synthetic techniques and feature sets across difficulty levels from 1 to 12. Each level represents a progressively more complex configuration, allowing for an analysis of how each feature or transformation influences the model’s accuracy.
+The study incrementally activated synthetic techniques and feature sets across increasing difficulty levels. Each level represents a progressively more complex configuration, allowing for an analysis of how each feature or transformation influences the model’s accuracy.
 
 ### Results
 
