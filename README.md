@@ -1,45 +1,44 @@
+# ARC Challenge Framework: SizeARC, ColorsARC, and Grid Transformation Instantiations
 
-# SizeARC and Grid Transformation DSL
+This repository explores various simplified versions of the [Abstraction and Reasoning Corpus (ARC) challenge](https://www.kaggle.com/c/abstraction-and-reasoning-challenge), along with the theoretical framework and practical instantiations developed to solve them.
 
-This repository explores a simplified version of the [Abstraction and Reasoning Corpus (ARC) challenge](https://www.kaggle.com/c/abstraction-and-reasoning-challenge), called SizeARC, along with the symbolic, specification-driven approach developed to solve it.
+## Overview
 
-## Solution Approach: Symbolic, Specification-Driven Method
+The repository covers:
+- **SizeARC**: A challenge focused on predicting the dimensions of output grids based on input grids.
+- **ColorsARC**: A related challenge where the task is to predict the color patterns in the output grid.
+- **Theory**: The underlying theoretical framework that guides the development of these challenges and solutions.
+- **MicroARC**: A foundational instantiation of the theory focused on the simplest grid transformations.
+- **MiniARC**: An extension of MicroARC that deals with more complex sequences of transformations.
 
-To tackle SizeARC, we developed a purely symbolic, specification-driven approach. This method is based on selecting appropriate transformation specifications based on detected properties, rather than directly constructing programs through exhaustive enumeration or learning.
+## 1. SizeARC: A Simplified ARC Challenge
 
-### Key Properties of the Approach
+**SizeARC** is a focused task derived from the ARC challenge, where the objective is to predict the dimensions of the output grid based on a given input grid, isolating this specific facet for exploration.
 
-1. **Specification-Driven Selection**: The approach leverages predefined, high-level transformation rules. Rather than iteratively constructing solutions, it identifies which transformation rules apply to the detected features of the grid, guided by domain-specific priors.
+### Solution Approach: Symbolic, Specification-Driven Method
 
-2. **Domain-Specific Priors**: The approach incorporates domain-specific knowledge to inform the selection of transformation rules, using predefined expectations about grid patterns and structures to guide the reasoning process.
-
-3. **Semantic Reasoning**: This approach emphasizes understanding the required transformations at a conceptual level ("what" needs to be done) rather than focusing on the specific steps ("how" to do it). For example, it identifies that a grid needs to be resized based on object symmetry, rather than enumerating every possible transformation.
-
-4. **Layered Complexity**: The approach is designed to apply progressively more sophisticated techniques only when simpler methods fail. Initial layers may involve straightforward transformations and object matching, while more complex layers use regularized regression and advanced feature combinations to handle challenging cases.
+1. **Specification-Driven Selection**: Utilizes predefined, high-level transformation rules to identify applicable transformations based on grid properties.
+2. **Domain-Specific Priors**: Incorporates domain-specific knowledge to guide transformation selection.
+3. **Semantic Reasoning**: Focuses on understanding the required transformations conceptually rather than enumerating every possible step.
+4. **Layered Complexity**: Applies progressively sophisticated techniques, starting with simpler transformations.
 
 ### Results Accuracy
 
-The final configuration of the SizeARC solution achieved 94-95% accuracy on the training and evaluation datasets.
+The final configuration achieved 94-95% accuracy on the SizeARC training and evaluation datasets.
 
-### Key Techniques Used
+### Implementation
 
-1. **Predefined Transformations**: The method applies a series of predefined transformations to the input grids, designed to relate input properties to the output grid size. These transformations range from basic operations, like directly using the input size, to more complex analyses involving object properties and grid patterns. The transformations are applied sequentially, starting with simpler ones and progressing to more complex methods as needed, based on the characteristics of the grid.
+The method applies a series of predefined transformations to the input grids, designed to relate input properties to the output grid size. These transformations range from basic operations, like directly using the input size, to more complex analyses involving object properties and grid patterns.
 
-2. **Object Matching and Feature Detection**: After applying transformations, the method attempts to match objects between the input and output grids. When objects can be matched, the method detects common features to identify which object in the input corresponds to the output. This process uses these detected features to select the correct object.
+1. **Predefined Transformations**: The transformations are applied sequentially, starting with simpler ones and progressing to more complex methods as needed, based on the characteristics of the grid.
+
+2. **Object Matching and Feature Detection**: After applying transformations, the method attempts to match objects between the input and output grids. When objects can be matched, the method detects common features to identify which object in the input corresponds to the output.
 
 3. **Regularized Regression**: In cases where object matching and feature detection are insufficient to fully determine the output size, regularized regression is applied. This involves solving a regression problem to find weights and biases that best fit the observed data, while also incorporating regularization constraints to ensure model simplicity and prevent overfitting.
 
-## SizeARC: A Simplified ARC Challenge
-
-**SizeARC** is a task derived from the ARC challenge, where the objective is to predict the dimensions of the output grid based on a given input grid. Unlike the full ARC challenge, which requires determining the entire content of the output grid, SizeARC simplifies the problem by focusing solely on predicting the size. This task utilizes the public ARC datasets and is agnostic to the methods used to solve it, making it an interesting case for testing various approaches to abstract reasoning.
-
-### Problem Context
-
-The ARC challenge is designed to test a system's ability to generalize from few examples, mimicking aspects of human cognition. SizeARC isolates a specific facet of the problem—predicting grid dimensions—to create a more focused challenge. While simpler, SizeARC contains a spectrum of difficulties, ranging from trivial cases to those as challenging as the original ARC tasks. This makes it a valuable benchmark for exploring generalization, abstraction, and reasoning in artificial intelligence.
-
 ### Example
 
-<img width="607" alt="Screenshot_2024-08-23_at_23 00 44" src="https://github.com/user-attachments/assets/4112f991-a296-456b-838f-88574200a8d2">
+![Example](https://github.com/user-attachments/assets/4112f991-a296-456b-838f-88574200a8d2)
 
 An interesting category is where the output is a copy of an object in the input (or at least, its size is). These are handled in three phases:
 
@@ -79,114 +78,22 @@ The graph below summarizes the performance of the model on both the training and
 
 - **Robust Performance**: As more advanced techniques are introduced, the model maintains robust performance, with accuracy steadily improving or stabilizing as complexity increases. These results guided the integration of regularized regression at higher complexity levels to ensure stability and accuracy in difficult cases.
 
-## Implementation
+## 2. ColorsARC: Predicting Color Patterns
 
-For more details on the implementation of the methods used, start with the [predict_size.py](https://github.com/cristianoc/arc-challenge/blob/main/src/predict_size.py) file. This file provides a practical entry point into understanding how the symbolic approach was applied to solve the SizeARC challenge.
+**ColorsARC** is a variant of the ARC challenge where the focus is on predicting the color patterns in the output grid, rather than its size.
 
-### Grid Transformation DSL
+### Solution Approach
 
-For those interested in the underlying mechanisms that support the SizeARC solution, the Grid Transformation DSL provides a robust framework for grid manipulations. The DSL enables various transformations such as rotations, flips, translations, and color changes, all of which are integral to the symbolic approach used.
+The approach to ColorsARC is similar to SizeARC but focuses on color transformations rather than size transformations. Predefined transformation rules and domain-specific knowledge are used to predict the color configurations in the output grid.
 
-### Key Components of the DSL
+## 3. Theory: The Foundation of the Approach
 
-#### `Grid` Class
+The [ARC_Problem_Theory.md](./ARC_Problem_Theory.md) document provides an in-depth explanation of the theoretical framework guiding this project. The theory defines a general approach to solving ARC problems through minimal and well-defined transformation specifications.
 
-The `Grid` class serves as the core of the DSL, providing an interface for manipulating grid data. It supports operations that are essential for implementing transformation rules, such as:
+### MicroARC: An Instantiation of the Theory
 
-- **Create**: Initialize grids with specific dimensions and patterns.
-- **Transform**: Perform rotations, flips, and translations.
-- **Color Manipulation**: Change colors based on defined conditions.
-- **Object Detection**: Identify distinct objects within grids for targeted transformations.
+**MicroARC** is a foundational instantiation of the theory that focuses on the simplest grid transformations. It serves as the base level of complexity, where the goal is to identify minimal transformations that produce well-defined outputs.
 
-#### `Object` Class
+### MiniARC: Extending MicroARC
 
-The `Object` class encapsulates grid entities, allowing for operations like movement, color changes, and compacting—crucial for scenarios where individual grid elements need independent handling.
-
-#### Types and Enums
-
-To facilitate grid operations, the DSL includes various types and enums, such as:
-
-- **`Direction`**: Used for operations like rotation and translation.
-- **`Axis`**: Used for flipping operations.
-- **`Color`**: Colors represented as integers for flexible manipulation.
-
-## Illustrative Examples
-
-Here are some representative examples of how to use the DSL for various grid transformation tasks:
-
-### Example 1: Nested Grid Transformation
-
-Transform a grid by replacing specific cells with nested grids, showcasing complex data transformations. Cells with a value of 0 are replaced by an empty grid, while non-zero cells are replaced by a copy of the original grid.
-
-```python
-from grid import Grid
-from test_runner import puzzle
-
-def transform(input: Grid) -> Grid:
-    def map_func(x: int, y: int) -> Grid:
-        color = input.data[x][y]
-        return Grid.empty(input.size(), input.size()) if color == 0 else input.copy()
-    return input.map_nested(map_func)
-
-def test():
-    puzzle(name="007bbfb7.json", transform=transform)
-```
-
-### Example 2: Color Change Based on Enclosure
-
-Change the color of enclosed cells to yellow. A cell is enclosed if surrounded by non-zero cells, demonstrating conditional logic based on spatial relationships.
-
-```python
-from grid import Grid
-from grid_data import YELLOW
-from test_runner import puzzle
-
-def transform(input: Grid) -> Grid:
-    def map_func(x: int, y: int) -> int:
-        color = input.data[x][y]
-        return YELLOW if input.is_enclosed(x, y) else color
-    return input.map(map_func)
-
-def test():
-    puzzle(name="00d62c1b.json", transform=transform)
-```
-
-### Example 3: Pattern Extension and Color Change
-
-Identify the shortest repeating vertical pattern, extend it to a specified length, and change all occurrences of BLUE to RED, demonstrating pattern recognition and transformation.
-
-```python
-from grid import Grid
-from grid_data import BLUE, RED
-from shortest_period import find_shortest_period
-from test_runner import puzzle
-
-def transform(input: Grid) -> Grid:
-    vertical_period = find_shortest_period(input.data)
-    pattern = input.data[:vertical_period]
-    extended_pattern = pattern * (9 // len(pattern)) + pattern[:9 % len(pattern)]
-    grid = Grid(extended_pattern)
-    return grid.color_change(BLUE, RED)
-
-def test():
-    puzzle(name="017c7c7b.json", transform=transform)
-```
-
-### Example 4: Object Detection and Compaction
-
-Detect objects within a grid, compact them to the left by one cell, and create a new grid with adjusted dimensions.
-
-```python
-from grid import Grid
-from test_runner import puzzle
-
-def transform(input: Grid) -> Grid:
-    objects = input.detect_objects()
-    new_grid = Grid.empty(input.height, input.width)
-    for obj in objects:
-        new_grid.add_object(obj.compact_left().move(0, 1))
-    return new_grid
-
-def test():
-    puzzle(name="025d127b.json", transform=transform)
-```
+**MiniARC** builds on the principles of MicroARC by handling more complex sequences of transformations. It explores how combinations of simple transformations can be used to solve more sophisticated grid manipulation tasks.
