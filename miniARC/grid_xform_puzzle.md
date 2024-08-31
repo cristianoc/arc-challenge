@@ -103,20 +103,7 @@ Number of solutions without applying normalization in **MiniARC**:
 
 #### Puzzle 4: Ambiguity Detection
 
-**1 Example (Input -> Expected Output):**
-
-- **Input:**
-  ```
-  [[1 0 0]
-   [0 1 0]
-   [0 0 1]]
-  ```
-- **Expected Output:**
-  ```
-  [[0 0 1]
-   [0 1 0]
-   [1 0 0]]
-  ```
+![puzzle4](https://github.com/user-attachments/assets/cd3c5845-2f7c-4ad2-a065-507cb6bfdc6f)
 
 **Result:**  
 **Ambiguity detected:** Multiple transformations remain at level 1.
