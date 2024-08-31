@@ -52,7 +52,7 @@ In **MiniARC**, there are 32 possible normal forms, categorized by their length:
 
 To better understand these transformations, a visualization can be created by applying all 32 normal forms to a non-symmetric, black-and-white image in **MiniARC**. The results are displayed in rows, organized by the length of the transformation sequence. This visualization is generated using the `grid_xform_puzzle.py` script.
 
-![Transformation Visualization](https://github.com/user-attachments/assets/25c94be0-d4e7-4d01-9d97-5bef8980122e)
+![transforms](https://github.com/user-attachments/assets/7e9ed873-1dda-4407-be68-5ebedfe70f19)
 
 #### The Puzzle Game
 
@@ -76,27 +76,25 @@ This approach systematically narrows down the possible transformations to identi
 
 ### MiniARC Puzzles
 
-![puzzles](https://github.com/user-attachments/assets/e2dc5f3a-0293-4169-b482-fb4f595d2e9b)
-
 #### Puzzle 1
 
-![Puzzle 1](https://github.com/user-attachments/assets/d8300687-791b-40ab-8f24-7390606f399e)
+![puzzle1](https://github.com/user-attachments/assets/970d2e43-b91e-45cb-b0ea-82f21ceb1bfb)
 
 **Simplest solution** in **MiniARC**: Inversion $`I`$.
 
 #### Puzzle 2
 
-![Puzzle 2](https://github.com/user-attachments/assets/63e7b788-83ee-44f7-8c97-f529119e5a13)
+![puzzle2](https://github.com/user-attachments/assets/21ebe3ef-0144-42a7-a7ad-77ef1fd839ba)
 
 **Simplest solution** in **MiniARC**: Inversion $`I`$.
 
 #### Puzzle 3
 
-![Puzzle 3](https://github.com/user-attachments/assets/686bc595-f90e-444d-9973-60a2ef5e5d36)
+![puzzle3](https://github.com/user-attachments/assets/4e37cff0-c32d-4138-ac15-60eb63384d4c)
 
 **Simplest solution** in **MiniARC**: Horizontal flip $`X`$ followed by Inversion $`I`$.
 
-**Wrong solution** in **MiniARC**: 180 rotation $`R2`$, followed by vertical flip $`Y`$, followed by Inversion $`I`$.
+**Non-minimal solution** in **MiniARC**: 180 rotation $`R2`$, followed by vertical flip $`Y`$, followed by Inversion $`I`$.
 
 Number of solutions without applying normalization in **MiniARC**:
 
@@ -105,9 +103,8 @@ Number of solutions without applying normalization in **MiniARC**:
 
 #### Puzzle 4: Ambiguity Detection
 
-![puzzle4](https://github.com/user-attachments/assets/cd3c5845-2f7c-4ad2-a065-507cb6bfdc6f)
+![puzzle4](https://github.com/user-attachments/assets/7a1296b4-9fc3-4d8a-8a95-46f972ffd4c9)
 
-**Result:**  
 **Ambiguity detected:** Multiple transformations remain at level 1.
 
 **Ambiguous Transformations at Level 1:**
