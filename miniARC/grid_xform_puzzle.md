@@ -99,3 +99,39 @@ This approach systematically narrows down the possible transformations to identi
 Number of solutions without applying normalization in **MiniARC**:
 
 <img width="300" alt="Screenshot 2024-08-29 at 16 47 25" src="https://github.com/user-attachments/assets/da18a2a0-f458-49d2-8b66-084ab8810b02">
+
+
+#### Puzzle 4: Ambiguity Detection
+
+**Initial Grid:**
+```
+[[1 0 0]
+ [0 1 0]
+ [0 0 1]]
+```
+
+**Example (Input -> Expected Output):**
+
+- **Input:**
+  ```
+  [[1 0 0]
+   [0 1 0]
+   [0 0 1]]
+  ```
+- **Expected Output:**
+  ```
+  [[0 0 1]
+   [0 1 0]
+   [1 0 0]]
+  ```
+
+**Result:**  
+**Ambiguity detected:** Multiple transformations remain at level 1.
+
+**Ambiguous Transformations at Level 1:**
+- **R1**: Rotate 90 degrees
+- **R3**: Rotate 270 degrees
+- **X**: Horizontal flip
+- **Y**: Vertical flip
+
+This puzzle illustrates a case where the problem statement is ambiguous, as multiple valid transformations could produce the same output. Additional constraints or examples are necessary to uniquely identify the simplest solution.
