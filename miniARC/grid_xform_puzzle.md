@@ -103,14 +103,7 @@ Number of solutions without applying normalization in **MiniARC**:
 
 #### Puzzle 4: Ambiguity Detection
 
-**Initial Grid:**
-```
-[[1 0 0]
- [0 1 0]
- [0 0 1]]
-```
-
-**Example (Input -> Expected Output):**
+**1 Example (Input -> Expected Output):**
 
 - **Input:**
   ```
