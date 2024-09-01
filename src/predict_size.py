@@ -2,7 +2,13 @@ from typing import Callable, List, Optional, Tuple, TypedDict
 
 from color_features import detect_color_features
 import numeric_features
-from visual_cortex import Frame, find_colored_objects, find_largest_frame, find_smallest_frame, is_frame_part_of_lattice
+from visual_cortex import (
+    Frame,
+    find_colored_objects,
+    find_largest_frame,
+    find_smallest_frame,
+    is_frame_part_of_lattice,
+)
 from grid import Grid
 from grid_data import BLACK, GridData, Object, display, display_multiple, logger
 from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluation_data
@@ -39,7 +45,9 @@ def output_size_is_constant(grids: ExampleGrids, grid: Grid, task_name: str):
     return grids[0][1].size
 
 
-def output_size_is_size_of_largest_nonblack_object(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_largest_nonblack_object(
+    grids: ExampleGrids, grid: Grid, task_name: str
+) -> Optional[Size]:
     objects = grid.detect_objects()
     if not objects:
         return (0, 0)
@@ -47,7 +55,9 @@ def output_size_is_size_of_largest_nonblack_object(grids: ExampleGrids, grid: Gr
     return largest_object.size
 
 
-def output_size_is_size_of_object_inside_largest_frame(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_object_inside_largest_frame(
+    grids: ExampleGrids, grid: Grid, task_name: str
+) -> Optional[Size]:
     largest_frame = find_largest_frame(grid.data, None)
     if largest_frame:
         (top, left, bottom, right) = largest_frame
@@ -55,36 +65,48 @@ def output_size_is_size_of_object_inside_largest_frame(grids: ExampleGrids, grid
         height = bottom - top + 1
         if width >= 2 and height >= 2:
             logger.debug(
-                f"Largest frame found: {largest_frame} height:{height} width:{width}")
+                f"Largest frame found: {largest_frame} height:{height} width:{width}"
+            )
         height_without_frame = height - 2
         width_without_frame = width - 2
         return (height_without_frame, width_without_frame)
     return (0, 0)
 
 
-def output_size_is_size_of_largest_block_object(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_largest_block_object(
+    grids: ExampleGrids, grid: Grid, task_name: str
+) -> Optional[Size]:
     objects = grid.detect_objects(allow_black=True)
     # exclude full grid size
-    objects = [obj for obj in objects if obj.size !=
-               grid.size and obj.is_block()]
+    objects = [obj for obj in objects if obj.size != grid.size and obj.is_block()]
     if not objects:
         return None
     largest_object = max(objects, key=lambda obj: obj.area)
     return largest_object.size
 
 
-def output_size_is_size_of_largest_nonblack_block_object(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_largest_nonblack_block_object(
+    grids: ExampleGrids, grid: Grid, task_name: str
+) -> Optional[Size]:
     objects = grid.detect_objects(allow_black=False)
     # exclude full grid size and objects smaller than 2x2
-    objects = [obj for obj in objects if obj.size !=
-               grid.size and obj.size[0] >= 2 and obj.size[1] >= 2 and obj.is_block()]
+    objects = [
+        obj
+        for obj in objects
+        if obj.size != grid.size
+        and obj.size[0] >= 2
+        and obj.size[1] >= 2
+        and obj.is_block()
+    ]
     if not objects:
         return None
     largest_object = max(objects, key=lambda obj: obj.area)
     return largest_object.size
 
 
-def output_size_is_size_of_max_area_object_with_flexible_contours(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_max_area_object_with_flexible_contours(
+    grids: ExampleGrids, grid: Grid, task_name: str
+) -> Optional[Size]:
     objects = grid.detect_objects(allow_black=True)
     # exclude full grid size
     objects = [obj for obj in objects if obj.size != grid.size]
@@ -102,7 +124,9 @@ def output_size_is_size_of_max_area_object_with_flexible_contours(grids: Example
     return max_area_object.size
 
 
-def output_size_is_size_of_repeating_subgrid_forming_a_lattice(grids: ExampleGrids, grid: Grid, task_name: str) -> Optional[Size]:
+def output_size_is_size_of_repeating_subgrid_forming_a_lattice(
+    grids: ExampleGrids, grid: Grid, task_name: str
+) -> Optional[Size]:
     def find_lattice(grid: Grid) -> Optional[Frame]:
         largest_frame = find_largest_frame(grid.data, None)
         logger.debug(f"largest_frame:{largest_frame}")
@@ -112,20 +136,19 @@ def output_size_is_size_of_repeating_subgrid_forming_a_lattice(grids: ExampleGri
         width = right - left + 1
         height = bottom - top + 1
         logger.debug(
-            f"Largest frame found: {largest_frame} height:{height} width:{width}")
+            f"Largest frame found: {largest_frame} height:{height} width:{width}"
+        )
         foreground = grid.data[top][left]
         # find minimal frame inside and see if it forms a lattice
-        is_lattice = is_frame_part_of_lattice(
-            grid.data, largest_frame, foreground)
+        is_lattice = is_frame_part_of_lattice(grid.data, largest_frame, foreground)
         logger.debug(f"is_lattice:{is_lattice} foreground:{foreground}")
-        smallest_frame = find_smallest_frame(
-            grid.data, foreground, min_size=(3, 3))
+        smallest_frame = find_smallest_frame(grid.data, foreground, min_size=(3, 3))
         if smallest_frame is None:
             return None
-        is_lattice = is_frame_part_of_lattice(
-            grid.data, smallest_frame, foreground)
+        is_lattice = is_frame_part_of_lattice(grid.data, smallest_frame, foreground)
         logger.debug(
-            f"smallest_frame:{smallest_frame} is_lattice:{is_lattice} foreground:{foreground}")
+            f"smallest_frame:{smallest_frame} is_lattice:{is_lattice} foreground:{foreground}"
+        )
         if is_lattice:
             return smallest_frame
         else:
@@ -146,18 +169,20 @@ def output_size_is_size_of_repeating_subgrid_forming_a_lattice(grids: ExampleGri
     frame_part_in_rows = num_repeating_obj_cols
     frame_part_in_cols = num_repeating_obj_rows
     logger.debug(
-        f"num_repeating_obj_rows:{num_repeating_obj_rows} num_repeating_obj_cols:{num_repeating_obj_cols}")
+        f"num_repeating_obj_rows:{num_repeating_obj_rows} num_repeating_obj_cols:{num_repeating_obj_cols}"
+    )
 
     # check that the size is correct when accounting for the frame
     # where -1 is to account for the overlap of the frames
-    expected_height = num_repeating_obj_rows * \
-        repeating_obj_height + frame_part_in_rows - 1
-    logger.debug(
-        f"grid.height:{grid.height} expected height:{expected_height}")
+    expected_height = (
+        num_repeating_obj_rows * repeating_obj_height + frame_part_in_rows - 1
+    )
+    logger.debug(f"grid.height:{grid.height} expected height:{expected_height}")
     if grid.height != expected_height:
         return None
-    expected_width = num_repeating_obj_cols * \
-        repeating_obj_width + frame_part_in_cols - 1
+    expected_width = (
+        num_repeating_obj_cols * repeating_obj_width + frame_part_in_cols - 1
+    )
     logger.debug(f"grid.width:{grid.width} expected width:{expected_width}")
     if grid.width != expected_width:
         return None
@@ -174,33 +199,45 @@ class XformEntry(TypedDict):
 
 
 xforms: List[XformEntry] = [
-    {"function": output_size_is_input_size,
-        "difficulty": 1},  # Level 1: Very Simple
+    {"function": output_size_is_input_size, "difficulty": 1},  # Level 1: Very Simple
     # Level 2: Simple with External Dependency
     {"function": output_size_is_constant, "difficulty": 2},
-    {"function": output_size_is_size_of_object_inside_largest_frame,
-        "difficulty": 4},  # Level 4: Complex
-    {"function": output_size_is_size_of_largest_block_object,
-        "difficulty": 3},  # Level 3: Moderate
-    {"function": output_size_is_size_of_largest_nonblack_block_object,
-        "difficulty": 3},  # Level 3: Moderate
-    {"function": output_size_is_size_of_largest_nonblack_object,
-        "difficulty": 3},  # Level 3: Moderate
-    {"function": output_size_is_size_of_max_area_object_with_flexible_contours,
-        "difficulty": 4},  # Level 4: Complex
-    {"function": output_size_is_size_of_repeating_subgrid_forming_a_lattice,
-        "difficulty": 4}  # Level 4: Complex
+    {
+        "function": output_size_is_size_of_object_inside_largest_frame,
+        "difficulty": 4,
+    },  # Level 4: Complex
+    {
+        "function": output_size_is_size_of_largest_block_object,
+        "difficulty": 3,
+    },  # Level 3: Moderate
+    {
+        "function": output_size_is_size_of_largest_nonblack_block_object,
+        "difficulty": 3,
+    },  # Level 3: Moderate
+    {
+        "function": output_size_is_size_of_largest_nonblack_object,
+        "difficulty": 3,
+    },  # Level 3: Moderate
+    {
+        "function": output_size_is_size_of_max_area_object_with_flexible_contours,
+        "difficulty": 4,
+    },  # Level 4: Complex
+    {
+        "function": output_size_is_size_of_repeating_subgrid_forming_a_lattice,
+        "difficulty": 4,
+    },  # Level 4: Complex
 ]
 
 
-def check_xform_on_examples(xform: SizeXform, examples: List[Example], task_name: str, task_type: str) -> bool:
-    grids = [(Grid(example['input']), Grid(example['output']))
-             for example in examples]
+def check_xform_on_examples(
+    xform: SizeXform, examples: List[Example], task_name: str, task_type: str
+) -> bool:
+    grids = [(Grid(example["input"]), Grid(example["output"])) for example in examples]
     logger.debug(f"Checking xform {xform.__name__} {task_type}")
     for i, example in enumerate(examples):
         logger.debug(f"  Example {i+1}/{len(examples)}")
-        input = Grid(example['input'])
-        output = Grid(example['output'])
+        input = Grid(example["input"])
+        output = Grid(example["output"])
         new_output_size = xform(grids, input, task_name)
         if new_output_size != output.size:
             logger.debug(f"  Example {i+1} failed")
@@ -208,7 +245,9 @@ def check_xform_on_examples(xform: SizeXform, examples: List[Example], task_name
     return True
 
 
-def find_xform(examples: List[Example], task: Task, task_name: str, task_type: str) -> Optional[XformEntry]:
+def find_xform(
+    examples: List[Example], task: Task, task_name: str, task_type: str
+) -> Optional[XformEntry]:
     # check if at least one xform is correct
     correct_xform = None
     for xform in xforms:
@@ -221,17 +260,21 @@ def find_xform(examples: List[Example], task: Task, task_name: str, task_type: s
                 title = f"{xform.__name__} ({task_name})"
                 logger.info(title)
                 for i, e in enumerate(examples):
-                    display(e['input'], output=e['output'],
-                            title=f"Ex{i+1} " + title)
+                    display(e["input"], output=e["output"], title=f"Ex{i+1} " + title)
             correct_xform = xform
             logger.info(
-                f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type}")
-            test_examples = [examples for task_type,
-                             examples in task.items() if task_type == 'test']
+                f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type}"
+            )
+            test_examples = [
+                examples for task_type, examples in task.items() if task_type == "test"
+            ]
             for i, test_example in enumerate(test_examples):
-                if not check_xform_on_examples(correct_xform["function"], test_example, task_name, 'test'):
+                if not check_xform_on_examples(
+                    correct_xform["function"], test_example, task_name, "test"
+                ):
                     logger.warning(
-                        f"Xform {correct_xform['function'].__name__} failed for test example {i}")
+                        f"Xform {correct_xform['function'].__name__} failed for test example {i}"
+                    )
                     correct_xform = None
                     break
             if correct_xform:
@@ -252,8 +295,7 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
     def detect_common_symmetry_features() -> Optional[DecisionRule]:
         common_decision_rule = None
         for input_objects, index in matched_objects:
-            embeddings = [detect_symmetry_features(
-                obj.data) for obj in input_objects]
+            embeddings = [detect_symmetry_features(obj.data) for obj in input_objects]
             decision_rule = select_object_minimal(embeddings, index)
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Symmetry): {decision_rule}")
@@ -261,7 +303,8 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
                     common_decision_rule = decision_rule
                 else:
                     common_decision_rule = common_decision_rule.intersection(
-                        decision_rule)
+                        decision_rule
+                    )
                     if common_decision_rule is None:
                         break
             else:
@@ -273,8 +316,9 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
     def detect_common_color_features() -> Optional[DecisionRule]:
         common_decision_rule = None
         for input_objects, index in matched_objects:
-            embeddings = [detect_color_features(
-                obj, input_objects) for obj in input_objects]
+            embeddings = [
+                detect_color_features(obj, input_objects) for obj in input_objects
+            ]
             decision_rule = select_object_minimal(embeddings, index)
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Color): {decision_rule}")
@@ -282,7 +326,8 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
                     common_decision_rule = decision_rule
                 else:
                     common_decision_rule = common_decision_rule.intersection(
-                        decision_rule)
+                        decision_rule
+                    )
                     if common_decision_rule is None:
                         break
             else:
@@ -294,8 +339,10 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
     def detect_common_shape_features(level: int) -> Optional[DecisionRule]:
         common_decision_rule = None
         for input_objects, index in matched_objects:
-            embeddings = [detect_shape_features(
-                obj, input_objects, level) for obj in input_objects]
+            embeddings = [
+                detect_shape_features(obj, input_objects, level)
+                for obj in input_objects
+            ]
             decision_rule = select_object_minimal(embeddings, index)
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Shape): {decision_rule}")
@@ -303,7 +350,8 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
                     common_decision_rule = decision_rule
                 else:
                     common_decision_rule = common_decision_rule.intersection(
-                        decision_rule)
+                        decision_rule
+                    )
                     if common_decision_rule is None:
                         break
             else:
@@ -318,8 +366,7 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
     # Try detecting common features in the order of shape, color, and symmetry
 
     if common_decision_rule is None and Config.difficulty >= initial_difficulty + 1:
-        common_decision_rule = detect_common_shape_features(
-            initial_difficulty+1)
+        common_decision_rule = detect_common_shape_features(initial_difficulty + 1)
         features_used = "Shape"
 
     if common_decision_rule is None and Config.difficulty >= initial_difficulty + 2:
@@ -334,11 +381,13 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
     return common_decision_rule, features_used
 
 
-def find_matched_objects(examples: List[Example], task_type: str) -> Optional[List[ObjectMatch]]:
+def find_matched_objects(
+    examples: List[Example], task_type: str
+) -> Optional[List[ObjectMatch]]:
     """
     Identifies and returns a list of matched input objects that correspond to the output objects
-    in the given examples. For each example, it detects candidate objects in the input grid 
-    and matches them with the output grid based on size and data. If all examples have a match, 
+    in the given examples. For each example, it detects candidate objects in the input grid
+    and matches them with the output grid based on size and data. If all examples have a match,
     the function returns the list of matched objects; otherwise, it returns None.
 
     Args:
@@ -360,7 +409,9 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
         num_colors_output = len(output.get_colors(allow_black=True))
         return input.detect_rectangular_objects(allow_multicolor=num_colors_output > 1)
 
-    def find_matching_input_object(input_objects: List[Object], output: Grid) -> Optional[int]:
+    def find_matching_input_object(
+        input_objects: List[Object], output: Grid
+    ) -> Optional[int]:
         for i, io in enumerate(input_objects):
             if io.size == output.size and io.data == output.data:
                 logger.debug(f"  Input object matching output: {io}")
@@ -371,13 +422,12 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
         matched_objects: List[ObjectMatch] = []
 
         for example in examples:
-            input = Grid(example['input'])
-            output = Grid(example['output'])
+            input = Grid(example["input"])
+            output = Grid(example["output"])
             logger.info(f"  {task_type} {input.size} -> {output.size}")
 
             input_objects = candidate_objects_for_matching(input, output)
-            matched_object_index = find_matching_input_object(
-                input_objects, output)
+            matched_object_index = find_matching_input_object(input_objects, output)
 
             if matched_object_index is not None:
                 matched_objects.append((input_objects, matched_object_index))
@@ -388,10 +438,12 @@ def find_matched_objects(examples: List[Example], task_type: str) -> Optional[Li
     return matched_objects
 
 
-def predict_size_using_regularized_regression(examples: List[Example], relative_difficulty: int):
+def predict_size_using_regularized_regression(
+    examples: List[Example], relative_difficulty: int
+):
     """
     Predicts the output size using regularized regression. This function takes a list of input-output
-    grid pairs and determines the output size by solving a regression problem that minimizes the sum 
+    grid pairs and determines the output size by solving a regression problem that minimizes the sum
     of weights and bias, subject to regularization constraints, to ensure simplicity and generalization.
     """
     feature_vectors: List[Features] = []
@@ -399,11 +451,10 @@ def predict_size_using_regularized_regression(examples: List[Example], relative_
     target_widths: List[int] = []
 
     for example in examples:
-        input_grid = Grid(example['input'])
-        output_grid = Grid(example['output'])
+        input_grid = Grid(example["input"])
+        output_grid = Grid(example["output"])
 
-        input_features = detect_numeric_features(
-            input_grid, relative_difficulty)
+        input_features = detect_numeric_features(input_grid, relative_difficulty)
         target_height, target_width = output_grid.size
 
         feature_vectors.append(input_features)
@@ -411,17 +462,22 @@ def predict_size_using_regularized_regression(examples: List[Example], relative_
         target_widths.append(target_width)
 
     predicted_height = solve_regularized_regression(
-        feature_vectors, target_heights, "height")
+        feature_vectors, target_heights, "height"
+    )
     predicted_width = solve_regularized_regression(
-        feature_vectors, target_widths, "width")
+        feature_vectors, target_widths, "width"
+    )
     return predicted_height, predicted_width
 
 
 num_difficulties_xform = max(xform["difficulty"] for xform in xforms)
 num_difficulties_matching = 3
 num_difficulties_regularized_regression = numeric_features.num_difficulties + 1
-num_difficulties_total = num_difficulties_xform + \
-    num_difficulties_matching + num_difficulties_regularized_regression
+num_difficulties_total = (
+    num_difficulties_xform
+    + num_difficulties_matching
+    + num_difficulties_regularized_regression
+)
 
 
 def process_tasks(tasks: Tasks, set: str):
@@ -433,19 +489,19 @@ def process_tasks(tasks: Tasks, set: str):
         logger.info(f"\n***Task: {task_name} {set}***")
 
         for task_type, examples in task.items():
-            if task_type not in ['train', 'test']:
+            if task_type not in ["train", "test"]:
                 continue
-            if task_type == 'test':
+            if task_type == "test":
                 continue
 
             current_difficulty = 0
 
             if Config.find_xform:
-                correct_xform = find_xform(
-                    examples, task, task_name, task_type)
+                correct_xform = find_xform(examples, task, task_name, task_type)
                 if correct_xform:
                     logger.info(
-                        f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type} and test")
+                        f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type} and test"
+                    )
                     num_correct += 1
                     continue
 
@@ -459,51 +515,69 @@ def process_tasks(tasks: Tasks, set: str):
                     # If the input objects can be matched to the output objects, try to detect common features
                     # to determine the correct object to pick
                     logger.debug(
-                        f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}")
+                        f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}"
+                    )
                     common_decision_rule, features_used = detect_common_features(
-                        matched_objects, current_difficulty)
+                        matched_objects, current_difficulty
+                    )
                     if common_decision_rule:
                         logger.info(
-                            f"Common decision rule ({features_used}): {common_decision_rule}")
+                            f"Common decision rule ({features_used}): {common_decision_rule}"
+                        )
                         num_correct += 1
                         continue
                     else:
                         logger.warning(
-                            f"Could not find common decision rule for {task_name} {set}")
+                            f"Could not find common decision rule for {task_name} {set}"
+                        )
             current_difficulty += num_difficulties_matching
 
             def try_regularized_regression(exs: List[Example]):
                 logger.debug(
-                    f"Trying to determine dimensions via LP for {task_name} {set}")
-                predicted_height, predicted_width = predict_size_using_regularized_regression(
-                    exs, relative_difficulty=Config.difficulty - current_difficulty)
+                    f"Trying to determine dimensions via LP for {task_name} {set}"
+                )
+                (
+                    predicted_height,
+                    predicted_width,
+                ) = predict_size_using_regularized_regression(
+                    exs, relative_difficulty=Config.difficulty - current_difficulty
+                )
                 if predicted_height and predicted_width:
                     logger.info(
-                        f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}")
+                        f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}"
+                    )
                 return predicted_height, predicted_width
 
-            difficulty_after_regularized_regression = current_difficulty + \
-                numeric_features.num_difficulties + 1
-            if Config.predict_size_using_regularized_regression and Config.difficulty >= current_difficulty:
-                predicted_height, predicted_width = try_regularized_regression(
-                    examples)
+            difficulty_after_regularized_regression = (
+                current_difficulty + numeric_features.num_difficulties + 1
+            )
+            if (
+                Config.predict_size_using_regularized_regression
+                and Config.difficulty >= current_difficulty
+            ):
+                predicted_height, predicted_width = try_regularized_regression(examples)
                 if predicted_height and predicted_width:
                     num_correct += 1
                     continue
-                if Config.try_remove_main_color and Config.difficulty >= difficulty_after_regularized_regression:
+                if (
+                    Config.try_remove_main_color
+                    and Config.difficulty >= difficulty_after_regularized_regression
+                ):
                     # try to remove main color and try again
                     examples2: List[Example] = []
                     for example in examples:
-                        input_obj = Object((0, 0), example['input'])
+                        input_obj = Object((0, 0), example["input"])
                         # change the main color to black
-                        example['input'] = input_obj.change_color(
-                            input_obj.main_color(), BLACK).data
+                        example["input"] = input_obj.change_color(
+                            input_obj.main_color(), BLACK
+                        ).data
                         # make a copt of example where you change the input
                         example_copy = example.copy()
-                        example_copy['input'] = example['input']
+                        example_copy["input"] = example["input"]
                         examples2.append(example_copy)
                     predicted_height, predicted_width = try_regularized_regression(
-                        examples2)
+                        examples2
+                    )
                     if predicted_height and predicted_width:
                         num_correct += 1
                         continue
@@ -511,17 +585,21 @@ def process_tasks(tasks: Tasks, set: str):
 
             if Config.display_not_found:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
-                    (Grid(example['input']).data, Grid(example['output']).data) for example in examples
+                    (Grid(example["input"]).data, Grid(example["output"]).data)
+                    for example in examples
                 ]
                 colored_objects = find_colored_objects(Grid(grids[0][0]))
                 display_multiple(grids, title=f"{task_name} {set}")
                 if colored_objects:
-                    display_multiple([(o.data, None) for o in colored_objects], title=f"colored objects")
-
+                    display_multiple(
+                        [(o.data, None) for o in colored_objects],
+                        title=f"colored objects",
+                    )
 
             # If no valid dimensions could be determined, give up
             logger.warning(
-                f"Could not find correct transformation or determine dimensions via Linear Programming for {task_name} {set} examples")
+                f"Could not find correct transformation or determine dimensions via Linear Programming for {task_name} {set} examples"
+            )
             num_incorrect += 1
 
     return num_correct, num_incorrect
@@ -534,10 +612,8 @@ def compute_perc_correct(num_correct: int, num_incorrect: int) -> Optional[float
 
 
 def predict_size():
-    num_correct_tr, num_incorrect_tr = process_tasks(
-        training_data, "training_data")
-    num_correct_ev, num_incorrect_ev = process_tasks(
-        evaluation_data, "evaluation_data")
+    num_correct_tr, num_incorrect_tr = process_tasks(training_data, "training_data")
+    num_correct_ev, num_incorrect_ev = process_tasks(evaluation_data, "evaluation_data")
     perc_correct_tr = compute_perc_correct(num_correct_tr, num_incorrect_tr)
     perc_correct_ev = compute_perc_correct(num_correct_ev, num_incorrect_ev)
 
@@ -546,7 +622,8 @@ def predict_size():
         if perc_correct is not None:
             logger.error(
                 f"{set.capitalize()} data: "
-                f"Correct: {num_correct}, Incorrect: {num_incorrect}, Score: {perc_correct}%")
+                f"Correct: {num_correct}, Incorrect: {num_incorrect}, Score: {perc_correct}%"
+            )
 
     logger.error("\n***Summary***")
     log_evaluation_results("training", num_correct_tr, num_incorrect_tr)

@@ -16,6 +16,7 @@ def transform(input: Grid) -> Grid:
         color = input.data[x][y]
         new_color = YELLOW if input.is_enclosed(x, y) else color
         return new_color
+
     return input.map(map_func)
 
 

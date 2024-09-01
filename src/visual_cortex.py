@@ -30,26 +30,42 @@ def precompute_sums(grid: GridData, color: int) -> Tuple[GridData, GridData]:
     for i in range(rows):
         for j in range(cols):
             if grid[i][j] == color:
-                row_sum[i][j] = row_sum[i][j-1] + 1 if j > 0 else 1
-                col_sum[i][j] = col_sum[i-1][j] + 1 if i > 0 else 1
+                row_sum[i][j] = row_sum[i][j - 1] + 1 if j > 0 else 1
+                col_sum[i][j] = col_sum[i - 1][j] + 1 if i > 0 else 1
 
     return row_sum, col_sum
 
 
-def is_frame_dp(row_sum: GridData, col_sum: GridData, top: int, left: int, bottom: int, right: int) -> bool:
+def is_frame_dp(
+    row_sum: GridData, col_sum: GridData, top: int, left: int, bottom: int, right: int
+) -> bool:
     """Check if the rectangle defined by (top, left) to (bottom, right) forms a frame using precomputed sums."""
-    if row_sum[top][right] - (row_sum[top][left-1] if left > 0 else 0) != right - left + 1:
+    if (
+        row_sum[top][right] - (row_sum[top][left - 1] if left > 0 else 0)
+        != right - left + 1
+    ):
         return False
-    if row_sum[bottom][right] - (row_sum[bottom][left-1] if left > 0 else 0) != right - left + 1:
+    if (
+        row_sum[bottom][right] - (row_sum[bottom][left - 1] if left > 0 else 0)
+        != right - left + 1
+    ):
         return False
-    if col_sum[bottom][left] - (col_sum[top-1][left] if top > 0 else 0) != bottom - top + 1:
+    if (
+        col_sum[bottom][left] - (col_sum[top - 1][left] if top > 0 else 0)
+        != bottom - top + 1
+    ):
         return False
-    if col_sum[bottom][right] - (col_sum[top-1][right] if top > 0 else 0) != bottom - top + 1:
+    if (
+        col_sum[bottom][right] - (col_sum[top - 1][right] if top > 0 else 0)
+        != bottom - top + 1
+    ):
         return False
     return True
 
 
-def is_frame(grid: GridData, top: int, left: int, bottom: int, right: int, color: int) -> bool:
+def is_frame(
+    grid: GridData, top: int, left: int, bottom: int, right: int, color: int
+) -> bool:
     """Check if the rectangle defined by (top, left) to (bottom, right) forms a frame."""
     for i in range(left, right + 1):
         if grid[top][i] != color or grid[bottom][i] != color:
@@ -80,7 +96,13 @@ def find_largest_frame(grid: GridData, color: Optional[int]) -> Optional[Frame]:
                     break
                 for right in range(left, cols):
                     top_left_corner_color = grid[top][left]
-                    if is_frame_dp(row_sum, col_sum, top, left, bottom, right) if row_sum and col_sum else is_frame(grid, top, left, bottom, right, top_left_corner_color):
+                    if (
+                        is_frame_dp(row_sum, col_sum, top, left, bottom, right)
+                        if row_sum and col_sum
+                        else is_frame(
+                            grid, top, left, bottom, right, top_left_corner_color
+                        )
+                    ):
                         area = calculate_area(top, left, bottom, right)
                         if area > max_area:
                             max_area = area
@@ -89,13 +111,15 @@ def find_largest_frame(grid: GridData, color: Optional[int]) -> Optional[Frame]:
     return max_frame
 
 
-def find_smallest_frame(grid: GridData, color: Optional[int], min_size: Optional[Tuple[int, int]] = None) -> Optional[Frame]:
+def find_smallest_frame(
+    grid: GridData, color: Optional[int], min_size: Optional[Tuple[int, int]] = None
+) -> Optional[Frame]:
     """
     Find the smallest frame in the grid that has all border cells matching the specified color.
     If the color is None, the function will find the smallest frame with any color.
     """
     row_sum, col_sum = precompute_sums(grid, color) if color else (None, None)
-    min_area = float('inf')
+    min_area = float("inf")
     min_frame = None
 
     rows = len(grid)
@@ -113,7 +137,13 @@ def find_smallest_frame(grid: GridData, color: Optional[int], min_size: Optional
                     if min_size and (height < min_size[0] or width < min_size[1]):
                         continue
                     top_left_corner_color = grid[top][left]
-                    if is_frame_dp(row_sum, col_sum, top, left, bottom, right) if row_sum and col_sum else is_frame(grid, top, left, bottom, right, top_left_corner_color):
+                    if (
+                        is_frame_dp(row_sum, col_sum, top, left, bottom, right)
+                        if row_sum and col_sum
+                        else is_frame(
+                            grid, top, left, bottom, right, top_left_corner_color
+                        )
+                    ):
                         area = calculate_area(top, left, bottom, right)
                         if area < min_area:
                             min_area = area
@@ -124,19 +154,19 @@ def find_smallest_frame(grid: GridData, color: Optional[int], min_size: Optional
 
 def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> bool:
     """
-    Determines whether the rectangular frame defined by the coordinates (top, left) to (bottom, right) can be part of a 
+    Determines whether the rectangular frame defined by the coordinates (top, left) to (bottom, right) can be part of a
     repeating pattern in the grid, where all the borders of the frame match the specified foreground color.
 
-    This function checks if all the border cells of the frame, with dimensions (bottom - top + 1, right - left + 1), 
-    match the given foreground color. The function aligns the starting points within the grid based on the frame's 
+    This function checks if all the border cells of the frame, with dimensions (bottom - top + 1, right - left + 1),
+    match the given foreground color. The function aligns the starting points within the grid based on the frame's
     height and width, ensuring that the check covers all possible locations where a full frame fits within the grid.
 
-    The function iterates over the grid in steps of the frame's height and width. It checks only the regions where 
-    the entire frame fits within the grid bounds. If any border cell of the frame does not match the foreground color, 
+    The function iterates over the grid in steps of the frame's height and width. It checks only the regions where
+    the entire frame fits within the grid bounds. If any border cell of the frame does not match the foreground color,
     the function returns False. The function returns True only if all checked frames match the foreground color.
 
-    Note: The function does not enforce that the entire grid forms a uniform lattice pattern, only that the specified 
-    frame could be part of such a repeating pattern. 
+    Note: The function does not enforce that the entire grid forms a uniform lattice pattern, only that the specified
+    frame could be part of such a repeating pattern.
 
     Parameters:
     - grid (GridData): The 2D grid where each cell contains an integer representing a color.
@@ -161,20 +191,26 @@ def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> b
 
     if frame_height <= 1 or frame_width <= 1:
         return False
-    for y in range(start_y, rows, frame_height-1):
-        for x in range(start_x, cols, frame_width-1):
+    for y in range(start_y, rows, frame_height - 1):
+        for x in range(start_x, cols, frame_width - 1):
             # Check if the frame fits within the grid bounds
             if y + frame_height > rows or x + frame_width > cols:
                 continue
             # Check top and bottom borders of the frame
             for i in range(frame_width):
                 if y < rows and (x + i) < cols:
-                    if grid[y][x + i] != foreground or grid[y + frame_height - 1][x + i] != foreground:
+                    if (
+                        grid[y][x + i] != foreground
+                        or grid[y + frame_height - 1][x + i] != foreground
+                    ):
                         return False
             # Check left and right borders of the frame
             for j in range(frame_height):
                 if y + j < rows and x < cols:
-                    if grid[y + j][x] != foreground or grid[y + j][x + frame_width - 1] != foreground:
+                    if (
+                        grid[y + j][x] != foreground
+                        or grid[y + j][x + frame_width - 1] != foreground
+                    ):
                         return False
     return True
 
@@ -225,9 +261,9 @@ def extract_subgrid_of_color(grid: Grid, color: int) -> Optional[Subgrid]:
                 continue
             sub_grid_data = [row[prev_v:v] for row in grid.data[prev_h:h]]
             row.append(Grid(sub_grid_data))
-            prev_v = v+1
+            prev_v = v + 1
         subgrid.append(row)
-        prev_h = h+1
+        prev_h = h + 1
 
     return subgrid
 
@@ -249,14 +285,12 @@ def eval_with_lattice_check():
     # Create test grids
     empty_grid = [[0 for _ in range(width)] for _ in range(width)]
     full_grid = [[1 for _ in range(width)] for _ in range(width)]
-    square_grid = [[random.choice([0, 1])
-                    for _ in range(width)] for _ in range(width)]
-    wide_grid = [[random.choice([0, 1]) for _ in range(width)]
-                 for _ in range(height)]
-    tall_grid = [[random.choice([0, 1]) for _ in range(height)]
-                 for _ in range(width)]
-    biased_random_grid = [[1 if random.random() < 0.9 else 0 for _ in range(
-        width)] for _ in range(width)]  # Biased random grid
+    square_grid = [[random.choice([0, 1]) for _ in range(width)] for _ in range(width)]
+    wide_grid = [[random.choice([0, 1]) for _ in range(width)] for _ in range(height)]
+    tall_grid = [[random.choice([0, 1]) for _ in range(height)] for _ in range(width)]
+    biased_random_grid = [
+        [1 if random.random() < 0.9 else 0 for _ in range(width)] for _ in range(width)
+    ]  # Biased random grid
 
     # List of grids and their names
     grids = [
@@ -265,7 +299,7 @@ def eval_with_lattice_check():
         ("Random Square Grid", square_grid),
         ("Random Wide Grid", wide_grid),
         ("Random Tall Grid", tall_grid),
-        ("Biased Random Grid", biased_random_grid)
+        ("Biased Random Grid", biased_random_grid),
     ]
 
     # Run tests for each grid
@@ -274,23 +308,30 @@ def eval_with_lattice_check():
         foreground = 1
         max_frame = find_largest_frame(grid, foreground)
         max_area = calculate_area(*max_frame) if max_frame else 0
-        is_lattice = is_frame_part_of_lattice(
-            grid, max_frame, foreground) if max_frame else False
+        is_lattice = (
+            is_frame_part_of_lattice(grid, max_frame, foreground)
+            if max_frame
+            else False
+        )
         end_time = time.time()
 
         execution_time = end_time - start_time
 
         if not max_frame:
-            logger.info(f"{grid_name}: No valid frame found. "
-                        f"Time: {execution_time:.6f} seconds\n")
+            logger.info(
+                f"{grid_name}: No valid frame found. "
+                f"Time: {execution_time:.6f} seconds\n"
+            )
         else:
             start_row, start_col, end_row, end_col = max_frame
             frame_height = end_row - start_row + 1
             frame_width = end_col - start_col + 1
-            logger.info(f"{grid_name}: Frame at ({start_row},{start_col}) to ({end_row},{end_col}), "
-                        f"Size: {frame_height}x{frame_width}, Area: {max_area}, "
-                        f"Part of lattice: {is_lattice}, "
-                        f"Time: {execution_time:.6f} seconds\n")
+            logger.info(
+                f"{grid_name}: Frame at ({start_row},{start_col}) to ({end_row},{end_col}), "
+                f"Size: {frame_height}x{frame_width}, Area: {max_area}, "
+                f"Part of lattice: {is_lattice}, "
+                f"Time: {execution_time:.6f} seconds\n"
+            )
 
 
 def test_lattices():
@@ -302,7 +343,7 @@ def test_lattices():
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0]
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
     ]
     frame = (2, 2, 5, 8)
     is_lattice = is_frame_part_of_lattice(grid, frame, 1)
@@ -316,7 +357,7 @@ def test_lattices():
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0]
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
     ]
     frame = (2, 2, 5, 5)
     is_lattice = is_frame_part_of_lattice(grid, frame, 1)
@@ -330,7 +371,7 @@ def test_lattices():
         [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
         [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
         [2, 2, 2, 2, 2, 2, 2, 2, 2, 9],  # Break near edge
-        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0]
+        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
     ]
     frame = (2, 2, 5, 5)
     is_lattice = is_frame_part_of_lattice(grid, frame, 2)
@@ -339,28 +380,29 @@ def test_lattices():
 
 def test_subgrid_extraction():
     # Example grid with dividing lines
-    grid = Grid([
-        [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
-        [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
-        [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [2, 2, 1, 3, 3, 1, 4, 4, 1, 5]
-    ])
+    grid = Grid(
+        [
+            [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
+            [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
+            [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
+        ]
+    )
 
     subgrid = extract_subgrid(grid, 1)
     assert subgrid is not None, "Test failed: No subgrid extracted"
     height = len(subgrid)
     width = len(subgrid[0])
-    logger.info(
-        f"Subgrid height: {height}, Subgrid width: {width}")
+    logger.info(f"Subgrid height: {height}, Subgrid width: {width}")
     assert (height, width) == (
-        3, 4), f"Test failed: Subgrid dimensions: {height}x{width}"
-    assert subgrid[0][0] == Grid(
-        [[2, 2], [2, 2]]), "Test failed: Subgrid[0][0]"
-    assert subgrid[0][1] == Grid(
-        [[3, 3], [3, 3]]), "Test failed: Subgrid[0][1]"
+        3,
+        4,
+    ), f"Test failed: Subgrid dimensions: {height}x{width}"
+    assert subgrid[0][0] == Grid([[2, 2], [2, 2]]), "Test failed: Subgrid[0][0]"
+    assert subgrid[0][1] == Grid([[3, 3], [3, 3]]), "Test failed: Subgrid[0][1]"
     assert subgrid[0][3] == Grid([[5], [5]]), "Test failed: Subgrid[0][3]"
     assert subgrid[2][3] == Grid([[5]]), "Test failed: Subgrid[2][3]"
 
@@ -381,7 +423,7 @@ def extract_object_by_color(grid: Grid, color: int) -> Object:
                 bottom = max(bottom, i)
                 right = max(right, j)
     origin = (top, left)
-    data = [row[left:right+1] for row in grid.data[top:bottom+1]]
+    data = [row[left : right + 1] for row in grid.data[top : bottom + 1]]
     # remove other colors
     for i in range(len(data)):
         for j in range(len(data[0])):
@@ -394,8 +436,8 @@ def find_colored_objects(grid: Grid) -> List[Object]:
     """
     Finds and returns a list of all distinct objects within the grid based on color.
 
-    This function scans the grid, identifies all unique colors (excluding the 
-    background color), and extracts each object corresponding to these colors. 
+    This function scans the grid, identifies all unique colors (excluding the
+    background color), and extracts each object corresponding to these colors.
     Each object is represented as an instance of the `Object` class.
     """
     grid_as_object = Object((0, 0), grid.data)

@@ -28,23 +28,30 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     if objects:
         num_objects = len(objects)
         largest_object = max(
-            objects, key=lambda obj: obj.num_cells(color=None), default=None)
+            objects, key=lambda obj: obj.num_cells(color=None), default=None
+        )
         num_objects_of_main_color = sum(
-            1 for obj in objects if obj.main_color() == main_color)
+            1 for obj in objects if obj.main_color() == main_color
+        )
         if largest_object:
-            num_cells_in_largest_object = largest_object.num_cells(
-                color=None)
-            num_objects_of_max_size = sum(1 for obj in objects if obj.num_cells(
-                color=None) == largest_object.num_cells(color=None))
+            num_cells_in_largest_object = largest_object.num_cells(color=None)
+            num_objects_of_max_size = sum(
+                1
+                for obj in objects
+                if obj.num_cells(color=None) == largest_object.num_cells(color=None)
+            )
         max_area_object = max(objects, key=lambda obj: obj.area, default=None)
         if max_area_object:
             max_area_object_height = max_area_object.height
             max_area_object_width = max_area_object.width
         if len(objects) >= 2:
+
             def is_vertical(obj: Object) -> bool:
                 return obj.height >= obj.width
+
             def is_horizontal(obj: Object) -> bool:
                 return obj.width >= obj.height
+
             all_vertical = all(is_vertical(obj) for obj in objects)
             all_horizontal = all(is_horizontal(obj) for obj in objects)
             if all_vertical and all_horizontal:
@@ -63,17 +70,20 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
     colored_object_max_height = None
     colored_object_max_width = None
     if len(colored_objects) >= 2:
-        obj: Object | None = max(colored_objects, key=lambda obj: obj.height, default=None)
+        obj: Object | None = max(
+            colored_objects, key=lambda obj: obj.height, default=None
+        )
         if obj:
             colored_object_max_height = obj.height
-        obj: Object | None = max(colored_objects, key=lambda obj: obj.width, default=None)
+        obj: Object | None = max(
+            colored_objects, key=lambda obj: obj.width, default=None
+        )
         if obj:
             colored_object_max_width = obj.width
     grid_height_squared = height * height
     grid_width_squared = width * width
 
-    features: Features = {
-    }
+    features: Features = {}
     # relative_difficulty is the difficulty minus the level before using regularized regression
     if relative_difficulty >= 1:
         features["grid_height"] = height
@@ -99,14 +109,14 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
             features["max_area_object_width"] = max_area_object_width
     if relative_difficulty >= 7:
         if subgrid_height is not None:
-           features["subgrid_height"] = subgrid_height
+            features["subgrid_height"] = subgrid_height
         if subgrid_width is not None:
             features["subgrid_width"] = subgrid_width
     if relative_difficulty >= 8:
-            if colored_object_max_height is not None:
-                features["colored_object_max_height"] = colored_object_max_height
-            if colored_object_max_width is not None:
-                features["colored_object_max_width"] = colored_object_max_width
+        if colored_object_max_height is not None:
+            features["colored_object_max_height"] = colored_object_max_height
+        if colored_object_max_width is not None:
+            features["colored_object_max_width"] = colored_object_max_width
     if relative_difficulty >= 9:
         features["grid_height_squared"] = grid_height_squared
         features["grid_width_squared"] = grid_width_squared
@@ -114,23 +124,24 @@ def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
         if objects_are_vertical is not None:
             features["objects_are_vertical"] = objects_are_vertical
 
-    assert num_difficulties ==  10
+    assert num_difficulties == 10
     return features
 
 
 Solution = Tuple[Features, int]
 BooleanSolution = Tuple[str, Solution, Solution]
 
+
 def pretty_print_solution(prediction: Solution) -> str:
     """
     Pretty prints the numeric features.
-    For each feature, write just the name if the value is 1, 
+    For each feature, write just the name if the value is 1,
     otherwise 'n * feature' if the value is an integer n.
     Omit if the value is 0.
     Add the bias only if it is not zero.
 
     Args:
-        prediction: A tuple containing a dictionary of features with their 
+        prediction: A tuple containing a dictionary of features with their
                     corresponding integer values and a bias value.
 
     Returns:
@@ -166,6 +177,6 @@ def pretty_print_boolean_solution(prediction: BooleanSolution) -> str:
 def pretty_print_numeric_features(prediction: Solution | BooleanSolution) -> str:
     is_boolean_solution = isinstance(prediction[0], str)
     if is_boolean_solution:
-        return pretty_print_boolean_solution(prediction) # type: ignore
+        return pretty_print_boolean_solution(prediction)  # type: ignore
     else:
-        return pretty_print_solution(prediction) # type: ignore
+        return pretty_print_solution(prediction)  # type: ignore
