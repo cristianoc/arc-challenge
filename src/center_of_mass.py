@@ -2,6 +2,7 @@
 
 import numpy as np
 
+
 def calculate_center_of_mass(grid, background_color):
     """
     Calculate the center of mass of the grid, excluding cells with the background color.
@@ -79,42 +80,61 @@ grid = np.array(
 
 background_color = 0
 
-# List all 16 transformations (rotations + flips)
+
+def mass_of_top_half(grid):
+    width, height = grid.shape
+    return np.sum(grid[: (width + 1) // 2])  # Include middle row in top half
+
+
+def mass_of_bottom_half(grid):
+    width, height = grid.shape
+    return np.sum(grid[(width - 1) // 2 :])  # Include middle row in bottom half
+
+
+def mass_of_left_half(grid):
+    width, height = grid.shape
+    return np.sum(grid[:, : (height + 1) // 2])  # Include middle row in left half
+
+
+def mass_of_right_half(grid):
+    width, height = grid.shape
+    return np.sum(grid[:, (height - 1) // 2 :])  # Include middle row in right half
+
+
+# List all 8 transformations (rotations + flips)
 grids = []
 for rotation in [0, 1, 2, 3]:
     rotated_grid = np.rot90(grid, -rotation)
     normalized_grid = normalize_grid(rotated_grid, background_color)
     name = f"R{rotation}"
     grids.append((name, rotated_grid))
-    name += "Y"
-    grids.append((name, np.flipud(rotated_grid)))
-    # name += "X"
-    # grids.append((name, np.fliplr(rotated_grid)))
+    name += "X"
+    grids.append((name, np.fliplr(rotated_grid)))
 for i, (name, grid) in enumerate(grids):
     print(f"\nGrid {i} xform: {name}\n{grid}")
     rotation = normalize_grid(grid, background_color)
-    print(
-        f"Rotation:{rotation} Center of mass: {calculate_center_of_mass(grid, background_color)}"
-    )
     unrotated_grid = np.rot90(grid, rotation)
-    print(f"Unrotated grid {i}:\n{unrotated_grid}")
-    shift = calculate_shift(grid, background_color)
-    if rotation == 0:
-        is_flipped_y = shift[1] < 0
-    elif rotation == 1:
-        is_flipped_y = shift[0] < 0
+
+    mass_of_top_minus_bottom = mass_of_top_half(unrotated_grid) - mass_of_bottom_half(
+        unrotated_grid
+    )
+    flip_x = mass_of_top_minus_bottom > 0
+
+    original_rotation = rotation
+    if flip_x:
+        rotation = (rotation - 1) % 4
+        if rotation in {0, 2}:
+            original_rotation = 2 - rotation
+    if flip_x and rotation in {0, 2}:
+        original_rotation = 2 - rotation
     else:
-        assert False, "Invalid rotation"
-    # if rotation == 1 or rotation == 3:
-    #     is_flipped_y = not is_flipped_y
-    # if rotation == 0 or rotation == 2:
-    #     is_flipped_x = not is_flipped_x
-    print(f"Is flipped Y: {is_flipped_y}")
-    if is_flipped_y:
-        print("Flipping Y")
-        unrotated_grid = np.flipud(unrotated_grid)
-        # unrotated_grid = np.rot90(unrotated_grid, rotation)
-    # if is_flipped_x:
-    #     print("Flipping X")
-    #     unrotated_grid = np.fliplr(unrotated_grid)
-    print(f"Final grid {i}:\n{unrotated_grid}")
+        original_rotation = rotation
+
+    unrotated_grid = grid
+    if flip_x:
+        unrotated_grid = np.fliplr(unrotated_grid)
+    unrotated_grid = np.rot90(unrotated_grid, original_rotation)
+
+    print(f"Original Transformation: R{original_rotation}{'X' if flip_x else ''}")
+    print(f"Inverse Transformation: {'X' if flip_x else ''}R{(-original_rotation) % 4}")
+    print(f"Untransformed:\n{unrotated_grid}")
