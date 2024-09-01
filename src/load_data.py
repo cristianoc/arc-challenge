@@ -31,11 +31,6 @@ training_data: Tasks = load_arc_data(training_dataset_path)
 evaluation_data: Tasks = load_arc_data(evaluation_dataset_path)
 
 
-def iter_tasks(tasks: Tasks):
-    for task_name, task in tasks.items():
-        yield task_name, task
-
-
 # Access train and test sets for the first task in the training data
 training_1 = training_data.popitem()
 tr_task_1: Task = training_1[1]

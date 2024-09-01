@@ -10,7 +10,7 @@ from predict_size import (
 )
 from grid import Grid
 from grid_data import BLACK, GREY, GridData, display, display_multiple, logger
-from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluation_data
+from load_data import Example, Task, Tasks, training_data, evaluation_data
 
 
 ColorXform = Callable[
@@ -244,7 +244,7 @@ num_difficulties_total = num_difficulties_xform + num_difficulties_matching
 def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
-    for task_name, task in iter_tasks(tasks):
+    for task_name, task in tasks.items():
         if Config.task_name and task_name != Config.task_name:
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
