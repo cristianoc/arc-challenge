@@ -7,7 +7,7 @@ from matplotlib.colors import ListedColormap
 import numpy as np
 
 logging.basicConfig(
-    level=logging.INFO, # change to logging.DEBUG for more verbose output
+    level=logging.ERROR, # change to logging.DEBUG for more verbose output
     format='%(message)s'
 )
 logger = logging.getLogger(__name__)
