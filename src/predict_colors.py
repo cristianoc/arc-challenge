@@ -8,7 +8,6 @@ from predict_size import (
     find_matched_objects,
     num_difficulties_matching,
 )
-from grid import Grid
 from grid_types import BLACK, GREY, GridData, logger
 from load_data import Example, Task, Tasks, training_data, evaluation_data
 from grid_data import display_multiple, Object
@@ -295,7 +294,7 @@ def process_tasks(tasks: Tasks, set: str):
         )
         if Config.display_not_found:
             grids: List[Tuple[GridData, Optional[GridData]]] = [
-                (Grid(example[0]).data, Grid(example[1]).data)
+                (Object(example[0]).data, Object(example[1]).data)
                 for example in examples
             ]
             display_multiple(grids, title=f"{task_name} {set}")
