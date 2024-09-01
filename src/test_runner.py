@@ -1,25 +1,24 @@
 import os
 from typing import Callable
-from grid import Grid
-from grid_data import display
+from grid_data import display, Object
 import load_data
 
 # Get DISPLAY from environment variable or default to True if not set
 DISPLAY = os.getenv("DISPLAY", "True").lower() in ["true", "1", "yes"]
 
 
-def puzzle(name: str, transform: Callable[[Grid], Grid]) -> None:
+def puzzle(name: str, transform: Callable[[Object], Object]) -> None:
     task = load_data.training_data[name]
     train_set = task["train"]
     test_set = task["test"]
     for i, example in enumerate(train_set):
-        input = Grid(example[0])
+        input = Object(example[0])
         output = transform(input)
         if DISPLAY:
             display(title=f"Train Example {i+1}:", input=input.data, output=output.data)
     for i, example in enumerate(test_set):
-        input = Grid(example[0])
-        correct_grid = Grid(example[1])
+        input = Object(example[0])
+        correct_grid = Object(example[1])
         output = transform(input)
         if DISPLAY:
             display(title=f"Train Test {i+1}:", input=input.data, output=output.data)

@@ -1,10 +1,22 @@
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Callable
 
 from matplotlib import colors, pyplot as plt  # type: ignore
 from matplotlib.colors import ListedColormap  # type: ignore
 import numpy as np  # type: ignore
 from grid_types import Cell, GridData, Rotation, Axis, BLACK, Color
 from detect_objects import ConnectedComponent, find_connected_components
+from flood_fill import find_enclosed_cells
+from grid_types import (
+    BLUE,
+    GREEN,
+    RED,
+    YELLOW,
+    logger,
+    Axis,
+    Rotation,
+)
+
+import copy
 
 
 class Object:
@@ -17,6 +29,9 @@ class Object:
         if isinstance(other, Object):
             return self.data == other.data
         return False
+
+    def copy(self) -> "Object":
+        return Object(copy.deepcopy(self.data))
 
     @property
     def height(self) -> int:
@@ -38,6 +53,59 @@ class Object:
     def empty(height: int, width: int) -> "Object":
         data: GridData = [[BLACK for _ in range(width)] for _ in range(height)]
         return Object(data)
+
+    def add_object(self, obj: "Object") -> None:
+        [r_off, c_off] = obj.origin
+        for r in range(obj.height):
+            for c in range(obj.width):
+                color = obj.data[r][c]
+                if color != BLACK:
+                    # only add the color if it's in bounds
+                    if 0 <= r + r_off < len(self.data) and 0 <= c + c_off < len(
+                        self.data[0]
+                    ):
+                        self.data[r + r_off][c + c_off] = color
+
+    def map(self, func: Callable[[int, int], int]) -> "Object":
+        new_grid = [
+            [func(x, y) for y in range(len(self.data[0]))]
+            for x in range(len(self.data))
+        ]
+        return Object(new_grid)
+
+    def map_nested(self, func: Callable[[int, int], "Object"]) -> "Object":
+        def transform_data(data: List[List[GridData]]) -> GridData:
+            n = len(data)
+            n2 = n * n
+            new_grid = [[0 for _ in range(n2)] for _ in range(n2)]
+
+            for i in range(n):
+                for j in range(n):
+                    sub_grid = data[i][j]
+                    for sub_i in range(n):
+                        for sub_j in range(n):
+                            new_grid[i * n + sub_i][j * n + sub_j] = sub_grid[sub_i][
+                                sub_j
+                            ]
+
+            return new_grid
+
+        new_grid: List[List[GridData]] = [
+            [func(i, j).data for j in range(self.width)] for i in range(self.height)
+        ]
+        return Object(transform_data(new_grid))
+
+    def is_enclosed(self, x: int, y: int) -> bool:
+        if not hasattr(self, "enclosed"):
+            self.enclosed = find_enclosed_cells(self.data)
+        return self.enclosed[x][y]
+
+    def color_change(self, from_color: Color, to_color: Color) -> "Object":
+        new_grid = [
+            [to_color if cell == from_color else cell for cell in row]
+            for row in self.data
+        ]
+        return Object(new_grid)
 
     def detect_objects(
         self: "Object", diagonals: bool = True, allow_black: bool = False
@@ -63,7 +131,7 @@ class Object:
         ]
         return detected_objects
 
-    def rotate(self, direction: Rotation) -> 'Object':
+    def rotate(self, direction: Rotation) -> "Object":
         data: List[List[int]] = self.data
         height, width = len(data), len(data[0])
         rotated_grid = [[0 for _ in range(height)] for _ in range(width)]
@@ -77,7 +145,7 @@ class Object:
                     rotated_grid[width - 1 - j][i] = data[i][j]
         return Object(rotated_grid)
 
-    def translate(self, dy: int, dx: int) -> 'Object':
+    def translate(self, dy: int, dx: int) -> "Object":
         height, width = len(self.data), len(self.data[0])
         new_grid: GridData = [[BLACK] * width for _ in range(height)]
         for y in range(height):
@@ -116,9 +184,11 @@ class Object:
         """
         new_data = [
             [
-                to_color
-                if color == from_color or (color != 0 and from_color is None)
-                else color
+                (
+                    to_color
+                    if color == from_color or (color != 0 and from_color is None)
+                    else color
+                )
                 for color in row
             ]
             for row in self.data
@@ -233,7 +303,7 @@ class Object:
 
         # Apply squash_row to each row in self.data
         new_data = [squash_row(row) for row in self.data]
-        return Object(new_data,self.origin)
+        return Object(new_data, self.origin)
 
     def has_frame(self) -> bool:
         """
@@ -333,3 +403,65 @@ class TestSquashLeft:
         result = obj.compact_left()
         expected_data = [[1, 2, 3], [BLACK, 4, 5], [7, 8, 9]]
         assert result.data == expected_data
+
+
+def test_rotate():
+    grid = Object([[1, 2], [3, 4]])
+    rotated_grid = grid.rotate(Rotation.CLOCKWISE)
+    assert rotated_grid == Object(
+        [[3, 1], [4, 2]]
+    ), f"Expected [[3, 1], [4, 2]], but got {rotated_grid}"
+
+    rotated_grid = grid.rotate(Rotation.COUNTERCLOCKWISE)
+    assert rotated_grid == Object(
+        [[2, 4], [1, 3]]
+    ), f"Expected [[2, 4], [1, 3]], but got {rotated_grid}"
+
+
+def test_flip():
+    grid = Object([[1, 2], [3, 4]])
+    flipped_grid = grid.flip(Axis.HORIZONTAL)
+    assert flipped_grid == Object(
+        [[2, 1], [4, 3]]
+    ), f"Expected [[2, 1], [4, 3]], but got {flipped_grid}"
+
+    flipped_grid = grid.flip(Axis.VERTICAL)
+    assert flipped_grid == Object(
+        [[3, 4], [1, 2]]
+    ), f"Expected [[3, 4], [1, 2]], but got {flipped_grid}"
+
+
+def test_translate():
+    grid = Object([[1, 2], [3, 4]])
+    translated_grid = grid.translate(1, 1)
+    assert translated_grid.data == [[0, 0], [0, 1]]
+
+
+def test_color_change():
+    grid = Object([[RED, BLUE], [GREEN, RED]])
+    color_changed_grid = grid.color_change(RED, YELLOW)
+    assert color_changed_grid == Object(
+        [[YELLOW, BLUE], [GREEN, YELLOW]]
+    ), f"Expected [[YELLOW, BLUE], [GREEN, YELLOW]], but got {color_changed_grid}"
+
+
+def test_copy():
+    grid = Object([[1, 2], [3, 4]])
+    copied_grid = grid.copy()
+    assert copied_grid == grid, f"Expected {grid}, but got {copied_grid}"
+    assert copied_grid is not grid, "Copy should create a new instance"
+
+
+def test_detect_objects():
+    grid = [
+        [0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0],
+        [0, 1, 0, 0, 1, 0],
+        [0, 0, 1, 0, 1, 0],
+        [0, 0, 0, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0],
+    ]
+
+    objects = Object(grid).detect_objects()
+    for obj in objects:
+        logger.info(f"Detected object: {obj}")

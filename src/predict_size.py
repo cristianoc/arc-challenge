@@ -10,7 +10,6 @@ from visual_cortex import (
     is_frame_part_of_lattice,
     find_rectangular_objects,  # Add this import
 )
-from grid import Object
 from grid_data import BLACK, GridData, Object, display, display_multiple
 from load_data import Example, Task, Tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features

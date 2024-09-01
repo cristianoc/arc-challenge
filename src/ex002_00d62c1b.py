@@ -1,6 +1,6 @@
 from test_runner import puzzle
 from grid_types import YELLOW
-from grid import Grid
+from grid_data import Object
 
 """
 This example demonstrates transforming a grid by changing the color of enclosed cells. 
@@ -10,7 +10,7 @@ This process highlights the use of conditional logic to manipulate grid data bas
 """
 
 
-def transform(input: Grid) -> Grid:
+def transform(input: Object) -> Object:
     # if the square is enclosed, make it yellow, otherwise keep the original color
     def map_func(x: int, y: int) -> int:
         color = input.data[x][y]

@@ -1,9 +1,7 @@
 from test_runner import puzzle
-from grid import Grid
 from typing import List, Tuple
 from grid_types import DIRECTIONS8
 from grid_data import Object
-
 
 
 """
@@ -25,7 +23,7 @@ def find_main_object(objects: List[Object]) -> Object:
 
 
 def find_subsets(
-    grid: Grid, main_object: "Object", objects: List["Object"]
+    grid: Object, main_object: "Object", objects: List["Object"]
 ) -> List[Tuple[Tuple[int, int], int]]:
     """Find subset objects around the main object and determine their directions and colors."""
     subsets: List[Tuple[Tuple[int, int], int]] = []
@@ -50,7 +48,7 @@ def find_subsets(
     return subsets
 
 
-def transform(input: Grid) -> Grid:
+def transform(input: Object) -> Object:
     # Detect all objects in the grid
     objects = input.detect_objects()
 
@@ -64,7 +62,7 @@ def transform(input: Grid) -> Grid:
     subsets = find_subsets(input, main_object, objects)
 
     # Create a new grid with the same dimensions as the input grid
-    new_grid = Grid.empty(input.height, input.width)
+    new_grid = Object.empty(input.height, input.width)
 
     # Add the main object to the new grid in its original position
     new_grid.add_object(main_object)

@@ -1,5 +1,5 @@
 from test_runner import puzzle
-from grid import Grid
+from grid_data import Object
 
 """
 This transformation function takes a grid as input, detects exactly three objects within it, 
@@ -12,7 +12,7 @@ diagonal groups.
 """
 
 
-def transform(input: Grid) -> Grid:
+def transform(input: Object) -> Object:
     # Detect objects in the grid, assuming each object is a diagonal
     objects = input.detect_objects()
 
@@ -30,7 +30,7 @@ def transform(input: Grid) -> Grid:
         object_colors[index] = obj.first_color
 
     # Create an empty grid with the same dimensions as input
-    output_grid = Grid.empty(input.height, input.width)
+    output_grid = Object.empty(input.height, input.width)
 
     for row in range(input.height):
         for col in range(input.width):

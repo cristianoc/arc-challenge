@@ -1,5 +1,5 @@
 from test_runner import puzzle
-from grid import Grid
+from grid_data import Object
 
 """
 # Problem:
@@ -9,11 +9,11 @@ from grid import Grid
 """
 
 
-def transform(input: Grid) -> Grid:
+def transform(input: Object) -> Object:
     objects = input.detect_objects()
     rows = len(input.data)
     cols = len(input.data[0])
-    new_grid: Grid = Grid.empty(rows, cols)
+    new_grid = Object.empty(rows, cols)
     for obj in objects:
         new_grid.add_object(obj.compact_left().move(0, 1))
     return new_grid
