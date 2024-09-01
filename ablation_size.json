@@ -21,47 +21,47 @@
     },
     "6": {
         "training_data": 89.5,
-        "evaluation_data": 89.7
+        "evaluation_data": 89.5
     },
     "7": {
         "training_data": 89.7,
-        "evaluation_data": 90.0
+        "evaluation_data": 89.7
     },
     "8": {
         "training_data": 92.0,
-        "evaluation_data": 92.7
+        "evaluation_data": 92.5
     },
     "9": {
         "training_data": 93.5,
-        "evaluation_data": 93.7
+        "evaluation_data": 93.5
     },
     "10": {
         "training_data": 93.5,
-        "evaluation_data": 94.0
+        "evaluation_data": 93.7
     },
     "11": {
         "training_data": 93.7,
-        "evaluation_data": 94.5
+        "evaluation_data": 94.2
     },
     "12": {
         "training_data": 94.2,
-        "evaluation_data": 94.7
+        "evaluation_data": 94.5
     },
     "13": {
         "training_data": 95.0,
-        "evaluation_data": 95.2
+        "evaluation_data": 95.0
     },
     "14": {
         "training_data": 95.5,
-        "evaluation_data": 95.5
+        "evaluation_data": 95.2
     },
     "15": {
         "training_data": 96.5,
-        "evaluation_data": 95.7
+        "evaluation_data": 95.5
     },
     "16": {
         "training_data": 96.2,
-        "evaluation_data": 96.2
+        "evaluation_data": 96.0
     },
     "17": {
         "training_data": 96.7,

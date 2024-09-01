@@ -1,5 +1,4 @@
 import logging
-from dataclasses import dataclass
 from typing import Any, Dict, List, NewType, Optional, Tuple
 
 from matplotlib import colors, pyplot as plt  # type: ignore
@@ -23,10 +22,16 @@ DIRECTIONS4 = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 DIRECTIONS8 = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
 
 
-@dataclass
 class Object:
-    origin: Cell  # top-left corner of the bounding box
-    data: GridData  # cells w.r.t the origin
+
+    def __init__(self, data: GridData, origin: Cell = (0, 0)):
+        self.data = data
+        self.origin = origin
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Object):
+            return self.data == other.data
+        return False
 
     @property
     def height(self) -> int:
@@ -55,7 +60,7 @@ class Object:
         Moves the object by `dr` rows and `dc` columns.
         """
         new_origin = (self.origin[0] + dr, self.origin[1] + dc)
-        return Object(new_origin, self.data)
+        return Object(self.data, new_origin)
 
     def change_color(self, from_color: Optional[int], to_color: int) -> "Object":
         """
@@ -70,7 +75,7 @@ class Object:
             ]
             for row in self.data
         ]
-        return Object(self.origin, new_data)
+        return Object(new_data, self.origin)
 
     def contains_cell(self, cell: Cell) -> bool:
         """
@@ -79,6 +84,15 @@ class Object:
         row, col = cell
         r, c = self.origin
         return r <= row < r + self.height and c <= col < c + self.width
+
+    def get_colors(self, allow_black: bool = True) -> List[int]:
+        colors: set[Color] = set()
+        for row in self.data:
+            for color in row:
+                if color == BLACK and not allow_black:
+                    continue
+                colors.add(color)  # type: ignore
+        return sorted(list(colors))
 
     @property
     def first_color(self) -> int:
@@ -171,7 +185,7 @@ class Object:
 
         # Apply squash_row to each row in self.data
         new_data = [squash_row(row) for row in self.data]
-        return Object(self.origin, new_data)
+        return Object(new_data,self.origin)
 
     def has_frame(self) -> bool:
         """

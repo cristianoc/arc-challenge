@@ -1,6 +1,6 @@
 import copy
 from enum import Enum
-from typing import Callable, List, Tuple, Optional
+from typing import Callable, List, Tuple
 from detect_objects import (
     ConnectedComponent,
     find_connected_components,
@@ -21,8 +21,9 @@ class Axis(str, Enum):
 
 
 class Grid:
-    def __init__(self, data: GridData, origin:Optional[Cell] = None):
+    def __init__(self, data: GridData, origin:Cell = (0, 0)):
         self.data = data
+        self.origin = origin
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Grid):
@@ -91,7 +92,7 @@ class Grid:
             data = Grid.empty(height=rows, width=columns).data
             for r, c in component:
                 data[r - min_row][c - min_col] = grid.data[r][c]
-            return Object((min_row, min_col), data)
+            return Object(data, (min_row, min_col))
 
         connected_components = find_connected_components(
             self.data, diagonals, allow_black

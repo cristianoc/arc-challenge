@@ -163,7 +163,10 @@ def find_rectangular_objects(data: GridData, allow_multicolor: bool) -> List[Obj
                     [data[r][c] for c in range(origin[1], origin[1] + width)]
                     for r in range(origin[0], origin[0] + height)
                 ]
-                current_object = Object(origin, object_grid_data)
+                current_object = Object(
+                    object_grid_data,
+                    origin,
+                )
                 objects.append(current_object)
 
     return objects

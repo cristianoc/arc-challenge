@@ -429,7 +429,7 @@ def extract_object_by_color(grid: Grid, color: int) -> Object:
         for j in range(len(data[0])):
             if data[i][j] != color:
                 data[i][j] = 0
-    return Object(origin, data)
+    return Object(data, origin)
 
 
 def find_colored_objects(grid: Grid) -> List[Object]:
@@ -440,7 +440,7 @@ def find_colored_objects(grid: Grid) -> List[Object]:
     background color), and extracts each object corresponding to these colors.
     Each object is represented as an instance of the `Object` class.
     """
-    grid_as_object = Object((0, 0), grid.data)
+    grid_as_object = Object(grid.data)
     background_color = grid_as_object.main_color(allow_black=True)
     colors = grid.get_colors(allow_black=True)
     objects: List[Object] = []
