@@ -1,11 +1,17 @@
 import os
 import json
-from typing import List, Dict
+from typing import List, Dict, TypedDict, Tuple, Any
 
 from grid_data import GridData
 
-Example = Dict[str, GridData]  # {input, output} -> grid data
-Task = Dict[str, List[Example]]  # {train, test} -> examples
+Example = Tuple[GridData, GridData]  # (input, output)
+
+
+class Task(TypedDict):
+    train: List[Example]
+    test: List[Example]
+
+
 Tasks = Dict[str, Task]  # xxxx.json -> task
 
 
@@ -14,7 +20,16 @@ def load_arc_data(directory: str) -> Tasks:
     for filename in os.listdir(directory):
         if filename.endswith(".json"):
             with open(os.path.join(directory, filename), "r") as file:
-                task: Task = json.load(file)
+                obj: Dict[str, Any] = json.load(file)
+                task: Task = {
+                    "train": [
+                        (example["input"], example["output"])
+                        for example in obj["train"]
+                    ],
+                    "test": [
+                        (example["input"], example["output"]) for example in obj["test"]
+                    ],
+                }
                 tasks[filename] = task
     return tasks
 
@@ -29,17 +44,3 @@ evaluation_dataset_path = os.path.join(script_dir, "../data/evaluation/")
 # Load training and evaluation datasets
 training_data: Tasks = load_arc_data(training_dataset_path)
 evaluation_data: Tasks = load_arc_data(evaluation_dataset_path)
-
-
-# Access train and test sets for the first task in the training data
-training_1 = training_data.popitem()
-tr_task_1: Task = training_1[1]
-eval_1 = evaluation_data.popitem()
-ev_task_1: Task = eval_1[1]
-
-train_set = tr_task_1["train"]
-test_set = tr_task_1["test"]
-
-
-# logger.debug(f"Loaded {len(training_data)} training tasks")
-# logger.debug(f"Loaded {len(evaluation_data)} evaluation tasks")
