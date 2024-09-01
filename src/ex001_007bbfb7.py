@@ -1,5 +1,5 @@
 from test_runner import puzzle
-from grid import Grid
+from grid_data import Object
 
 """
 This example demonstrates transforming a grid by replacing specific cells with nested grids.
@@ -11,11 +11,12 @@ different nested grid patterns, with results visualized for clarity.
 """
 
 
-def transform(input: Grid) -> Grid:
-    def map_func(x: int, y: int) -> Grid:
+def transform(input: Object) -> Object:
+
+    def map_func(x: int, y: int) -> Object:
         color = input.data[x][y]
         assert isinstance(color, int)
-        return Grid.empty(input.height, input.width) if color == 0 else input.copy()
+        return Object.empty(input.height, input.width) if color == 0 else input.copy()
 
     return input.map_nested(map_func)
 
