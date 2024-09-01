@@ -1,5 +1,4 @@
 from typing import List, Tuple
-from grid import Grid
 from grid_data import Object
 from rule_based_selector import Features
 from visual_cortex import extract_subgrid, find_colored_objects
@@ -8,7 +7,7 @@ from visual_cortex import extract_subgrid, find_colored_objects
 num_difficulties = 10
 
 
-def detect_numeric_features(grid: Grid, relative_difficulty: int) -> Features:
+def detect_numeric_features(grid: Object, relative_difficulty: int) -> Features:
     height, width = grid.size
     colors = grid.get_colors(allow_black=False)
     num_colors = len(colors)
