@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 import copy
 from enum import Enum
 from typing import Callable, List, Tuple
@@ -21,9 +20,14 @@ class Axis(str, Enum):
     VERTICAL = "Vertical"
 
 
-class GridA(ABC):
+class Grid:
     def __init__(self, data: GridData):
         self.data = data
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Grid):
+            return self.data == other.data
+        return False
 
     @property
     def height(self) -> int:
@@ -37,59 +41,10 @@ class GridA(ABC):
     def size(self) -> Tuple[int, int]:
         return (self.height, self.width)
 
-    @abstractmethod
-    def get_colors(self, allow_black: bool = False) -> List[int]:
-        pass
-
-    @abstractmethod
-    def detect_objects(self) -> List[Object]:
-        pass
-
-    @abstractmethod
-    def detect_rectangular_objects(
-        self, allow_multicolor: bool = False
-    ) -> List[Object]:
-        pass
-
-    @staticmethod
-    @abstractmethod
-    def empty(height: int, width: int) -> "GridA":
-        pass
-
-    @abstractmethod
-    def rotate(self, direction: Rotation) -> "GridA":
-        pass
-
-    @abstractmethod
-    def flip(self, axis: Axis) -> "GridA":
-        pass
-
-    @abstractmethod
-    def translate(self, dy: int, dx: int) -> "GridA":
-        pass
-
-    @abstractmethod
-    def color_change(self, from_color: Color, to_color: Color) -> "GridA":
-        pass
-
     def is_enclosed(self, x: int, y: int) -> bool:
         if not hasattr(self, "enclosed"):
             self.enclosed = find_enclosed_cells(self.data)
         return self.enclosed[x][y]
-
-    @abstractmethod
-    def add_object(self, obj: Object) -> None:
-        pass
-
-
-class Grid(GridA):
-    def __init__(self, data: GridData):
-        super().__init__(data)
-
-    def __eq__(self, other: object) -> bool:
-        if isinstance(other, Grid):
-            return self.data == other.data
-        return False
 
     def add_object(self, obj: Object) -> None:
         [r_off, c_off] = obj.origin
