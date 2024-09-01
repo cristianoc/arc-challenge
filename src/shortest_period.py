@@ -1,10 +1,7 @@
-from typing import List, TypeVar
+from typing import List, Any
 from grid_data import logger
 
-T = TypeVar('T')
-
-
-def calculate_z_array(lst: List[T]) -> List[int]:
+def calculate_z_array(lst: List[Any]) -> List[int]:
     """
     Calculate the Z-array for a given list of elements.
 
@@ -45,7 +42,7 @@ def calculate_z_array(lst: List[T]) -> List[int]:
     return z
 
 
-def find_shortest_period(lst: List[T]) -> int:
+def find_shortest_period(lst: List[Any]) -> int:
     """
     Find the shortest period of a list using the Z-algorithm.
 

@@ -2,9 +2,9 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, NewType, Optional, Tuple
 
-from matplotlib import colors, pyplot as plt
-from matplotlib.colors import ListedColormap
-import numpy as np
+from matplotlib import colors, pyplot as plt # type: ignore
+from matplotlib.colors import ListedColormap # type: ignore
+import numpy as np # type: ignore
 
 logging.basicConfig(
     level=logging.INFO, # change to logging.DEBUG for more verbose output
@@ -250,9 +250,9 @@ def display_multiple(grid_pairs: List[Tuple[GridData, Optional[GridData]]], titl
         ax_input, ax_output = axes[i]
 
         # Plot the input grid
-        cmap: ListedColormap = colors.ListedColormap(color_scheme)
+        cmap: ListedColormap = colors.ListedColormap(color_scheme) # type: ignore
         # Adjust the bounds to match the number of colors
-        bounds = np.arange(-0.5, len(color_scheme) + 0.5, 1)
+        bounds = np.arange(-0.5, len(color_scheme) + 0.5, 1) # type: ignore
         norm = colors.BoundaryNorm(bounds, cmap.N)  # type: ignore
         ax_input.imshow(input_data, cmap=cmap, norm=norm)
         ax_input.set_title(f'Input Grid {i+1}')

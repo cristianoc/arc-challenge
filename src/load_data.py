@@ -2,7 +2,7 @@ import os
 import json
 from typing import List, Dict
 
-from grid_data import GridData, logger
+from grid_data import GridData
 
 Example = Dict[str, GridData]  # {input, output} -> grid data
 Task = Dict[str, List[Example]]  # {train, test} -> examples
