@@ -1,8 +1,8 @@
 import logging
 from typing import Any, Dict
 
+from grid_types import logger
 from matplotlib import pyplot as plt  # type: ignore
-from grid_data import logger
 from load_data import training_data, evaluation_data
 from predict_size import Config, compute_perc_correct
 from predict_colors import num_difficulties_total, process_tasks

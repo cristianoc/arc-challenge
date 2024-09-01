@@ -8,15 +8,19 @@ from visual_cortex import (
     find_largest_frame,
     find_smallest_frame,
     is_frame_part_of_lattice,
+    find_rectangular_objects,  # Add this import
 )
 from grid import Grid
-from grid_data import BLACK, GridData, Object, display, display_multiple, logger
+from grid_data import BLACK, GridData, Object, display, display_multiple
 from load_data import Example, Task, Tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
 from shape_features import detect_shape_features
 from solve_regularized_regression import solve_regularized_regression
 from symmetry_features import detect_symmetry_features
+from grid_types import logger
+
+
 
 Size = Tuple[int, int]
 ExampleGrids = List[Tuple[Grid, Grid]]
@@ -405,7 +409,7 @@ def find_matched_objects(
             # If the output is a frame, detect objects in the input as frames
             logger.debug("  Output is a frame")
         num_colors_output = len(output.get_colors(allow_black=True))
-        return input.detect_rectangular_objects(allow_multicolor=num_colors_output > 1)
+        return find_rectangular_objects(input.data, allow_multicolor=num_colors_output > 1)
 
     def find_matching_input_object(
         input_objects: List[Object], output: Grid

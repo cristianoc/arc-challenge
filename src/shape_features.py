@@ -2,9 +2,9 @@ from enum import Enum, auto
 from typing import List
 
 from grid import Grid
-from grid_data import Object, logger
+from grid_types import logger
 from rule_based_selector import Features
-
+from grid_data import Object
 
 class ColorFeatures(Enum):
     LARGEST_SIZE = (

@@ -1,26 +1,9 @@
-import logging
-from typing import Any, Dict, List, NewType, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from matplotlib import colors, pyplot as plt  # type: ignore
 from matplotlib.colors import ListedColormap  # type: ignore
 import numpy as np  # type: ignore
-
-logging.basicConfig(
-    level=logging.INFO,  # change to logging.DEBUG for more verbose output
-    format="%(message)s",
-)
-logger = logging.getLogger(__name__)
-
-
-Cell = Tuple[int, int]
-GridData = List[List[int]]
-
-# Directions for moving in the grid: right, left, down, up
-DIRECTIONS4 = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-
-# Direction vectors for 8 directions (N, NE, E, SE, S, SW, W, NW)
-DIRECTIONS8 = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
-
+from grid_types import Cell, GridData, Rotation, Axis, BLACK, Color
 
 class Object:
 
@@ -48,6 +31,40 @@ class Object:
     @property
     def size(self) -> Tuple[int, int]:
         return (self.height, self.width)
+
+    def rotate(self, direction: Rotation) -> 'Object':
+        data: List[List[int]] = self.data
+        height, width = len(data), len(data[0])
+        rotated_grid = [[0 for _ in range(height)] for _ in range(width)]
+        if direction == Rotation.CLOCKWISE:
+            for i in range(height):
+                for j in range(width):
+                    rotated_grid[j][height - 1 - i] = data[i][j]
+        else:  # Rotation.COUNTERCLOCKWISE
+            for i in range(height):
+                for j in range(width):
+                    rotated_grid[width - 1 - j][i] = data[i][j]
+        return Object(rotated_grid)
+
+    def translate(self, dy: int, dx: int) -> 'Object':
+        height, width = len(self.data), len(self.data[0])
+        new_grid: GridData = [[BLACK] * width for _ in range(height)]
+        for y in range(height):
+            for x in range(width):
+                new_x = x + dx
+                new_y = y + dy
+                # Ensure the new position is within bounds
+                if 0 <= new_x < width and 0 <= new_y < height:
+                    new_grid[new_y][new_x] = self.data[y][x]
+
+        return Object(new_grid)
+
+    def flip(self, axis: Axis) -> "Object":
+        if axis == Axis.HORIZONTAL:
+            flipped_grid: GridData = [row[::-1] for row in self.data]
+        else:
+            flipped_grid: GridData = self.data[::-1]
+        return Object(flipped_grid)
 
     def num_cells(self, color: Optional[int]) -> int:
         if color is None:
@@ -224,33 +241,6 @@ class Object:
         return True
 
 
-Color = NewType("Color", int)
-
-# Define the custom color scheme as a list of colors
-color_scheme = [
-    "#000000",  # black
-    "#0074D9",  # blue
-    "#FF4136",  # red
-    "#2ECC40",  # green
-    "#FFDC00",  # yellow
-    "#AAAAAA",  # grey
-    "#F012BE",  # fuschia
-    "#FF851B",  # orange
-    "#7FDBFF",  # ligthblue
-    "#870C25",  # brown
-]
-
-# Definitions using the indices
-BLACK: Color = Color(0)  # #000000
-BLUE: Color = Color(1)  # #0074D9
-RED: Color = Color(2)  # #FF4136
-GREEN: Color = Color(3)  # #2ECC40
-YELLOW: Color = Color(4)  # #FFDC00
-GREY: Color = Color(5)  # #AAAAAA
-FUSCHIA: Color = Color(6)  # F012BE
-ORANGE: Color = Color(7)  # #FF851B
-LIGHTBLUE: Color = Color(8)  # #7FDBFF
-BROWN: Color = Color(9)  # #870C25
 
 
 def display(
