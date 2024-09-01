@@ -39,7 +39,7 @@ def calculate_shift(grid, background_color):
     return shift_x, shift_y
 
 
-def normalize_grid(grid, background_color):
+def find_inverse_transformation(grid, background_color):
     """
     Normalize the grid by applying the appropriate transformations to get it into its standard form.
     """
@@ -63,12 +63,35 @@ def normalize_grid(grid, background_color):
     nearest_corner = np.argmin(distances)
 
     rotation = nearest_corner
-    # print(f"Rotation: {rotation}")
-    return rotation
+
+    unrotated_grid = np.rot90(grid, rotation)
+
+    mass_of_top_minus_bottom = mass_of_top_half(unrotated_grid) - mass_of_bottom_half(
+        unrotated_grid
+    )
+    flip_x = mass_of_top_minus_bottom > 0
+
+    original_rotation = rotation
+    if flip_x:
+        rotation = (rotation - 1) % 4
+        if rotation in {0, 2}:
+            original_rotation = 2 - rotation
+    if flip_x and rotation in {0, 2}:
+        original_rotation = 2 - rotation
+    else:
+        original_rotation = rotation
+
+    return flip_x, original_rotation
+
+def apply_inverse_transformation(grid, flip_x, original_rotation):
+    if flip_x:
+        grid = np.fliplr(grid)
+    grid = np.rot90(grid, original_rotation)
+    return grid
 
 
 # Example usage
-grid = np.array(
+grid0 = np.array(
     [
         [1, 0, 0, 0, 0],
         [1, 2, 0, 0, 0],
@@ -101,40 +124,23 @@ def mass_of_right_half(grid):
     return np.sum(grid[:, (height - 1) // 2 :])  # Include middle row in right half
 
 
-# List all 8 transformations (rotations + flips)
-grids = []
-for rotation in [0, 1, 2, 3]:
-    rotated_grid = np.rot90(grid, -rotation)
-    normalized_grid = normalize_grid(rotated_grid, background_color)
-    name = f"R{rotation}"
-    grids.append((name, rotated_grid))
-    name += "X"
-    grids.append((name, np.fliplr(rotated_grid)))
-for i, (name, grid) in enumerate(grids):
-    print(f"\nGrid {i} xform: {name}\n{grid}")
-    rotation = normalize_grid(grid, background_color)
-    unrotated_grid = np.rot90(grid, rotation)
+def test_normalize_grid():
+    # List all 8 transformations (rotations + flips)
+    grids = []
+    for rotation in [0, 1, 2, 3]:
+        rotated_grid = np.rot90(grid0, -rotation)
+        normalized_grid = find_inverse_transformation(rotated_grid, background_color)
+        name = f"R{rotation}"
+        grids.append((name, rotated_grid))
+        name += "X"
+        grids.append((name, np.fliplr(rotated_grid)))
+    for i, (name, grid) in enumerate(grids):
+        print(f"\nGrid {i} xform: {name}\n{grid}")
+        flip_x, original_rotation = find_inverse_transformation(grid, background_color)
 
-    mass_of_top_minus_bottom = mass_of_top_half(unrotated_grid) - mass_of_bottom_half(
-        unrotated_grid
-    )
-    flip_x = mass_of_top_minus_bottom > 0
+        original_grid = apply_inverse_transformation(grid, flip_x, original_rotation)
+        assert np.all(original_grid == grid0)
 
-    original_rotation = rotation
-    if flip_x:
-        rotation = (rotation - 1) % 4
-        if rotation in {0, 2}:
-            original_rotation = 2 - rotation
-    if flip_x and rotation in {0, 2}:
-        original_rotation = 2 - rotation
-    else:
-        original_rotation = rotation
-
-    unrotated_grid = grid
-    if flip_x:
-        unrotated_grid = np.fliplr(unrotated_grid)
-    unrotated_grid = np.rot90(unrotated_grid, original_rotation)
-
-    print(f"Original Transformation: R{original_rotation}{'X' if flip_x else ''}")
-    print(f"Inverse Transformation: {'X' if flip_x else ''}R{(-original_rotation) % 4}")
-    print(f"Untransformed:\n{unrotated_grid}")
+        print(f"Original Transformation: R{original_rotation}{'X' if flip_x else ''}")
+        print(f"Inverse Transformation: {'X' if flip_x else ''}R{(-original_rotation) % 4}")
+        print(f"Untransformed:\n{original_grid}")
