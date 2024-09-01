@@ -1,13 +1,13 @@
 import copy
 from enum import Enum
-from typing import Callable, List, Tuple
+from typing import Callable, List, Tuple, Optional
 from detect_objects import (
     ConnectedComponent,
     find_connected_components,
     find_rectangular_objects,
 )
 from flood_fill import find_enclosed_cells
-from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData, Object, logger
+from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData, Object, logger, Cell  # Added Cell import
 
 
 class Rotation(str, Enum):
@@ -21,7 +21,7 @@ class Axis(str, Enum):
 
 
 class Grid:
-    def __init__(self, data: GridData):
+    def __init__(self, data: GridData, origin:Optional[Cell] = None):
         self.data = data
 
     def __eq__(self, other: object) -> bool:
