@@ -2,19 +2,23 @@ from abc import ABC, abstractmethod
 import copy
 from enum import Enum
 from typing import Callable, List, Tuple
-from detect_objects import ConnectedComponent, find_connected_components, find_rectangular_objects
+from detect_objects import (
+    ConnectedComponent,
+    find_connected_components,
+    find_rectangular_objects,
+)
 from flood_fill import find_enclosed_cells
 from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData, Object, logger
 
 
 class Rotation(str, Enum):
-    CLOCKWISE = 'Clockwise'
-    COUNTERCLOCKWISE = 'CounterClockwise'
+    CLOCKWISE = "Clockwise"
+    COUNTERCLOCKWISE = "CounterClockwise"
 
 
 class Axis(str, Enum):
-    HORIZONTAL = 'Horizontal'
-    VERTICAL = 'Vertical'
+    HORIZONTAL = "Horizontal"
+    VERTICAL = "Vertical"
 
 
 class GridA(ABC):
@@ -42,32 +46,34 @@ class GridA(ABC):
         pass
 
     @abstractmethod
-    def detect_rectangular_objects(self, allow_multicolor: bool = False) -> List[Object]:
+    def detect_rectangular_objects(
+        self, allow_multicolor: bool = False
+    ) -> List[Object]:
         pass
 
     @staticmethod
     @abstractmethod
-    def empty(height: int, width: int) -> 'GridA':
+    def empty(height: int, width: int) -> "GridA":
         pass
 
     @abstractmethod
-    def rotate(self, direction: Rotation) -> 'GridA':
+    def rotate(self, direction: Rotation) -> "GridA":
         pass
 
     @abstractmethod
-    def flip(self, axis: Axis) -> 'GridA':
+    def flip(self, axis: Axis) -> "GridA":
         pass
 
     @abstractmethod
-    def translate(self, dy: int, dx: int) -> 'GridA':
+    def translate(self, dy: int, dx: int) -> "GridA":
         pass
 
     @abstractmethod
-    def color_change(self, from_color: Color, to_color: Color) -> 'GridA':
+    def color_change(self, from_color: Color, to_color: Color) -> "GridA":
         pass
 
     def is_enclosed(self, x: int, y: int) -> bool:
-        if not hasattr(self, 'enclosed'):
+        if not hasattr(self, "enclosed"):
             self.enclosed = find_enclosed_cells(self.data)
         return self.enclosed[x][y]
 
@@ -92,15 +98,19 @@ class Grid(GridA):
                 color = obj.data[r][c]
                 if color != BLACK:
                     # only add the color if it's in bounds
-                    if 0 <= r + r_off < len(self.data) and 0 <= c + c_off < len(self.data[0]):
+                    if 0 <= r + r_off < len(self.data) and 0 <= c + c_off < len(
+                        self.data[0]
+                    ):
                         self.data[r + r_off][c + c_off] = color
 
-    def color_change(self, from_color: Color, to_color: Color) -> 'Grid':
-        new_grid = [[to_color if cell == from_color else cell for cell in row]
-                    for row in self.data]
+    def color_change(self, from_color: Color, to_color: Color) -> "Grid":
+        new_grid = [
+            [to_color if cell == from_color else cell for cell in row]
+            for row in self.data
+        ]
         return Grid(new_grid)
 
-    def copy(self) -> 'Grid':
+    def copy(self) -> "Grid":
         return Grid(copy.deepcopy(self.data))
 
     def get_colors(self, allow_black: bool = True) -> List[int]:
@@ -112,7 +122,9 @@ class Grid(GridA):
                 colors.add(color)  # type: ignore
         return sorted(list(colors))
 
-    def detect_objects(self: 'Grid', diagonals: bool = True, allow_black: bool = False) -> List[Object]:
+    def detect_objects(
+        self: "Grid", diagonals: bool = True, allow_black: bool = False
+    ) -> List[Object]:
         def create_object(grid: Grid, component: ConnectedComponent) -> Object:
             """
             Create an object from a connected component in a grid
@@ -125,33 +137,40 @@ class Grid(GridA):
             for r, c in component:
                 data[r - min_row][c - min_col] = grid.data[r][c]
             return Object((min_row, min_col), data)
+
         connected_components = find_connected_components(
-            self.data, diagonals, allow_black)
-        detected_objects = [create_object(self, component)
-                            for component in connected_components]
+            self.data, diagonals, allow_black
+        )
+        detected_objects = [
+            create_object(self, component) for component in connected_components
+        ]
         return detected_objects
 
-    def detect_rectangular_objects(self, allow_multicolor: bool = False) -> List[Object]:
+    def detect_rectangular_objects(
+        self, allow_multicolor: bool = False
+    ) -> List[Object]:
         return find_rectangular_objects(self.data, allow_multicolor=allow_multicolor)
 
     @staticmethod
-    def empty(height: int, width: int) -> 'Grid':
+    def empty(height: int, width: int) -> "Grid":
         data: GridData = [[BLACK for _ in range(width)] for _ in range(height)]
         return Grid(data)
 
-    def flip(self, axis: Axis) -> 'Grid':
+    def flip(self, axis: Axis) -> "Grid":
         if axis == Axis.HORIZONTAL:
             flipped_grid: GridData = [row[::-1] for row in self.data]
         else:
             flipped_grid: GridData = self.data[::-1]
         return Grid(flipped_grid)
 
-    def map(self, func: Callable[[int, int], int]) -> 'Grid':
-        new_grid = [[func(x, y) for y in range(len(self.data[0]))]
-                    for x in range(len(self.data))]
+    def map(self, func: Callable[[int, int], int]) -> "Grid":
+        new_grid = [
+            [func(x, y) for y in range(len(self.data[0]))]
+            for x in range(len(self.data))
+        ]
         return Grid(new_grid)
 
-    def map_nested(self, func: Callable[[int, int], 'Grid']) -> 'Grid':
+    def map_nested(self, func: Callable[[int, int], "Grid"]) -> "Grid":
         def transform_data(data: List[List[GridData]]) -> GridData:
             n = len(data)
             n2 = n * n
@@ -162,19 +181,21 @@ class Grid(GridA):
                     sub_grid = data[i][j]
                     for sub_i in range(n):
                         for sub_j in range(n):
-                            new_grid[i * n + sub_i][j * n +
-                                                    sub_j] = sub_grid[sub_i][sub_j]
+                            new_grid[i * n + sub_i][j * n + sub_j] = sub_grid[sub_i][
+                                sub_j
+                            ]
 
             return new_grid
 
         new_grid: List[List[GridData]] = [
-            [func(i, j).data for j in range(self.width)] for i in range(self.height)]
+            [func(i, j).data for j in range(self.width)] for i in range(self.height)
+        ]
         return Grid(transform_data(new_grid))
 
-    def rotate(self, direction: Rotation) -> 'Grid':
+    def rotate(self, direction: Rotation) -> "Grid":
         data: List[List[int]] = self.data
         height, width = len(data), len(data[0])
-        rotated_grid = [[0 for _ in range(height)] for _ in range(width)]        
+        rotated_grid = [[0 for _ in range(height)] for _ in range(width)]
         if direction == Rotation.CLOCKWISE:
             for i in range(height):
                 for j in range(width):
@@ -182,10 +203,10 @@ class Grid(GridA):
         else:  # Rotation.COUNTERCLOCKWISE
             for i in range(height):
                 for j in range(width):
-                    rotated_grid[width - 1 - j][i] = data[i][j]        
+                    rotated_grid[width - 1 - j][i] = data[i][j]
         return Grid(rotated_grid)
-    
-    def translate(self, dy: int, dx: int) -> 'Grid':
+
+    def translate(self, dy: int, dx: int) -> "Grid":
         height, width = len(self.data), len(self.data[0])
         new_grid: GridData = [[BLACK] * width for _ in range(height)]
         for y in range(height):
@@ -195,7 +216,7 @@ class Grid(GridA):
                 # Ensure the new position is within bounds
                 if 0 <= new_x < width and 0 <= new_y < height:
                     new_grid[new_y][new_x] = self.data[y][x]
-        
+
         return Grid(new_grid)
 
 
@@ -206,22 +227,26 @@ def test_rotate():
     grid = Grid([[1, 2], [3, 4]])
     rotated_grid = grid.rotate(Rotation.CLOCKWISE)
     assert rotated_grid == Grid(
-        [[3, 1], [4, 2]]), f"Expected [[3, 1], [4, 2]], but got {rotated_grid}"
+        [[3, 1], [4, 2]]
+    ), f"Expected [[3, 1], [4, 2]], but got {rotated_grid}"
 
     rotated_grid = grid.rotate(Rotation.COUNTERCLOCKWISE)
     assert rotated_grid == Grid(
-        [[2, 4], [1, 3]]), f"Expected [[2, 4], [1, 3]], but got {rotated_grid}"
+        [[2, 4], [1, 3]]
+    ), f"Expected [[2, 4], [1, 3]], but got {rotated_grid}"
 
 
 def test_flip():
     grid = Grid([[1, 2], [3, 4]])
     flipped_grid = grid.flip(Axis.HORIZONTAL)
     assert flipped_grid == Grid(
-        [[2, 1], [4, 3]]), f"Expected [[2, 1], [4, 3]], but got {flipped_grid}"
+        [[2, 1], [4, 3]]
+    ), f"Expected [[2, 1], [4, 3]], but got {flipped_grid}"
 
     flipped_grid = grid.flip(Axis.VERTICAL)
     assert flipped_grid == Grid(
-        [[3, 4], [1, 2]]), f"Expected [[3, 4], [1, 2]], but got {flipped_grid}"
+        [[3, 4], [1, 2]]
+    ), f"Expected [[3, 4], [1, 2]], but got {flipped_grid}"
 
 
 def test_translate():
@@ -229,10 +254,13 @@ def test_translate():
     translated_grid = grid.translate(1, 1)
     assert translated_grid.data == [[0, 0], [0, 1]]
 
+
 def test_color_change():
     grid = Grid([[RED, BLUE], [GREEN, RED]])
     color_changed_grid = grid.color_change(RED, YELLOW)
-    assert color_changed_grid == Grid([[YELLOW, BLUE], [GREEN, YELLOW]]), f"Expected [[YELLOW, BLUE], [GREEN, YELLOW]], but got {color_changed_grid}"
+    assert color_changed_grid == Grid(
+        [[YELLOW, BLUE], [GREEN, YELLOW]]
+    ), f"Expected [[YELLOW, BLUE], [GREEN, YELLOW]], but got {color_changed_grid}"
 
 
 def test_copy():

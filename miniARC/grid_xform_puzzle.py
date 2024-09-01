@@ -5,30 +5,38 @@ from typing import Optional, Tuple, List
 
 from PIL import Image
 
+
 # Define transformations
 def rotate_90(grid):
     return np.rot90(grid, -1)
 
+
 def rotate_180(grid):
     return np.rot90(grid, -2)
+
 
 def rotate_270(grid):
     return np.rot90(grid, -3)
 
+
 def flip_horizontal(grid):
     return np.fliplr(grid)
+
 
 def flip_vertical(grid):
     return np.flipud(grid)
 
+
 def invert(grid):
     return 1 - grid
+
 
 # Apply a sequence of transformations
 def apply_transformations(grid, transformations):
     for transform in transformations:
         grid = transform(grid)
     return grid
+
 
 # Visualization of transformations with labels
 def get_transformation_label(transformations):
@@ -48,6 +56,7 @@ def get_transformation_label(transformations):
             labels.append("I")
     return "".join(labels) if labels else "Identity"
 
+
 def visualize_transformations_with_labels(grid, transformations_by_level):
     max_cols = max(len(level) for level in transformations_by_level)
     rows = len(transformations_by_level)
@@ -56,24 +65,29 @@ def visualize_transformations_with_labels(grid, transformations_by_level):
 
     if rows == 1:
         axes = np.array([axes])
-    
+
     for i, level in enumerate(transformations_by_level):
         for j, (length, transformation_sequence) in enumerate(level):
             label = get_transformation_label(transformation_sequence)
-            transformed_grid = apply_transformations(grid.copy(), transformation_sequence)
+            transformed_grid = apply_transformations(
+                grid.copy(), transformation_sequence
+            )
             ax = axes[i, j] if rows > 1 else axes[j]
-            ax.imshow(transformed_grid, cmap='gray', vmin=0, vmax=1, interpolation='nearest')
+            ax.imshow(
+                transformed_grid, cmap="gray", vmin=0, vmax=1, interpolation="nearest"
+            )
             ax.set_title(f"{label}")
-            ax.axis('off')
+            ax.axis("off")
 
         for k in range(len(level), max_cols):
             ax = axes[i, k] if rows > 1 else axes[k]
-            ax.axis('off')
-    
+            ax.axis("off")
+
     plt.tight_layout()
     plt.show()
 
-cat_image = Image.open('cat_image.png').convert('L')
+
+cat_image = Image.open("cat_image.png").convert("L")
 cat_image = cat_image.resize((128, 128))
 cat_array = np.array(cat_image)
 binary_cat_array = np.where(cat_array > 128, 1, 0)
@@ -83,8 +97,10 @@ X_Flip = [None, flip_horizontal]
 Y_Flip = [None, flip_vertical]
 Inversions = [None, invert]
 
-Form = Tuple[Optional[callable], Optional[callable],
-             Optional[callable], Optional[callable]]
+Form = Tuple[
+    Optional[callable], Optional[callable], Optional[callable], Optional[callable]
+]
+
 
 # Generate all possible normal forms
 def generate_all_normal_forms() -> List[Form]:
@@ -95,6 +111,7 @@ def generate_all_normal_forms() -> List[Form]:
                 for i in Inversions:
                     forms.append((r, x, y, i))
     return forms
+
 
 # Define sorting order
 def primitive_sort_key(primitive):
@@ -112,11 +129,13 @@ def primitive_sort_key(primitive):
         return 6
     return 0  # Identity (None)
 
+
 # Simplify the normal form and sort based on normal form order
 def simplify_normal_form(form: Form) -> Tuple[int, List[callable]]:
     simplified_form = [t for t in form if t is not None]
     simplified_form.sort(key=primitive_sort_key)
     return len(simplified_form), simplified_form
+
 
 # Generate all simplified normal forms grouped by their lengths
 def generate_transformations_by_level():
@@ -132,7 +151,7 @@ def generate_transformations_by_level():
 
     return transformations_by_level
 
+
 transformations_by_level = generate_transformations_by_level()
 
-visualize_transformations_with_labels(
-    binary_cat_array, transformations_by_level)
+visualize_transformations_with_labels(binary_cat_array, transformations_by_level)

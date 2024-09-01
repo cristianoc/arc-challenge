@@ -22,7 +22,9 @@ def find_main_object(objects: List[Object]) -> Object:
     return obj
 
 
-def find_subsets(grid: Grid, main_object: 'Object', objects: List['Object']) -> List[Tuple[Tuple[int, int], int]]:
+def find_subsets(
+    grid: Grid, main_object: "Object", objects: List["Object"]
+) -> List[Tuple[Tuple[int, int], int]]:
     """Find subset objects around the main object and determine their directions and colors."""
     subsets: List[Tuple[Tuple[int, int], int]] = []
 
@@ -37,7 +39,7 @@ def find_subsets(grid: Grid, main_object: 'Object', objects: List['Object']) -> 
             for c in range(main_object.width):
                 if color == 0:
                     try:
-                        color = grid.data[r+off_row][c+off_col]
+                        color = grid.data[r + off_row][c + off_col]
                     except IndexError:
                         continue
         if color != 0:
@@ -75,15 +77,16 @@ def transform(input: Grid) -> Grid:
             new_origin = current_object.origin + 4 * (dr, dc)
 
             # Check if the new object is completely outside the grid boundaries
-            if (new_origin[0] >= input.height or
-                new_origin[1] >= input.width or
-                new_origin[0] + current_object.height <= 0 or
-                    new_origin[1] + current_object.width <= 0):
+            if (
+                new_origin[0] >= input.height
+                or new_origin[1] >= input.width
+                or new_origin[0] + current_object.height <= 0
+                or new_origin[1] + current_object.width <= 0
+            ):
                 break
 
             # Create a new object with the specified color and new origin
-            new_object = current_object.move(
-                4 * dr, 4 * dc).change_color(None, color)
+            new_object = current_object.move(4 * dr, 4 * dc).change_color(None, color)
 
             # Add the new object to the grid
             new_grid.add_object(new_object)

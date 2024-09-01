@@ -2,13 +2,13 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, NewType, Optional, Tuple
 
-from matplotlib import colors, pyplot as plt # type: ignore
-from matplotlib.colors import ListedColormap # type: ignore
-import numpy as np # type: ignore
+from matplotlib import colors, pyplot as plt  # type: ignore
+from matplotlib.colors import ListedColormap  # type: ignore
+import numpy as np  # type: ignore
 
 logging.basicConfig(
-    level=logging.INFO, # change to logging.DEBUG for more verbose output
-    format='%(message)s'
+    level=logging.INFO,  # change to logging.DEBUG for more verbose output
+    format="%(message)s",
 )
 logger = logging.getLogger(__name__)
 
@@ -20,8 +20,7 @@ GridData = List[List[int]]
 DIRECTIONS4 = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
 # Direction vectors for 8 directions (N, NE, E, SE, S, SW, W, NW)
-DIRECTIONS8 = [(-1, 0), (-1, 1), (0, 1), (1, 1),
-               (1, 0), (1, -1), (0, -1), (-1, -1)]
+DIRECTIONS8 = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
 
 
 @dataclass
@@ -51,19 +50,26 @@ class Object:
         else:
             return sum(cell == color for row in self.data for cell in row)
 
-    def move(self, dr: int, dc: int) -> 'Object':
+    def move(self, dr: int, dc: int) -> "Object":
         """
         Moves the object by `dr` rows and `dc` columns.
         """
         new_origin = (self.origin[0] + dr, self.origin[1] + dc)
         return Object(new_origin, self.data)
 
-    def change_color(self, from_color: Optional[int], to_color: int) -> 'Object':
+    def change_color(self, from_color: Optional[int], to_color: int) -> "Object":
         """
         Changes the color of all cells in the object to `to_color`.
         """
-        new_data = [[to_color if color == from_color or (color != 0 and from_color is None) else color for color in row]
-                    for row in self.data]
+        new_data = [
+            [
+                to_color
+                if color == from_color or (color != 0 and from_color is None)
+                else color
+                for color in row
+            ]
+            for row in self.data
+        ]
         return Object(self.origin, new_data)
 
     def contains_cell(self, cell: Cell) -> bool:
@@ -86,7 +92,7 @@ class Object:
                     return color
         return 0
 
-    def main_color(self, allow_black:bool = False) -> int:
+    def main_color(self, allow_black: bool = False) -> int:
         """
         Returns the most frequent color in the object.
         Raises a ValueError if there are no non-zero colors.
@@ -101,26 +107,26 @@ class Object:
             return self.first_color
         return max(color_count, key=lambda c: color_count.get(c, 0))
 
-    def compact_left(self) -> 'Object':
+    def compact_left(self) -> "Object":
         """
-        Compacts each row of the object's grid data by shifting elements 
-        to the left, effectively reducing the grid's width by one while 
+        Compacts each row of the object's grid data by shifting elements
+        to the left, effectively reducing the grid's width by one while
         maintaining the overall structure of shapes.
 
         High-Level Operation:
-        - **Shift Left**: Each row is adjusted to move elements to the 
+        - **Shift Left**: Each row is adjusted to move elements to the
           leftmost position possible.
-        - **Remove Last BLACK**: If a row contains `BLACK`, the last 
+        - **Remove Last BLACK**: If a row contains `BLACK`, the last
           `BLACK` element is removed to enable the shift.
-        - **Preserve Structure**: If a row does not contain `BLACK`, the 
-          first element is removed, maintaining the structural integrity 
+        - **Preserve Structure**: If a row does not contain `BLACK`, the
+          first element is removed, maintaining the structural integrity
           of the shape.
 
-        The result is a grid with a consistent width reduction, ensuring 
+        The result is a grid with a consistent width reduction, ensuring
         all shapes remain compact and visually consistent.
 
         Returns:
-            Object: A new `Object` instance with each row compacted to 
+            Object: A new `Object` instance with each row compacted to
             the left, reducing the width by one.
 
         Example:
@@ -137,7 +143,7 @@ class Object:
                 [7, 8, 9]      # No BLACK, first element is removed
             ]
 
-        This operation is ideal for reducing grid size while preserving 
+        This operation is ideal for reducing grid size while preserving
         the meaningful arrangement of elements.
         """
 
@@ -182,7 +188,9 @@ class Object:
         obj_color = self.main_color()
 
         # Check top and bottom rows
-        if not all(cell == obj_color for cell in self.data[0]) or not all(cell == obj_color for cell in self.data[-1]):
+        if not all(cell == obj_color for cell in self.data[0]) or not all(
+            cell == obj_color for cell in self.data[-1]
+        ):
             return False
 
         # Check left and right columns
@@ -202,45 +210,53 @@ class Object:
         return True
 
 
-Color = NewType('Color', int)
+Color = NewType("Color", int)
 
 # Define the custom color scheme as a list of colors
 color_scheme = [
-    '#000000',  # black
-    '#0074D9',  # blue
-    '#FF4136',  # red
-    '#2ECC40',  # green
-    '#FFDC00',  # yellow
-    '#AAAAAA',  # grey
-    '#F012BE',  # fuschia
-    '#FF851B',  # orange
-    '#7FDBFF',  # ligthblue
-    '#870C25',  # brown
+    "#000000",  # black
+    "#0074D9",  # blue
+    "#FF4136",  # red
+    "#2ECC40",  # green
+    "#FFDC00",  # yellow
+    "#AAAAAA",  # grey
+    "#F012BE",  # fuschia
+    "#FF851B",  # orange
+    "#7FDBFF",  # ligthblue
+    "#870C25",  # brown
 ]
 
 # Definitions using the indices
-BLACK: Color = Color(0)   # #000000
-BLUE: Color = Color(1)    # #0074D9
-RED: Color = Color(2)     # #FF4136
-GREEN: Color = Color(3)   # #2ECC40
+BLACK: Color = Color(0)  # #000000
+BLUE: Color = Color(1)  # #0074D9
+RED: Color = Color(2)  # #FF4136
+GREEN: Color = Color(3)  # #2ECC40
 YELLOW: Color = Color(4)  # #FFDC00
-GREY: Color = Color(5)    # #AAAAAA
+GREY: Color = Color(5)  # #AAAAAA
 FUSCHIA: Color = Color(6)  # F012BE
 ORANGE: Color = Color(7)  # #FF851B
-LIGHTBLUE: Color = Color(8) # #7FDBFF
-BROWN: Color = Color(9)   # #870C25
+LIGHTBLUE: Color = Color(8)  # #7FDBFF
+BROWN: Color = Color(9)  # #870C25
 
 
-def display(input: GridData, output: Optional[GridData] = None, title: Optional[str] = None) -> None:
+def display(
+    input: GridData, output: Optional[GridData] = None, title: Optional[str] = None
+) -> None:
     display_multiple([(input, output)], title)
+
 
 plt: Any = plt
 
-def display_multiple(grid_pairs: List[Tuple[GridData, Optional[GridData]]], title: Optional[str] = None) -> None:
+
+def display_multiple(
+    grid_pairs: List[Tuple[GridData, Optional[GridData]]], title: Optional[str] = None
+) -> None:
     num_pairs = len(grid_pairs)
 
     # Create a Matplotlib figure with multiple rows, two subplots per row
-    fig, axes = plt.subplots(num_pairs, 2, figsize=(4, 2 * num_pairs))  # Adjust figsize as needed
+    fig, axes = plt.subplots(
+        num_pairs, 2, figsize=(4, 2 * num_pairs)
+    )  # Adjust figsize as needed
 
     # If there's only one pair, axes won't be a list, so we wrap it in a list
     if num_pairs == 1:
@@ -250,24 +266,24 @@ def display_multiple(grid_pairs: List[Tuple[GridData, Optional[GridData]]], titl
         ax_input, ax_output = axes[i]
 
         # Plot the input grid
-        cmap: ListedColormap = colors.ListedColormap(color_scheme) # type: ignore
+        cmap: ListedColormap = colors.ListedColormap(color_scheme)  # type: ignore
         # Adjust the bounds to match the number of colors
-        bounds = np.arange(-0.5, len(color_scheme) + 0.5, 1) # type: ignore
+        bounds = np.arange(-0.5, len(color_scheme) + 0.5, 1)  # type: ignore
         norm = colors.BoundaryNorm(bounds, cmap.N)  # type: ignore
         ax_input.imshow(input_data, cmap=cmap, norm=norm)
-        ax_input.set_title(f'Input Grid {i+1}')
-        ax_input.axis('off')  # Hide the axes
+        ax_input.set_title(f"Input Grid {i+1}")
+        ax_input.axis("off")  # Hide the axes
 
         if output_data is not None:
             # Plot the output grid if provided
             ax_output.imshow(output_data, cmap=cmap, norm=norm)
-            ax_output.set_title(f'Output Grid {i+1}')
+            ax_output.set_title(f"Output Grid {i+1}")
         else:
             # If output_data is None, just show a blank plot
-            ax_output.imshow(np.zeros_like(input_data), cmap='gray') # type: ignore
-            ax_output.set_title(f'Output Grid {i+1} (None)')
+            ax_output.imshow(np.zeros_like(input_data), cmap="gray")  # type: ignore
+            ax_output.set_title(f"Output Grid {i+1} (None)")
 
-        ax_output.axis('off')  # Hide the axes
+        ax_output.axis("off")  # Hide the axes
 
     if title:
         fig.suptitle(title, fontsize=16)
@@ -276,21 +292,11 @@ def display_multiple(grid_pairs: List[Tuple[GridData, Optional[GridData]]], titl
     plt.show()
 
 
-
 class TestSquashLeft:
-
     # Removes the last occurrence of BLACK from each row containing BLACK
     def test_removes_last_black_occurrence(self):
-        data = [
-            [1, 2, BLACK, 3],
-            [BLACK, 4, 5, BLACK],
-            [6, 7, 8, 9]
-        ]
+        data = [[1, 2, BLACK, 3], [BLACK, 4, 5, BLACK], [6, 7, 8, 9]]
         obj = Object(origin=(0, 0), data=data)
         result = obj.compact_left()
-        expected_data = [
-            [1, 2, 3],
-            [BLACK, 4, 5],
-            [7, 8, 9]
-        ]
+        expected_data = [[1, 2, 3], [BLACK, 4, 5], [7, 8, 9]]
         assert result.data == expected_data

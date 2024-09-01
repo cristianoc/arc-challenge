@@ -1,6 +1,7 @@
 from typing import List, Any
 from grid_data import logger
 
+
 def calculate_z_array(lst: List[Any]) -> List[int]:
     """
     Calculate the Z-array for a given list of elements.
@@ -66,7 +67,6 @@ def test():
         [1, 2, 1, 3, 1, 2],
         [1, 2, 1, 2, 1, 2],
         [1, 2, 1, 1, 2, 1],
-
     ]
     for ex in examples:
         period = find_shortest_period(ex)

@@ -3,6 +3,7 @@ from enum import Enum, auto
 from grid_data import GridData
 from rule_based_selector import Features
 
+
 # Define the SymmetryFeatures Enum
 class SymmetryFeatures(Enum):
     VERTICAL = auto()  # Reflective symmetry along the vertical axis
@@ -15,8 +16,18 @@ class SymmetryFeatures(Enum):
     ROTATIONAL_180 = auto()  # Rotational symmetry at 180 degrees
     ROTATIONAL_270 = auto()  # Rotational symmetry at 270 degrees
 
+
 # Unpack SymmetryFeatures members into the local scope
-VERTICAL, HORIZONTAL, DIAGONAL_LEFT, DIAGONAL_RIGHT, ROTATIONAL_90, ROTATIONAL_180, ROTATIONAL_270 = SymmetryFeatures
+(
+    VERTICAL,
+    HORIZONTAL,
+    DIAGONAL_LEFT,
+    DIAGONAL_RIGHT,
+    ROTATIONAL_90,
+    ROTATIONAL_180,
+    ROTATIONAL_270,
+) = SymmetryFeatures
+
 
 # Function to check for vertical symmetry
 def check_vertical_symmetry(grid: GridData) -> bool:
@@ -28,6 +39,7 @@ def check_vertical_symmetry(grid: GridData) -> bool:
                 return False
     return True
 
+
 # Function to check for horizontal symmetry
 def check_horizontal_symmetry(grid: GridData) -> bool:
     rows = len(grid)
@@ -35,6 +47,7 @@ def check_horizontal_symmetry(grid: GridData) -> bool:
         if grid[i] != grid[rows - i - 1]:
             return False
     return True
+
 
 # Function to check for diagonal left symmetry
 def check_diagonal_left_symmetry(grid: GridData) -> bool:
@@ -48,6 +61,7 @@ def check_diagonal_left_symmetry(grid: GridData) -> bool:
                 return False
     return True
 
+
 # Function to check for diagonal right symmetry
 def check_diagonal_right_symmetry(grid: GridData) -> bool:
     rows = len(grid)
@@ -59,6 +73,7 @@ def check_diagonal_right_symmetry(grid: GridData) -> bool:
             if grid[i][j] != grid[cols - j - 1][rows - i - 1]:
                 return False
     return True
+
 
 # Function to check for rotational symmetry at 90 degrees
 def check_rotational_90_symmetry(grid: GridData) -> bool:
@@ -72,6 +87,7 @@ def check_rotational_90_symmetry(grid: GridData) -> bool:
                 return False
     return True
 
+
 # Function to check for rotational symmetry at 180 degrees
 def check_rotational_180_symmetry(grid: GridData) -> bool:
     rows = len(grid)
@@ -81,6 +97,7 @@ def check_rotational_180_symmetry(grid: GridData) -> bool:
             if grid[i][j] != grid[rows - i - 1][cols - j - 1]:
                 return False
     return True
+
 
 # Function to check for rotational symmetry at 270 degrees
 def check_rotational_270_symmetry(grid: GridData) -> bool:
@@ -94,6 +111,7 @@ def check_rotational_270_symmetry(grid: GridData) -> bool:
                 return False
     return True
 
+
 # Function to detect all symmetries in the grid
 def detect_symmetry_features(data: GridData) -> Features:
     features: Features = {}
@@ -106,22 +124,26 @@ def detect_symmetry_features(data: GridData) -> Features:
     features[ROTATIONAL_270.name] = check_rotational_270_symmetry(data)
     return features
 
+
 def test_symmetries():
-    data1 = [
-        [1, 0, 1],
-        [0, 1, 0],
-        [1, 0, 1]
-    ]
-    data2 = [
-        [1, 0, 1],
-        [0, 1, 0],
-        [1, 1, 1]
-    ]
+    data1 = [[1, 0, 1], [0, 1, 0], [1, 0, 1]]
+    data2 = [[1, 0, 1], [0, 1, 0], [1, 1, 1]]
     symmetries1 = detect_symmetry_features(data1)
     symmetries2 = detect_symmetry_features(data2)
 
     true_keys1 = [key for key, value in symmetries1.items() if value]
-    assert true_keys1 == [s.name for s in [VERTICAL, HORIZONTAL, DIAGONAL_LEFT, DIAGONAL_RIGHT, ROTATIONAL_90, ROTATIONAL_180, ROTATIONAL_270]]
+    assert true_keys1 == [
+        s.name
+        for s in [
+            VERTICAL,
+            HORIZONTAL,
+            DIAGONAL_LEFT,
+            DIAGONAL_RIGHT,
+            ROTATIONAL_90,
+            ROTATIONAL_180,
+            ROTATIONAL_270,
+        ]
+    ]
 
     true_keys2 = [key for key, value in symmetries2.items() if value]
     assert true_keys2 == [s.name for s in [VERTICAL]]

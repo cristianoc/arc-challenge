@@ -5,6 +5,7 @@ from grid_data import DIRECTIONS4, GridData, logger
 
 EnclosedCells = List[List[bool]]
 
+
 def find_enclosed_cells(grid: GridData) -> EnclosedCells:
     height = len(grid)
     width = len(grid[0])
@@ -32,14 +33,19 @@ def find_enclosed_cells(grid: GridData) -> EnclosedCells:
                 nx, ny = cx + dx, cy + dy
 
                 # Check if within bounds and not visited and is a free cell
-                if 0 <= nx < height and 0 <= ny < width and not visited[nx][ny] and grid[nx][ny] == 0:
+                if (
+                    0 <= nx < height
+                    and 0 <= ny < width
+                    and not visited[nx][ny]
+                    and grid[nx][ny] == 0
+                ):
                     visited[nx][ny] = True
                     queue.append((nx, ny))
                     component.append((nx, ny))
 
         # Mark the component as enclosed or not
         if enclosed_area:
-            for (ex, ey) in component:
+            for ex, ey in component:
                 enclosed[ex][ey] = True
 
     # Iterate over each cell in the grid
@@ -68,4 +74,4 @@ def test():
 
     # Print the result
     for row in enclosed_grid:
-        logger.info(' '.join(['x' if cell else '-' for cell in row]))
+        logger.info(" ".join(["x" if cell else "-" for cell in row]))

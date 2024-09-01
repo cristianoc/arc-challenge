@@ -16,6 +16,7 @@ def transform(input: Grid) -> Grid:
         color = input.data[x][y]
         assert isinstance(color, int)
         return Grid.empty(input.height, input.width) if color == 0 else input.copy()
+
     return input.map_nested(map_func)
 
 

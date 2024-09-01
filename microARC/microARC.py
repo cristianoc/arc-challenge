@@ -7,7 +7,7 @@ class MicroARCGridTask:
             self.identity_spec,
             self.invert_colors_spec,
             self.vertical_flip_spec,
-            self.horizontal_flip_spec
+            self.horizontal_flip_spec,
         ]
 
     def identity_spec(self, grid):
@@ -23,7 +23,7 @@ class MicroARCGridTask:
         return [row[::-1] for row in grid]
 
     def is_spec_solution(self, spec):
-        for (input_grid, expected_output) in self.examples:
+        for input_grid, expected_output in self.examples:
             if spec(input_grid) != expected_output:
                 return False
         return True
@@ -32,10 +32,10 @@ class MicroARCGridTask:
     def compare_specs(spec1, spec2):
         # Define the complexity order based on MicroARC partial order
         spec_order = {
-            'identity_spec': 0,
-            'vertical_flip_spec': 1,
-            'horizontal_flip_spec': 1,
-            'invert_colors_spec': 2
+            "identity_spec": 0,
+            "vertical_flip_spec": 1,
+            "horizontal_flip_spec": 1,
+            "invert_colors_spec": 2,
         }
 
         spec1_name = spec1.__name__
@@ -93,10 +93,12 @@ class MicroARCGridTask:
         else:
             return "Task is not well-defined"
 
+
 # Function to print grids in a readable format
 def print_grid(grid):
     for row in grid:
         print("  " + " ".join(map(str, row)))
+
 
 # Example of a well-defined task
 
@@ -104,7 +106,7 @@ print("### Well-Defined Task Analysis (MicroARC) ###\n")
 
 examples = [
     ([[1, 0, 1], [0, 1, 0], [1, 0, 1]], [[0, 1, 0], [1, 0, 1], [0, 1, 0]]),
-    ([[1, 1, 0], [0, 0, 1], [1, 1, 0]], [[0, 0, 1], [1, 1, 0], [0, 0, 1]])
+    ([[1, 1, 0], [0, 0, 1], [1, 1, 0]], [[0, 0, 1], [1, 1, 0], [0, 0, 1]]),
 ]
 
 test_case = [[0, 0, 1], [1, 1, 0], [0, 0, 1]]
@@ -137,14 +139,13 @@ print("\n" + "#" * 30 + "\n")
 
 print("### Not Well-Defined Task Analysis (MicroARC) ###\n")
 
-examples_not_well_defined = [
-    ([[0, 1], [1, 0]], [[1, 0], [0, 1]])
-]
+examples_not_well_defined = [([[0, 1], [1, 0]], [[1, 0], [0, 1]])]
 
 test_case_not_well_defined = [[1, 0], [0, 0]]
 
 task_not_well_defined = MicroARCGridTask(
-    examples_not_well_defined, test_case_not_well_defined)
+    examples_not_well_defined, test_case_not_well_defined
+)
 
 # Print examples
 print("Examples:")
