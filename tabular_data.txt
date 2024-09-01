@@ -1,0 +1,1426 @@
+
+***Task: c8cbb738.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 12, 'grid_width': 11, 'num_colors': 5, 'num_cells': 132, 'num_objects': 17, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 116, 'num_objects_of_max_size': 1, 'max_area_object_height': 12, 'max_area_object_width': 11, 'subgrid_height': 7, 'subgrid_width': 5, 'colored_object_max_height': 5, 'colored_object_max_width': 5, 'grid_height_squared': 144, 'grid_width_squared': 121, 'objects_are_vertical': True}
+
+Example 2 Input Features:
+  {'grid_height': 10, 'grid_width': 8, 'num_colors': 3, 'num_cells': 80, 'num_objects': 6, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 72, 'num_objects_of_max_size': 1, 'max_area_object_height': 10, 'max_area_object_width': 8, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 100, 'grid_width_squared': 64, 'objects_are_vertical': True}
+
+Example 3 Input Features:
+  {'grid_height': 12, 'grid_width': 14, 'num_colors': 3, 'num_cells': 168, 'num_objects': 9, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 160, 'num_objects_of_max_size': 1, 'max_area_object_height': 12, 'max_area_object_width': 14, 'colored_object_max_height': 5, 'colored_object_max_width': 5, 'grid_height_squared': 144, 'grid_width_squared': 196, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 18, 'grid_width': 19, 'num_colors': 5, 'num_cells': 342, 'num_objects': 17, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 326, 'num_objects_of_max_size': 1, 'max_area_object_height': 18, 'max_area_object_width': 19, 'colored_object_max_height': 7, 'colored_object_max_width': 7, 'grid_height_squared': 324, 'grid_width_squared': 361, 'objects_are_vertical': False}
+
+Test 1 Target height:7 width:7
+
+***Task: b91ae062.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 4, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 2, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 4, 'num_objects': 3, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 4, 'num_objects': 4, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 4, 'max_area_object_height': 1, 'max_area_object_width': 1, 'colored_object_max_height': 2, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 4 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 5, 'num_objects': 4, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Example 5 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 4, 'num_cells': 5, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 2, 'colored_object_max_height': 1, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 4, 'num_cells': 5, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 2, 'colored_object_max_height': 1, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Test 1 Target height:12 width:12
+
+***Task: 49d1d64f.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 2, 'grid_width': 2, 'num_colors': 4, 'num_cells': 4, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 4, 'max_area_object_height': 1, 'max_area_object_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 4, 'grid_width_squared': 4}
+
+Example 2 Input Features:
+  {'grid_height': 2, 'grid_width': 3, 'num_colors': 4, 'num_cells': 6, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 4, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 5, 'num_cells': 8, 'num_objects': 7, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 2, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 2, 'num_colors': 5, 'num_cells': 6, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 4, 'objects_are_vertical': True}
+
+Test 1 Target height:5 width:4
+
+***Task: a3325580.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 10, 'grid_width': 10, 'num_colors': 4, 'num_cells': 19, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 3, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 4, 'subgrid_width': 0, 'colored_object_max_height': 4, 'colored_object_max_width': 3, 'grid_height_squared': 100, 'grid_width_squared': 100}
+
+Example 2 Input Features:
+  {'grid_height': 10, 'grid_width': 10, 'num_colors': 3, 'num_cells': 24, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 9, 'num_objects_of_max_size': 2, 'max_area_object_height': 6, 'max_area_object_width': 3, 'subgrid_height': 2, 'subgrid_width': 2, 'colored_object_max_height': 6, 'colored_object_max_width': 3, 'grid_height_squared': 100, 'grid_width_squared': 100, 'objects_are_vertical': True}
+
+Example 3 Input Features:
+  {'grid_height': 10, 'grid_width': 10, 'num_colors': 4, 'num_cells': 16, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 4, 'colored_object_max_width': 3, 'grid_height_squared': 100, 'grid_width_squared': 100}
+
+Example 4 Input Features:
+  {'grid_height': 10, 'grid_width': 10, 'num_colors': 3, 'num_cells': 7, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 1, 'colored_object_max_height': 3, 'colored_object_max_width': 2, 'grid_height_squared': 100, 'grid_width_squared': 100}
+
+Example 5 Input Features:
+  {'grid_height': 10, 'grid_width': 10, 'num_colors': 2, 'num_cells': 6, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 100, 'grid_width_squared': 100}
+
+Example 6 Input Features:
+  {'grid_height': 10, 'grid_width': 10, 'num_colors': 3, 'num_cells': 9, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 3, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 100, 'grid_width_squared': 100}
+
+Test 1 Input Features:
+  {'grid_height': 10, 'grid_width': 10, 'num_colors': 5, 'num_cells': 17, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 3, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 100, 'grid_width_squared': 100}
+
+Test 1 Target height:4 width:3
+
+***Task: d631b094.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 2, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'subgrid_height': 2, 'subgrid_width': 0, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 3, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 4 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 4, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 5, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Target height:1 width:5
+
+***Task: 846bdb03.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 13, 'grid_width': 13, 'num_colors': 3, 'num_cells': 23, 'num_objects': 8, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 3, 'colored_object_max_height': 9, 'colored_object_max_width': 8, 'grid_height_squared': 169, 'grid_width_squared': 169, 'objects_are_vertical': True}
+
+Example 2 Input Features:
+  {'grid_height': 13, 'grid_width': 13, 'num_colors': 3, 'num_cells': 33, 'num_objects': 8, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 12, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 3, 'colored_object_max_height': 11, 'colored_object_max_width': 9, 'grid_height_squared': 169, 'grid_width_squared': 169, 'objects_are_vertical': True}
+
+Example 3 Input Features:
+  {'grid_height': 13, 'grid_width': 13, 'num_colors': 3, 'num_cells': 14, 'num_objects': 8, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 9, 'colored_object_max_width': 6, 'grid_height_squared': 169, 'grid_width_squared': 169, 'objects_are_vertical': True}
+
+Example 4 Input Features:
+  {'grid_height': 13, 'grid_width': 13, 'num_colors': 3, 'num_cells': 19, 'num_objects': 8, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 2, 'colored_object_max_height': 10, 'colored_object_max_width': 6, 'grid_height_squared': 169, 'grid_width_squared': 169, 'objects_are_vertical': True}
+
+Test 1 Input Features:
+  {'grid_height': 13, 'grid_width': 13, 'num_colors': 3, 'num_cells': 26, 'num_objects': 8, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 2, 'max_area_object_height': 4, 'max_area_object_width': 3, 'colored_object_max_height': 11, 'colored_object_max_width': 8, 'grid_height_squared': 169, 'grid_width_squared': 169, 'objects_are_vertical': True}
+
+Test 1 Target height:6 width:8
+
+***Task: 46442a0e.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 2, 'grid_width': 2, 'num_colors': 2, 'num_cells': 4, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 2, 'grid_height_squared': 4, 'grid_width_squared': 4}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 9, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 2, 'subgrid_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 9, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 9, 'num_objects': 5, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 2, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Test 1 Target height:6 width:6
+
+***Task: d0f5fe59.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 16, 'grid_width': 10, 'num_colors': 1, 'num_cells': 24, 'num_objects': 4, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 8, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 3, 'grid_height_squared': 256, 'grid_width_squared': 100}
+
+Example 2 Input Features:
+  {'grid_height': 12, 'grid_width': 12, 'num_colors': 1, 'num_cells': 17, 'num_objects': 3, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 4, 'grid_height_squared': 144, 'grid_width_squared': 144, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 8, 'grid_width': 12, 'num_colors': 1, 'num_cells': 11, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 64, 'grid_width_squared': 144, 'objects_are_vertical': True}
+
+Test 1 Input Features:
+  {'grid_height': 15, 'grid_width': 12, 'num_colors': 1, 'num_cells': 23, 'num_objects': 5, 'num_objects_of_main_color': 5, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 225, 'grid_width_squared': 144}
+
+Test 1 Target height:5 width:5
+
+***Task: 4290ef0e.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 13, 'grid_width': 17, 'num_colors': 4, 'num_cells': 221, 'num_objects': 11, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 192, 'num_objects_of_max_size': 1, 'max_area_object_height': 13, 'max_area_object_width': 17, 'colored_object_max_height': 6, 'colored_object_max_width': 7, 'grid_height_squared': 169, 'grid_width_squared': 289, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 18, 'grid_width': 18, 'num_colors': 4, 'num_cells': 323, 'num_objects': 11, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 282, 'num_objects_of_max_size': 1, 'max_area_object_height': 18, 'max_area_object_width': 18, 'colored_object_max_height': 7, 'colored_object_max_width': 7, 'grid_height_squared': 324, 'grid_width_squared': 324}
+
+Example 3 Input Features:
+  {'grid_height': 18, 'grid_width': 18, 'num_colors': 7, 'num_cells': 324, 'num_objects': 14, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 272, 'num_objects_of_max_size': 1, 'max_area_object_height': 18, 'max_area_object_width': 18, 'colored_object_max_height': 9, 'colored_object_max_width': 11, 'grid_height_squared': 324, 'grid_width_squared': 324}
+
+Test 1 Input Features:
+  {'grid_height': 19, 'grid_width': 19, 'num_colors': 6, 'num_cells': 361, 'num_objects': 13, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 316, 'num_objects_of_max_size': 1, 'max_area_object_height': 19, 'max_area_object_width': 19, 'colored_object_max_height': 7, 'colored_object_max_width': 9, 'grid_height_squared': 361, 'grid_width_squared': 361}
+
+Test 1 Target height:11 width:11
+
+***Task: 1190e5a7.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 15, 'grid_width': 15, 'num_colors': 2, 'num_cells': 225, 'num_objects': 9, 'num_objects_of_main_color': 8, 'num_cells_in_largest_object': 96, 'num_objects_of_max_size': 1, 'max_area_object_height': 15, 'max_area_object_width': 15, 'subgrid_height': 2, 'subgrid_width': 4, 'grid_height_squared': 225, 'grid_width_squared': 225}
+
+Example 2 Input Features:
+  {'grid_height': 11, 'grid_width': 11, 'num_colors': 2, 'num_cells': 121, 'num_objects': 7, 'num_objects_of_main_color': 6, 'num_cells_in_largest_object': 31, 'num_objects_of_max_size': 1, 'max_area_object_height': 11, 'max_area_object_width': 11, 'subgrid_height': 3, 'subgrid_width': 2, 'grid_height_squared': 121, 'grid_width_squared': 121}
+
+Example 3 Input Features:
+  {'grid_height': 27, 'grid_width': 27, 'num_colors': 2, 'num_cells': 729, 'num_objects': 31, 'num_objects_of_main_color': 30, 'num_cells_in_largest_object': 223, 'num_objects_of_max_size': 1, 'max_area_object_height': 27, 'max_area_object_width': 27, 'subgrid_height': 6, 'subgrid_width': 5, 'grid_height_squared': 729, 'grid_width_squared': 729}
+
+Test 1 Input Features:
+  {'grid_height': 22, 'grid_width': 22, 'num_colors': 2, 'num_cells': 484, 'num_objects': 16, 'num_objects_of_main_color': 15, 'num_cells_in_largest_object': 124, 'num_objects_of_max_size': 1, 'max_area_object_height': 22, 'max_area_object_width': 22, 'subgrid_height': 5, 'subgrid_width': 3, 'grid_height_squared': 484, 'grid_width_squared': 484}
+
+Test 1 Target height:5 width:3
+
+***Task: b190f7f5.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 6, 'num_colors': 4, 'num_cells': 8, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 36}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 6, 'num_colors': 4, 'num_cells': 9, 'num_objects': 5, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 36}
+
+Example 3 Input Features:
+  {'grid_height': 4, 'grid_width': 8, 'num_colors': 3, 'num_cells': 15, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 4, 'grid_height_squared': 16, 'grid_width_squared': 64}
+
+Test 1 Input Features:
+  {'grid_height': 8, 'grid_width': 4, 'num_colors': 4, 'num_cells': 20, 'num_objects': 6, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 12, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 4, 'grid_height_squared': 64, 'grid_width_squared': 16}
+
+Test 1 Target height:16 width:16
+
+***Task: 10fcaaa3.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 2, 'grid_width': 4, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 4, 'grid_width_squared': 16}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 4, 'num_colors': 1, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 2, 'subgrid_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 16}
+
+Example 3 Input Features:
+  {'grid_height': 5, 'grid_width': 3, 'num_colors': 1, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 25, 'grid_width_squared': 9}
+
+Example 4 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Test 1 Input Features:
+  {'grid_height': 6, 'grid_width': 5, 'num_colors': 1, 'num_cells': 3, 'num_objects': 3, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 3, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 36, 'grid_width_squared': 25}
+
+Test 1 Target height:12 width:10
+
+***Task: 3de23699.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 7, 'grid_width': 7, 'num_colors': 2, 'num_cells': 10, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 3, 'subgrid_width': 0, 'colored_object_max_height': 5, 'colored_object_max_width': 5, 'grid_height_squared': 49, 'grid_width_squared': 49}
+
+Example 2 Input Features:
+  {'grid_height': 12, 'grid_width': 9, 'num_colors': 2, 'num_cells': 11, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 5, 'colored_object_max_height': 5, 'colored_object_max_width': 7, 'grid_height_squared': 144, 'grid_width_squared': 81, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 12, 'grid_width': 14, 'num_colors': 2, 'num_cells': 11, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 3, 'colored_object_max_height': 6, 'colored_object_max_width': 6, 'grid_height_squared': 144, 'grid_width_squared': 196, 'objects_are_vertical': True}
+
+Example 4 Input Features:
+  {'grid_height': 12, 'grid_width': 18, 'num_colors': 2, 'num_cells': 11, 'num_objects': 7, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 6, 'colored_object_max_width': 10, 'grid_height_squared': 144, 'grid_width_squared': 324}
+
+Test 1 Input Features:
+  {'grid_height': 18, 'grid_width': 19, 'num_colors': 2, 'num_cells': 17, 'num_objects': 9, 'num_objects_of_main_color': 5, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 10, 'colored_object_max_width': 12, 'grid_height_squared': 324, 'grid_width_squared': 361}
+
+Test 1 Target height:8 width:10
+
+***Task: 780d0b14.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 20, 'grid_width': 20, 'num_colors': 3, 'num_cells': 263, 'num_objects': 5, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 85, 'num_objects_of_max_size': 1, 'max_area_object_height': 11, 'max_area_object_width': 11, 'subgrid_height': 2, 'subgrid_width': 2, 'colored_object_max_height': 20, 'colored_object_max_width': 20, 'grid_height_squared': 400, 'grid_width_squared': 400}
+
+Example 2 Input Features:
+  {'grid_height': 18, 'grid_width': 22, 'num_colors': 5, 'num_cells': 240, 'num_objects': 6, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 51, 'num_objects_of_max_size': 1, 'max_area_object_height': 10, 'max_area_object_width': 8, 'subgrid_height': 2, 'subgrid_width': 3, 'colored_object_max_height': 18, 'colored_object_max_width': 15, 'grid_height_squared': 324, 'grid_width_squared': 484}
+
+Example 3 Input Features:
+  {'grid_height': 23, 'grid_width': 17, 'num_colors': 6, 'num_cells': 241, 'num_objects': 7, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 63, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 9, 'subgrid_height': 3, 'subgrid_width': 2, 'colored_object_max_height': 9, 'colored_object_max_width': 9, 'grid_height_squared': 529, 'grid_width_squared': 289}
+
+Test 1 Input Features:
+  {'grid_height': 23, 'grid_width': 28, 'num_colors': 6, 'num_cells': 441, 'num_objects': 9, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 136, 'num_objects_of_max_size': 1, 'max_area_object_height': 14, 'max_area_object_width': 12, 'subgrid_height': 3, 'subgrid_width': 3, 'colored_object_max_height': 23, 'colored_object_max_width': 20, 'grid_height_squared': 529, 'grid_width_squared': 784}
+
+Test 1 Target height:3 width:3
+
+***Task: 90c28cc7.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 21, 'grid_width': 21, 'num_colors': 7, 'num_cells': 300, 'num_objects': 7, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 72, 'num_objects_of_max_size': 1, 'max_area_object_height': 6, 'max_area_object_width': 12, 'colored_object_max_height': 6, 'colored_object_max_width': 12, 'grid_height_squared': 441, 'grid_width_squared': 441, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 21, 'grid_width': 21, 'num_colors': 4, 'num_cells': 225, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 64, 'num_objects_of_max_size': 1, 'max_area_object_height': 8, 'max_area_object_width': 8, 'colored_object_max_height': 8, 'colored_object_max_width': 8, 'grid_height_squared': 441, 'grid_width_squared': 441}
+
+Example 3 Input Features:
+  {'grid_height': 21, 'grid_width': 21, 'num_colors': 5, 'num_cells': 204, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 72, 'num_objects_of_max_size': 1, 'max_area_object_height': 6, 'max_area_object_width': 12, 'colored_object_max_height': 6, 'colored_object_max_width': 12, 'grid_height_squared': 441, 'grid_width_squared': 441, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 21, 'grid_width': 21, 'num_colors': 5, 'num_cells': 324, 'num_objects': 9, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 64, 'num_objects_of_max_size': 1, 'max_area_object_height': 8, 'max_area_object_width': 8, 'colored_object_max_height': 18, 'colored_object_max_width': 18, 'grid_height_squared': 441, 'grid_width_squared': 441}
+
+Test 1 Target height:3 width:3
+
+***Task: 2dee498d.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 9, 'num_colors': 3, 'num_cells': 27, 'num_objects': 9, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 15, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 9, 'subgrid_height': 2, 'subgrid_width': 4, 'colored_object_max_height': 3, 'colored_object_max_width': 9, 'grid_height_squared': 9, 'grid_width_squared': 81, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 4, 'grid_width': 12, 'num_colors': 3, 'num_cells': 36, 'num_objects': 10, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 8, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 12, 'grid_height_squared': 16, 'grid_width_squared': 144, 'objects_are_vertical': True}
+
+Example 3 Input Features:
+  {'grid_height': 2, 'grid_width': 6, 'num_colors': 3, 'num_cells': 12, 'num_objects': 9, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 3, 'max_area_object_height': 2, 'max_area_object_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 5, 'grid_height_squared': 4, 'grid_width_squared': 36, 'objects_are_vertical': True}
+
+Test 1 Input Features:
+  {'grid_height': 5, 'grid_width': 15, 'num_colors': 3, 'num_cells': 51, 'num_objects': 9, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 9, 'num_objects_of_max_size': 3, 'max_area_object_height': 5, 'max_area_object_width': 5, 'colored_object_max_height': 5, 'colored_object_max_width': 15, 'grid_height_squared': 25, 'grid_width_squared': 225}
+
+Test 1 Target height:5 width:5
+
+***Task: 4be741c5.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 14, 'grid_width': 16, 'num_colors': 3, 'num_cells': 224, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 93, 'num_objects_of_max_size': 1, 'max_area_object_height': 14, 'max_area_object_width': 10, 'colored_object_max_height': 14, 'colored_object_max_width': 8, 'grid_height_squared': 196, 'grid_width_squared': 256, 'objects_are_vertical': True}
+
+Example 2 Input Features:
+  {'grid_height': 9, 'grid_width': 7, 'num_colors': 3, 'num_cells': 63, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 24, 'num_objects_of_max_size': 2, 'max_area_object_height': 5, 'max_area_object_width': 7, 'colored_object_max_height': 5, 'colored_object_max_width': 7, 'grid_height_squared': 81, 'grid_width_squared': 49, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 11, 'grid_width': 9, 'num_colors': 4, 'num_cells': 99, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 40, 'num_objects_of_max_size': 1, 'max_area_object_height': 6, 'max_area_object_width': 9, 'colored_object_max_height': 3, 'colored_object_max_width': 9, 'grid_height_squared': 121, 'grid_width_squared': 81, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 14, 'grid_width': 14, 'num_colors': 4, 'num_cells': 196, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 58, 'num_objects_of_max_size': 2, 'max_area_object_height': 14, 'max_area_object_width': 6, 'colored_object_max_height': 14, 'colored_object_max_width': 6, 'grid_height_squared': 196, 'grid_width_squared': 196, 'objects_are_vertical': True}
+
+Test 1 Target height:1 width:4
+
+***Task: f5b8619d.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 2, 'subgrid_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 2 Input Features:
+  {'grid_height': 6, 'grid_width': 6, 'num_colors': 1, 'num_cells': 3, 'num_objects': 3, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 3, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 36, 'grid_width_squared': 36}
+
+Example 3 Input Features:
+  {'grid_height': 2, 'grid_width': 2, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 2, 'subgrid_width': 1, 'grid_height_squared': 4, 'grid_width_squared': 4}
+
+Test 1 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 1, 'num_cells': 3, 'num_objects': 3, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 3, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 2, 'subgrid_width': 2, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Test 1 Target height:8 width:8
+
+***Task: 91413438.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 5, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 4, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 6, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 4 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 3, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 2, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'subgrid_height': 2, 'subgrid_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Target height:21 width:21
+
+***Task: 469497ad.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 2, 'num_cells': 13, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 9, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 5, 'subgrid_height': 2, 'subgrid_width': 1, 'colored_object_max_height': 5, 'colored_object_max_width': 5, 'grid_height_squared': 25, 'grid_width_squared': 25}
+
+Example 2 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 3, 'num_cells': 13, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 5, 'colored_object_max_width': 5, 'grid_height_squared': 25, 'grid_width_squared': 25}
+
+Example 3 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 4, 'num_cells': 13, 'num_objects': 5, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 2, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 5, 'colored_object_max_width': 5, 'grid_height_squared': 25, 'grid_width_squared': 25}
+
+Test 1 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 5, 'num_cells': 13, 'num_objects': 7, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 5, 'colored_object_max_width': 5, 'grid_height_squared': 25, 'grid_width_squared': 25}
+
+Test 1 Target height:25 width:25
+
+***Task: eb281b96.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 17, 'num_colors': 1, 'num_cells': 17, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 17, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 17, 'grid_height_squared': 9, 'grid_width_squared': 289}
+
+Example 2 Input Features:
+  {'grid_height': 4, 'grid_width': 17, 'num_colors': 1, 'num_cells': 25, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 25, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 17, 'grid_height_squared': 16, 'grid_width_squared': 289}
+
+Test 1 Input Features:
+  {'grid_height': 5, 'grid_width': 17, 'num_colors': 1, 'num_cells': 33, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 33, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 17, 'grid_height_squared': 25, 'grid_width_squared': 289}
+
+Test 1 Target height:17 width:17
+
+***Task: eb5a1d5d.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 23, 'grid_width': 27, 'num_colors': 3, 'num_cells': 621, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 333, 'num_objects_of_max_size': 1, 'max_area_object_height': 23, 'max_area_object_width': 27, 'colored_object_max_height': 16, 'colored_object_max_width': 18, 'grid_height_squared': 529, 'grid_width_squared': 729, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 22, 'grid_width': 25, 'num_colors': 2, 'num_cells': 550, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 355, 'num_objects_of_max_size': 1, 'max_area_object_height': 22, 'max_area_object_width': 25, 'grid_height_squared': 484, 'grid_width_squared': 625, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 21, 'grid_width': 22, 'num_colors': 4, 'num_cells': 462, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 266, 'num_objects_of_max_size': 1, 'max_area_object_height': 21, 'max_area_object_width': 22, 'colored_object_max_height': 14, 'colored_object_max_width': 14, 'grid_height_squared': 441, 'grid_width_squared': 484, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 26, 'grid_width': 27, 'num_colors': 4, 'num_cells': 702, 'num_objects': 5, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 322, 'num_objects_of_max_size': 1, 'max_area_object_height': 26, 'max_area_object_width': 27, 'colored_object_max_height': 19, 'colored_object_max_width': 20, 'grid_height_squared': 676, 'grid_width_squared': 729, 'objects_are_vertical': False}
+
+Test 1 Target height:9 width:9
+
+***Task: feca6190.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 1, 'grid_width': 5, 'num_colors': 2, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 25}
+
+Example 2 Input Features:
+  {'grid_height': 1, 'grid_width': 5, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 25}
+
+Example 3 Input Features:
+  {'grid_height': 1, 'grid_width': 5, 'num_colors': 3, 'num_cells': 3, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 3, 'max_area_object_height': 1, 'max_area_object_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 25}
+
+Example 4 Input Features:
+  {'grid_height': 1, 'grid_width': 5, 'num_colors': 3, 'num_cells': 3, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 3, 'max_area_object_height': 1, 'max_area_object_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 25}
+
+Example 5 Input Features:
+  {'grid_height': 1, 'grid_width': 5, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 25}
+
+Test 1 Input Features:
+  {'grid_height': 1, 'grid_width': 5, 'num_colors': 4, 'num_cells': 4, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 4, 'max_area_object_height': 1, 'max_area_object_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 25}
+
+Test 1 Target height:20 width:20
+
+***Task: 234bbc79.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 9, 'num_colors': 3, 'num_cells': 9, 'num_objects': 6, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 3, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 9, 'grid_height_squared': 9, 'grid_width_squared': 81, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 11, 'num_colors': 4, 'num_cells': 11, 'num_objects': 7, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 7, 'grid_height_squared': 9, 'grid_width_squared': 121, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 11, 'num_colors': 4, 'num_cells': 11, 'num_objects': 7, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 7, 'grid_height_squared': 9, 'grid_width_squared': 121, 'objects_are_vertical': False}
+
+Example 4 Input Features:
+  {'grid_height': 3, 'grid_width': 11, 'num_colors': 3, 'num_cells': 11, 'num_objects': 6, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 6, 'grid_height_squared': 9, 'grid_width_squared': 121}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 11, 'num_colors': 5, 'num_cells': 13, 'num_objects': 9, 'num_objects_of_main_color': 5, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 4, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 9, 'grid_height_squared': 9, 'grid_width_squared': 121}
+
+Test 1 Target height:3 width:8
+
+***Task: a416b8f3.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 4, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 2 Input Features:
+  {'grid_height': 4, 'grid_width': 3, 'num_colors': 4, 'num_cells': 7, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 3, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 16, 'grid_width_squared': 9, 'objects_are_vertical': True}
+
+Example 3 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 5, 'num_cells': 11, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 2, 'max_area_object_height': 3, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 2, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Test 1 Input Features:
+  {'grid_height': 5, 'grid_width': 4, 'num_colors': 4, 'num_cells': 9, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 2, 'colored_object_max_width': 3, 'grid_height_squared': 25, 'grid_width_squared': 16}
+
+Test 1 Target height:5 width:8
+
+***Task: a740d043.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 5, 'grid_width': 7, 'num_colors': 3, 'num_cells': 35, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 29, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 7, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 25, 'grid_width_squared': 49, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 7, 'grid_width': 7, 'num_colors': 3, 'num_cells': 49, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 45, 'num_objects_of_max_size': 1, 'max_area_object_height': 7, 'max_area_object_width': 7, 'colored_object_max_height': 2, 'colored_object_max_width': 1, 'grid_height_squared': 49, 'grid_width_squared': 49, 'objects_are_vertical': True}
+
+Example 3 Input Features:
+  {'grid_height': 7, 'grid_width': 6, 'num_colors': 3, 'num_cells': 42, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 36, 'num_objects_of_max_size': 1, 'max_area_object_height': 7, 'max_area_object_width': 6, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 49, 'grid_width_squared': 36}
+
+Test 1 Input Features:
+  {'grid_height': 6, 'grid_width': 6, 'num_colors': 3, 'num_cells': 36, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 33, 'num_objects_of_max_size': 1, 'max_area_object_height': 6, 'max_area_object_width': 6, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 36, 'grid_width_squared': 36}
+
+Test 1 Target height:2 width:2
+
+***Task: ac0a08a4.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 2, 'subgrid_width': 2, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 3, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 3, 'max_area_object_height': 1, 'max_area_object_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 5, 'num_cells': 5, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 5, 'max_area_object_height': 1, 'max_area_object_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 4, 'num_cells': 4, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 4, 'max_area_object_height': 1, 'max_area_object_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Target height:12 width:12
+
+***Task: 5daaa586.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 22, 'grid_width': 22, 'num_colors': 4, 'num_cells': 101, 'num_objects': 21, 'num_objects_of_main_color': 16, 'num_cells_in_largest_object': 22, 'num_objects_of_max_size': 2, 'max_area_object_height': 3, 'max_area_object_width': 10, 'colored_object_max_height': 22, 'colored_object_max_width': 22, 'grid_height_squared': 484, 'grid_width_squared': 484}
+
+Example 2 Input Features:
+  {'grid_height': 12, 'grid_width': 12, 'num_colors': 4, 'num_cells': 53, 'num_objects': 15, 'num_objects_of_main_color': 10, 'num_cells_in_largest_object': 12, 'num_objects_of_max_size': 1, 'max_area_object_height': 12, 'max_area_object_width': 1, 'colored_object_max_height': 12, 'colored_object_max_width': 12, 'grid_height_squared': 144, 'grid_width_squared': 144}
+
+Example 3 Input Features:
+  {'grid_height': 14, 'grid_width': 15, 'num_colors': 4, 'num_cells': 78, 'num_objects': 23, 'num_objects_of_main_color': 16, 'num_cells_in_largest_object': 19, 'num_objects_of_max_size': 1, 'max_area_object_height': 14, 'max_area_object_width': 3, 'colored_object_max_height': 14, 'colored_object_max_width': 15, 'grid_height_squared': 196, 'grid_width_squared': 225}
+
+Test 1 Input Features:
+  {'grid_height': 16, 'grid_width': 15, 'num_colors': 4, 'num_cells': 76, 'num_objects': 22, 'num_objects_of_main_color': 16, 'num_cells_in_largest_object': 15, 'num_objects_of_max_size': 2, 'max_area_object_height': 13, 'max_area_object_width': 3, 'colored_object_max_height': 16, 'colored_object_max_width': 15, 'grid_height_squared': 256, 'grid_width_squared': 225}
+
+Test 1 Target height:12 width:10
+
+***Task: ce602527.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 17, 'grid_width': 17, 'num_colors': 4, 'num_cells': 289, 'num_objects': 6, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 207, 'num_objects_of_max_size': 1, 'max_area_object_height': 17, 'max_area_object_width': 17, 'colored_object_max_height': 8, 'colored_object_max_width': 10, 'grid_height_squared': 289, 'grid_width_squared': 289, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 18, 'grid_width': 18, 'num_colors': 4, 'num_cells': 324, 'num_objects': 5, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 276, 'num_objects_of_max_size': 1, 'max_area_object_height': 18, 'max_area_object_width': 18, 'colored_object_max_height': 8, 'colored_object_max_width': 5, 'grid_height_squared': 324, 'grid_width_squared': 324}
+
+Example 3 Input Features:
+  {'grid_height': 19, 'grid_width': 17, 'num_colors': 4, 'num_cells': 323, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 287, 'num_objects_of_max_size': 1, 'max_area_object_height': 19, 'max_area_object_width': 17, 'colored_object_max_height': 6, 'colored_object_max_width': 5, 'grid_height_squared': 361, 'grid_width_squared': 289}
+
+Example 4 Input Features:
+  {'grid_height': 15, 'grid_width': 17, 'num_colors': 4, 'num_cells': 255, 'num_objects': 7, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 196, 'num_objects_of_max_size': 1, 'max_area_object_height': 15, 'max_area_object_width': 17, 'colored_object_max_height': 6, 'colored_object_max_width': 7, 'grid_height_squared': 225, 'grid_width_squared': 289, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 18, 'grid_width': 18, 'num_colors': 4, 'num_cells': 324, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 287, 'num_objects_of_max_size': 1, 'max_area_object_height': 18, 'max_area_object_width': 18, 'colored_object_max_height': 6, 'colored_object_max_width': 6, 'grid_height_squared': 324, 'grid_width_squared': 324}
+
+Test 1 Target height:4 width:3
+
+***Task: 963e52fc.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 5, 'grid_width': 6, 'num_colors': 2, 'num_cells': 12, 'num_objects': 6, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 6, 'max_area_object_height': 2, 'max_area_object_width': 1, 'colored_object_max_height': 2, 'colored_object_max_width': 5, 'grid_height_squared': 25, 'grid_width_squared': 36, 'objects_are_vertical': True}
+
+Example 2 Input Features:
+  {'grid_height': 5, 'grid_width': 7, 'num_colors': 2, 'num_cells': 7, 'num_objects': 5, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 2, 'colored_object_max_height': 1, 'colored_object_max_width': 7, 'grid_height_squared': 25, 'grid_width_squared': 49, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 5, 'grid_width': 8, 'num_colors': 2, 'num_cells': 16, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 10, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 8, 'colored_object_max_height': 2, 'colored_object_max_width': 8, 'grid_height_squared': 25, 'grid_width_squared': 64, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 5, 'grid_width': 9, 'num_colors': 2, 'num_cells': 18, 'num_objects': 6, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 3, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 2, 'colored_object_max_width': 8, 'grid_height_squared': 25, 'grid_width_squared': 81, 'objects_are_vertical': True}
+
+Test 1 Target height:5 width:18
+
+***Task: 47c1f68c.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 11, 'grid_width': 11, 'num_colors': 2, 'num_cells': 26, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 21, 'num_objects_of_max_size': 1, 'max_area_object_height': 11, 'max_area_object_width': 11, 'subgrid_height': 2, 'subgrid_width': 2, 'colored_object_max_height': 11, 'colored_object_max_width': 11, 'grid_height_squared': 121, 'grid_width_squared': 121}
+
+Example 2 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 2, 'num_cells': 22, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 17, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 9, 'subgrid_height': 2, 'subgrid_width': 2, 'colored_object_max_height': 9, 'colored_object_max_width': 9, 'grid_height_squared': 81, 'grid_width_squared': 81}
+
+Example 3 Input Features:
+  {'grid_height': 7, 'grid_width': 7, 'num_colors': 2, 'num_cells': 17, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 13, 'num_objects_of_max_size': 1, 'max_area_object_height': 7, 'max_area_object_width': 7, 'subgrid_height': 2, 'subgrid_width': 2, 'colored_object_max_height': 7, 'colored_object_max_width': 7, 'grid_height_squared': 49, 'grid_width_squared': 49}
+
+Test 1 Input Features:
+  {'grid_height': 13, 'grid_width': 13, 'num_colors': 2, 'num_cells': 32, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 25, 'num_objects_of_max_size': 1, 'max_area_object_height': 13, 'max_area_object_width': 13, 'subgrid_height': 2, 'subgrid_width': 2, 'colored_object_max_height': 13, 'colored_object_max_width': 13, 'grid_height_squared': 169, 'grid_width_squared': 169, 'objects_are_vertical': True}
+
+Test 1 Target height:12 width:12
+
+***Task: c59eb873.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 7, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 2, 'subgrid_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 2 Input Features:
+  {'grid_height': 2, 'grid_width': 2, 'num_colors': 3, 'num_cells': 4, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 1, 'grid_height_squared': 4, 'grid_width_squared': 4, 'objects_are_vertical': True}
+
+Example 3 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 4, 'num_cells': 9, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 2, 'colored_object_max_height': 4, 'colored_object_max_width': 2, 'grid_height_squared': 16, 'grid_width_squared': 16, 'objects_are_vertical': True}
+
+Test 1 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 7, 'num_cells': 13, 'num_objects': 7, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 2, 'grid_height_squared': 25, 'grid_width_squared': 25}
+
+Test 1 Target height:10 width:10
+
+***Task: 746b3537.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 9, 'num_objects': 3, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 3, 'max_area_object_height': 1, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 9, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 3, 'max_area_object_height': 3, 'max_area_object_width': 1, 'colored_object_max_height': 3, 'colored_object_max_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': True}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 5, 'num_colors': 4, 'num_cells': 15, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 25, 'objects_are_vertical': True}
+
+Example 4 Input Features:
+  {'grid_height': 4, 'grid_width': 2, 'num_colors': 3, 'num_cells': 8, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 1, 'colored_object_max_width': 2, 'grid_height_squared': 16, 'grid_width_squared': 4, 'objects_are_vertical': False}
+
+Example 5 Input Features:
+  {'grid_height': 6, 'grid_width': 4, 'num_colors': 4, 'num_cells': 24, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 8, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 4, 'colored_object_max_height': 2, 'colored_object_max_width': 4, 'grid_height_squared': 36, 'grid_width_squared': 16, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 4, 'grid_width': 9, 'num_colors': 5, 'num_cells': 36, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 12, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 3, 'colored_object_max_height': 4, 'colored_object_max_width': 2, 'grid_height_squared': 16, 'grid_width_squared': 81, 'objects_are_vertical': True}
+
+Test 1 Target height:1 width:5
+
+***Task: 6ecd11f4.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 27, 'grid_width': 21, 'num_colors': 8, 'num_cells': 134, 'num_objects': 10, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 125, 'num_objects_of_max_size': 1, 'max_area_object_height': 15, 'max_area_object_width': 15, 'colored_object_max_height': 19, 'colored_object_max_width': 15, 'grid_height_squared': 729, 'grid_width_squared': 441}
+
+Example 2 Input Features:
+  {'grid_height': 27, 'grid_width': 25, 'num_colors': 8, 'num_cells': 63, 'num_objects': 9, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 54, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 9, 'colored_object_max_height': 9, 'colored_object_max_width': 9, 'grid_height_squared': 729, 'grid_width_squared': 625}
+
+Example 3 Input Features:
+  {'grid_height': 22, 'grid_width': 22, 'num_colors': 9, 'num_cells': 176, 'num_objects': 15, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 160, 'num_objects_of_max_size': 1, 'max_area_object_height': 16, 'max_area_object_width': 16, 'colored_object_max_height': 16, 'colored_object_max_width': 16, 'grid_height_squared': 484, 'grid_width_squared': 484}
+
+Test 1 Input Features:
+  {'grid_height': 21, 'grid_width': 24, 'num_colors': 9, 'num_cells': 115, 'num_objects': 14, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 99, 'num_objects_of_max_size': 1, 'max_area_object_height': 12, 'max_area_object_width': 12, 'colored_object_max_height': 12, 'colored_object_max_width': 12, 'grid_height_squared': 441, 'grid_width_squared': 576, 'objects_are_vertical': False}
+
+Test 1 Target height:4 width:4
+
+***Task: 8a004b2b.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 17, 'grid_width': 17, 'num_colors': 4, 'num_cells': 25, 'num_objects': 10, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 5, 'colored_object_max_height': 11, 'colored_object_max_width': 14, 'grid_height_squared': 289, 'grid_width_squared': 289, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 17, 'grid_width': 18, 'num_colors': 4, 'num_cells': 16, 'num_objects': 9, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 12, 'colored_object_max_width': 8, 'grid_height_squared': 289, 'grid_width_squared': 324}
+
+Example 3 Input Features:
+  {'grid_height': 16, 'grid_width': 18, 'num_colors': 4, 'num_cells': 36, 'num_objects': 10, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 9, 'num_objects_of_max_size': 3, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 12, 'colored_object_max_width': 11, 'grid_height_squared': 256, 'grid_width_squared': 324}
+
+Test 1 Input Features:
+  {'grid_height': 19, 'grid_width': 18, 'num_colors': 4, 'num_cells': 42, 'num_objects': 9, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 2, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 14, 'colored_object_max_width': 18, 'grid_height_squared': 361, 'grid_width_squared': 324, 'objects_are_vertical': False}
+
+Test 1 Target height:14 width:18
+
+***Task: bbc9ae5d.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 1, 'grid_width': 6, 'num_colors': 1, 'num_cells': 2, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 2, 'grid_height_squared': 1, 'grid_width_squared': 36}
+
+Example 2 Input Features:
+  {'grid_height': 1, 'grid_width': 8, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 64}
+
+Example 3 Input Features:
+  {'grid_height': 1, 'grid_width': 10, 'num_colors': 1, 'num_cells': 3, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 3, 'grid_height_squared': 1, 'grid_width_squared': 100}
+
+Example 4 Input Features:
+  {'grid_height': 1, 'grid_width': 6, 'num_colors': 1, 'num_cells': 4, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 4, 'grid_height_squared': 1, 'grid_width_squared': 36}
+
+Example 5 Input Features:
+  {'grid_height': 1, 'grid_width': 6, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 36}
+
+Test 1 Input Features:
+  {'grid_height': 1, 'grid_width': 12, 'num_colors': 1, 'num_cells': 3, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 3, 'grid_height_squared': 1, 'grid_width_squared': 144}
+
+Test 1 Target height:6 width:12
+
+***Task: 3f7978a0.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 2, 'num_cells': 16, 'num_objects': 12, 'num_objects_of_main_color': 10, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 2, 'max_area_object_height': 3, 'max_area_object_width': 1, 'subgrid_height': 3, 'subgrid_width': 0, 'colored_object_max_height': 8, 'colored_object_max_width': 8, 'grid_height_squared': 81, 'grid_width_squared': 81, 'objects_are_vertical': True}
+
+Example 2 Input Features:
+  {'grid_height': 9, 'grid_width': 11, 'num_colors': 2, 'num_cells': 23, 'num_objects': 11, 'num_objects_of_main_color': 9, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 9, 'colored_object_max_width': 11, 'grid_height_squared': 81, 'grid_width_squared': 121}
+
+Example 3 Input Features:
+  {'grid_height': 11, 'grid_width': 13, 'num_colors': 2, 'num_cells': 26, 'num_objects': 15, 'num_objects_of_main_color': 13, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 2, 'max_area_object_height': 4, 'max_area_object_width': 1, 'colored_object_max_height': 11, 'colored_object_max_width': 9, 'grid_height_squared': 121, 'grid_width_squared': 169}
+
+Test 1 Input Features:
+  {'grid_height': 14, 'grid_width': 13, 'num_colors': 2, 'num_cells': 35, 'num_objects': 19, 'num_objects_of_main_color': 17, 'num_cells_in_largest_object': 8, 'num_objects_of_max_size': 2, 'max_area_object_height': 8, 'max_area_object_width': 1, 'subgrid_height': 2, 'subgrid_width': 2, 'colored_object_max_height': 14, 'colored_object_max_width': 13, 'grid_height_squared': 196, 'grid_width_squared': 169, 'objects_are_vertical': True}
+
+Test 1 Target height:10 width:4
+
+***Task: 9af7a82c.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 9, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 2, 'subgrid_width': 1, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 4, 'num_colors': 4, 'num_cells': 12, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 4, 'subgrid_height': 2, 'subgrid_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 16, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 4, 'grid_width': 3, 'num_colors': 4, 'num_cells': 12, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 2, 'colored_object_max_width': 3, 'grid_height_squared': 16, 'grid_width_squared': 9}
+
+Example 4 Input Features:
+  {'grid_height': 4, 'grid_width': 3, 'num_colors': 3, 'num_cells': 12, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 3, 'subgrid_height': 2, 'subgrid_width': 0, 'colored_object_max_height': 3, 'colored_object_max_width': 2, 'grid_height_squared': 16, 'grid_width_squared': 9, 'objects_are_vertical': True}
+
+Test 1 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 5, 'num_cells': 16, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 4, 'colored_object_max_height': 2, 'colored_object_max_width': 3, 'grid_height_squared': 16, 'grid_width_squared': 16, 'objects_are_vertical': False}
+
+Test 1 Target height:6 width:5
+
+***Task: f25fbde4.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 1, 'num_cells': 8, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 8, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 4, 'grid_height_squared': 81, 'grid_width_squared': 81}
+
+Example 2 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 1, 'num_cells': 4, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 81, 'grid_width_squared': 81}
+
+Example 3 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 1, 'num_cells': 6, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 3, 'grid_height_squared': 81, 'grid_width_squared': 81}
+
+Test 1 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 1, 'num_cells': 7, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 5, 'grid_height_squared': 81, 'grid_width_squared': 81}
+
+Test 1 Target height:6 width:10
+
+***Task: 9aec4887.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 15, 'grid_width': 16, 'num_colors': 5, 'num_cells': 26, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 10, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 4, 'grid_height_squared': 225, 'grid_width_squared': 256}
+
+Example 2 Input Features:
+  {'grid_height': 14, 'grid_width': 16, 'num_colors': 5, 'num_cells': 18, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 196, 'grid_width_squared': 256}
+
+Example 3 Input Features:
+  {'grid_height': 15, 'grid_width': 15, 'num_colors': 5, 'num_cells': 26, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 10, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 4, 'grid_height_squared': 225, 'grid_width_squared': 225}
+
+Test 1 Input Features:
+  {'grid_height': 16, 'grid_width': 16, 'num_colors': 5, 'num_cells': 36, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 5, 'colored_object_max_height': 5, 'colored_object_max_width': 5, 'grid_height_squared': 256, 'grid_width_squared': 256}
+
+Test 1 Target height:7 width:7
+
+***Task: 7b7f7511.json training_data***
+
+Example 1 Input Features:
+  {'grid_height': 4, 'grid_width': 8, 'num_colors': 3, 'num_cells': 32, 'num_objects': 6, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 8, 'colored_object_max_height': 4, 'colored_object_max_width': 8, 'grid_height_squared': 16, 'grid_width_squared': 64, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 6, 'num_colors': 3, 'num_cells': 18, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 8, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 6, 'colored_object_max_height': 2, 'colored_object_max_width': 5, 'grid_height_squared': 9, 'grid_width_squared': 36}
+
+Example 3 Input Features:
+  {'grid_height': 6, 'grid_width': 2, 'num_colors': 3, 'num_cells': 12, 'num_objects': 6, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 6, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 5, 'colored_object_max_width': 2, 'grid_height_squared': 36, 'grid_width_squared': 4, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 8, 'grid_width': 3, 'num_colors': 4, 'num_cells': 24, 'num_objects': 10, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 2, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 6, 'colored_object_max_width': 3, 'grid_height_squared': 64, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Test 1 Target height:4 width:3
+
+***Task: f0afb749.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 1, 'num_cells': 3, 'num_objects': 3, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 3, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 3, 'subgrid_width': 2, 'grid_height_squared': 25, 'grid_width_squared': 25}
+
+Example 2 Input Features:
+  {'grid_height': 2, 'grid_width': 2, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 2, 'subgrid_width': 1, 'grid_height_squared': 4, 'grid_width_squared': 4}
+
+Example 3 Input Features:
+  {'grid_height': 6, 'grid_width': 6, 'num_colors': 1, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 36, 'grid_width_squared': 36}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 2, 'subgrid_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Target height:6 width:6
+
+***Task: 2037f2c7.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 23, 'grid_width': 25, 'num_colors': 4, 'num_cells': 186, 'num_objects': 16, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 32, 'num_objects_of_max_size': 2, 'max_area_object_height': 15, 'max_area_object_width': 3, 'colored_object_max_height': 20, 'colored_object_max_width': 16, 'grid_height_squared': 529, 'grid_width_squared': 625, 'objects_are_vertical': True}
+
+Example 2 Input Features:
+  {'grid_height': 25, 'grid_width': 25, 'num_colors': 6, 'num_cells': 147, 'num_objects': 32, 'num_objects_of_main_color': 8, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 8, 'colored_object_max_height': 17, 'colored_object_max_width': 20, 'grid_height_squared': 625, 'grid_width_squared': 625}
+
+Example 3 Input Features:
+  {'grid_height': 22, 'grid_width': 22, 'num_colors': 4, 'num_cells': 78, 'num_objects': 13, 'num_objects_of_main_color': 5, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 1, 'max_area_object_height': 6, 'max_area_object_width': 4, 'colored_object_max_height': 17, 'colored_object_max_width': 17, 'grid_height_squared': 484, 'grid_width_squared': 484}
+
+Test 1 Input Features:
+  {'grid_height': 24, 'grid_width': 25, 'num_colors': 5, 'num_cells': 130, 'num_objects': 27, 'num_objects_of_main_color': 12, 'num_cells_in_largest_object': 18, 'num_objects_of_max_size': 2, 'max_area_object_height': 3, 'max_area_object_width': 8, 'colored_object_max_height': 13, 'colored_object_max_width': 23, 'grid_height_squared': 576, 'grid_width_squared': 625}
+
+Test 1 Target height:2 width:10
+
+***Task: ce8d95cc.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 10, 'grid_width': 11, 'num_colors': 4, 'num_cells': 38, 'num_objects': 8, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 10, 'num_objects_of_max_size': 2, 'max_area_object_height': 10, 'max_area_object_width': 1, 'colored_object_max_height': 10, 'colored_object_max_width': 11, 'grid_height_squared': 100, 'grid_width_squared': 121}
+
+Example 2 Input Features:
+  {'grid_height': 12, 'grid_width': 11, 'num_colors': 5, 'num_cells': 52, 'num_objects': 11, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 12, 'num_objects_of_max_size': 3, 'max_area_object_height': 12, 'max_area_object_width': 1, 'colored_object_max_height': 12, 'colored_object_max_width': 11, 'grid_height_squared': 144, 'grid_width_squared': 121}
+
+Example 3 Input Features:
+  {'grid_height': 12, 'grid_width': 9, 'num_colors': 3, 'num_cells': 28, 'num_objects': 5, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 9, 'num_objects_of_max_size': 2, 'max_area_object_height': 9, 'max_area_object_width': 1, 'colored_object_max_height': 12, 'colored_object_max_width': 9, 'grid_height_squared': 144, 'grid_width_squared': 81}
+
+Example 4 Input Features:
+  {'grid_height': 12, 'grid_width': 11, 'num_colors': 5, 'num_cells': 51, 'num_objects': 11, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 11, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 11, 'colored_object_max_height': 12, 'colored_object_max_width': 11, 'grid_height_squared': 144, 'grid_width_squared': 121}
+
+Test 1 Input Features:
+  {'grid_height': 12, 'grid_width': 13, 'num_colors': 7, 'num_cells': 75, 'num_objects': 19, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 12, 'num_objects_of_max_size': 2, 'max_area_object_height': 12, 'max_area_object_width': 1, 'colored_object_max_height': 12, 'colored_object_max_width': 13, 'grid_height_squared': 144, 'grid_width_squared': 169}
+
+Test 1 Target height:7 width:9
+
+***Task: 6f473927.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 10, 'grid_width': 5, 'num_colors': 1, 'num_cells': 14, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 14, 'num_objects_of_max_size': 1, 'max_area_object_height': 8, 'max_area_object_width': 4, 'subgrid_height': 3, 'subgrid_width': 0, 'grid_height_squared': 100, 'grid_width_squared': 25}
+
+Example 2 Input Features:
+  {'grid_height': 8, 'grid_width': 6, 'num_colors': 1, 'num_cells': 18, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 18, 'num_objects_of_max_size': 1, 'max_area_object_height': 8, 'max_area_object_width': 5, 'grid_height_squared': 64, 'grid_width_squared': 36}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 4, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 4 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 5, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Input Features:
+  {'grid_height': 12, 'grid_width': 6, 'num_colors': 1, 'num_cells': 18, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 18, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 5, 'grid_height_squared': 144, 'grid_width_squared': 36}
+
+Test 1 Target height:12 width:12
+
+***Task: 2753e76c.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 16, 'grid_width': 16, 'num_colors': 3, 'num_cells': 74, 'num_objects': 6, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 25, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 5, 'colored_object_max_height': 11, 'colored_object_max_width': 12, 'grid_height_squared': 256, 'grid_width_squared': 256}
+
+Example 2 Input Features:
+  {'grid_height': 16, 'grid_width': 16, 'num_colors': 4, 'num_cells': 79, 'num_objects': 10, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 2, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 11, 'colored_object_max_width': 13, 'grid_height_squared': 256, 'grid_width_squared': 256}
+
+Example 3 Input Features:
+  {'grid_height': 16, 'grid_width': 16, 'num_colors': 4, 'num_cells': 102, 'num_objects': 11, 'num_objects_of_main_color': 5, 'num_cells_in_largest_object': 25, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 5, 'colored_object_max_height': 14, 'colored_object_max_width': 16, 'grid_height_squared': 256, 'grid_width_squared': 256}
+
+Test 1 Input Features:
+  {'grid_height': 16, 'grid_width': 16, 'num_colors': 3, 'num_cells': 71, 'num_objects': 11, 'num_objects_of_main_color': 5, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'subgrid_height': 3, 'subgrid_width': 3, 'colored_object_max_height': 14, 'colored_object_max_width': 15, 'grid_height_squared': 256, 'grid_width_squared': 256}
+
+Test 1 Target height:3 width:5
+
+***Task: a680ac02.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 18, 'grid_width': 17, 'num_colors': 4, 'num_cells': 56, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 2, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 4, 'grid_height_squared': 324, 'grid_width_squared': 289}
+
+Example 2 Input Features:
+  {'grid_height': 21, 'grid_width': 16, 'num_colors': 4, 'num_cells': 56, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 2, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 4, 'grid_height_squared': 441, 'grid_width_squared': 256}
+
+Example 3 Input Features:
+  {'grid_height': 24, 'grid_width': 22, 'num_colors': 6, 'num_cells': 84, 'num_objects': 6, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 3, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 4, 'grid_height_squared': 576, 'grid_width_squared': 484}
+
+Test 1 Input Features:
+  {'grid_height': 22, 'grid_width': 21, 'num_colors': 5, 'num_cells': 68, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 2, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 4, 'grid_height_squared': 484, 'grid_width_squared': 441}
+
+Test 1 Target height:12 width:4
+
+***Task: c658a4bd.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 13, 'grid_width': 13, 'num_colors': 4, 'num_cells': 59, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 25, 'num_objects_of_max_size': 1, 'max_area_object_height': 8, 'max_area_object_width': 8, 'subgrid_height': 3, 'subgrid_width': 0, 'colored_object_max_height': 8, 'colored_object_max_width': 8, 'grid_height_squared': 169, 'grid_width_squared': 169}
+
+Example 2 Input Features:
+  {'grid_height': 16, 'grid_width': 16, 'num_colors': 5, 'num_cells': 68, 'num_objects': 6, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 21, 'num_objects_of_max_size': 1, 'max_area_object_height': 7, 'max_area_object_width': 9, 'colored_object_max_height': 7, 'colored_object_max_width': 9, 'grid_height_squared': 256, 'grid_width_squared': 256}
+
+Test 1 Input Features:
+  {'grid_height': 19, 'grid_width': 19, 'num_colors': 5, 'num_cells': 96, 'num_objects': 7, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 24, 'num_objects_of_max_size': 1, 'max_area_object_height': 10, 'max_area_object_width': 10, 'colored_object_max_height': 10, 'colored_object_max_width': 10, 'grid_height_squared': 361, 'grid_width_squared': 361, 'objects_are_vertical': False}
+
+Test 1 Target height:10 width:10
+
+***Task: 94133066.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 23, 'grid_width': 19, 'num_colors': 5, 'num_cells': 93, 'num_objects': 9, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 75, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 10, 'colored_object_max_height': 20, 'colored_object_max_width': 12, 'grid_height_squared': 529, 'grid_width_squared': 361, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 22, 'grid_width': 21, 'num_colors': 5, 'num_cells': 84, 'num_objects': 8, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 69, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 9, 'colored_object_max_height': 18, 'colored_object_max_width': 13, 'grid_height_squared': 484, 'grid_width_squared': 441}
+
+Example 3 Input Features:
+  {'grid_height': 22, 'grid_width': 25, 'num_colors': 5, 'num_cells': 123, 'num_objects': 8, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 103, 'num_objects_of_max_size': 1, 'max_area_object_height': 12, 'max_area_object_width': 10, 'colored_object_max_height': 19, 'colored_object_max_width': 13, 'grid_height_squared': 484, 'grid_width_squared': 625, 'objects_are_vertical': True}
+
+Test 1 Input Features:
+  {'grid_height': 19, 'grid_width': 30, 'num_colors': 5, 'num_cells': 133, 'num_objects': 8, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 112, 'num_objects_of_max_size': 1, 'max_area_object_height': 13, 'max_area_object_width': 10, 'colored_object_max_height': 13, 'colored_object_max_width': 25, 'grid_height_squared': 361, 'grid_width_squared': 900, 'objects_are_vertical': True}
+
+Test 1 Target height:10 width:13
+
+***Task: 310f3251.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 2, 'grid_width': 2, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 2, 'subgrid_width': 0, 'grid_height_squared': 4, 'grid_width_squared': 4}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 2, 'subgrid_width': 0, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 3 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 1, 'num_cells': 2, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 1, 'grid_height_squared': 25, 'grid_width_squared': 25}
+
+Example 4 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 1, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 3, 'subgrid_width': 0, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Example 5 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Test 1 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 1, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 3, 'subgrid_width': 0, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Test 1 Target height:12 width:12
+
+***Task: c92b942c.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 3, 'subgrid_width': 0, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 2 Input Features:
+  {'grid_height': 2, 'grid_width': 4, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 4, 'grid_width_squared': 16}
+
+Example 3 Input Features:
+  {'grid_height': 4, 'grid_width': 6, 'num_colors': 1, 'num_cells': 3, 'num_objects': 3, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 3, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 3, 'subgrid_width': 0, 'grid_height_squared': 16, 'grid_width_squared': 36}
+
+Example 4 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 25, 'grid_width_squared': 25}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Target height:9 width:9
+
+***Task: b7999b51.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 19, 'grid_width': 18, 'num_colors': 4, 'num_cells': 75, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 32, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 7, 'colored_object_max_height': 5, 'colored_object_max_width': 12, 'grid_height_squared': 361, 'grid_width_squared': 324, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 10, 'grid_width': 15, 'num_colors': 3, 'num_cells': 33, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 17, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 7, 'colored_object_max_height': 3, 'colored_object_max_width': 7, 'grid_height_squared': 100, 'grid_width_squared': 225, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 10, 'grid_width': 15, 'num_colors': 3, 'num_cells': 37, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 21, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 6, 'colored_object_max_height': 4, 'colored_object_max_width': 6, 'grid_height_squared': 100, 'grid_width_squared': 225, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 12, 'grid_width': 18, 'num_colors': 5, 'num_cells': 81, 'num_objects': 6, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 36, 'num_objects_of_max_size': 1, 'max_area_object_height': 6, 'max_area_object_width': 6, 'colored_object_max_height': 6, 'colored_object_max_width': 6, 'grid_height_squared': 144, 'grid_width_squared': 324, 'objects_are_vertical': False}
+
+Test 1 Target height:6 width:5
+
+***Task: fb791726.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 6, 'grid_width': 6, 'num_colors': 1, 'num_cells': 4, 'num_objects': 4, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 4, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 36, 'grid_width_squared': 36}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'subgrid_height': 2, 'subgrid_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 3 Input Features:
+  {'grid_height': 7, 'grid_width': 7, 'num_colors': 1, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 49, 'grid_width_squared': 49}
+
+Test 1 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 1, 'num_cells': 2, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Test 1 Target height:8 width:8
+
+***Task: 60c09cac.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 3, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 2, 'subgrid_height': 2, 'subgrid_width': 1, 'colored_object_max_height': 1, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 2, 'num_cells': 5, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'subgrid_height': 2, 'subgrid_width': 1, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Test 1 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 2, 'num_cells': 7, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 3, 'subgrid_height': 2, 'subgrid_width': 1, 'colored_object_max_height': 4, 'colored_object_max_width': 3, 'grid_height_squared': 25, 'grid_width_squared': 25}
+
+Test 1 Target height:10 width:10
+
+***Task: 7039b2d7.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 21, 'grid_width': 21, 'num_colors': 2, 'num_cells': 441, 'num_objects': 13, 'num_objects_of_main_color': 12, 'num_cells_in_largest_object': 99, 'num_objects_of_max_size': 1, 'max_area_object_height': 21, 'max_area_object_width': 21, 'subgrid_height': 3, 'subgrid_width': 4, 'grid_height_squared': 441, 'grid_width_squared': 441}
+
+Example 2 Input Features:
+  {'grid_height': 27, 'grid_width': 27, 'num_colors': 2, 'num_cells': 729, 'num_objects': 26, 'num_objects_of_main_color': 25, 'num_cells_in_largest_object': 200, 'num_objects_of_max_size': 1, 'max_area_object_height': 27, 'max_area_object_width': 27, 'subgrid_height': 5, 'subgrid_width': 5, 'grid_height_squared': 729, 'grid_width_squared': 729}
+
+Example 3 Input Features:
+  {'grid_height': 10, 'grid_width': 10, 'num_colors': 2, 'num_cells': 100, 'num_objects': 7, 'num_objects_of_main_color': 6, 'num_cells_in_largest_object': 37, 'num_objects_of_max_size': 1, 'max_area_object_height': 10, 'max_area_object_width': 10, 'subgrid_height': 2, 'subgrid_width': 3, 'grid_height_squared': 100, 'grid_width_squared': 100}
+
+Test 1 Input Features:
+  {'grid_height': 16, 'grid_width': 16, 'num_colors': 2, 'num_cells': 256, 'num_objects': 16, 'num_objects_of_main_color': 15, 'num_cells_in_largest_object': 88, 'num_objects_of_max_size': 1, 'max_area_object_height': 16, 'max_area_object_width': 16, 'subgrid_height': 3, 'subgrid_width': 5, 'grid_height_squared': 256, 'grid_width_squared': 256}
+
+Test 1 Target height:3 width:5
+
+***Task: 0a1d4ef5.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 30, 'grid_width': 30, 'num_colors': 7, 'num_cells': 536, 'num_objects': 120, 'num_objects_of_main_color': 52, 'num_cells_in_largest_object': 35, 'num_objects_of_max_size': 1, 'max_area_object_height': 16, 'max_area_object_width': 4, 'colored_object_max_height': 30, 'colored_object_max_width': 30, 'grid_height_squared': 900, 'grid_width_squared': 900}
+
+Example 2 Input Features:
+  {'grid_height': 30, 'grid_width': 30, 'num_colors': 7, 'num_cells': 477, 'num_objects': 135, 'num_objects_of_main_color': 66, 'num_cells_in_largest_object': 32, 'num_objects_of_max_size': 1, 'max_area_object_height': 8, 'max_area_object_width': 10, 'colored_object_max_height': 30, 'colored_object_max_width': 30, 'grid_height_squared': 900, 'grid_width_squared': 900}
+
+Example 3 Input Features:
+  {'grid_height': 30, 'grid_width': 30, 'num_colors': 7, 'num_cells': 532, 'num_objects': 121, 'num_objects_of_main_color': 57, 'num_cells_in_largest_object': 30, 'num_objects_of_max_size': 1, 'max_area_object_height': 8, 'max_area_object_width': 10, 'colored_object_max_height': 30, 'colored_object_max_width': 30, 'grid_height_squared': 900, 'grid_width_squared': 900}
+
+Test 1 Input Features:
+  {'grid_height': 30, 'grid_width': 30, 'num_colors': 8, 'num_cells': 559, 'num_objects': 139, 'num_objects_of_main_color': 65, 'num_cells_in_largest_object': 30, 'num_objects_of_max_size': 1, 'max_area_object_height': 8, 'max_area_object_width': 4, 'colored_object_max_height': 30, 'colored_object_max_width': 30, 'grid_height_squared': 900, 'grid_width_squared': 900}
+
+Test 1 Target height:4 width:3
+
+***Task: ad7e01d0.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 7, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 2, 'subgrid_width': 1, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 7, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 1, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': True}
+
+Example 3 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 3, 'num_cells': 10, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 4, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Example 4 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 3, 'num_cells': 16, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 12, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'subgrid_height': 3, 'subgrid_width': 0, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Test 1 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 3, 'num_cells': 15, 'num_objects': 11, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 2, 'max_area_object_height': 1, 'max_area_object_width': 3, 'colored_object_max_height': 5, 'colored_object_max_width': 5, 'grid_height_squared': 25, 'grid_width_squared': 25, 'objects_are_vertical': False}
+
+Test 1 Target height:25 width:25
+
+***Task: c64f1187.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 18, 'grid_width': 20, 'num_colors': 6, 'num_cells': 65, 'num_objects': 27, 'num_objects_of_main_color': 12, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 6, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 15, 'colored_object_max_width': 17, 'grid_height_squared': 324, 'grid_width_squared': 400}
+
+Example 2 Input Features:
+  {'grid_height': 17, 'grid_width': 18, 'num_colors': 5, 'num_cells': 73, 'num_objects': 31, 'num_objects_of_main_color': 15, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 6, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 14, 'colored_object_max_width': 14, 'grid_height_squared': 289, 'grid_width_squared': 324}
+
+Test 1 Input Features:
+  {'grid_height': 20, 'grid_width': 18, 'num_colors': 6, 'num_cells': 81, 'num_objects': 34, 'num_objects_of_main_color': 16, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 7, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 17, 'colored_object_max_width': 14, 'grid_height_squared': 400, 'grid_width_squared': 324}
+
+Test 1 Target height:11 width:11
+
+***Task: ccd554ac.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 6, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 2 Input Features:
+  {'grid_height': 2, 'grid_width': 2, 'num_colors': 1, 'num_cells': 3, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'subgrid_height': 2, 'subgrid_width': 1, 'grid_height_squared': 4, 'grid_width_squared': 4}
+
+Example 3 Input Features:
+  {'grid_height': 2, 'grid_width': 2, 'num_colors': 1, 'num_cells': 2, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'grid_height_squared': 4, 'grid_width_squared': 4}
+
+Example 4 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 5, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 5 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 1, 'num_cells': 8, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 8, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Example 6 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 1, 'num_cells': 8, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'subgrid_height': 2, 'subgrid_width': 2, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Test 1 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 1, 'num_cells': 17, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 17, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 5, 'grid_height_squared': 25, 'grid_width_squared': 25}
+
+Test 1 Target height:25 width:25
+
+***Task: e1baa8a4.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 13, 'grid_width': 15, 'num_colors': 4, 'num_cells': 195, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 99, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 11, 'colored_object_max_height': 9, 'colored_object_max_width': 11, 'grid_height_squared': 169, 'grid_width_squared': 225}
+
+Example 2 Input Features:
+  {'grid_height': 12, 'grid_width': 14, 'num_colors': 5, 'num_cells': 168, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 72, 'num_objects_of_max_size': 1, 'max_area_object_height': 12, 'max_area_object_width': 6, 'colored_object_max_height': 8, 'colored_object_max_width': 5, 'grid_height_squared': 144, 'grid_width_squared': 196}
+
+Example 3 Input Features:
+  {'grid_height': 15, 'grid_width': 14, 'num_colors': 6, 'num_cells': 210, 'num_objects': 6, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 60, 'num_objects_of_max_size': 1, 'max_area_object_height': 10, 'max_area_object_width': 6, 'colored_object_max_height': 10, 'colored_object_max_width': 6, 'grid_height_squared': 225, 'grid_width_squared': 196}
+
+Example 4 Input Features:
+  {'grid_height': 15, 'grid_width': 15, 'num_colors': 9, 'num_cells': 225, 'num_objects': 11, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 49, 'num_objects_of_max_size': 1, 'max_area_object_height': 11, 'max_area_object_width': 9, 'colored_object_max_height': 11, 'colored_object_max_width': 15, 'grid_height_squared': 225, 'grid_width_squared': 225}
+
+Test 1 Input Features:
+  {'grid_height': 15, 'grid_width': 15, 'num_colors': 9, 'num_cells': 225, 'num_objects': 19, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 25, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 5, 'colored_object_max_height': 15, 'colored_object_max_width': 15, 'grid_height_squared': 225, 'grid_width_squared': 225}
+
+Test 1 Target height:5 width:4
+
+***Task: a59b95c0.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 9, 'num_objects': 5, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': True}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 9, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 2, 'subgrid_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 4, 'num_cells': 9, 'num_objects': 6, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 3, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': True}
+
+Example 4 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 9, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 2, 'subgrid_width': 0, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 5 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 9, 'num_objects': 4, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 4, 'num_cells': 9, 'num_objects': 8, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 1, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': True}
+
+Test 1 Target height:12 width:12
+
+***Task: e78887d1.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 13, 'grid_width': 11, 'num_colors': 3, 'num_cells': 54, 'num_objects': 12, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 3, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 5, 'subgrid_width': 0, 'colored_object_max_height': 11, 'colored_object_max_width': 3, 'grid_height_squared': 169, 'grid_width_squared': 121, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 9, 'grid_width': 11, 'num_colors': 3, 'num_cells': 30, 'num_objects': 6, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 6, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 4, 'subgrid_width': 0, 'colored_object_max_height': 7, 'colored_object_max_width': 3, 'grid_height_squared': 81, 'grid_width_squared': 121}
+
+Example 3 Input Features:
+  {'grid_height': 5, 'grid_width': 15, 'num_colors': 4, 'num_cells': 20, 'num_objects': 5, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 2, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 3, 'subgrid_width': 0, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 25, 'grid_width_squared': 225, 'objects_are_vertical': True}
+
+Example 4 Input Features:
+  {'grid_height': 9, 'grid_width': 15, 'num_colors': 4, 'num_cells': 42, 'num_objects': 8, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 2, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 4, 'subgrid_width': 0, 'colored_object_max_height': 7, 'colored_object_max_width': 3, 'grid_height_squared': 81, 'grid_width_squared': 225}
+
+Test 1 Input Features:
+  {'grid_height': 9, 'grid_width': 15, 'num_colors': 4, 'num_cells': 44, 'num_objects': 10, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 2, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 4, 'subgrid_width': 0, 'colored_object_max_height': 7, 'colored_object_max_width': 3, 'grid_height_squared': 81, 'grid_width_squared': 225, 'objects_are_vertical': True}
+
+Test 1 Target height:3 width:15
+
+***Task: 833dafe3.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 6, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 1, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': True}
+
+Example 2 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 3, 'num_cells': 10, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 16, 'grid_width_squared': 16, 'objects_are_vertical': True}
+
+Test 1 Input Features:
+  {'grid_height': 8, 'grid_width': 8, 'num_colors': 3, 'num_cells': 28, 'num_objects': 8, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 1, 'max_area_object_height': 7, 'max_area_object_width': 1, 'colored_object_max_height': 7, 'colored_object_max_width': 8, 'grid_height_squared': 64, 'grid_width_squared': 64}
+
+Test 1 Target height:16 width:16
+
+***Task: 505fff84.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 14, 'grid_width': 11, 'num_colors': 3, 'num_cells': 84, 'num_objects': 13, 'num_objects_of_main_color': 5, 'num_cells_in_largest_object': 42, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 11, 'colored_object_max_height': 14, 'colored_object_max_width': 11, 'grid_height_squared': 196, 'grid_width_squared': 121, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 4, 'grid_width': 11, 'num_colors': 3, 'num_cells': 15, 'num_objects': 5, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 11, 'grid_height_squared': 16, 'grid_width_squared': 121, 'objects_are_vertical': True}
+
+Example 3 Input Features:
+  {'grid_height': 5, 'grid_width': 10, 'num_colors': 3, 'num_cells': 25, 'num_objects': 7, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 11, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 5, 'colored_object_max_height': 5, 'colored_object_max_width': 10, 'grid_height_squared': 25, 'grid_width_squared': 100, 'objects_are_vertical': True}
+
+Example 4 Input Features:
+  {'grid_height': 6, 'grid_width': 12, 'num_colors': 3, 'num_cells': 43, 'num_objects': 8, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 36, 'num_objects_of_max_size': 1, 'max_area_object_height': 6, 'max_area_object_width': 12, 'colored_object_max_height': 6, 'colored_object_max_width': 11, 'grid_height_squared': 36, 'grid_width_squared': 144, 'objects_are_vertical': False}
+
+Example 5 Input Features:
+  {'grid_height': 8, 'grid_width': 12, 'num_colors': 3, 'num_cells': 48, 'num_objects': 6, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 18, 'num_objects_of_max_size': 2, 'max_area_object_height': 7, 'max_area_object_width': 7, 'colored_object_max_height': 8, 'colored_object_max_width': 12, 'grid_height_squared': 64, 'grid_width_squared': 144}
+
+Test 1 Input Features:
+  {'grid_height': 9, 'grid_width': 14, 'num_colors': 3, 'num_cells': 65, 'num_objects': 13, 'num_objects_of_main_color': 5, 'num_cells_in_largest_object': 32, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 8, 'colored_object_max_height': 9, 'colored_object_max_width': 14, 'grid_height_squared': 81, 'grid_width_squared': 196}
+
+Test 1 Target height:5 width:5
+
+***Task: aab50785.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 13, 'grid_width': 17, 'num_colors': 9, 'num_cells': 114, 'num_objects': 84, 'num_objects_of_main_color': 15, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 4, 'max_area_object_height': 3, 'max_area_object_width': 2, 'colored_object_max_height': 13, 'colored_object_max_width': 17, 'grid_height_squared': 169, 'grid_width_squared': 289}
+
+Example 2 Input Features:
+  {'grid_height': 12, 'grid_width': 15, 'num_colors': 9, 'num_cells': 67, 'num_objects': 54, 'num_objects_of_main_color': 6, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 12, 'colored_object_max_width': 15, 'grid_height_squared': 144, 'grid_width_squared': 225}
+
+Example 3 Input Features:
+  {'grid_height': 12, 'grid_width': 10, 'num_colors': 9, 'num_cells': 58, 'num_objects': 38, 'num_objects_of_main_color': 8, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 12, 'colored_object_max_width': 10, 'grid_height_squared': 144, 'grid_width_squared': 100}
+
+Example 4 Input Features:
+  {'grid_height': 12, 'grid_width': 17, 'num_colors': 9, 'num_cells': 121, 'num_objects': 89, 'num_objects_of_main_color': 6, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 6, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 12, 'colored_object_max_width': 17, 'grid_height_squared': 144, 'grid_width_squared': 289}
+
+Example 5 Input Features:
+  {'grid_height': 13, 'grid_width': 16, 'num_colors': 9, 'num_cells': 86, 'num_objects': 67, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 4, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 13, 'colored_object_max_width': 16, 'grid_height_squared': 169, 'grid_width_squared': 256, 'objects_are_vertical': True}
+
+Test 1 Input Features:
+  {'grid_height': 15, 'grid_width': 17, 'num_colors': 9, 'num_cells': 122, 'num_objects': 87, 'num_objects_of_main_color': 8, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 8, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 15, 'colored_object_max_width': 17, 'grid_height_squared': 225, 'grid_width_squared': 289}
+
+Test 1 Target height:8 width:4
+
+***Task: b0722778.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 11, 'grid_width': 9, 'num_colors': 8, 'num_cells': 48, 'num_objects': 24, 'num_objects_of_main_color': 7, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 5, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 11, 'colored_object_max_width': 9, 'grid_height_squared': 121, 'grid_width_squared': 81}
+
+Example 2 Input Features:
+  {'grid_height': 8, 'grid_width': 9, 'num_colors': 8, 'num_cells': 36, 'num_objects': 18, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 6, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 8, 'colored_object_max_width': 9, 'grid_height_squared': 64, 'grid_width_squared': 81}
+
+Test 1 Input Features:
+  {'grid_height': 8, 'grid_width': 9, 'num_colors': 8, 'num_cells': 36, 'num_objects': 18, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 3, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 8, 'colored_object_max_width': 9, 'grid_height_squared': 64, 'grid_width_squared': 81}
+
+Test 1 Target height:8 width:2
+
+***Task: c1990cce.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 1, 'grid_width': 13, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 169}
+
+Example 2 Input Features:
+  {'grid_height': 1, 'grid_width': 5, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 25}
+
+Example 3 Input Features:
+  {'grid_height': 1, 'grid_width': 7, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 49}
+
+Test 1 Input Features:
+  {'grid_height': 1, 'grid_width': 17, 'num_colors': 1, 'num_cells': 1, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 1, 'grid_height_squared': 1, 'grid_width_squared': 289}
+
+Test 1 Target height:17 width:17
+
+***Task: 20818e16.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 14, 'grid_width': 15, 'num_colors': 4, 'num_cells': 210, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 141, 'num_objects_of_max_size': 1, 'max_area_object_height': 14, 'max_area_object_width': 15, 'colored_object_max_height': 6, 'colored_object_max_width': 8, 'grid_height_squared': 196, 'grid_width_squared': 225, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 16, 'grid_width': 15, 'num_colors': 4, 'num_cells': 240, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 149, 'num_objects_of_max_size': 1, 'max_area_object_height': 16, 'max_area_object_width': 15, 'colored_object_max_height': 6, 'colored_object_max_width': 9, 'grid_height_squared': 256, 'grid_width_squared': 225}
+
+Example 3 Input Features:
+  {'grid_height': 15, 'grid_width': 15, 'num_colors': 4, 'num_cells': 93, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 60, 'num_objects_of_max_size': 1, 'max_area_object_height': 8, 'max_area_object_width': 8, 'colored_object_max_height': 8, 'colored_object_max_width': 8, 'grid_height_squared': 225, 'grid_width_squared': 225, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 16, 'grid_width': 16, 'num_colors': 5, 'num_cells': 256, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 180, 'num_objects_of_max_size': 1, 'max_area_object_height': 16, 'max_area_object_width': 16, 'colored_object_max_height': 6, 'colored_object_max_width': 10, 'grid_height_squared': 256, 'grid_width_squared': 256, 'objects_are_vertical': False}
+
+Test 1 Target height:6 width:10
+
+***Task: d017b73f.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 9, 'num_colors': 2, 'num_cells': 9, 'num_objects': 3, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 3, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 2, 'colored_object_max_width': 9, 'grid_height_squared': 9, 'grid_width_squared': 81, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 11, 'num_colors': 3, 'num_cells': 11, 'num_objects': 4, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 3, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 11, 'grid_height_squared': 9, 'grid_width_squared': 121, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 11, 'num_colors': 3, 'num_cells': 11, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 2, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 121, 'objects_are_vertical': False}
+
+Example 4 Input Features:
+  {'grid_height': 3, 'grid_width': 11, 'num_colors': 2, 'num_cells': 11, 'num_objects': 3, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 6, 'grid_height_squared': 9, 'grid_width_squared': 121, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 11, 'num_colors': 4, 'num_cells': 13, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 121, 'objects_are_vertical': True}
+
+Test 1 Target height:3 width:8
+
+***Task: cad67732.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 6, 'grid_width': 6, 'num_colors': 4, 'num_cells': 16, 'num_objects': 8, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 5, 'colored_object_max_width': 5, 'grid_height_squared': 36, 'grid_width_squared': 36}
+
+Example 2 Input Features:
+  {'grid_height': 5, 'grid_width': 5, 'num_colors': 2, 'num_cells': 9, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 5, 'colored_object_max_height': 5, 'colored_object_max_width': 5, 'grid_height_squared': 25, 'grid_width_squared': 25}
+
+Example 3 Input Features:
+  {'grid_height': 8, 'grid_width': 8, 'num_colors': 2, 'num_cells': 8, 'num_objects': 8, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 1, 'num_objects_of_max_size': 8, 'max_area_object_height': 1, 'max_area_object_width': 1, 'colored_object_max_height': 7, 'colored_object_max_width': 7, 'grid_height_squared': 64, 'grid_width_squared': 64}
+
+Test 1 Input Features:
+  {'grid_height': 10, 'grid_width': 10, 'num_colors': 3, 'num_cells': 28, 'num_objects': 14, 'num_objects_of_main_color': 5, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 5, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 10, 'colored_object_max_width': 10, 'grid_height_squared': 100, 'grid_width_squared': 100}
+
+Test 1 Target height:20 width:20
+
+***Task: 12997ef3.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 11, 'grid_width': 14, 'num_colors': 4, 'num_cells': 9, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 121, 'grid_width_squared': 196}
+
+Example 2 Input Features:
+  {'grid_height': 11, 'grid_width': 9, 'num_colors': 4, 'num_cells': 9, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 121, 'grid_width_squared': 81}
+
+Example 3 Input Features:
+  {'grid_height': 11, 'grid_width': 10, 'num_colors': 3, 'num_cells': 8, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 121, 'grid_width_squared': 100}
+
+Example 4 Input Features:
+  {'grid_height': 11, 'grid_width': 11, 'num_colors': 3, 'num_cells': 6, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 121, 'grid_width_squared': 121}
+
+Test 1 Input Features:
+  {'grid_height': 11, 'grid_width': 11, 'num_colors': 5, 'num_cells': 10, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 121, 'grid_width_squared': 121}
+
+Test 1 Target height:3 width:12
+
+Test 2 Input Features:
+  {'grid_height': 9, 'grid_width': 11, 'num_colors': 5, 'num_cells': 9, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 81, 'grid_width_squared': 121}
+
+Test 2 Target height:12 width:3
+
+***Task: 2697da3f.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 9, 'grid_width': 7, 'num_colors': 1, 'num_cells': 15, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 15, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 5, 'grid_height_squared': 81, 'grid_width_squared': 49}
+
+Example 2 Input Features:
+  {'grid_height': 7, 'grid_width': 7, 'num_colors': 1, 'num_cells': 7, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 4, 'grid_height_squared': 49, 'grid_width_squared': 49}
+
+Example 3 Input Features:
+  {'grid_height': 7, 'grid_width': 8, 'num_colors': 1, 'num_cells': 8, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 8, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 4, 'grid_height_squared': 49, 'grid_width_squared': 64}
+
+Example 4 Input Features:
+  {'grid_height': 8, 'grid_width': 8, 'num_colors': 1, 'num_cells': 14, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 14, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 5, 'grid_height_squared': 64, 'grid_width_squared': 64}
+
+Test 1 Input Features:
+  {'grid_height': 8, 'grid_width': 10, 'num_colors': 1, 'num_cells': 16, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 16, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 6, 'grid_height_squared': 64, 'grid_width_squared': 100}
+
+Test 1 Target height:17 width:17
+
+***Task: 50aad11f.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 12, 'grid_width': 9, 'num_colors': 3, 'num_cells': 18, 'num_objects': 4, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 8, 'num_objects_of_max_size': 2, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 10, 'colored_object_max_width': 5, 'grid_height_squared': 144, 'grid_width_squared': 81}
+
+Example 2 Input Features:
+  {'grid_height': 12, 'grid_width': 14, 'num_colors': 3, 'num_cells': 18, 'num_objects': 4, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 9, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 4, 'colored_object_max_width': 10, 'grid_height_squared': 144, 'grid_width_squared': 196}
+
+Example 3 Input Features:
+  {'grid_height': 12, 'grid_width': 18, 'num_colors': 4, 'num_cells': 29, 'num_objects': 6, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 10, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 7, 'colored_object_max_width': 16, 'grid_height_squared': 144, 'grid_width_squared': 324}
+
+Test 1 Input Features:
+  {'grid_height': 18, 'grid_width': 13, 'num_colors': 4, 'num_cells': 29, 'num_objects': 6, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 10, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'colored_object_max_height': 16, 'colored_object_max_width': 7, 'grid_height_squared': 324, 'grid_width_squared': 169}
+
+Test 1 Target height:12 width:4
+
+***Task: 81c0276b.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 19, 'grid_width': 13, 'num_colors': 4, 'num_cells': 119, 'num_objects': 13, 'num_objects_of_main_color': 7, 'num_cells_in_largest_object': 71, 'num_objects_of_max_size': 1, 'max_area_object_height': 19, 'max_area_object_width': 13, 'subgrid_height': 4, 'subgrid_width': 3, 'colored_object_max_height': 19, 'colored_object_max_width': 13, 'grid_height_squared': 361, 'grid_width_squared': 169, 'objects_are_vertical': True}
+
+Example 2 Input Features:
+  {'grid_height': 16, 'grid_width': 16, 'num_colors': 3, 'num_cells': 123, 'num_objects': 10, 'num_objects_of_main_color': 5, 'num_cells_in_largest_object': 87, 'num_objects_of_max_size': 1, 'max_area_object_height': 16, 'max_area_object_width': 16, 'subgrid_height': 4, 'subgrid_width': 4, 'colored_object_max_height': 16, 'colored_object_max_width': 16, 'grid_height_squared': 256, 'grid_width_squared': 256}
+
+Example 3 Input Features:
+  {'grid_height': 16, 'grid_width': 18, 'num_colors': 4, 'num_cells': 141, 'num_objects': 13, 'num_objects_of_main_color': 6, 'num_cells_in_largest_object': 93, 'num_objects_of_max_size': 1, 'max_area_object_height': 16, 'max_area_object_width': 18, 'subgrid_height': 4, 'subgrid_width': 4, 'colored_object_max_height': 16, 'colored_object_max_width': 18, 'grid_height_squared': 256, 'grid_width_squared': 324, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 19, 'grid_width': 21, 'num_colors': 5, 'num_cells': 191, 'num_objects': 17, 'num_objects_of_main_color': 7, 'num_cells_in_largest_object': 127, 'num_objects_of_max_size': 1, 'max_area_object_height': 19, 'max_area_object_width': 21, 'subgrid_height': 4, 'subgrid_width': 5, 'colored_object_max_height': 19, 'colored_object_max_width': 21, 'grid_height_squared': 361, 'grid_width_squared': 441, 'objects_are_vertical': False}
+
+Test 1 Target height:4 width:4
+
+***Task: 4852f2fa.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 2, 'num_cells': 8, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 4, 'colored_object_max_width': 3, 'grid_height_squared': 81, 'grid_width_squared': 81}
+
+Example 2 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 2, 'num_cells': 6, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 81, 'grid_width_squared': 81}
+
+Example 3 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 2, 'num_cells': 7, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 3, 'colored_object_max_height': 7, 'colored_object_max_width': 4, 'grid_height_squared': 81, 'grid_width_squared': 81, 'objects_are_vertical': False}
+
+Example 4 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 2, 'num_cells': 8, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 7, 'colored_object_max_width': 3, 'grid_height_squared': 81, 'grid_width_squared': 81}
+
+Example 5 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 2, 'num_cells': 9, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 8, 'colored_object_max_width': 6, 'grid_height_squared': 81, 'grid_width_squared': 81}
+
+Test 1 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 2, 'num_cells': 8, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 4, 'colored_object_max_width': 4, 'grid_height_squared': 81, 'grid_width_squared': 81}
+
+Test 1 Target height:3 width:6
+
+Test 2 Input Features:
+  {'grid_height': 9, 'grid_width': 9, 'num_colors': 2, 'num_cells': 9, 'num_objects': 5, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 9, 'colored_object_max_width': 5, 'grid_height_squared': 81, 'grid_width_squared': 81}
+
+Test 2 Target height:3 width:12
+
+***Task: 48131b3c.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 3, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 2 Input Features:
+  {'grid_height': 2, 'grid_width': 2, 'num_colors': 1, 'num_cells': 2, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'grid_height_squared': 4, 'grid_width_squared': 4}
+
+Example 3 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 1, 'num_cells': 6, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 4, 'max_area_object_width': 4, 'grid_height_squared': 16, 'grid_width_squared': 16}
+
+Test 1 Input Features:
+  {'grid_height': 4, 'grid_width': 4, 'num_colors': 1, 'num_cells': 6, 'num_objects': 3, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 2, 'grid_height_squared': 16, 'grid_width_squared': 16, 'objects_are_vertical': True}
+
+Test 1 Target height:8 width:8
+
+***Task: 67636eac.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 13, 'grid_width': 17, 'num_colors': 3, 'num_cells': 15, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 3, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 169, 'grid_width_squared': 289}
+
+Example 2 Input Features:
+  {'grid_height': 16, 'grid_width': 10, 'num_colors': 3, 'num_cells': 12, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 3, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 256, 'grid_width_squared': 100}
+
+Example 3 Input Features:
+  {'grid_height': 12, 'grid_width': 10, 'num_colors': 2, 'num_cells': 10, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 2, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 144, 'grid_width_squared': 100}
+
+Test 1 Input Features:
+  {'grid_height': 14, 'grid_width': 18, 'num_colors': 4, 'num_cells': 28, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 4, 'max_area_object_height': 3, 'max_area_object_width': 3, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 196, 'grid_width_squared': 324}
+
+Test 1 Target height:3 width:12
+
+***Task: e872b94a.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 12, 'grid_width': 12, 'num_colors': 1, 'num_cells': 46, 'num_objects': 3, 'num_objects_of_main_color': 3, 'num_cells_in_largest_object': 23, 'num_objects_of_max_size': 1, 'max_area_object_height': 11, 'max_area_object_width': 7, 'grid_height_squared': 144, 'grid_width_squared': 144, 'objects_are_vertical': True}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 4, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 4, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 3 Input Features:
+  {'grid_height': 7, 'grid_width': 7, 'num_colors': 1, 'num_cells': 16, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 9, 'num_objects_of_max_size': 1, 'max_area_object_height': 5, 'max_area_object_width': 3, 'grid_height_squared': 49, 'grid_width_squared': 49, 'objects_are_vertical': True}
+
+Example 4 Input Features:
+  {'grid_height': 9, 'grid_width': 12, 'num_colors': 1, 'num_cells': 38, 'num_objects': 4, 'num_objects_of_main_color': 4, 'num_cells_in_largest_object': 13, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 5, 'grid_height_squared': 81, 'grid_width_squared': 144, 'objects_are_vertical': True}
+
+Test 1 Input Features:
+  {'grid_height': 9, 'grid_width': 10, 'num_colors': 1, 'num_cells': 27, 'num_objects': 2, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 14, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 4, 'grid_height_squared': 81, 'grid_width_squared': 100, 'objects_are_vertical': True}
+
+Test 1 Target height:3 width:1
+
+***Task: 3ee1011a.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 23, 'grid_width': 29, 'num_colors': 3, 'num_cells': 10, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 1, 'max_area_object_width': 5, 'colored_object_max_height': 1, 'colored_object_max_width': 5, 'grid_height_squared': 529, 'grid_width_squared': 841, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 21, 'grid_width': 22, 'num_colors': 3, 'num_cells': 12, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 6, 'num_objects_of_max_size': 1, 'max_area_object_height': 6, 'max_area_object_width': 1, 'colored_object_max_height': 6, 'colored_object_max_width': 1, 'grid_height_squared': 441, 'grid_width_squared': 484, 'objects_are_vertical': True}
+
+Example 3 Input Features:
+  {'grid_height': 24, 'grid_width': 20, 'num_colors': 4, 'num_cells': 20, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 8, 'num_objects_of_max_size': 1, 'max_area_object_height': 8, 'max_area_object_width': 1, 'colored_object_max_height': 8, 'colored_object_max_width': 6, 'grid_height_squared': 576, 'grid_width_squared': 400}
+
+Test 1 Input Features:
+  {'grid_height': 21, 'grid_width': 23, 'num_colors': 4, 'num_cells': 16, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 7, 'num_objects_of_max_size': 1, 'max_area_object_height': 7, 'max_area_object_width': 1, 'colored_object_max_height': 7, 'colored_object_max_width': 5, 'grid_height_squared': 441, 'grid_width_squared': 529}
+
+Test 1 Target height:7 width:7
+
+***Task: d4c90558.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 25, 'grid_width': 25, 'num_colors': 4, 'num_cells': 171, 'num_objects': 16, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 78, 'num_objects_of_max_size': 1, 'max_area_object_height': 12, 'max_area_object_width': 19, 'colored_object_max_height': 17, 'colored_object_max_width': 19, 'grid_height_squared': 625, 'grid_width_squared': 625, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 20, 'grid_width': 20, 'num_colors': 3, 'num_cells': 94, 'num_objects': 8, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 51, 'num_objects_of_max_size': 1, 'max_area_object_height': 8, 'max_area_object_width': 12, 'colored_object_max_height': 14, 'colored_object_max_width': 12, 'grid_height_squared': 400, 'grid_width_squared': 400, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 20, 'grid_width': 20, 'num_colors': 5, 'num_cells': 144, 'num_objects': 17, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 42, 'num_objects_of_max_size': 1, 'max_area_object_height': 9, 'max_area_object_width': 9, 'colored_object_max_height': 14, 'colored_object_max_width': 16, 'grid_height_squared': 400, 'grid_width_squared': 400}
+
+Test 1 Input Features:
+  {'grid_height': 21, 'grid_width': 21, 'num_colors': 4, 'num_cells': 177, 'num_objects': 16, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 66, 'num_objects_of_max_size': 1, 'max_area_object_height': 11, 'max_area_object_width': 8, 'colored_object_max_height': 14, 'colored_object_max_width': 18, 'grid_height_squared': 441, 'grid_width_squared': 441}
+
+Test 1 Target height:3 width:8
+
+***Task: d4b1c2b1.json evaluation_data***
+
+Example 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 9, 'num_objects': 3, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Example 2 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 3, 'num_cells': 9, 'num_objects': 4, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 2, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Example 3 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 4, 'num_cells': 9, 'num_objects': 6, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 3, 'num_objects_of_max_size': 1, 'max_area_object_height': 2, 'max_area_object_width': 2, 'colored_object_max_height': 3, 'colored_object_max_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 4 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 9, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 9, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 5 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 1, 'num_cells': 9, 'num_objects': 1, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 9, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 6 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 9, 'num_objects': 2, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'subgrid_height': 2, 'subgrid_width': 1, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Example 7 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 2, 'num_cells': 9, 'num_objects': 4, 'num_objects_of_main_color': 1, 'num_cells_in_largest_object': 5, 'num_objects_of_max_size': 1, 'max_area_object_height': 3, 'max_area_object_width': 3, 'grid_height_squared': 9, 'grid_width_squared': 9, 'objects_are_vertical': False}
+
+Test 1 Input Features:
+  {'grid_height': 3, 'grid_width': 3, 'num_colors': 5, 'num_cells': 9, 'num_objects': 6, 'num_objects_of_main_color': 2, 'num_cells_in_largest_object': 2, 'num_objects_of_max_size': 3, 'max_area_object_height': 1, 'max_area_object_width': 2, 'colored_object_max_height': 2, 'colored_object_max_width': 2, 'grid_height_squared': 9, 'grid_width_squared': 9}
+
+Test 1 Target height:15 width:15

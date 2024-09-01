@@ -484,6 +484,29 @@ def process_tasks(tasks: Tasks, set: str):
 
             difficulty_after_regularized_regression = current_difficulty + \
                 numeric_features.num_difficulties + 1
+
+
+
+            # TABULAR DATA FOR REGULARIZED REGRESSION
+            # Geneated with: `python3 src/predict_size.py`
+            print(f"\n***Task: {task_name} {set}***")
+            train_examples = task['train']
+            test_examples = task['test']
+            for i, e in enumerate(train_examples):
+                in_grid = Grid(e['input'])
+                out_grid = Grid(e['output'])
+                in_features = detect_numeric_features(in_grid, 1000)
+                print(f"\nExample {i+1} Input Features:\n  {in_features}")
+            for i, e in enumerate(test_examples):
+                in_grid = Grid(e["input"])
+                out_grid = Grid(e["output"])
+                in_features = detect_numeric_features(in_grid, 1000)
+                print(f"\nTest {i+1} Input Features:\n  {in_features}")
+                target_height, target_width = out_grid.size
+                print(f"\nTest {i+1} Target height:{target_height} width:{target_width}")
+
+
+
             if Config.predict_size_using_regularized_regression and Config.difficulty >= current_difficulty:
                 predicted_height, predicted_width = try_regularized_regression(
                     examples)
