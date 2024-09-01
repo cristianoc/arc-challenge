@@ -10,7 +10,7 @@ from visual_cortex import (
     is_frame_part_of_lattice,
     find_rectangular_objects,  # Add this import
 )
-from grid import Grid
+from grid import Object
 from grid_data import BLACK, GridData, Object, display, display_multiple
 from load_data import Example, Task, Tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
@@ -23,7 +23,7 @@ from grid_types import logger
 
 
 Size = Tuple[int, int]
-ExampleGrids = List[Tuple[Grid, Grid]]
+ExampleObjects = List[Tuple[Object, Object]]
 
 # returns the index of the object to pick
 ObjectPicker = Callable[[List[Object]], int]
@@ -41,16 +41,16 @@ class Config:
     display_not_found = False
 
 
-def output_size_is_input_size(grids: ExampleGrids, grid: Grid, task_name: str):
+def output_size_is_input_size(grids: ExampleObjects, grid: Object, task_name: str):
     return grid.size
 
 
-def output_size_is_constant(grids: ExampleGrids, grid: Grid, task_name: str):
+def output_size_is_constant(grids: ExampleObjects, grid: Object, task_name: str):
     return grids[0][1].size
 
 
 def output_size_is_size_of_largest_nonblack_object(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Size]:
     objects = grid.detect_objects()
     if not objects:
@@ -60,7 +60,7 @@ def output_size_is_size_of_largest_nonblack_object(
 
 
 def output_size_is_size_of_object_inside_largest_frame(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Size]:
     largest_frame = find_largest_frame(grid.data, None)
     if largest_frame:
@@ -78,7 +78,7 @@ def output_size_is_size_of_object_inside_largest_frame(
 
 
 def output_size_is_size_of_largest_block_object(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Size]:
     objects = grid.detect_objects(allow_black=True)
     # exclude full grid size
@@ -90,7 +90,7 @@ def output_size_is_size_of_largest_block_object(
 
 
 def output_size_is_size_of_largest_nonblack_block_object(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Size]:
     objects = grid.detect_objects(allow_black=False)
     # exclude full grid size and objects smaller than 2x2
@@ -109,7 +109,7 @@ def output_size_is_size_of_largest_nonblack_block_object(
 
 
 def output_size_is_size_of_max_area_object_with_flexible_contours(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Size]:
     objects = grid.detect_objects(allow_black=True)
     # exclude full grid size
@@ -129,9 +129,9 @@ def output_size_is_size_of_max_area_object_with_flexible_contours(
 
 
 def output_size_is_size_of_repeating_subgrid_forming_a_lattice(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Size]:
-    def find_lattice(grid: Grid) -> Optional[Frame]:
+    def find_lattice(grid: Object) -> Optional[Frame]:
         largest_frame = find_largest_frame(grid.data, None)
         logger.debug(f"largest_frame:{largest_frame}")
         if largest_frame is None:
@@ -194,7 +194,7 @@ def output_size_is_size_of_repeating_subgrid_forming_a_lattice(
     return (num_repeating_obj_rows, num_repeating_obj_cols)
 
 
-SizeXform = Callable[[ExampleGrids, Grid, str], Optional[Size]]
+SizeXform = Callable[[ExampleObjects, Object, str], Optional[Size]]
 
 
 class XformEntry(TypedDict):
@@ -236,12 +236,12 @@ xforms: List[XformEntry] = [
 def check_xform_on_examples(
     xform: SizeXform, examples: List[Example], task_name: str, task_type: str
 ) -> bool:
-    grids = [(Grid(example[0]), Grid(example[1])) for example in examples]
+    grids = [(Object(example[0]), Object(example[1])) for example in examples]
     logger.debug(f"Checking xform {xform.__name__} {task_type}")
     for i, example in enumerate(examples):
         logger.debug(f"  Example {i+1}/{len(examples)}")
-        input = Grid(example[0])
-        output = Grid(example[1])
+        input = Object(example[0])
+        output = Object(example[1])
         new_output_size = xform(grids, input, task_name)
         if new_output_size != output.size:
             logger.debug(f"  Example {i+1} failed")
@@ -400,7 +400,7 @@ def find_matched_objects(
         A list of ObjectMatch tuples if matches are found for all examples, otherwise None.
     """
 
-    def candidate_objects_for_matching(input: Grid, output: Grid) -> List[Object]:
+    def candidate_objects_for_matching(input: Object, output: Object) -> List[Object]:
         """
         Detects objects in the input grid that are candidates for matching the output grid.
         """
@@ -412,7 +412,7 @@ def find_matched_objects(
         return find_rectangular_objects(input.data, allow_multicolor=num_colors_output > 1)
 
     def find_matching_input_object(
-        input_objects: List[Object], output: Grid
+        input_objects: List[Object], output: Object
     ) -> Optional[int]:
         for i, io in enumerate(input_objects):
             if io.size == output.size and io.data == output.data:
@@ -424,8 +424,8 @@ def find_matched_objects(
         matched_objects: List[ObjectMatch] = []
 
         for example in examples:
-            input = Grid(example[0])
-            output = Grid(example[1])
+            input = Object(example[0])
+            output = Object(example[1])
             logger.info(f"  {task_type} {input.size} -> {output.size}")
 
             input_objects = candidate_objects_for_matching(input, output)
@@ -453,8 +453,8 @@ def predict_size_using_regularized_regression(
     target_widths: List[int] = []
 
     for example in examples:
-        input_grid = Grid(example[0])
-        output_grid = Grid(example[1])
+        input_grid = Object(example[0])
+        output_grid = Object(example[1])
 
         input_features = detect_numeric_features(input_grid, relative_difficulty)
         target_height, target_width = output_grid.size
@@ -579,10 +579,10 @@ def process_tasks(tasks: Tasks, set: str):
 
             if Config.display_not_found:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
-                    (Grid(example[0]).data, Grid(example[1]).data)
+                    (Object(example[0]).data, Object(example[1]).data)
                     for example in examples
                 ]
-                colored_objects = find_colored_objects(Grid(grids[0][0]))
+                colored_objects = find_colored_objects(Object(grids[0][0]))
                 display_multiple(grids, title=f"{task_name} {set}")
                 if colored_objects:
                     display_multiple(

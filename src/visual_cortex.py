@@ -2,7 +2,6 @@ import time
 from typing import List, Optional, Tuple
 import random
 
-from grid import Grid
 from grid_types import GridData, logger, Cell
 from grid_data import Object
 
@@ -218,10 +217,10 @@ def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> b
 
 
 # A Subgrid is a list of lists of grids
-Subgrid = List[List[Grid]]
+Subgrid = List[List[Object]]
 
 
-def find_dividing_lines(grid: Grid, color: int) -> Tuple[List[int], List[int]]:
+def find_dividing_lines(grid: Object, color: int) -> Tuple[List[int], List[int]]:
     """Find the indices of vertical and horizontal lines that span the entire grid."""
 
     horizontal_lines: List[int] = []
@@ -238,7 +237,7 @@ def find_dividing_lines(grid: Grid, color: int) -> Tuple[List[int], List[int]]:
     return horizontal_lines, vertical_lines
 
 
-def extract_subgrid_of_color(grid: Grid, color: int) -> Optional[Subgrid]:
+def extract_subgrid_of_color(grid: Object, color: int) -> Optional[Subgrid]:
     """Extract a subgrid from the grid based on vertical and horizontal dividing lines of the same color."""
     horizontal_lines, vertical_lines = find_dividing_lines(grid, color)
 
@@ -255,14 +254,14 @@ def extract_subgrid_of_color(grid: Grid, color: int) -> Optional[Subgrid]:
     prev_h = 0
 
     for h in horizontal_lines + [grid.height]:
-        row: List[Grid] = []
+        row: List[Object] = []
         prev_v = 0
         for v in vertical_lines + [grid.width]:
             # Extract the subgrid bounded by (prev_h, prev_v) and (h-1, v-1)
             if prev_v == v or prev_h == h:
                 continue
             sub_grid_data = [row[prev_v:v] for row in grid.data[prev_h:h]]
-            row.append(Grid(sub_grid_data))
+            row.append(Object(sub_grid_data))
             prev_v = v + 1
         subgrid.append(row)
         prev_h = h + 1
@@ -270,7 +269,7 @@ def extract_subgrid_of_color(grid: Grid, color: int) -> Optional[Subgrid]:
     return subgrid
 
 
-def extract_subgrid(grid: Grid, color: Optional[int]) -> Optional[Subgrid]:
+def extract_subgrid(grid: Object, color: Optional[int]) -> Optional[Subgrid]:
     if color is not None:
         return extract_subgrid_of_color(grid, color)
     for c in grid.get_colors():
@@ -382,7 +381,7 @@ def test_lattices():
 
 def test_subgrid_extraction():
     # Example grid with dividing lines
-    grid = Grid(
+    grid = Object(
         [
             [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
             [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
@@ -403,13 +402,13 @@ def test_subgrid_extraction():
         3,
         4,
     ), f"Test failed: Subgrid dimensions: {height}x{width}"
-    assert subgrid[0][0] == Grid([[2, 2], [2, 2]]), "Test failed: Subgrid[0][0]"
-    assert subgrid[0][1] == Grid([[3, 3], [3, 3]]), "Test failed: Subgrid[0][1]"
-    assert subgrid[0][3] == Grid([[5], [5]]), "Test failed: Subgrid[0][3]"
-    assert subgrid[2][3] == Grid([[5]]), "Test failed: Subgrid[2][3]"
+    assert subgrid[0][0] == Object([[2, 2], [2, 2]]), "Test failed: Subgrid[0][0]"
+    assert subgrid[0][1] == Object([[3, 3], [3, 3]]), "Test failed: Subgrid[0][1]"
+    assert subgrid[0][3] == Object([[5], [5]]), "Test failed: Subgrid[0][3]"
+    assert subgrid[2][3] == Object([[5]]), "Test failed: Subgrid[2][3]"
 
 
-def extract_object_by_color(grid: Grid, color: int) -> Object:
+def extract_object_by_color(grid: Object, color: int) -> Object:
     # find the bounding box of the object with the given color
     rows = grid.height
     cols = grid.width
@@ -434,7 +433,7 @@ def extract_object_by_color(grid: Grid, color: int) -> Object:
     return Object(data, origin)
 
 
-def find_colored_objects(grid: Grid) -> List[Object]:
+def find_colored_objects(grid: Object) -> List[Object]:
     """
     Finds and returns a list of all distinct objects within the grid based on color.
 

@@ -2,7 +2,7 @@ from typing import Callable, List, Optional, Set, Tuple, TypedDict
 
 from predict_size import (
     Config,
-    ExampleGrids,
+    ExampleObjects,
     compute_perc_correct,
     detect_common_features,
     find_matched_objects,
@@ -11,10 +11,10 @@ from predict_size import (
 from grid import Grid
 from grid_types import BLACK, GREY, GridData, logger
 from load_data import Example, Task, Tasks, training_data, evaluation_data
-from grid_data import display_multiple
+from grid_data import display_multiple, Object
 
 ColorXform = Callable[
-    [ExampleGrids, Grid, str], Optional[Set[int]]
+    [ExampleObjects, Object, str], Optional[Set[int]]
 ]  # List[int] for color indexes
 
 
@@ -24,31 +24,31 @@ class ColorXformEntry(TypedDict):
 
 
 def output_colors_are_input_colors(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Set[int]]:
     return set(grid.get_colors())
 
 
 def output_colors_are_input_colors_minus_black_grey(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=True)) - {BLACK, GREY}
 
 
 def output_colors_are_input_colors_plus_black(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Set[int]]:
     return set(grid.get_colors(allow_black=True)) | {BLACK}
 
 
 def output_colors_are_constant(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Set[int]]:
     return set(grids[0][1].get_colors())
 
 
 def output_colors_are_input_colors_minus_num_colors(
-    grids: ExampleGrids, grid: Grid, task_name: str, num: int
+    grids: ExampleObjects, grid: Object, task_name: str, num: int
 ) -> Optional[Set[int]]:
     # Check in grids if there are num colors that are always removed from the input to the output
     # If found, remove them from the grid colors
@@ -70,19 +70,19 @@ def output_colors_are_input_colors_minus_num_colors(
 
 
 def output_colors_are_input_colors_minus_one_color(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Set[int]]:
     return output_colors_are_input_colors_minus_num_colors(grids, grid, task_name, 1)
 
 
 def output_colors_are_input_colors_minus_two_colors(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Set[int]]:
     return output_colors_are_input_colors_minus_num_colors(grids, grid, task_name, 2)
 
 
 def output_colors_are_input_colors_plus_num_colors(
-    grids: ExampleGrids, grid: Grid, task_name: str, num: int
+    grids: ExampleObjects, grid: Object, task_name: str, num: int
 ) -> Optional[Set[int]]:
     # Check in grids if there are num colors that are always added from the input to the output
     # If found, add them to the grid colors
@@ -104,19 +104,19 @@ def output_colors_are_input_colors_plus_num_colors(
 
 
 def output_colors_are_input_colors_plus_one_color(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Set[int]]:
     return output_colors_are_input_colors_plus_num_colors(grids, grid, task_name, 1)
 
 
 def output_colors_are_input_colors_plus_two_colors(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Set[int]]:
     return output_colors_are_input_colors_plus_num_colors(grids, grid, task_name, 2)
 
 
 def output_colors_are_inout_colors_minus_one_color_plus_another_color(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Set[int]]:
     # Check in grids if there is one color that is always removed from the input to the output
     # and another color that is always added
@@ -149,7 +149,7 @@ def output_colors_are_inout_colors_minus_one_color_plus_another_color(
 
 
 def output_colors_are_input_colors_minus_color_of_max_black_cells_object(
-    grids: ExampleGrids, grid: Grid, task_name: str
+    grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Set[int]]:
     objects = grid.detect_objects()
     if not objects:
@@ -181,12 +181,12 @@ xforms: List[ColorXformEntry] = [
 def check_xform_on_examples(
     xform: ColorXform, examples: List[Example], task_name: str, task_type: str
 ) -> bool:
-    grids = [(Grid(example[0]), Grid(example[1])) for example in examples]
+    grids = [(Object(example[0]), Object(example[1])) for example in examples]
     logger.debug(f"Checking xform {xform.__name__} {task_type}")
     for i, example in enumerate(examples):
         logger.debug(f"  Example {i+1}/{len(examples)}")
-        input = Grid(example[0])
-        output = Grid(example[1])
+        input = Object(example[0])
+        output = Object(example[1])
         output_colors = set(output.get_colors())
         logger.debug(f"output_colors:{output_colors}")
         new_output_colors = xform(grids, input, task_name)

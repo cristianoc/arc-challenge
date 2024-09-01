@@ -4,6 +4,8 @@ from matplotlib import colors, pyplot as plt  # type: ignore
 from matplotlib.colors import ListedColormap  # type: ignore
 import numpy as np  # type: ignore
 from grid_types import Cell, GridData, Rotation, Axis, BLACK, Color
+from detect_objects import ConnectedComponent, find_connected_components
+
 
 class Object:
 
@@ -31,6 +33,35 @@ class Object:
     @property
     def size(self) -> Tuple[int, int]:
         return (self.height, self.width)
+
+    @staticmethod
+    def empty(height: int, width: int) -> "Object":
+        data: GridData = [[BLACK for _ in range(width)] for _ in range(height)]
+        return Object(data)
+
+    def detect_objects(
+        self: "Object", diagonals: bool = True, allow_black: bool = False
+    ) -> List["Object"]:
+        def create_object(grid: Object, component: ConnectedComponent) -> Object:
+            """
+            Create an object from a connected component in a grid
+            """
+            min_row = min(r for r, _ in component)
+            min_col = min(c for _, c in component)
+            rows = max(r for r, _ in component) - min_row + 1
+            columns = max(c for _, c in component) - min_col + 1
+            data = Object.empty(height=rows, width=columns).data
+            for r, c in component:
+                data[r - min_row][c - min_col] = grid.data[r][c]
+            return Object(data, (min_row, min_col))
+
+        connected_components = find_connected_components(
+            self.data, diagonals, allow_black
+        )
+        detected_objects = [
+            create_object(self, component) for component in connected_components
+        ]
+        return detected_objects
 
     def rotate(self, direction: Rotation) -> 'Object':
         data: List[List[int]] = self.data
@@ -239,8 +270,6 @@ class Object:
                 return False
 
         return True
-
-
 
 
 def display(
