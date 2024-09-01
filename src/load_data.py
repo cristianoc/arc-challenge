@@ -46,5 +46,5 @@ train_set = tr_task_1['train']
 test_set = tr_task_1['test']
 
 
-logger.debug(f"Loaded {len(training_data)} training tasks")
-logger.debug(f"Loaded {len(evaluation_data)} evaluation tasks")
+# logger.debug(f"Loaded {len(training_data)} training tasks")
+# logger.debug(f"Loaded {len(evaluation_data)} evaluation tasks")
