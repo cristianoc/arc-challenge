@@ -232,12 +232,12 @@ xforms: List[XformEntry] = [
 def check_xform_on_examples(
     xform: SizeXform, examples: List[Example], task_name: str, task_type: str
 ) -> bool:
-    grids = [(Grid(example["input"]), Grid(example["output"])) for example in examples]
+    grids = [(Grid(example[0]), Grid(example[1])) for example in examples]
     logger.debug(f"Checking xform {xform.__name__} {task_type}")
     for i, example in enumerate(examples):
         logger.debug(f"  Example {i+1}/{len(examples)}")
-        input = Grid(example["input"])
-        output = Grid(example["output"])
+        input = Grid(example[0])
+        output = Grid(example[1])
         new_output_size = xform(grids, input, task_name)
         if new_output_size != output.size:
             logger.debug(f"  Example {i+1} failed")
@@ -265,12 +265,10 @@ def find_xform(
             logger.info(
                 f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type}"
             )
-            test_examples = [
-                examples for task_type, examples in task.items() if task_type == "test"
-            ]
+            test_examples = task["test"]
             for i, test_example in enumerate(test_examples):
                 if not check_xform_on_examples(
-                    correct_xform["function"], test_example, task_name, "test"
+                    correct_xform["function"], [test_example], task_name, "test"
                 ):
                     logger.warning(
                         f"Xform {correct_xform['function'].__name__} failed for test example {i}"
@@ -422,8 +420,8 @@ def find_matched_objects(
         matched_objects: List[ObjectMatch] = []
 
         for example in examples:
-            input = Grid(example["input"])
-            output = Grid(example["output"])
+            input = Grid(example[0])
+            output = Grid(example[1])
             logger.info(f"  {task_type} {input.size} -> {output.size}")
 
             input_objects = candidate_objects_for_matching(input, output)
@@ -451,8 +449,8 @@ def predict_size_using_regularized_regression(
     target_widths: List[int] = []
 
     for example in examples:
-        input_grid = Grid(example["input"])
-        output_grid = Grid(example["output"])
+        input_grid = Grid(example[0])
+        output_grid = Grid(example[1])
 
         input_features = detect_numeric_features(input_grid, relative_difficulty)
         target_height, target_width = output_grid.size
@@ -488,12 +486,9 @@ def process_tasks(tasks: Tasks, set: str):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
-        for task_type, examples in task.items():
-            if task_type not in ["train", "test"]:
-                continue
-            if task_type == "test":
-                continue
-
+        examples = task["train"]
+        task_type = "train"
+        if True:
             current_difficulty = 0
 
             if Config.find_xform:
@@ -566,15 +561,10 @@ def process_tasks(tasks: Tasks, set: str):
                     # try to remove main color and try again
                     examples2: List[Example] = []
                     for example in examples:
-                        input_obj = Object((0, 0), example["input"])
+                        input_obj = Object((0, 0), example[0])
                         # change the main color to black
-                        example["input"] = input_obj.change_color(
-                            input_obj.main_color(), BLACK
-                        ).data
-                        # make a copt of example where you change the input
-                        example_copy = example.copy()
-                        example_copy["input"] = example["input"]
-                        examples2.append(example_copy)
+                        new_input_data = input_obj.change_color(input_obj.main_color(), BLACK).data.copy()
+                        examples2.append((new_input_data, example[1]))
                     predicted_height, predicted_width = try_regularized_regression(
                         examples2
                     )
@@ -585,7 +575,7 @@ def process_tasks(tasks: Tasks, set: str):
 
             if Config.display_not_found:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
-                    (Grid(example["input"]).data, Grid(example["output"]).data)
+                    (Grid(example[0]).data, Grid(example[1]).data)
                     for example in examples
                 ]
                 colored_objects = find_colored_objects(Grid(grids[0][0]))

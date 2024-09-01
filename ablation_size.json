@@ -1,62 +1,62 @@
 {
     "1": {
-        "training_data": 65.4,
-        "evaluation_data": 67.6
+        "training_data": 65.5,
+        "evaluation_data": 67.5
     },
     "2": {
-        "training_data": 84.4,
-        "evaluation_data": 84.4
+        "training_data": 84.5,
+        "evaluation_data": 84.5
     },
     "3": {
-        "training_data": 87.4,
-        "evaluation_data": 87.9
+        "training_data": 87.5,
+        "evaluation_data": 88.0
     },
     "4": {
-        "training_data": 88.4,
-        "evaluation_data": 88.4
+        "training_data": 88.5,
+        "evaluation_data": 88.5
     },
     "5": {
-        "training_data": 88.9,
-        "evaluation_data": 88.9
+        "training_data": 89.0,
+        "evaluation_data": 89.0
     },
     "6": {
-        "training_data": 89.4,
+        "training_data": 89.5,
         "evaluation_data": 89.7
     },
     "7": {
         "training_data": 89.7,
-        "evaluation_data": 89.9
+        "evaluation_data": 90.0
     },
     "8": {
-        "training_data": 91.9,
+        "training_data": 92.0,
         "evaluation_data": 92.7
     },
     "9": {
-        "training_data": 93.4,
+        "training_data": 93.5,
         "evaluation_data": 93.7
     },
     "10": {
-        "training_data": 93.4,
-        "evaluation_data": 93.9
+        "training_data": 93.5,
+        "evaluation_data": 94.0
     },
     "11": {
         "training_data": 93.7,
-        "evaluation_data": 94.4
+        "evaluation_data": 94.5
     },
     "12": {
         "training_data": 94.2,
         "evaluation_data": 94.7
     },
     "13": {
-        "training_data": 94.9,
+        "training_data": 95.0,
         "evaluation_data": 95.2
     },
     "14": {
-        "training_data": 95.4,
-        "evaluation_data": 95.4
+        "training_data": 95.5,
+        "evaluation_data": 95.5
     },
     "15": {
-        "training_data": 96.4,
+        "training_data": 96.5,
         "evaluation_data": 95.7
     },
     "16": {
@@ -68,7 +68,7 @@
         "evaluation_data": 96.2
     },
     "18": {
-        "training_data": 97.4,
-        "evaluation_data": 96.9
+        "training_data": 97.5,
+        "evaluation_data": 97.0
     }
 }

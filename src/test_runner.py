@@ -13,13 +13,13 @@ def puzzle(name: str, transform: Callable[[Grid], Grid]) -> None:
     train_set = task["train"]
     test_set = task["test"]
     for i, example in enumerate(train_set):
-        input = Grid(example["input"])
+        input = Grid(example[0])
         output = transform(input)
         if DISPLAY:
             display(title=f"Train Example {i+1}:", input=input.data, output=output.data)
     for i, example in enumerate(test_set):
-        input = Grid(example["input"])
-        correct_grid = Grid(example["output"])
+        input = Grid(example[0])
+        correct_grid = Grid(example[1])
         output = transform(input)
         if DISPLAY:
             display(title=f"Train Test {i+1}:", input=input.data, output=output.data)

@@ -181,12 +181,12 @@ xforms: List[ColorXformEntry] = [
 def check_xform_on_examples(
     xform: ColorXform, examples: List[Example], task_name: str, task_type: str
 ) -> bool:
-    grids = [(Grid(example["input"]), Grid(example["output"])) for example in examples]
+    grids = [(Grid(example[0]), Grid(example[1])) for example in examples]
     logger.debug(f"Checking xform {xform.__name__} {task_type}")
     for i, example in enumerate(examples):
         logger.debug(f"  Example {i+1}/{len(examples)}")
-        input = Grid(example["input"])
-        output = Grid(example["output"])
+        input = Grid(example[0])
+        output = Grid(example[1])
         output_colors = set(output.get_colors())
         logger.debug(f"output_colors:{output_colors}")
         new_output_colors = xform(grids, input, task_name)
@@ -220,12 +220,10 @@ def find_xform(
             logger.info(
                 f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type}"
             )
-            test_examples = [
-                examples for task_type, examples in task.items() if task_type == "test"
-            ]
+            test_examples: List[Example] = task['test']
             for i, test_example in enumerate(test_examples):
                 if not check_xform_on_examples(
-                    correct_xform["function"], test_example, task_name, "test"
+                    correct_xform["function"], [test_example], task_name, "test"
                 ):
                     logger.warning(
                         f"Xform {correct_xform['function'].__name__} failed for test example {i}"
@@ -249,61 +247,58 @@ def process_tasks(tasks: Tasks, set: str):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
-        for task_type, examples in task.items():
-            if task_type not in ["train", "test"]:
-                continue
-            if task_type == "test":
+        examples = task["train"]
+        task_type = "train"
+
+        current_difficulty = 0
+
+        if Config.find_xform_color:
+            correct_xform = find_xform(examples, task, task_name, task_type)
+            if correct_xform:
+                logger.info(
+                    f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type} and test"
+                )
+                num_correct += 1
                 continue
 
-            current_difficulty = 0
+        current_difficulty += num_difficulties_xform
 
-            if Config.find_xform_color:
-                correct_xform = find_xform(examples, task, task_name, task_type)
-                if correct_xform:
+        if Config.find_matched_objects:
+            # Check if the input objects can be matched to the output objects
+            logger.debug(f"Checking common features for {task_name} {set}")
+            matched_objects = find_matched_objects(examples, task_type)
+            if matched_objects:
+                # If the input objects can be matched to the output objects, try to detect common features
+                # to determine the correct object to pick
+                logger.debug(
+                    f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}"
+                )
+                common_decision_rule, features_used = detect_common_features(
+                    matched_objects, current_difficulty
+                )
+                if common_decision_rule:
                     logger.info(
-                        f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type} and test"
+                        f"Common decision rule ({features_used}): {common_decision_rule}"
                     )
                     num_correct += 1
                     continue
-
-            current_difficulty += num_difficulties_xform
-
-            if Config.find_matched_objects:
-                # Check if the input objects can be matched to the output objects
-                logger.debug(f"Checking common features for {task_name} {set}")
-                matched_objects = find_matched_objects(examples, task_type)
-                if matched_objects:
-                    # If the input objects can be matched to the output objects, try to detect common features
-                    # to determine the correct object to pick
-                    logger.debug(
-                        f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}"
+                else:
+                    logger.warning(
+                        f"Could not find common decision rule for {task_name} {set}"
                     )
-                    common_decision_rule, features_used = detect_common_features(
-                        matched_objects, current_difficulty
-                    )
-                    if common_decision_rule:
-                        logger.info(
-                            f"Common decision rule ({features_used}): {common_decision_rule}"
-                        )
-                        num_correct += 1
-                        continue
-                    else:
-                        logger.warning(
-                            f"Could not find common decision rule for {task_name} {set}"
-                        )
 
-            current_difficulty += num_difficulties_matching
+        current_difficulty += num_difficulties_matching
 
-            num_incorrect += 1
-            logger.warning(
-                f"Could not find correct color transformation for {task_name} {set}"
-            )
-            if Config.display_not_found:
-                grids: List[Tuple[GridData, Optional[GridData]]] = [
-                    (Grid(example["input"]).data, Grid(example["output"]).data)
-                    for example in examples
-                ]
-                display_multiple(grids, title=f"{task_name} {set}")
+        num_incorrect += 1
+        logger.warning(
+            f"Could not find correct color transformation for {task_name} {set}"
+        )
+        if Config.display_not_found:
+            grids: List[Tuple[GridData, Optional[GridData]]] = [
+                (Grid(example[0]).data, Grid(example[1]).data)
+                for example in examples
+            ]
+            display_multiple(grids, title=f"{task_name} {set}")
 
     return num_correct, num_incorrect
 
