@@ -7,7 +7,7 @@ from flood_fill import find_enclosed_cells
 from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData, Object, logger
 
 
-class Direction(str, Enum):
+class Rotation(str, Enum):
     CLOCKWISE = 'Clockwise'
     COUNTERCLOCKWISE = 'CounterClockwise'
 
@@ -51,7 +51,7 @@ class GridA(ABC):
         pass
 
     @abstractmethod
-    def rotate(self, direction: Direction) -> 'GridA':
+    def rotate(self, direction: Rotation) -> 'GridA':
         pass
 
     @abstractmethod
@@ -59,7 +59,7 @@ class GridA(ABC):
         pass
 
     @abstractmethod
-    def translate(self, dx: int, dy: int) -> 'GridA':
+    def translate(self, dy: int, dx: int) -> 'GridA':
         pass
 
     @abstractmethod
@@ -84,9 +84,6 @@ class Grid(GridA):
         if isinstance(other, Grid):
             return self.data == other.data
         return False
-
-    def _rotate_grid(self, data: GridData) -> GridData:
-        return [list(reversed(col)) for col in zip(*data)]
 
     def add_object(self, obj: Object) -> None:
         [r_off, c_off] = obj.origin
@@ -174,22 +171,31 @@ class Grid(GridA):
             [func(i, j).data for j in range(self.width)] for i in range(self.height)]
         return Grid(transform_data(new_grid))
 
-    def rotate(self, direction: Direction) -> 'Grid':
-        if direction == Direction.CLOCKWISE:
-            rotated_grid = self._rotate_grid(self.data)
-        else:
-            rotated_grid = self._rotate_grid(
-                self._rotate_grid(self._rotate_grid(self.data)))
+    def rotate(self, direction: Rotation) -> 'Grid':
+        data: List[List[int]] = self.data
+        height, width = len(data), len(data[0])
+        rotated_grid = [[0 for _ in range(height)] for _ in range(width)]        
+        if direction == Rotation.CLOCKWISE:
+            for i in range(height):
+                for j in range(width):
+                    rotated_grid[j][height - 1 - i] = data[i][j]
+        else:  # Rotation.COUNTERCLOCKWISE
+            for i in range(height):
+                for j in range(width):
+                    rotated_grid[width - 1 - j][i] = data[i][j]        
         return Grid(rotated_grid)
-
-    def translate(self, dx: int, dy: int) -> 'Grid':
-        new_grid: GridData = [[BLACK] * len(self.data[0])
-                              for _ in range(len(self.data))]
-        for y, row in enumerate(self.data):
-            for x, val in enumerate(row):
-                new_x = (x + dx) % len(self.data[0])
-                new_y = (y + dy) % len(self.data)
-                new_grid[new_y][new_x] = val
+    
+    def translate(self, dy: int, dx: int) -> 'Grid':
+        height, width = len(self.data), len(self.data[0])
+        new_grid: GridData = [[BLACK] * width for _ in range(height)]
+        for y in range(height):
+            for x in range(width):
+                new_x = x + dx
+                new_y = y + dy
+                # Ensure the new position is within bounds
+                if 0 <= new_x < width and 0 <= new_y < height:
+                    new_grid[new_y][new_x] = self.data[y][x]
+        
         return Grid(new_grid)
 
 
@@ -198,11 +204,11 @@ class Grid(GridA):
 
 def test_rotate():
     grid = Grid([[1, 2], [3, 4]])
-    rotated_grid = grid.rotate(Direction.CLOCKWISE)
+    rotated_grid = grid.rotate(Rotation.CLOCKWISE)
     assert rotated_grid == Grid(
         [[3, 1], [4, 2]]), f"Expected [[3, 1], [4, 2]], but got {rotated_grid}"
 
-    rotated_grid = grid.rotate(Direction.COUNTERCLOCKWISE)
+    rotated_grid = grid.rotate(Rotation.COUNTERCLOCKWISE)
     assert rotated_grid == Grid(
         [[2, 4], [1, 3]]), f"Expected [[2, 4], [1, 3]], but got {rotated_grid}"
 
@@ -221,15 +227,12 @@ def test_flip():
 def test_translate():
     grid = Grid([[1, 2], [3, 4]])
     translated_grid = grid.translate(1, 1)
-    assert translated_grid == Grid(
-        [[4, 3], [2, 1]]), f"Expected [[4, 3], [2, 1]], but got {translated_grid}"
-
+    assert translated_grid.data == [[0, 0], [0, 1]]
 
 def test_color_change():
     grid = Grid([[RED, BLUE], [GREEN, RED]])
     color_changed_grid = grid.color_change(RED, YELLOW)
-    assert color_changed_grid == Grid([[YELLOW, BLUE], [
-                                      GREEN, YELLOW]]), f"Expected [[YELLOW, BLUE], [GREEN, YELLOW]], but got {color_changed_grid}"
+    assert color_changed_grid == Grid([[YELLOW, BLUE], [GREEN, YELLOW]]), f"Expected [[YELLOW, BLUE], [GREEN, YELLOW]], but got {color_changed_grid}"
 
 
 def test_copy():
