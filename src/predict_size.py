@@ -400,7 +400,7 @@ def find_matched_objects(
         """
         Detects objects in the input grid that are candidates for matching the output grid.
         """
-        output_as_object = Object((0, 0), output.data)
+        output_as_object = Object(output.data)
         if output_as_object.has_frame():
             # If the output is a frame, detect objects in the input as frames
             logger.debug("  Output is a frame")
@@ -561,7 +561,7 @@ def process_tasks(tasks: Tasks, set: str):
                     # try to remove main color and try again
                     examples2: List[Example] = []
                     for example in examples:
-                        input_obj = Object((0, 0), example[0])
+                        input_obj = Object(example[0])
                         # change the main color to black
                         new_input_data = input_obj.change_color(input_obj.main_color(), BLACK).data.copy()
                         examples2.append((new_input_data, example[1]))
