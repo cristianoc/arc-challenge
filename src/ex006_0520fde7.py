@@ -1,6 +1,6 @@
 from test_runner import puzzle
 from grid import Grid
-from grid_data import RED
+from grid_types import RED
 
 
 """

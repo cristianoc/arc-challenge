@@ -1,7 +1,9 @@
 from test_runner import puzzle
 from grid import Grid
 from typing import List, Tuple
-from grid_data import DIRECTIONS8, Object
+from grid_types import DIRECTIONS8
+from grid_data import Object
+
 
 
 """

@@ -1,5 +1,5 @@
 from test_runner import puzzle
-from grid_data import YELLOW
+from grid_types import YELLOW
 from grid import Grid
 
 """

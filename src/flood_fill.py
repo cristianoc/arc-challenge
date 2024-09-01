@@ -1,7 +1,7 @@
 from collections import deque
 from typing import List
 
-from grid_data import DIRECTIONS4, GridData, logger
+from grid_types import DIRECTIONS4, GridData, logger
 
 EnclosedCells = List[List[bool]]
 

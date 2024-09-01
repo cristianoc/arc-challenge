@@ -2,7 +2,7 @@ import logging
 from typing import Any, Dict
 
 from matplotlib import pyplot as plt  # type: ignore
-from grid_data import logger
+from grid_types import logger
 from load_data import training_data, evaluation_data
 from predict_size import (
     Config,

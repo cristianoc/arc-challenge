@@ -9,9 +9,9 @@ from predict_size import (
     num_difficulties_matching,
 )
 from grid import Grid
-from grid_data import BLACK, GREY, GridData, display, display_multiple, logger
+from grid_types import BLACK, GREY, GridData, logger
 from load_data import Example, Task, Tasks, training_data, evaluation_data
-
+from grid_data import display_multiple
 
 ColorXform = Callable[
     [ExampleGrids, Grid, str], Optional[Set[int]]

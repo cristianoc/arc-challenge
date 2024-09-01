@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional
-from grid_data import logger
+from grid_types import logger
 
 # Type aliases for clarity
 

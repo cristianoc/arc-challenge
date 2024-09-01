@@ -1,27 +1,25 @@
 import copy
-from enum import Enum
 from typing import Callable, List, Tuple
-from detect_objects import (
-    ConnectedComponent,
-    find_connected_components,
-    find_rectangular_objects,
-)
+from detect_objects import ConnectedComponent, find_connected_components
 from flood_fill import find_enclosed_cells
-from grid_data import BLACK, BLUE, GREEN, RED, YELLOW, Color, GridData, Object, logger, Cell  # Added Cell import
-
-
-class Rotation(str, Enum):
-    CLOCKWISE = "Clockwise"
-    COUNTERCLOCKWISE = "CounterClockwise"
-
-
-class Axis(str, Enum):
-    HORIZONTAL = "Horizontal"
-    VERTICAL = "Vertical"
+from grid_types import (
+    BLACK,
+    BLUE,
+    GREEN,
+    RED,
+    YELLOW,
+    Color,
+    GridData,
+    logger,
+    Cell,
+    Axis,
+    Rotation,
+)
+from grid_data import Object
 
 
 class Grid:
-    def __init__(self, data: GridData, origin:Cell = (0, 0)):
+    def __init__(self, data: GridData, origin: Cell = (0, 0)):
         self.data = data
         self.origin = origin
 
@@ -101,11 +99,6 @@ class Grid:
             create_object(self, component) for component in connected_components
         ]
         return detected_objects
-
-    def detect_rectangular_objects(
-        self, allow_multicolor: bool = False
-    ) -> List[Object]:
-        return find_rectangular_objects(self.data, allow_multicolor=allow_multicolor)
 
     @staticmethod
     def empty(height: int, width: int) -> "Grid":
@@ -241,35 +234,3 @@ def test_detect_objects():
         logger.info(f"Detected object: {obj}")
 
 
-def test_detect_rectangular_objects():
-    grid = [
-        [0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0],
-        [0, 1, 0, 0, 1, 0],
-        [0, 0, 1, 0, 1, 0],
-        [0, 0, 0, 1, 1, 0],
-        [0, 0, 0, 0, 0, 0],
-    ]
-
-    objects: List[Object] = Grid(grid).detect_rectangular_objects()
-    for obj in objects:
-        logger.info(f"Detected rectangular object: {obj}")
-    object_dims = [(obj.origin, obj.size) for obj in objects]
-    assert object_dims == [((1, 1), (4, 4))]
-
-
-def test_several_rectangular_objects_of_different_color():
-    grid = [
-        [0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0],
-        [0, 1, 0, 0, 2, 0],
-        [0, 0, 1, 0, 2, 2],
-        [0, 0, 0, 1, 2, 0],
-        [0, 0, 0, 0, 0, 0],
-    ]
-
-    objects = Grid(grid).detect_rectangular_objects()
-    for obj in objects:
-        logger.info(f"Detected rectangular object: {obj}")
-    object_dims = [(obj.origin, obj.size) for obj in objects]
-    assert object_dims == [((1, 1), (4, 3)), ((2, 4), (3, 2))]
