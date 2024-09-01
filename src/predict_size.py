@@ -11,7 +11,7 @@ from visual_cortex import (
 )
 from grid import Grid
 from grid_data import BLACK, GridData, Object, display, display_multiple, logger
-from load_data import Example, Task, Tasks, iter_tasks, training_data, evaluation_data
+from load_data import Example, Task, Tasks, training_data, evaluation_data
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from rule_based_selector import DecisionRule, Features, select_object_minimal
 from shape_features import detect_shape_features
@@ -483,7 +483,7 @@ num_difficulties_total = (
 def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
-    for task_name, task in iter_tasks(tasks):
+    for task_name, task in tasks.items():
         if Config.task_name and task_name != Config.task_name:
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
