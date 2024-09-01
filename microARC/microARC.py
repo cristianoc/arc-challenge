@@ -1,3 +1,4 @@
+# type: ignore
 class MicroARCGridTask:
     def __init__(self, examples, test_case):
         self.examples = examples
