@@ -3,6 +3,10 @@ from typing import Tuple, List
 from math import sqrt
 
 
+def calculate_mass(color: int, background_color: int) -> int:
+    return 1 if color != background_color else 0
+
+
 def calculate_center_of_mass(
     grid: Object, background_color: int
 ) -> Tuple[float, float]:
@@ -16,13 +20,31 @@ def calculate_center_of_mass(
 
     for i in range(width):
         for j in range(height):
-            if grid[i, j] != background_color:
-                total_weight += 1
-                sum_x += i
-                sum_y += j
+            mass = calculate_mass(grid[i, j], background_color)
+            total_weight += mass
+            sum_x += i * mass
+            sum_y += j * mass
     X_cm = sum_x / total_weight
     Y_cm = sum_y / total_weight
     return X_cm, Y_cm
+
+
+def mass_of_top_left_half(grid: Object, background_color: int) -> int:
+    total_mass = 0
+    for y in range(grid.height):
+        for x in range(grid.width):
+            if x + y < grid.width:  # This condition includes the diagonal
+                total_mass += calculate_mass(grid[x, y], background_color)
+    return total_mass
+
+
+def mass_of_bottom_right_half(grid: Object, background_color: int) -> int:
+    total_mass = 0
+    for y in range(grid.height):
+        for x in range(grid.width):
+            if x + y >= grid.width - 1:  # This condition includes the diagonal
+                total_mass += calculate_mass(grid[x, y], background_color)
+    return total_mass
 
 
 def rot90_clockwise(grid: Object, k: int) -> Object:
@@ -64,10 +86,10 @@ def find_inverse_transformation(grid: Object, background_color: int):
 
     unrotated_grid = rot90_clockwise(grid, -rotation)
 
-    mass_of_top_minus_bottom = mass_of_top_half(unrotated_grid) - mass_of_bottom_half(
-        unrotated_grid
-    )
-    flip_x = mass_of_top_minus_bottom > 0
+    mass_of_top_left = mass_of_top_left_half(unrotated_grid, background_color)
+    mass_of_bottom_right = mass_of_bottom_right_half(unrotated_grid, background_color)
+    mass_of_top_left_minus_bottom_right = mass_of_top_left - mass_of_bottom_right
+    flip_x = mass_of_top_left_minus_bottom_right > 0
 
     original_rotation = rotation
     if flip_x:
@@ -107,18 +129,6 @@ assert grid0[4, 4] == 5
 assert grid0[4, 3] == 1
 
 background_color = 0
-
-
-def mass_of_top_half(grid: Object) -> int:
-    return sum(
-        sum(row) for row in grid.data[: (grid.height + 1) // 2]
-    )  # Include middle row in top half for odd heights
-
-
-def mass_of_bottom_half(grid: Object) -> int:
-    return sum(
-        sum(row) for row in grid.data[grid.height // 2 :]
-    )  # Include middle row in bottom half for odd heights
 
 
 def test_normalize_grid():
