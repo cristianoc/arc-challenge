@@ -14,7 +14,8 @@ from grid_types import (
     logger,
     Axis,
     Rotation,
-)
+    color_scheme,
+) 
 
 import copy
 
@@ -28,23 +29,27 @@ class Object:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Object):
-            return self.data == other.data and self.origin == other.origin
+            return self.datax == other.datax and self.origin == other.origin
         return False
 
     def format_grid(self, indent: str = '') -> str:
-        return '\n'.join(indent + ' '.join(f'{cell:2}' for cell in row) for row in self.data)
+        return '\n'.join(indent + ' '.join(f'{cell:2}' for cell in row) for row in self.datax)
 
     def __str__(self) -> str:
         return self.format_grid()
 
     def __repr__(self) -> str:
-        return f"Object(origin={self.origin}, data={self.data})"
+        return f"Object(origin={self.origin}, data={self._data})"
 
     def __format__(self, format_spec: str) -> str:
         return f"\n{self.format_grid(' ')}"
 
     def __getitem__(self, key: Tuple[int, int]) -> int:
-        return self.data[key[1]][key[0]]
+        return self.datax[key[1]][key[0]]
+
+    def __setitem__(self, key: Tuple[int, int], value: int) -> None:
+        self._data[key[0], key[1]] = value
+        self._data_cached = None
 
     def copy(self) -> "Object":
         return Object(self._data.copy())
@@ -56,7 +61,7 @@ class Object:
         return grid.rot90_clockwise(xform.rotation.value)
 
     @property
-    def data(self) -> GridData:
+    def datax(self) -> GridData:
         if self._data_cached is None:
             d: GridData = self._data.tolist()  # type: ignore
             self._data_cached = d
@@ -64,11 +69,11 @@ class Object:
 
     @property
     def height(self) -> int:
-        return len(self.data)
+        return len(self.datax)
 
     @property
     def width(self) -> int:
-        return len(self.data[0]) if self.data else 0
+        return len(self.datax[0]) if self.datax else 0
 
     @property
     def area(self) -> int:
@@ -87,18 +92,18 @@ class Object:
         [r_off, c_off] = obj.origin
         for r in range(obj.height):
             for c in range(obj.width):
-                color = obj.data[r][c]
+                color = obj.datax[r][c]
                 if color != BLACK:
                     # only add the color if it's in bounds
-                    if 0 <= r + r_off < len(self.data) and 0 <= c + c_off < len(
-                        self.data[0]
+                    if 0 <= r + r_off < len(self.datax) and 0 <= c + c_off < len(
+                        self.datax[0]
                     ):
-                        self.data[r + r_off][c + c_off] = color
+                        self.datax[r + r_off][c + c_off] = color
 
     def map(self, func: Callable[[int, int], int]) -> "Object":
         new_grid = [
-            [func(x, y) for y in range(len(self.data[0]))]
-            for x in range(len(self.data))
+            [func(x, y) for y in range(len(self.datax[0]))]
+            for x in range(len(self.datax))
         ]
         return Object(np.array(new_grid))
 
@@ -120,19 +125,19 @@ class Object:
             return new_grid
 
         new_grid: List[List[GridData]] = [
-            [func(i, j).data for j in range(self.width)] for i in range(self.height)
+            [func(i, j).datax for j in range(self.width)] for i in range(self.height)
         ]
         return Object(np.array(transform_data(new_grid)))
 
     def is_enclosed(self, x: int, y: int) -> bool:
         if not hasattr(self, "enclosed"):
-            self.enclosed = find_enclosed_cells(self.data)
+            self.enclosed = find_enclosed_cells(self.datax)
         return self.enclosed[x][y]
 
     def color_change(self, from_color: Color, to_color: Color) -> "Object":
         new_grid = [
             [to_color if cell == from_color else cell for cell in row]
-            for row in self.data
+            for row in self.datax
         ]
         return Object(np.array(new_grid))
 
@@ -147,13 +152,13 @@ class Object:
             min_col = min(c for _, c in component)
             rows = max(r for r, _ in component) - min_row + 1
             columns = max(c for _, c in component) - min_col + 1
-            data = Object.empty(size=(rows, columns)).data  # Fix dimensions here
+            data = Object.empty(size=(rows, columns)).datax  # Fix dimensions here
             for r, c in component:
-                data[r - min_row][c - min_col] = grid.data[r][c]
+                data[r - min_row][c - min_col] = grid.datax[r][c]
             return Object(origin=(min_row, min_col), data=np.array(data))
 
         connected_components = find_connected_components(
-            self.data, diagonals, allow_black
+            self.datax, diagonals, allow_black
         )
         detected_objects = [
             create_object(self, component) for component in connected_components
@@ -161,23 +166,23 @@ class Object:
         return detected_objects
 
     def rot90_clockwise(self, n: int) -> "Object":
-        x: np.ndarray = np.rot90(self.data, -n)  # type: ignore
+        x: np.ndarray = np.rot90(self._data, -n)  # type: ignore
         return Object(x)
 
     def fliplr(self) -> "Object":
-        x: np.ndarray = np.fliplr(self.data)  # type: ignore
+        x: np.ndarray = np.fliplr(self._data)  # type: ignore
         return Object(x)
 
     def flipud(self) -> "Object":
-        x: np.ndarray = np.flipud(self.data)  # type: ignore
+        x: np.ndarray = np.flipud(self._data)  # type: ignore
         return Object(x)
 
     def invert(self) -> "Object":
-        x: np.ndarray = 1 - self.data  # type: ignore
+        x: np.ndarray = 1 - self._data  # type: ignore
         return Object(x)
 
     def rotate(self, direction: Rotation) -> "Object":
-        data: List[List[int]] = self.data
+        data: List[List[int]] = self.datax
         height, width = len(data), len(data[0])
         rotated_grid = [[0 for _ in range(height)] for _ in range(width)]
         if direction == Rotation.CLOCKWISE:
@@ -186,7 +191,7 @@ class Object:
             return self.rot90_clockwise(-1)
         
     def translate(self, dy: int, dx: int) -> "Object":
-        height, width = len(self.data), len(self.data[0])
+        height, width = len(self.datax), len(self.datax[0])
         new_grid: GridData = [[BLACK] * width for _ in range(height)]
         for y in range(height):
             for x in range(width):
@@ -194,7 +199,7 @@ class Object:
                 new_y = y + dy
                 # Ensure the new position is within bounds
                 if 0 <= new_x < width and 0 <= new_y < height:
-                    new_grid[new_y][new_x] = self.data[y][x]
+                    new_grid[new_y][new_x] = self.datax[y][x]
 
         return Object(np.array(new_grid))
 
@@ -206,9 +211,9 @@ class Object:
 
     def num_cells(self, color: Optional[int]) -> int:
         if color is None:
-            return sum(cell != 0 for row in self.data for cell in row)
+            return sum(cell != 0 for row in self.datax for cell in row)
         else:
-            return sum(cell == color for row in self.data for cell in row)
+            return sum(cell == color for row in self.datax for cell in row)
 
     def move(self, dr: int, dc: int) -> "Object":
         """
@@ -230,7 +235,7 @@ class Object:
                 )
                 for color in row
             ]
-            for row in self.data
+            for row in self.datax
         ]
         return Object(np.array(new_data), self.origin)
 
@@ -244,7 +249,7 @@ class Object:
 
     def get_colors(self, allow_black: bool = True) -> List[int]:
         colors: set[Color] = set()
-        for row in self.data:
+        for row in self.datax:
             for color in row:
                 if color == BLACK and not allow_black:
                     continue
@@ -258,7 +263,7 @@ class Object:
         """
         for row in range(self.height):
             for col in range(self.width):
-                color = self.data[row][col]
+                color = self.datax[row][col]
                 if color != 0:
                     return color
         return 0
@@ -271,7 +276,7 @@ class Object:
         color_count: Dict[int, int] = {}
         for row in range(self.height):
             for col in range(self.width):
-                color = self.data[row][col]
+                color = self.datax[row][col]
                 if allow_black or color != 0:
                     color_count[color] = color_count.get(color, 0) + 1
         if not color_count:
@@ -341,7 +346,7 @@ class Object:
             return new_row
 
         # Apply squash_row to each row in self.data
-        new_data = [squash_row(row) for row in self.data]
+        new_data = [squash_row(row) for row in self.datax]
         return Object(np.array(new_data), self.origin)
 
     def has_frame(self) -> bool:
@@ -359,13 +364,13 @@ class Object:
         obj_color = self.main_color()
 
         # Check top and bottom rows
-        if not all(cell == obj_color for cell in self.data[0]) or not all(
-            cell == obj_color for cell in self.data[-1]
+        if not all(cell == obj_color for cell in self.datax[0]) or not all(
+            cell == obj_color for cell in self.datax[-1]
         ):
             return False
 
         # Check left and right columns
-        for row in self.data:
+        for row in self.datax:
             if row[0] != obj_color or row[-1] != obj_color:
                 return False
 
@@ -374,7 +379,7 @@ class Object:
     def is_block(self) -> bool:
         obj_color = self.first_color
         # Check if all cells have the same color
-        for row in self.data:
+        for row in self.datax:
             if any(cell != obj_color for cell in row):
                 return False
 
@@ -407,9 +412,9 @@ def display_multiple(
     for i, (input_data, output_data) in enumerate(grid_pairs):
         ax_input, ax_output = axes[i]
 
+
         # Plot the input grid
-        cmap: ListedColormap = colors.ListedColormap(
-            color_scheme)  # type: ignore
+        cmap: ListedColormap = colors.ListedColormap(color_scheme)  # type: ignore
         # Adjust the bounds to match the number of colors
         bounds = np.arange(-0.5, len(color_scheme) + 0.5, 1)  # type: ignore
         norm = colors.BoundaryNorm(bounds, cmap.N)  # type: ignore
@@ -443,7 +448,7 @@ class TestSquashLeft:
         obj = Object(np.array(data))
         result = obj.compact_left()
         expected_data = [[1, 2, 3], [BLACK, 4, 5], [7, 8, 9]]
-        assert result.data == expected_data
+        assert result.datax == expected_data
 
 
 def test_rotate():

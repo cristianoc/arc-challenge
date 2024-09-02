@@ -295,8 +295,7 @@ def process_tasks(tasks: Tasks, set: str):
         )
         if Config.display_not_found:
             grids: List[Tuple[GridData, Optional[GridData]]] = [
-                (Object(np.array(example[0])).data, Object(np.array(example[1])).data)
-                for example in examples
+                (example[0], example[1]) for example in examples
             ]
             display_multiple(grids, title=f"{task_name} {set}")
 

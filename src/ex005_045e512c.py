@@ -39,7 +39,7 @@ def find_subsets(
             for c in range(main_object.width):
                 if color == 0:
                     try:
-                        color = grid.data[r + off_row][c + off_col]
+                        color = grid.datax[r + off_row][c + off_col]
                     except IndexError:
                         continue
         if color != 0:

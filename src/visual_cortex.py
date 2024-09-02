@@ -227,11 +227,11 @@ def find_dividing_lines(grid: Object, color: int) -> Tuple[List[int], List[int]]
     vertical_lines: List[int] = []
 
     for i in range(grid.height):
-        if all(grid.data[i][j] == color for j in range(grid.width)):
+        if all(grid.datax[i][j] == color for j in range(grid.width)):
             horizontal_lines.append(i)
 
     for j in range(grid.width):
-        if all(grid.data[i][j] == color for i in range(grid.height)):
+        if all(grid.datax[i][j] == color for i in range(grid.height)):
             vertical_lines.append(j)
 
     return horizontal_lines, vertical_lines
@@ -260,7 +260,7 @@ def extract_subgrid_of_color(grid: Object, color: int) -> Optional[Subgrid]:
             # Extract the subgrid bounded by (prev_h, prev_v) and (h-1, v-1)
             if prev_v == v or prev_h == h:
                 continue
-            sub_grid_data = [row[prev_v:v] for row in grid.data[prev_h:h]]
+            sub_grid_data = [row[prev_v:v] for row in grid.datax[prev_h:h]]
             row.append(Object(np.array(sub_grid_data)))
             prev_v = v + 1
         subgrid.append(row)
@@ -421,13 +421,13 @@ def extract_object_by_color(grid: Object, color: int) -> Object:
     right = 0
     for i in range(rows):
         for j in range(cols):
-            if grid.data[i][j] == color:
+            if grid.datax[i][j] == color:
                 top = min(top, i)
                 left = min(left, j)
                 bottom = max(bottom, i)
                 right = max(right, j)
     origin = (top, left)
-    data = [row[left : right + 1] for row in grid.data[top : bottom + 1]]
+    data = [row[left : right + 1] for row in grid.datax[top : bottom + 1]]
     # remove other colors
     for i in range(len(data)):
         for j in range(len(data[0])):
@@ -444,7 +444,7 @@ def find_colored_objects(grid: Object) -> List[Object]:
     background color), and extracts each object corresponding to these colors.
     Each object is represented as an instance of the `Object` class.
     """
-    grid_as_object = Object(np.array(grid.data))
+    grid_as_object = Object(np.array(grid.datax))
     background_color = grid_as_object.main_color(allow_black=True)
     colors = grid.get_colors(allow_black=True)
     objects: List[Object] = []

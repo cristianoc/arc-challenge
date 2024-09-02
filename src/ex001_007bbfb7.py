@@ -14,7 +14,7 @@ different nested grid patterns, with results visualized for clarity.
 def transform(input: Object) -> Object:
 
     def map_func(x: int, y: int) -> Object:
-        color = input.data[x][y]
+        color = input.datax[x][y]
         assert isinstance(color, int)
         return Object.empty(input.size) if color == 0 else input.copy()
 
