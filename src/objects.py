@@ -5,7 +5,7 @@ from matplotlib.colors import ListedColormap  # type: ignore
 import numpy as np
 from grid_types import Cell, GridData, Rotation, Axis, BLACK, Color, RigidTransformation, XReflection
 from detect_objects import ConnectedComponent, find_connected_components
-from flood_fill import find_enclosed_cells
+from flood_fill import EnclosedCells, find_enclosed_cells
 from grid_types import (
     BLUE,
     GREEN,
@@ -17,14 +17,12 @@ from grid_types import (
     color_scheme,
 ) 
 
-import copy
-
-
 class Object:
 
     def __init__(self, data: np.ndarray[np.int64], origin: Cell = (0, 0)):
         self._data: np.ndarray[np.int64] = data
         self._data_cached: Optional[GridData] = None
+        self._enclosed_cached: Optional[EnclosedCells] = None
         self.origin = origin
 
     def __eq__(self, other: object) -> bool:
@@ -50,6 +48,7 @@ class Object:
     def __setitem__(self, key: Tuple[int, int], value: int) -> None:
         self._data[key[0], key[1]] = value
         self._data_cached = None
+        self._enclosed_cached = None
 
     def copy(self) -> "Object":
         return Object(self._data.copy())
@@ -130,9 +129,9 @@ class Object:
         return Object(np.array(transform_data(new_grid)))
 
     def is_enclosed(self, x: int, y: int) -> bool:
-        if not hasattr(self, "enclosed"):
-            self.enclosed = find_enclosed_cells(self.datax)
-        return self.enclosed[x][y]
+        if self._enclosed_cached is None:
+            self._enclosed_cached = find_enclosed_cells(self.datax)
+        return self._enclosed_cached[x][y]
 
     def color_change(self, from_color: Color, to_color: Color) -> "Object":
         new_grid = [
