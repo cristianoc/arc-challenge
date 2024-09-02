@@ -1,3 +1,4 @@
+import numpy as np
 from typing import Callable, List, Optional, Set, Tuple, TypedDict
 
 from predict_size import (
@@ -180,12 +181,12 @@ xforms: List[ColorXformEntry] = [
 def check_xform_on_examples(
     xform: ColorXform, examples: List[Example], task_name: str, task_type: str
 ) -> bool:
-    grids = [(Object(example[0]), Object(example[1])) for example in examples]
+    grids = [(Object(np.array(example[0])), Object(np.array(example[1]))) for example in examples]
     logger.debug(f"Checking xform {xform.__name__} {task_type}")
     for i, example in enumerate(examples):
         logger.debug(f"  Example {i+1}/{len(examples)}")
-        input = Object(example[0])
-        output = Object(example[1])
+        input = Object(np.array(example[0]))
+        output = Object(np.array(example[1]))
         output_colors = set(output.get_colors())
         logger.debug(f"output_colors:{output_colors}")
         new_output_colors = xform(grids, input, task_name)
@@ -294,7 +295,7 @@ def process_tasks(tasks: Tasks, set: str):
         )
         if Config.display_not_found:
             grids: List[Tuple[GridData, Optional[GridData]]] = [
-                (Object(example[0]).data, Object(example[1]).data)
+                (Object(np.array(example[0])).data, Object(np.array(example[1])).data)
                 for example in examples
             ]
             display_multiple(grids, title=f"{task_name} {set}")

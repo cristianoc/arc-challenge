@@ -4,7 +4,7 @@ import random
 
 from grid_types import GridData, logger, Cell
 from objects import Object
-
+import numpy as np
 
 """
 A Frame represents a rectangular region in a grid, defined by the coordinates (top, left, bottom, right).
@@ -261,7 +261,7 @@ def extract_subgrid_of_color(grid: Object, color: int) -> Optional[Subgrid]:
             if prev_v == v or prev_h == h:
                 continue
             sub_grid_data = [row[prev_v:v] for row in grid.data[prev_h:h]]
-            row.append(Object(sub_grid_data))
+            row.append(Object(np.array(sub_grid_data)))
             prev_v = v + 1
         subgrid.append(row)
         prev_h = h + 1
@@ -382,15 +382,18 @@ def test_lattices():
 def test_subgrid_extraction():
     # Example grid with dividing lines
     grid = Object(
-        [
-            [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
-            [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        np.array(
+            [
+                [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
+                [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
             [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
-            [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
-        ]
+                [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
+            ]
+        )
     )
 
     subgrid = extract_subgrid(grid, 1)
@@ -402,10 +405,10 @@ def test_subgrid_extraction():
         3,
         4,
     ), f"Test failed: Subgrid dimensions: {height}x{width}"
-    assert subgrid[0][0] == Object([[2, 2], [2, 2]]), "Test failed: Subgrid[0][0]"
-    assert subgrid[0][1] == Object([[3, 3], [3, 3]]), "Test failed: Subgrid[0][1]"
-    assert subgrid[0][3] == Object([[5], [5]]), "Test failed: Subgrid[0][3]"
-    assert subgrid[2][3] == Object([[5]]), "Test failed: Subgrid[2][3]"
+    assert subgrid[0][0] == Object(np.array([[2, 2], [2, 2]])), "Test failed: Subgrid[0][0]"
+    assert subgrid[0][1] == Object(np.array([[3, 3], [3, 3]])), "Test failed: Subgrid[0][1]"
+    assert subgrid[0][3] == Object(np.array([[5], [5]])), "Test failed: Subgrid[0][3]"
+    assert subgrid[2][3] == Object(np.array([[5]])), "Test failed: Subgrid[2][3]"
 
 
 def extract_object_by_color(grid: Object, color: int) -> Object:
@@ -430,7 +433,7 @@ def extract_object_by_color(grid: Object, color: int) -> Object:
         for j in range(len(data[0])):
             if data[i][j] != color:
                 data[i][j] = 0
-    return Object(data, origin)
+    return Object(np.array(data), origin)
 
 
 def find_colored_objects(grid: Object) -> List[Object]:
@@ -441,7 +444,7 @@ def find_colored_objects(grid: Object) -> List[Object]:
     background color), and extracts each object corresponding to these colors.
     Each object is represented as an instance of the `Object` class.
     """
-    grid_as_object = Object(grid.data)
+    grid_as_object = Object(np.array(grid.data))
     background_color = grid_as_object.main_color(allow_black=True)
     colors = grid.get_colors(allow_black=True)
     objects: List[Object] = []
@@ -557,7 +560,7 @@ def find_rectangular_objects(data: GridData, allow_multicolor: bool) -> List[Obj
                     for r in range(origin[0], origin[0] + height)
                 ]
                 current_object = Object(
-                    object_grid_data,
+                    np.array(object_grid_data),
                     origin,
                 )
                 objects.append(current_object)

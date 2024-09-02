@@ -2,6 +2,7 @@ import os
 from typing import Callable
 from objects import display, Object
 import load_data
+import numpy as np
 
 # Get DISPLAY from environment variable or default to True if not set
 DISPLAY = os.getenv("DISPLAY", "True").lower() in ["true", "1", "yes"]
@@ -12,13 +13,13 @@ def puzzle(name: str, transform: Callable[[Object], Object]) -> None:
     train_set = task["train"]
     test_set = task["test"]
     for i, example in enumerate(train_set):
-        input = Object(example[0])
+        input = Object(np.array(example[0]))
         output = transform(input)
         if DISPLAY:
             display(title=f"Train Example {i+1}:", input=input.data, output=output.data)
     for i, example in enumerate(test_set):
-        input = Object(example[0])
-        correct_grid = Object(example[1])
+        input = Object(np.array(example[0]))
+        correct_grid = Object(np.array(example[1]))
         output = transform(input)
         if DISPLAY:
             display(title=f"Train Test {i+1}:", input=input.data, output=output.data)

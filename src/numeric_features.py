@@ -11,10 +11,9 @@ def detect_numeric_features(grid: Object, relative_difficulty: int) -> Features:
     width, height = grid.size
     colors = grid.get_colors(allow_black=False)
     num_colors = len(colors)
-    grid_as_object = Object(grid.data,(0, 0))
-    num_cells = grid_as_object.num_cells(color=None)
+    num_cells = grid.num_cells(color=None)
 
-    main_color = grid_as_object.main_color()
+    main_color = grid.main_color()
 
     objects = grid.detect_objects()
     num_objects_of_main_color = None

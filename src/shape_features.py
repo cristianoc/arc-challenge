@@ -53,7 +53,7 @@ def detect_has_max_number_nontrivial_subobjects(
         return subobj.size <= (2, 2)
 
     def obj_count_nontrivial_subobjects(obj: Object) -> int:
-        subobjects = Object(obj.data).detect_objects(diagonals=False)
+        subobjects = obj.detect_objects(diagonals=False)
         num_nontrivial_subobjects = sum(
             1 for o in subobjects if o.size != obj.size and not is_trivial(o)
         )

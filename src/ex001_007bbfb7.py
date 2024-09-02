@@ -16,7 +16,7 @@ def transform(input: Object) -> Object:
     def map_func(x: int, y: int) -> Object:
         color = input.data[x][y]
         assert isinstance(color, int)
-        return Object.empty(input.height, input.width) if color == 0 else input.copy()
+        return Object.empty(input.size) if color == 0 else input.copy()
 
     return input.map_nested(map_func)
 

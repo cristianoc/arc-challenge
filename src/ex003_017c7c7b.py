@@ -3,6 +3,8 @@ from test_runner import puzzle
 from grid_types import BLUE, RED
 from shortest_period import find_shortest_period  # type: ignore
 from objects import Object
+import numpy as np
+
 
 """
 This code defines a grid transformation process that involves identifying the shortest repeating vertical pattern,
@@ -20,7 +22,7 @@ def transform(input: Object) -> Object:
     pattern = input.data[:vertical_period]
     assert len(input.data) == 6
     extended_pattern = extend_list(pattern, 9)
-    grid = Object(extended_pattern)
+    grid = Object(np.array(extended_pattern))
     return grid.color_change(BLUE, RED)
 
 

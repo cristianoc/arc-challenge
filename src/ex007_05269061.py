@@ -30,7 +30,7 @@ def transform(input: Object) -> Object:
         object_colors[index] = obj.first_color
 
     # Create an empty grid with the same dimensions as input
-    output_grid = Object.empty(input.height, input.width)
+    output_grid = Object.empty(input.size)
 
     for row in range(input.height):
         for col in range(input.width):
