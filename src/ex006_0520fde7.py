@@ -22,7 +22,7 @@ def transform(input: Object) -> Object:
     # Set cell color to red if both sub-grids have non-zero value at the same position
     for i in range(3):
         for j in range(3):
-            if leftmost_grid[j, i] != 0 and rightmost_grid[j, i] != 0:
+            if leftmost_grid[i, j] != 0 and rightmost_grid[i, j] != 0:
                 output_grid[i, j] = RED
 
     return output_grid
