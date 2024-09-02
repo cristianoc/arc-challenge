@@ -1,8 +1,8 @@
-from typing import Any, Dict, List, Optional, Tuple, Callable
+from typing import Any, Dict, List, Optional, Tuple, Callable, Sequence
 
 from matplotlib import colors, pyplot as plt  # type: ignore
 from matplotlib.colors import ListedColormap  # type: ignore
-import numpy as np  # type: ignore
+import numpy as np
 from grid_types import Cell, GridData, Rotation, Axis, BLACK, Color
 from detect_objects import ConnectedComponent, find_connected_components
 from flood_fill import find_enclosed_cells
@@ -18,11 +18,11 @@ from grid_types import (
 
 import copy
 
-
 class Object:
 
     def __init__(self, data: GridData, origin: Cell = (0, 0)):
-        self._data = data
+        self._data = np.array(data)  # Removed the type hint for elements
+        self._data_cached: Optional[GridData] = None
         self.origin = origin
 
     def __eq__(self, other: object) -> bool:
@@ -50,7 +50,10 @@ class Object:
 
     @property
     def data(self) -> GridData:
-        return self._data
+        if self._data_cached is None:
+            d: GridData = self._data.tolist()  # type: ignore
+            self._data_cached = d
+        return self._data_cached
 
     @property
     def height(self) -> int:
