@@ -153,6 +153,26 @@ class Object:
         ]
         return detected_objects
 
+    def rot90_clockwise(self, n: int) -> "Object":
+        x: np.ndarray = np.rot90(self.data, -n) # type: ignore
+        y: GridData = x.tolist() # type: ignore
+        return Object(y)
+
+    def fliplr(self) -> "Object":
+        x: np.ndarray = np.fliplr(self.data) # type: ignore
+        y: GridData = x.tolist() # type: ignore
+        return Object(y)
+    
+    def flipud(self) -> "Object":
+        x: np.ndarray = np.flipud(self.data) # type: ignore
+        y: GridData = x.tolist() # type: ignore
+        return Object(y)
+    
+    def invert(self) -> "Object":
+        x: np.ndarray = 1 - self.data # type: ignore
+        y: GridData = x.tolist() # type: ignore
+        return Object(y)
+
     def rotate(self, direction: Rotation) -> "Object":
         data: List[List[int]] = self.data
         height, width = len(data), len(data[0])

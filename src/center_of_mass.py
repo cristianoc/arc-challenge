@@ -29,7 +29,7 @@ class RigidTransformation(NamedTuple):
     def apply(self, grid: Object) -> Object:
         if self.x_reflection == XReflection.REFLECT:
             grid = grid.flip(Axis.HORIZONTAL)
-        return rot90_clockwise(grid, self.rotation.value)
+        return grid.rot90_clockwise(self.rotation.value)
 
     def __str__(self):
         return f"R{self.rotation.value}{'X' if self.x_reflection == XReflection.REFLECT else ''}"
@@ -79,18 +79,6 @@ def mass_of_bottom_right_half(grid: Object, background_color: int) -> int:
     return total_mass
 
 
-def rot90_clockwise(grid: Object, k: int) -> Object:
-    k = k % 4
-    if k == 0:
-        return grid
-    elif k == 1:
-        return grid.rotate(Rotation.CLOCKWISE)
-    elif k == 2:
-        return grid.rotate(Rotation.CLOCKWISE).rotate(Rotation.CLOCKWISE)
-    else:  # k == 3:
-        return grid.rotate(Rotation.COUNTERCLOCKWISE)
-
-
 def find_inverse_transformation(
     grid: Object, background_color: int
 ) -> RigidTransformation:
@@ -118,7 +106,7 @@ def find_inverse_transformation(
 
     rotation = nearest_corner
 
-    unrotated_grid = rot90_clockwise(grid, -rotation)
+    unrotated_grid = grid.rot90_clockwise(-rotation)
 
     mass_of_top_left = mass_of_top_left_half(unrotated_grid, background_color)
     mass_of_bottom_right = mass_of_bottom_right_half(unrotated_grid, background_color)
@@ -149,7 +137,7 @@ def apply_inverse_transformation(
         grid = grid.flip(Axis.HORIZONTAL)
     original_rotation = rigid_transformation.rotation.value
     print(f"Original rotation: {original_rotation}")
-    grid = rot90_clockwise(grid, -original_rotation)
+    grid = grid.rot90_clockwise(-original_rotation)
     return grid
 
 
