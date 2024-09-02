@@ -88,16 +88,15 @@ class Object:
         return Object(data)
 
     def add_object(self, obj: "Object") -> None:
-        [r_off, c_off] = obj.origin
+        r_off, c_off = obj.origin
         for r in range(obj.height):
             for c in range(obj.width):
-                color = obj.datax[r][c]
+                color = obj[c, r]
                 if color != BLACK:
-                    # only add the color if it's in bounds
-                    if 0 <= r + r_off < len(self.datax) and 0 <= c + c_off < len(
-                        self.datax[0]
-                    ):
-                        self[c + c_off, r + r_off] = color
+                    # Only add the color if it's in bounds
+                    new_r, new_c = r + r_off, c + c_off
+                    if 0 <= new_r < self.height and 0 <= new_c < self.width:
+                        self[new_r, new_c] = color
         self._data_cached = None
         self._enclosed_cached = None
 
