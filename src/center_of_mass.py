@@ -4,35 +4,7 @@ from math import sqrt
 
 from enum import Enum, auto
 from typing import NamedTuple
-
-
-class XReflection(Enum):
-    NONE = auto()
-    REFLECT = auto()
-
-
-class ClockwiseRotation(Enum):
-    R0 = 0  # 0 degrees
-    R1 = 1  # 90 degrees
-    R2 = 2  # 180 degrees
-    R3 = 3  # 270 degrees
-
-
-class RigidTransformation(NamedTuple):
-    """
-    A rigid transformation of the grid.
-    """
-
-    rotation: ClockwiseRotation = ClockwiseRotation.R0
-    x_reflection: XReflection = XReflection.NONE
-
-    def apply(self, grid: Object) -> Object:
-        if self.x_reflection == XReflection.REFLECT:
-            grid = grid.flip(Axis.HORIZONTAL)
-        return grid.rot90_clockwise(self.rotation.value)
-
-    def __str__(self):
-        return f"R{self.rotation.value}{'X' if self.x_reflection == XReflection.REFLECT else ''}"
+from grid_types import RigidTransformation, ClockwiseRotation, XReflection
 
 
 def calculate_mass(color: int, background_color: int) -> int:
@@ -169,7 +141,7 @@ def test_normalize_grid():
             rigid_transformation = RigidTransformation(rotation, x_reflection)
             print(f"\nGrid {i} xform: {rigid_transformation}")
             i += 1
-            grid = rigid_transformation.apply(grid0)
+            grid = grid0.apply_rigid_xform(rigid_transformation)
             print(f"Transformed grid: {grid}")
             inverse_transformation = find_inverse_transformation(grid, background_color)
             print(f"Inverse transformation: {inverse_transformation}")

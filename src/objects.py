@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple, Callable, Sequence
 from matplotlib import colors, pyplot as plt  # type: ignore
 from matplotlib.colors import ListedColormap  # type: ignore
 import numpy as np
-from grid_types import Cell, GridData, Rotation, Axis, BLACK, Color
+from grid_types import Cell, GridData, Rotation, Axis, BLACK, Color, RigidTransformation, XReflection
 from detect_objects import ConnectedComponent, find_connected_components
 from flood_fill import find_enclosed_cells
 from grid_types import (
@@ -47,6 +47,13 @@ class Object:
 
     def copy(self) -> "Object":
         return Object(copy.deepcopy(self.data))
+
+    def apply_rigid_xform(self, xform: RigidTransformation) -> "Object":
+        grid = self
+        if xform.x_reflection == XReflection.REFLECT:
+            grid = self.flip(Axis.HORIZONTAL)
+        return grid.rot90_clockwise(xform.rotation.value)
+
 
     @property
     def data(self) -> GridData:
