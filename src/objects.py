@@ -22,7 +22,7 @@ import copy
 class Object:
 
     def __init__(self, data: GridData, origin: Cell = (0, 0)):
-        self.data = data
+        self._data = data
         self.origin = origin
 
     def __eq__(self, other: object) -> bool:
@@ -47,6 +47,10 @@ class Object:
 
     def copy(self) -> "Object":
         return Object(copy.deepcopy(self.data))
+
+    @property
+    def data(self) -> GridData:
+        return self._data
 
     @property
     def height(self) -> int:
