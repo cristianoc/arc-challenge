@@ -42,6 +42,11 @@ class RigidTransformation(NamedTuple):
 
     def __str__(self):
         return f"R{self.rotation.value}{'X' if self.x_reflection == XReflection.REFLECT else ''}"
+    
+    def inverse(self) -> "RigidTransformation":
+        rotation = ClockwiseRotation((- self.rotation.value) % 4)
+        x_reflection = self.x_reflection
+        return RigidTransformation(rotation, x_reflection)
 
 
 
