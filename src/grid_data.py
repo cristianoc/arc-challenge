@@ -27,8 +27,23 @@ class Object:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Object):
-            return self.data == other.data
+            return self.data == other.data and self.origin == other.origin
         return False
+
+    def format_grid(self, indent: str = '') -> str:
+        return '\n'.join(indent + ' '.join(f'{cell:2}' for cell in row) for row in self.data)
+
+    def __str__(self) -> str:
+        return self.format_grid()
+
+    def __repr__(self) -> str:
+        return f"Object(origin={self.origin}, data={self.data})"
+
+    def __format__(self, format_spec: str) -> str:
+        return f"\n{self.format_grid(' ')}"
+
+    def __getitem__(self, key: Tuple[int, int]) -> int:
+        return self.data[key[1]][key[0]]
 
     def copy(self) -> "Object":
         return Object(copy.deepcopy(self.data))
