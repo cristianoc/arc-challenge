@@ -1,3 +1,4 @@
+import numpy as np
 from test_runner import puzzle
 from grid_types import RED
 from objects import Object
@@ -13,10 +14,10 @@ highlighting shared non-zero positions between the sections.
 
 def transform(input: Object) -> Object:
     # Extract leftmost and rightmost 3x3 sub-grids
-    leftmost_grid = Object([row[:3] for row in input.data])
-    rightmost_grid = Object([row[-3:] for row in input.data])
+    leftmost_grid = Object(np.array([row[:3] for row in input.data]))
+    rightmost_grid = Object(np.array([row[-3:] for row in input.data]))
 
-    output_grid = Object([[0 for _ in range(3)] for _ in range(3)])
+    output_grid = Object(np.zeros((3, 3), dtype=np.int64))
 
     # Set cell color to red if both sub-grids have non-zero value at the same position
     for i in range(3):

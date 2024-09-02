@@ -18,7 +18,7 @@ from shape_features import detect_shape_features
 from solve_regularized_regression import solve_regularized_regression
 from symmetry_features import detect_symmetry_features
 from grid_types import logger
-
+import numpy as np
 
 Size = Tuple[int, int]
 ExampleObjects = List[Tuple[Object, Object]]
@@ -234,12 +234,12 @@ xforms: List[XformEntry] = [
 def check_xform_on_examples(
     xform: SizeXform, examples: List[Example], task_name: str, task_type: str
 ) -> bool:
-    grids = [(Object(example[0]), Object(example[1])) for example in examples]
+    grids = [(Object(np.array(example[0])), Object(np.array(example[1]))) for example in examples]
     logger.debug(f"Checking xform {xform.__name__} {task_type}")
     for i, example in enumerate(examples):
         logger.debug(f"  Example {i+1}/{len(examples)}")
-        input = Object(example[0])
-        output = Object(example[1])
+        input = Object(np.array(example[0]))
+        output = Object(np.array(example[1]))
         new_output_size = xform(grids, input, task_name)
         if new_output_size != output.size:
             logger.debug(f"  Example {i+1} failed")
@@ -402,12 +402,14 @@ def find_matched_objects(
         """
         Detects objects in the input grid that are candidates for matching the output grid.
         """
-        output_as_object = Object(output.data)
+        output_as_object = Object(np.array(output.data))
         if output_as_object.has_frame():
             # If the output is a frame, detect objects in the input as frames
             logger.debug("  Output is a frame")
         num_colors_output = len(output.get_colors(allow_black=True))
-        return find_rectangular_objects(input.data, allow_multicolor=num_colors_output > 1)
+        return find_rectangular_objects(
+            input.data, allow_multicolor=num_colors_output > 1
+        )
 
     def find_matching_input_object(
         input_objects: List[Object], output: Object
@@ -422,8 +424,8 @@ def find_matched_objects(
         matched_objects: List[ObjectMatch] = []
 
         for example in examples:
-            input = Object(example[0])
-            output = Object(example[1])
+            input = Object(np.array(example[0]))
+            output = Object(np.array(example[1]))
             logger.info(f"  {task_type} {input.size} -> {output.size}")
 
             input_objects = candidate_objects_for_matching(input, output)
@@ -451,8 +453,8 @@ def predict_size_using_regularized_regression(
     target_widths: List[int] = []
 
     for example in examples:
-        input_grid = Object(example[0])
-        output_grid = Object(example[1])
+        input_grid = Object(np.array(example[0]))
+        output_grid = Object(np.array(example[1]))
 
         input_features = detect_numeric_features(input_grid, relative_difficulty)
         target_width, target_height = output_grid.size
@@ -563,9 +565,11 @@ def process_tasks(tasks: Tasks, set: str):
                     # try to remove main color and try again
                     examples2: List[Example] = []
                     for example in examples:
-                        input_obj = Object(example[0])
+                        input_obj = Object(np.array(example[0]))
                         # change the main color to black
-                        new_input_data = input_obj.change_color(input_obj.main_color(), BLACK).data.copy()
+                        new_input_data = input_obj.change_color(
+                            input_obj.main_color(), BLACK
+                        ).data.copy()
                         examples2.append((new_input_data, example[1]))
                     predicted_height, predicted_width = try_regularized_regression(
                         examples2
@@ -577,10 +581,10 @@ def process_tasks(tasks: Tasks, set: str):
 
             if Config.display_not_found:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
-                    (Object(example[0]).data, Object(example[1]).data)
+                    (Object(np.array(example[0])).data, Object(np.array(example[1])).data)
                     for example in examples
                 ]
-                colored_objects = find_colored_objects(Object(grids[0][0]))
+                colored_objects = find_colored_objects(Object(np.array(grids[0][0])))
                 display_multiple(grids, title=f"{task_name} {set}")
                 if colored_objects:
                     display_multiple(

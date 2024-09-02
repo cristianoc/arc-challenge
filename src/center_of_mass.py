@@ -5,6 +5,7 @@ from math import sqrt
 from enum import Enum, auto
 from typing import NamedTuple
 from grid_types import RigidTransformation, ClockwiseRotation, XReflection
+import numpy as np
 
 
 def calculate_mass(color: int, background_color: int) -> int:
@@ -115,13 +116,15 @@ def apply_inverse_transformation(
 
 # Example usage
 grid0 = Object(
-    [
-        [1, 0, 0, 0, 0],
-        [1, 2, 0, 0, 0],
-        [1, 1, 3, 0, 0],
-        [1, 1, 1, 4, 1],
-        [1, 1, 1, 1, 5],
-    ]
+    np.array(
+        [
+            [1, 0, 0, 0, 0],
+            [1, 2, 0, 0, 0],
+            [1, 1, 3, 0, 0],
+            [1, 1, 1, 4, 1],
+            [1, 1, 1, 1, 5],
+        ]
+    )
 )
 
 assert grid0[0, 0] == 1

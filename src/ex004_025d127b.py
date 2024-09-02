@@ -11,9 +11,7 @@ from objects import Object
 
 def transform(input: Object) -> Object:
     objects = input.detect_objects()
-    rows = len(input.data)
-    cols = len(input.data[0])
-    new_grid = Object.empty(rows, cols)
+    new_grid = Object.empty(input.size)
     for obj in objects:
         new_grid.add_object(obj.compact_left().move(0, 1))
     return new_grid

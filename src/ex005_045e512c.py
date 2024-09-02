@@ -62,7 +62,7 @@ def transform(input: Object) -> Object:
     subsets = find_subsets(input, main_object, objects)
 
     # Create a new grid with the same dimensions as the input grid
-    new_grid = Object.empty(input.height, input.width)
+    new_grid = Object.empty(input.size)
 
     # Add the main object to the new grid in its original position
     new_grid.add_object(main_object)

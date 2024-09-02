@@ -18,10 +18,11 @@ from grid_types import (
 
 import copy
 
+
 class Object:
 
-    def __init__(self, data: GridData, origin: Cell = (0, 0)):
-        self._data = np.array(data)  # Removed the type hint for elements
+    def __init__(self, data: np.ndarray[np.int64], origin: Cell = (0, 0)):
+        self._data: np.ndarray[np.int64] = data
         self._data_cached: Optional[GridData] = None
         self.origin = origin
 
@@ -46,14 +47,13 @@ class Object:
         return self.data[key[1]][key[0]]
 
     def copy(self) -> "Object":
-        return Object(copy.deepcopy(self.data))
+        return Object(self._data.copy())
 
     def apply_rigid_xform(self, xform: RigidTransformation) -> "Object":
         grid = self
         if xform.x_reflection == XReflection.REFLECT:
             grid = self.flip(Axis.HORIZONTAL)
         return grid.rot90_clockwise(xform.rotation.value)
-
 
     @property
     def data(self) -> GridData:
@@ -79,8 +79,8 @@ class Object:
         return self.width, self.height
 
     @staticmethod
-    def empty(height: int, width: int) -> "Object":
-        data: GridData = [[BLACK for _ in range(width)] for _ in range(height)]
+    def empty(size: Tuple[int, int]) -> "Object":
+        data: np.ndarray[np.int64] = np.zeros(size, dtype=np.int64)
         return Object(data)
 
     def add_object(self, obj: "Object") -> None:
@@ -100,7 +100,7 @@ class Object:
             [func(x, y) for y in range(len(self.data[0]))]
             for x in range(len(self.data))
         ]
-        return Object(new_grid)
+        return Object(np.array(new_grid))
 
     def map_nested(self, func: Callable[[int, int], "Object"]) -> "Object":
         def transform_data(data: List[List[GridData]]) -> GridData:
@@ -122,7 +122,7 @@ class Object:
         new_grid: List[List[GridData]] = [
             [func(i, j).data for j in range(self.width)] for i in range(self.height)
         ]
-        return Object(transform_data(new_grid))
+        return Object(np.array(transform_data(new_grid)))
 
     def is_enclosed(self, x: int, y: int) -> bool:
         if not hasattr(self, "enclosed"):
@@ -134,7 +134,7 @@ class Object:
             [to_color if cell == from_color else cell for cell in row]
             for row in self.data
         ]
-        return Object(new_grid)
+        return Object(np.array(new_grid))
 
     def detect_objects(
         self: "Object", diagonals: bool = True, allow_black: bool = False
@@ -147,10 +147,10 @@ class Object:
             min_col = min(c for _, c in component)
             rows = max(r for r, _ in component) - min_row + 1
             columns = max(c for _, c in component) - min_col + 1
-            data = Object.empty(height=rows, width=columns).data
+            data = Object.empty(size=(rows, columns)).data  # Fix dimensions here
             for r, c in component:
                 data[r - min_row][c - min_col] = grid.data[r][c]
-            return Object(data, (min_row, min_col))
+            return Object(origin=(min_row, min_col), data=np.array(data))
 
         connected_components = find_connected_components(
             self.data, diagonals, allow_black
@@ -161,39 +161,30 @@ class Object:
         return detected_objects
 
     def rot90_clockwise(self, n: int) -> "Object":
-        x: np.ndarray = np.rot90(self.data, -n) # type: ignore
-        y: GridData = x.tolist() # type: ignore
-        return Object(y)
+        x: np.ndarray = np.rot90(self.data, -n)  # type: ignore
+        return Object(x)
 
     def fliplr(self) -> "Object":
-        x: np.ndarray = np.fliplr(self.data) # type: ignore
-        y: GridData = x.tolist() # type: ignore
-        return Object(y)
-    
+        x: np.ndarray = np.fliplr(self.data)  # type: ignore
+        return Object(x)
+
     def flipud(self) -> "Object":
-        x: np.ndarray = np.flipud(self.data) # type: ignore
-        y: GridData = x.tolist() # type: ignore
-        return Object(y)
-    
+        x: np.ndarray = np.flipud(self.data)  # type: ignore
+        return Object(x)
+
     def invert(self) -> "Object":
-        x: np.ndarray = 1 - self.data # type: ignore
-        y: GridData = x.tolist() # type: ignore
-        return Object(y)
+        x: np.ndarray = 1 - self.data  # type: ignore
+        return Object(x)
 
     def rotate(self, direction: Rotation) -> "Object":
         data: List[List[int]] = self.data
         height, width = len(data), len(data[0])
         rotated_grid = [[0 for _ in range(height)] for _ in range(width)]
         if direction == Rotation.CLOCKWISE:
-            for i in range(height):
-                for j in range(width):
-                    rotated_grid[j][height - 1 - i] = data[i][j]
+            return self.rot90_clockwise(1)
         else:  # Rotation.COUNTERCLOCKWISE
-            for i in range(height):
-                for j in range(width):
-                    rotated_grid[width - 1 - j][i] = data[i][j]
-        return Object(rotated_grid)
-
+            return self.rot90_clockwise(-1)
+        
     def translate(self, dy: int, dx: int) -> "Object":
         height, width = len(self.data), len(self.data[0])
         new_grid: GridData = [[BLACK] * width for _ in range(height)]
@@ -205,14 +196,13 @@ class Object:
                 if 0 <= new_x < width and 0 <= new_y < height:
                     new_grid[new_y][new_x] = self.data[y][x]
 
-        return Object(new_grid)
+        return Object(np.array(new_grid))
 
     def flip(self, axis: Axis) -> "Object":
         if axis == Axis.HORIZONTAL:
-            flipped_grid: GridData = [row[::-1] for row in self.data]
+            return self.fliplr()
         else:
-            flipped_grid: GridData = self.data[::-1]
-        return Object(flipped_grid)
+            return self.flipud()
 
     def num_cells(self, color: Optional[int]) -> int:
         if color is None:
@@ -225,7 +215,7 @@ class Object:
         Moves the object by `dr` rows and `dc` columns.
         """
         new_origin = (self.origin[0] + dr, self.origin[1] + dc)
-        return Object(self.data, new_origin)
+        return Object(self._data, new_origin)
 
     def change_color(self, from_color: Optional[int], to_color: int) -> "Object":
         """
@@ -242,7 +232,7 @@ class Object:
             ]
             for row in self.data
         ]
-        return Object(new_data, self.origin)
+        return Object(np.array(new_data), self.origin)
 
     def contains_cell(self, cell: Cell) -> bool:
         """
@@ -352,7 +342,7 @@ class Object:
 
         # Apply squash_row to each row in self.data
         new_data = [squash_row(row) for row in self.data]
-        return Object(new_data, self.origin)
+        return Object(np.array(new_data), self.origin)
 
     def has_frame(self) -> bool:
         """
@@ -418,7 +408,8 @@ def display_multiple(
         ax_input, ax_output = axes[i]
 
         # Plot the input grid
-        cmap: ListedColormap = colors.ListedColormap(color_scheme)  # type: ignore
+        cmap: ListedColormap = colors.ListedColormap(
+            color_scheme)  # type: ignore
         # Adjust the bounds to match the number of colors
         bounds = np.arange(-0.5, len(color_scheme) + 0.5, 1)  # type: ignore
         norm = colors.BoundaryNorm(bounds, cmap.N)  # type: ignore
@@ -432,7 +423,7 @@ def display_multiple(
             ax_output.set_title(f"Output Grid {i+1}")
         else:
             # If output_data is None, just show a blank plot
-            ax_output.imshow(np.zeros_like(input_data), cmap="gray")  # type: ignore
+            ax_output.imshow(input_data, cmap="gray")  # type: ignore
             ax_output.set_title(f"Output Grid {i+1} (None)")
 
         ax_output.axis("off")  # Hide the axes
@@ -440,7 +431,8 @@ def display_multiple(
     if title:
         fig.suptitle(title, fontsize=16)
 
-    plt.tight_layout(rect=[0, 0, 1, 0.96])  # Adjust layout to make room for title
+    # Adjust layout to make room for title
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
     plt.show()
 
 
@@ -448,68 +440,68 @@ class TestSquashLeft:
     # Removes the last occurrence of BLACK from each row containing BLACK
     def test_removes_last_black_occurrence(self):
         data = [[1, 2, BLACK, 3], [BLACK, 4, 5, BLACK], [6, 7, 8, 9]]
-        obj = Object(origin=(0, 0), data=data)
+        obj = Object(np.array(data))
         result = obj.compact_left()
         expected_data = [[1, 2, 3], [BLACK, 4, 5], [7, 8, 9]]
         assert result.data == expected_data
 
 
 def test_rotate():
-    grid = Object([[1, 2], [3, 4]])
+    grid = Object(np.array([[1, 2], [3, 4]]))
     rotated_grid = grid.rotate(Rotation.CLOCKWISE)
     assert rotated_grid == Object(
-        [[3, 1], [4, 2]]
+        np.array([[3, 1], [4, 2]])
     ), f"Expected [[3, 1], [4, 2]], but got {rotated_grid}"
 
     rotated_grid = grid.rotate(Rotation.COUNTERCLOCKWISE)
     assert rotated_grid == Object(
-        [[2, 4], [1, 3]]
+        np.array([[2, 4], [1, 3]])
     ), f"Expected [[2, 4], [1, 3]], but got {rotated_grid}"
 
 
 def test_flip():
-    grid = Object([[1, 2], [3, 4]])
+    grid = Object(np.array([[1, 2], [3, 4]]))
     flipped_grid = grid.flip(Axis.HORIZONTAL)
     assert flipped_grid == Object(
-        [[2, 1], [4, 3]]
+        np.array([[2, 1], [4, 3]])
     ), f"Expected [[2, 1], [4, 3]], but got {flipped_grid}"
 
     flipped_grid = grid.flip(Axis.VERTICAL)
     assert flipped_grid == Object(
-        [[3, 4], [1, 2]]
+        np.array([[3, 4], [1, 2]])
     ), f"Expected [[3, 4], [1, 2]], but got {flipped_grid}"
 
 
 def test_translate():
-    grid = Object([[1, 2], [3, 4]])
+    grid = Object(np.array([[1, 2], [3, 4]]))
     translated_grid = grid.translate(1, 1)
-    assert translated_grid.data == [[0, 0], [0, 1]]
+    assert np.array_equal(translated_grid._data, np.array([[0, 0], [0, 1]]))  # Use np.array_equal
 
 
 def test_color_change():
-    grid = Object([[RED, BLUE], [GREEN, RED]])
+    grid = Object(np.array([[RED, BLUE], [GREEN, RED]]))
     color_changed_grid = grid.color_change(RED, YELLOW)
     assert color_changed_grid == Object(
-        [[YELLOW, BLUE], [GREEN, YELLOW]]
+        np.array([[YELLOW, BLUE], [GREEN, YELLOW]])
     ), f"Expected [[YELLOW, BLUE], [GREEN, YELLOW]], but got {color_changed_grid}"
 
 
 def test_copy():
-    grid = Object([[1, 2], [3, 4]])
+    grid = Object(np.array([[1, 2], [3, 4]]))
     copied_grid = grid.copy()
     assert copied_grid == grid, f"Expected {grid}, but got {copied_grid}"
     assert copied_grid is not grid, "Copy should create a new instance"
 
 
 def test_detect_objects():
-    grid = [
+    grid = np.array([
         [0, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 0, 0],
         [0, 1, 0, 0, 1, 0],
         [0, 0, 1, 0, 1, 0],
         [0, 0, 0, 1, 1, 0],
         [0, 0, 0, 0, 0, 0],
-    ]
+    ])
 
     objects = Object(grid).detect_objects()
     for obj in objects:
