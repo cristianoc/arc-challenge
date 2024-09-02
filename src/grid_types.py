@@ -1,6 +1,8 @@
 import logging
 from enum import Enum
 from typing import List, Tuple, NewType
+from enum import Enum, auto
+from typing import NamedTuple
 
 logging.basicConfig(
     level=logging.INFO,  # change to logging.DEBUG for more verbose output
@@ -17,6 +19,30 @@ DIRECTIONS4 = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
 # Direction vectors for 8 directions (N, NE, E, SE, S, SW, W, NW)
 DIRECTIONS8 = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
+
+class XReflection(Enum):
+    NONE = auto()
+    REFLECT = auto()
+
+
+class ClockwiseRotation(Enum):
+    R0 = 0  # 0 degrees
+    R1 = 1  # 90 degrees
+    R2 = 2  # 180 degrees
+    R3 = 3  # 270 degrees
+
+
+class RigidTransformation(NamedTuple):
+    """
+    A rigid transformation of the grid.
+    """
+
+    rotation: ClockwiseRotation = ClockwiseRotation.R0
+    x_reflection: XReflection = XReflection.NONE
+
+    def __str__(self):
+        return f"R{self.rotation.value}{'X' if self.x_reflection == XReflection.REFLECT else ''}"
+
 
 
 class Rotation(str, Enum):
