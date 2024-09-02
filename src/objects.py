@@ -27,7 +27,7 @@ class Object:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Object):
-            return self.datax == other.datax and self.origin == other.origin
+            return np.array_equal(self._data, other._data) and self.origin == other.origin
         return False
 
     def format_grid(self, indent: str = '') -> str:
@@ -97,7 +97,9 @@ class Object:
                     if 0 <= r + r_off < len(self.datax) and 0 <= c + c_off < len(
                         self.datax[0]
                     ):
-                        self.datax[r + r_off][c + c_off] = color
+                        self[c + c_off, r + r_off] = color
+        self._data_cached = None
+        self._enclosed_cached = None
 
     def map(self, func: Callable[[int, int], int]) -> "Object":
         new_grid = [
@@ -188,7 +190,7 @@ class Object:
             return self.rot90_clockwise(1)
         else:  # Rotation.COUNTERCLOCKWISE
             return self.rot90_clockwise(-1)
-        
+
     def translate(self, dy: int, dx: int) -> "Object":
         height, width = len(self.datax), len(self.datax[0])
         new_grid: GridData = [[BLACK] * width for _ in range(height)]
@@ -219,7 +221,7 @@ class Object:
         Moves the object by `dr` rows and `dc` columns.
         """
         new_origin = (self.origin[0] + dr, self.origin[1] + dc)
-        return Object(self._data, new_origin)
+        return Object(self._data.copy(), new_origin)
 
     def change_color(self, from_color: Optional[int], to_color: int) -> "Object":
         """
@@ -344,7 +346,7 @@ class Object:
                 new_row = row[1:]
             return new_row
 
-        # Apply squash_row to each row in self.data
+        # Apply squash_row to each row in self.datax
         new_data = [squash_row(row) for row in self.datax]
         return Object(np.array(new_data), self.origin)
 
@@ -479,7 +481,7 @@ def test_flip():
 def test_translate():
     grid = Object(np.array([[1, 2], [3, 4]]))
     translated_grid = grid.translate(1, 1)
-    assert np.array_equal(translated_grid._data, np.array([[0, 0], [0, 1]]))  # Use np.array_equal
+    assert translated_grid == Object(np.array([[0, 0], [0, 1]]))
 
 
 def test_color_change():
