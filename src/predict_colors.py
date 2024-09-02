@@ -10,7 +10,7 @@ from predict_size import (
 )
 from grid_types import BLACK, GREY, GridData, logger
 from load_data import Example, Task, Tasks, training_data, evaluation_data
-from grid_data import display_multiple, Object
+from objects import display_multiple, Object
 
 ColorXform = Callable[
     [ExampleObjects, Object, str], Optional[Set[int]]

@@ -2,7 +2,7 @@ from enum import Enum, auto
 from typing import List
 
 from grid_types import RED, logger
-from grid_data import Object
+from objects import Object
 from rule_based_selector import Features
 
 

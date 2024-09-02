@@ -3,7 +3,7 @@ from typing import List
 
 from grid_types import logger
 from rule_based_selector import Features
-from grid_data import Object
+from objects import Object
 
 class ColorFeatures(Enum):
     LARGEST_SIZE = (

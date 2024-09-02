@@ -1,7 +1,7 @@
 from test_runner import puzzle
 from typing import List, Tuple
 from grid_types import DIRECTIONS8
-from grid_data import Object
+from objects import Object
 
 
 """

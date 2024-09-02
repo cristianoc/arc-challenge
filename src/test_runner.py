@@ -1,6 +1,6 @@
 import os
 from typing import Callable
-from grid_data import display, Object
+from objects import display, Object
 import load_data
 
 # Get DISPLAY from environment variable or default to True if not set

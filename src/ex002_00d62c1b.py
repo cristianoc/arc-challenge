@@ -1,6 +1,6 @@
 from test_runner import puzzle
 from grid_types import YELLOW
-from grid_data import Object
+from objects import Object
 
 """
 This example demonstrates transforming a grid by changing the color of enclosed cells. 
