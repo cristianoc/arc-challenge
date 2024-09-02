@@ -48,7 +48,7 @@ def detect_has_max_red_cells(object: Object, all_objects: List[Object]) -> bool:
             1
             for j in range(obj.width)
             for i in range(obj.height)
-            if obj.data[i][j] == RED
+            if obj[j, i] == RED
         )
 
     num_red_cells = count_red_cells(object)
@@ -68,7 +68,7 @@ def detect_has_max_non_background_cells(
             1
             for j in range(obj.width)
             for i in range(obj.height)
-            if obj.data[i][j] != background_color
+            if obj[j, i] != background_color
         )
 
     num_non_background_cells = count_non_background_cells(object)
@@ -92,7 +92,7 @@ def detect_has_min_non_background_cells(
             1
             for j in range(obj.width)
             for i in range(obj.height)
-            if obj.data[i][j] != background_color
+            if obj[j, i] != background_color
         )
 
     num_non_background_cells = count_non_background_cells(object)

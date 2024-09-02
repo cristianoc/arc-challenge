@@ -13,7 +13,7 @@ This process highlights the use of conditional logic to manipulate grid data bas
 def transform(input: Object) -> Object:
     # if the square is enclosed, make it yellow, otherwise keep the original color
     def map_func(x: int, y: int) -> int:
-        color = input.data[x][y]
+        color = input[y,x]
         new_color = YELLOW if input.is_enclosed(x, y) else color
         return new_color
 

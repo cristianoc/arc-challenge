@@ -38,7 +38,7 @@ def transform(input: Object) -> Object:
             diag = diagonal_index(row, col)
             # Set the color of the cell to the corresponding object color
             color = object_colors[diag]
-            output_grid.data[row][col] = color
+            output_grid.datax[row][col] = color
 
     return output_grid
 

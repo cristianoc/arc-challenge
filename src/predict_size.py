@@ -60,7 +60,7 @@ def output_size_is_size_of_largest_nonblack_object(
 def output_size_is_size_of_object_inside_largest_frame(
     grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Size]:
-    largest_frame = find_largest_frame(grid.data, None)
+    largest_frame = find_largest_frame(grid.datax, None)
     if largest_frame:
         (top, left, bottom, right) = largest_frame
         width = right - left + 1
@@ -115,7 +115,7 @@ def output_size_is_size_of_max_area_object_with_flexible_contours(
     if not objects:
         return None
     max_area_object = max(objects, key=lambda obj: obj.area)
-    max_area_frame = find_largest_frame(max_area_object.data, None)
+    max_area_frame = find_largest_frame(max_area_object.datax, None)
     if max_area_frame:
         # handle case where the largest object has a few extra cells around it
         # so we need to consider the frame inside
@@ -130,7 +130,7 @@ def output_size_is_size_of_repeating_subgrid_forming_a_lattice(
     grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Size]:
     def find_lattice(grid: Object) -> Optional[Frame]:
-        largest_frame = find_largest_frame(grid.data, None)
+        largest_frame = find_largest_frame(grid.datax, None)
         logger.debug(f"largest_frame:{largest_frame}")
         if largest_frame is None:
             return None
@@ -140,14 +140,14 @@ def output_size_is_size_of_repeating_subgrid_forming_a_lattice(
         logger.debug(
             f"Largest frame found: {largest_frame} height:{height} width:{width}"
         )
-        foreground = grid.data[top][left]
+        foreground = grid.datax[top][left]
         # find minimal frame inside and see if it forms a lattice
-        is_lattice = is_frame_part_of_lattice(grid.data, largest_frame, foreground)
+        is_lattice = is_frame_part_of_lattice(grid.datax, largest_frame, foreground)
         logger.debug(f"is_lattice:{is_lattice} foreground:{foreground}")
-        smallest_frame = find_smallest_frame(grid.data, foreground, min_size=(3, 3))
+        smallest_frame = find_smallest_frame(grid.datax, foreground, min_size=(3, 3))
         if smallest_frame is None:
             return None
-        is_lattice = is_frame_part_of_lattice(grid.data, smallest_frame, foreground)
+        is_lattice = is_frame_part_of_lattice(grid.datax, smallest_frame, foreground)
         logger.debug(
             f"smallest_frame:{smallest_frame} is_lattice:{is_lattice} foreground:{foreground}"
         )
@@ -295,7 +295,7 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
     def detect_common_symmetry_features() -> Optional[DecisionRule]:
         common_decision_rule = None
         for input_objects, index in matched_objects:
-            embeddings = [detect_symmetry_features(obj.data) for obj in input_objects]
+            embeddings = [detect_symmetry_features(obj.datax) for obj in input_objects]
             decision_rule = select_object_minimal(embeddings, index)
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Symmetry): {decision_rule}")
@@ -402,20 +402,20 @@ def find_matched_objects(
         """
         Detects objects in the input grid that are candidates for matching the output grid.
         """
-        output_as_object = Object(np.array(output.data))
+        output_as_object = Object(output._data)
         if output_as_object.has_frame():
             # If the output is a frame, detect objects in the input as frames
             logger.debug("  Output is a frame")
         num_colors_output = len(output.get_colors(allow_black=True))
         return find_rectangular_objects(
-            input.data, allow_multicolor=num_colors_output > 1
+            input.datax, allow_multicolor=num_colors_output > 1
         )
 
     def find_matching_input_object(
         input_objects: List[Object], output: Object
     ) -> Optional[int]:
         for i, io in enumerate(input_objects):
-            if io.size == output.size and io.data == output.data:
+            if io.size == output.size and io.datax == output.datax:
                 logger.debug(f"  Input object matching output: {io}")
                 return i
         return None
@@ -569,7 +569,7 @@ def process_tasks(tasks: Tasks, set: str):
                         # change the main color to black
                         new_input_data = input_obj.change_color(
                             input_obj.main_color(), BLACK
-                        ).data.copy()
+                        ).datax.copy()
                         examples2.append((new_input_data, example[1]))
                     predicted_height, predicted_width = try_regularized_regression(
                         examples2
@@ -581,14 +581,14 @@ def process_tasks(tasks: Tasks, set: str):
 
             if Config.display_not_found:
                 grids: List[Tuple[GridData, Optional[GridData]]] = [
-                    (Object(np.array(example[0])).data, Object(np.array(example[1])).data)
+                    (Object(np.array(example[0])).datax, Object(np.array(example[1])).datax)
                     for example in examples
                 ]
                 colored_objects = find_colored_objects(Object(np.array(grids[0][0])))
                 display_multiple(grids, title=f"{task_name} {set}")
                 if colored_objects:
                     display_multiple(
-                        [(o.data, None) for o in colored_objects],
+                        [(o.datax, None) for o in colored_objects],
                         title=f"colored objects",
                     )
 

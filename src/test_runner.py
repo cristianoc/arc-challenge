@@ -16,17 +16,17 @@ def puzzle(name: str, transform: Callable[[Object], Object]) -> None:
         input = Object(np.array(example[0]))
         output = transform(input)
         if DISPLAY:
-            display(title=f"Train Example {i+1}:", input=input.data, output=output.data)
+            display(title=f"Train Example {i+1}:", input=input.datax, output=output.datax)
     for i, example in enumerate(test_set):
         input = Object(np.array(example[0]))
         correct_grid = Object(np.array(example[1]))
         output = transform(input)
         if DISPLAY:
-            display(title=f"Train Test {i+1}:", input=input.data, output=output.data)
+            display(title=f"Train Test {i+1}:", input=input.datax, output=output.datax)
         if output != correct_grid:
             display(
                 title=f"Correct Output {i+1}:",
-                input=output.data,
-                output=correct_grid.data,
+                input=output.datax,
+                output=correct_grid.datax,
             )
             assert False, f"Test {i+1} failed"

@@ -14,16 +14,16 @@ highlighting shared non-zero positions between the sections.
 
 def transform(input: Object) -> Object:
     # Extract leftmost and rightmost 3x3 sub-grids
-    leftmost_grid = Object(np.array([row[:3] for row in input.data]))
-    rightmost_grid = Object(np.array([row[-3:] for row in input.data]))
+    leftmost_grid = Object(np.array([row[:3] for row in input.datax]))
+    rightmost_grid = Object(np.array([row[-3:] for row in input.datax]))
 
     output_grid = Object(np.zeros((3, 3), dtype=np.int64))
 
     # Set cell color to red if both sub-grids have non-zero value at the same position
     for i in range(3):
         for j in range(3):
-            if leftmost_grid.data[i][j] != 0 and rightmost_grid.data[i][j] != 0:
-                output_grid.data[i][j] = RED
+            if leftmost_grid[j, i] != 0 and rightmost_grid[j, i] != 0:
+                output_grid[i, j] = RED
 
     return output_grid
 
