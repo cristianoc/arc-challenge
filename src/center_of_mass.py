@@ -1,6 +1,38 @@
 from grid_data import Object, Rotation, Axis
-from typing import Tuple, List
+from typing import Tuple
 from math import sqrt
+
+from enum import Enum, auto
+from typing import NamedTuple
+
+
+class XReflection(Enum):
+    NONE = auto()
+    REFLECT = auto()
+
+
+class ClockwiseRotation(Enum):
+    R0 = 0  # 0 degrees
+    R1 = 1  # 90 degrees
+    R2 = 2  # 180 degrees
+    R3 = 3  # 270 degrees
+
+
+class RigidTransformation(NamedTuple):
+    """
+    A rigid transformation of the grid.
+    """
+
+    rotation: ClockwiseRotation = ClockwiseRotation.R0
+    x_reflection: XReflection = XReflection.NONE
+
+    def apply(self, grid: Object) -> Object:
+        if self.x_reflection == XReflection.REFLECT:
+            grid = grid.flip(Axis.HORIZONTAL)
+        return rot90_clockwise(grid, self.rotation.value)
+
+    def __str__(self):
+        return f"R{self.rotation.value}{'X' if self.x_reflection == XReflection.REFLECT else ''}"
 
 
 def calculate_mass(color: int, background_color: int) -> int:
@@ -59,7 +91,9 @@ def rot90_clockwise(grid: Object, k: int) -> Object:
         return grid.rotate(Rotation.COUNTERCLOCKWISE)
 
 
-def find_inverse_transformation(grid: Object, background_color: int):
+def find_inverse_transformation(
+    grid: Object, background_color: int
+) -> RigidTransformation:
     """
     Normalize the grid by applying the appropriate transformations to get it into its standard form.
     """
@@ -101,14 +135,20 @@ def find_inverse_transformation(grid: Object, background_color: int):
     else:
         original_rotation = rotation
 
-    return flip_x, original_rotation
+    rotation = ClockwiseRotation(original_rotation)
+    x_reflection = XReflection.REFLECT if flip_x else XReflection.NONE
+    rigid_transformation = RigidTransformation(rotation, x_reflection)
+
+    return rigid_transformation
 
 
 def apply_inverse_transformation(
-    grid: Object, flip_x: bool, original_rotation: int
+    grid: Object, rigid_transformation: RigidTransformation
 ) -> Object:
-    if flip_x:
+    if rigid_transformation.x_reflection == XReflection.REFLECT:
         grid = grid.flip(Axis.HORIZONTAL)
+    original_rotation = rigid_transformation.rotation.value
+    print(f"Original rotation: {original_rotation}")
     grid = rot90_clockwise(grid, -original_rotation)
     return grid
 
@@ -132,26 +172,22 @@ background_color = 0
 
 
 def test_normalize_grid():
-    # List all 8 transformations (rotations + flips)
-    grids: List[Tuple[str, Object]] = []
-    for rotation in [0, 1, 2, 3]:
-        rotated_grid = rot90_clockwise(grid0, rotation)
-        name = f"R{rotation}"
-        grids.append((name, rotated_grid))
-        name += "X"
-        grids.append((name, rotated_grid.flip(Axis.HORIZONTAL)))
-    for i, (name, grid) in enumerate(grids):
-        print(f"\nGrid {i} xform: {name}{grid}")
-        flip_x, original_rotation = find_inverse_transformation(grid, background_color)
+    # List all 8 rigidtransformations (rotations + flips)
 
-        original_grid = apply_inverse_transformation(grid, flip_x, original_rotation)
-
-        print(f"Original Transformation: R{original_rotation}{'X' if flip_x else ''}")
-        print(
-            f"Inverse Transformation: {'X' if flip_x else ''}R{(-original_rotation) % 4}"
-        )
-        print(f"Untransformed:{original_grid}")
-        assert original_grid.data == grid0.data
+    # Enumerate rigid transformations
+    i = 0
+    for rotation in ClockwiseRotation:
+        for x_reflection in XReflection:
+            rigid_transformation = RigidTransformation(rotation, x_reflection)
+            print(f"\nGrid {i} xform: {rigid_transformation}")
+            i += 1
+            grid = rigid_transformation.apply(grid0)
+            print(f"Transformed grid: {grid}")
+            inverse_transformation = find_inverse_transformation(grid, background_color)
+            print(f"Inverse transformation: {inverse_transformation}")
+            original_grid = apply_inverse_transformation(grid, inverse_transformation)
+            print(f"Original grid: {original_grid}")
+            assert original_grid.data == grid0.data
 
 
 if __name__ == "__main__":
