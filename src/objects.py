@@ -62,7 +62,7 @@ class Object:
 
     @property
     def size(self) -> Tuple[int, int]:
-        return (self.height, self.width)
+        return self.width, self.height
 
     @staticmethod
     def empty(height: int, width: int) -> "Object":

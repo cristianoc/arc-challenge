@@ -20,7 +20,6 @@ from symmetry_features import detect_symmetry_features
 from grid_types import logger
 
 
-
 Size = Tuple[int, int]
 ExampleObjects = List[Tuple[Object, Object]]
 
@@ -72,7 +71,7 @@ def output_size_is_size_of_object_inside_largest_frame(
             )
         height_without_frame = height - 2
         width_without_frame = width - 2
-        return (height_without_frame, width_without_frame)
+        return (width_without_frame, height_without_frame)
     return (0, 0)
 
 
@@ -190,7 +189,7 @@ def output_size_is_size_of_repeating_subgrid_forming_a_lattice(
     if grid.width != expected_width:
         return None
 
-    return (num_repeating_obj_rows, num_repeating_obj_cols)
+    return (num_repeating_obj_cols, num_repeating_obj_rows)
 
 
 SizeXform = Callable[[ExampleObjects, Object, str], Optional[Size]]
@@ -456,7 +455,7 @@ def predict_size_using_regularized_regression(
         output_grid = Object(example[1])
 
         input_features = detect_numeric_features(input_grid, relative_difficulty)
-        target_height, target_width = output_grid.size
+        target_width, target_height = output_grid.size
 
         feature_vectors.append(input_features)
         target_heights.append(target_height)
