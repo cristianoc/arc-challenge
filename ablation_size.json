@@ -12,63 +12,63 @@
         "evaluation_data": 88.0
     },
     "4": {
-        "training_data": 88.5,
+        "training_data": 88.2,
         "evaluation_data": 88.5
     },
     "5": {
-        "training_data": 89.0,
+        "training_data": 88.7,
         "evaluation_data": 89.0
     },
     "6": {
-        "training_data": 89.5,
-        "evaluation_data": 89.5
-    },
-    "7": {
-        "training_data": 89.7,
+        "training_data": 89.2,
         "evaluation_data": 89.7
     },
+    "7": {
+        "training_data": 89.5,
+        "evaluation_data": 90.0
+    },
     "8": {
-        "training_data": 92.0,
-        "evaluation_data": 92.5
+        "training_data": 91.7,
+        "evaluation_data": 92.7
     },
     "9": {
-        "training_data": 93.5,
-        "evaluation_data": 93.5
-    },
-    "10": {
-        "training_data": 93.5,
+        "training_data": 93.2,
         "evaluation_data": 93.7
     },
-    "11": {
-        "training_data": 93.7,
-        "evaluation_data": 94.2
+    "10": {
+        "training_data": 93.2,
+        "evaluation_data": 94.0
     },
-    "12": {
-        "training_data": 94.2,
+    "11": {
+        "training_data": 93.5,
         "evaluation_data": 94.5
     },
-    "13": {
-        "training_data": 95.0,
-        "evaluation_data": 95.0
+    "12": {
+        "training_data": 94.0,
+        "evaluation_data": 94.7
     },
-    "14": {
-        "training_data": 95.5,
+    "13": {
+        "training_data": 94.7,
         "evaluation_data": 95.2
     },
-    "15": {
-        "training_data": 96.5,
+    "14": {
+        "training_data": 95.2,
         "evaluation_data": 95.5
     },
-    "16": {
+    "15": {
         "training_data": 96.2,
-        "evaluation_data": 96.0
+        "evaluation_data": 95.7
+    },
+    "16": {
+        "training_data": 96.0,
+        "evaluation_data": 96.2
     },
     "17": {
-        "training_data": 96.7,
+        "training_data": 96.5,
         "evaluation_data": 96.2
     },
     "18": {
-        "training_data": 97.5,
+        "training_data": 97.2,
         "evaluation_data": 97.0
     }
 }

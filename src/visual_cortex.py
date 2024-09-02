@@ -596,4 +596,4 @@ def test_several_rectangular_objects_of_different_color():
     for obj in objects:
         logger.info(f"Detected rectangular object: {obj}")
     object_dims = [(obj.origin, obj.size) for obj in objects]
-    assert object_dims == [((1, 1), (4, 3)), ((2, 4), (3, 2))]
+    assert object_dims == [((1, 1), (3, 4)), ((2, 4), (2, 3))]

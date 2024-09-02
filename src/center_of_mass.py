@@ -45,7 +45,7 @@ def calculate_center_of_mass(
     """
     Calculate the center of mass of the grid, excluding cells with the background color.
     """
-    height, width = grid.size
+    width, height = grid.size
     total_weight = 0
     sum_x = 0
     sum_y = 0
@@ -98,7 +98,7 @@ def find_inverse_transformation(
     Normalize the grid by applying the appropriate transformations to get it into its standard form.
     """
 
-    height, width = grid.size
+    width, height = grid.size
 
     def distance(point1: Tuple[float, float], point2: Tuple[float, float]) -> float:
         return sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
