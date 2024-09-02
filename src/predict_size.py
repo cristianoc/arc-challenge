@@ -402,8 +402,7 @@ def find_matched_objects(
         """
         Detects objects in the input grid that are candidates for matching the output grid.
         """
-        output_as_object = Object(output._data)
-        if output_as_object.has_frame():
+        if output.has_frame():
             # If the output is a frame, detect objects in the input as frames
             logger.debug("  Output is a frame")
         num_colors_output = len(output.get_colors(allow_black=True))

@@ -150,7 +150,7 @@ def test_normalize_grid():
             print(f"Inverse transformation: {inverse_transformation}")
             original_grid = apply_inverse_transformation(grid, inverse_transformation)
             print(f"Original grid: {original_grid}")
-            assert np.array_equal(original_grid._data, grid0._data)
+            assert original_grid == grid0
 
 
 if __name__ == "__main__":
