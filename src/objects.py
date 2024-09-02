@@ -46,7 +46,7 @@ class Object:
         return self.datax[key[1]][key[0]]
 
     def __setitem__(self, key: Tuple[int, int], value: int) -> None:
-        self._data[key[0], key[1]] = value
+        self._data[key[1], key[0]] = value  # Corrected the indices
         self._data_cached = None
         self._enclosed_cached = None
 
@@ -96,7 +96,7 @@ class Object:
                     # Only add the color if it's in bounds
                     new_r, new_c = r + r_off, c + c_off
                     if 0 <= new_r < self.height and 0 <= new_c < self.width:
-                        self[new_r, new_c] = color
+                        self[new_c, new_r] = color
         self._data_cached = None
         self._enclosed_cached = None
 
