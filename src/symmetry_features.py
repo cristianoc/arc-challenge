@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-from grid_data import GridData
+from objects import GridData
 from rule_based_selector import Features
 
 

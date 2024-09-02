@@ -1,4 +1,4 @@
-from grid_data import Object, Rotation, Axis
+from objects import Object, Rotation, Axis
 from typing import Tuple
 from math import sqrt
 

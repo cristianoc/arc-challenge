@@ -2,7 +2,7 @@ import os
 import json
 from typing import List, Dict, TypedDict, Tuple, Any
 
-from grid_data import GridData
+from objects import GridData
 
 Example = Tuple[GridData, GridData]  # (input, output)
 

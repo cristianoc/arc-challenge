@@ -1,5 +1,5 @@
 from test_runner import puzzle
-from grid_data import Object
+from objects import Object
 
 """
 # Problem:

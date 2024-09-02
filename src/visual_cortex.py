@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 import random
 
 from grid_types import GridData, logger, Cell
-from grid_data import Object
+from objects import Object
 
 
 """

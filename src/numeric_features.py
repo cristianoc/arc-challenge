@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from grid_data import Object
+from objects import Object
 from rule_based_selector import Features
 from visual_cortex import extract_subgrid, find_colored_objects
 
