@@ -106,35 +106,28 @@ def find_inverse_transformation(
 def apply_inverse_transformation(
     grid: Object, rigid_transformation: RigidTransformation
 ) -> Object:
-    if rigid_transformation.x_reflection == XReflection.REFLECT:
-        grid = grid.flip(Axis.HORIZONTAL)
-    original_rotation = rigid_transformation.rotation.value
-    print(f"Original rotation: {original_rotation}")
-    grid = grid.rot90_clockwise(-original_rotation)
-    return grid
-
-
-# Example usage
-grid0 = Object(
-    np.array(
-        [
-            [1, 0, 0, 0, 0],
-            [1, 2, 0, 0, 0],
-            [1, 1, 3, 0, 0],
-            [1, 1, 1, 4, 1],
-            [1, 1, 1, 1, 5],
-        ]
-    )
-)
-
-assert grid0[0, 0] == 1
-assert grid0[4, 4] == 5
-assert grid0[4, 3] == 1
-
-background_color = 0
+    return grid.apply_rigid_xform(rigid_transformation.inverse())
 
 
 def test_normalize_grid():
+    # Example usage
+    grid0 = Object(
+        np.array(
+            [
+                [1, 0, 0, 0, 0],
+                [1, 2, 0, 0, 0],
+                [1, 1, 3, 0, 0],
+                [1, 1, 1, 4, 1],
+                [1, 1, 1, 1, 5],
+            ]
+        )
+    )
+
+    assert grid0[0, 0] == 1
+    assert grid0[4, 4] == 5
+    assert grid0[4, 3] == 1
+
+    background_color = 0
     # List all 8 rigidtransformations (rotations + flips)
 
     # Enumerate rigid transformations
