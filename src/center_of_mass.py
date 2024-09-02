@@ -25,16 +25,16 @@ def calculate_center_of_mass(
     return X_cm, Y_cm
 
 
-def rot90(grid: Object, k: int) -> Object:
+def rot90_clockwise(grid: Object, k: int) -> Object:
     k = k % 4
     if k == 0:
         return grid
     elif k == 1:
-        return grid.rotate(Rotation.COUNTERCLOCKWISE)
-    elif k == 2:
-        return grid.rotate(Rotation.COUNTERCLOCKWISE).rotate(Rotation.COUNTERCLOCKWISE)
-    else:  # k == 3:
         return grid.rotate(Rotation.CLOCKWISE)
+    elif k == 2:
+        return grid.rotate(Rotation.CLOCKWISE).rotate(Rotation.CLOCKWISE)
+    else:  # k == 3:
+        return grid.rotate(Rotation.COUNTERCLOCKWISE)
 
 
 def find_inverse_transformation(grid: Object, background_color: int):
@@ -62,7 +62,7 @@ def find_inverse_transformation(grid: Object, background_color: int):
 
     rotation = nearest_corner
 
-    unrotated_grid = rot90(grid, rotation)
+    unrotated_grid = rot90_clockwise(grid, -rotation)
 
     mass_of_top_minus_bottom = mass_of_top_half(unrotated_grid) - mass_of_bottom_half(
         unrotated_grid
@@ -87,7 +87,7 @@ def apply_inverse_transformation(
 ) -> Object:
     if flip_x:
         grid = grid.flip(Axis.HORIZONTAL)
-    grid = rot90(grid, original_rotation)
+    grid = rot90_clockwise(grid, -original_rotation)
     return grid
 
 
@@ -114,16 +114,18 @@ def mass_of_top_half(grid: Object) -> int:
         sum(row) for row in grid.data[: (grid.height + 1) // 2]
     )  # Include middle row in top half for odd heights
 
+
 def mass_of_bottom_half(grid: Object) -> int:
     return sum(
         sum(row) for row in grid.data[grid.height // 2 :]
     )  # Include middle row in bottom half for odd heights
 
+
 def test_normalize_grid():
     # List all 8 transformations (rotations + flips)
     grids: List[Tuple[str, Object]] = []
     for rotation in [0, 1, 2, 3]:
-        rotated_grid = rot90(grid0, -rotation)
+        rotated_grid = rot90_clockwise(grid0, rotation)
         name = f"R{rotation}"
         grids.append((name, rotated_grid))
         name += "X"
