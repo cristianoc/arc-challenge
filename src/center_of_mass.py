@@ -56,44 +56,61 @@ def find_inverse_transformation(
     grid: Object, background_color: int
 ) -> RigidTransformation:
     """
-    Normalize the grid by applying the appropriate transformations to get it into its standard form.
+    Determine the rigid transformation (rotation and reflection) needed to normalize a grid
+    by aligning it with a standard orientation based on its center of mass.
+
+    Args:
+        grid (Object): The grid object representing the 2D grid.
+        background_color (int): The color considered as the background (ignored in transformations).
+
+    Returns:
+        RigidTransformation: The rotation and reflection needed to bring the grid to its standard form.
     """
 
     width, height = grid.size
 
     def distance(point1: Tuple[float, float], point2: Tuple[float, float]) -> float:
+        """Calculate the Euclidean distance between two points."""
         return sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
 
+    # Calculate the center of mass of the grid
     center_of_mass = calculate_center_of_mass(grid, background_color)
+
+    # Define the four corners of the grid
     top_left = (0, 0)
     top_right = (width - 1, 0)
     bottom_left = (0, height - 1)
     bottom_right = (width - 1, height - 1)
+
+    # Calculate the distances from the center of mass to each corner
     distances = [
         distance(bottom_left, center_of_mass),  # 0
         distance(top_left, center_of_mass),  # 1
         distance(top_right, center_of_mass),  # 2
         distance(bottom_right, center_of_mass),  # 3
     ]
-    nearest_corner: int = distances.index(min(distances))
 
-    rotation = nearest_corner
+    # Find the index of the nearest corner based on the smallest distance
+    nearest_corner_index = distances.index(min(distances))
 
-    unrotated_grid = grid.rot90_clockwise(-rotation)
+    # Rotate the grid to align the nearest corner with the bottom-left
+    unrotated_grid = grid.rot90_clockwise(-nearest_corner_index)
 
+    # Calculate the mass differences to determine the need for reflection
     mass_of_top_left = mass_of_top_left_half(unrotated_grid, background_color)
     mass_of_bottom_right = mass_of_bottom_right_half(unrotated_grid, background_color)
-    mass_of_top_left_minus_bottom_right = mass_of_top_left - mass_of_bottom_right
-    flip_x = mass_of_top_left_minus_bottom_right > 0
+    flip_x = mass_of_top_left > mass_of_bottom_right
 
+    # Adjust rotation if flipping is required
     if flip_x:
-        if rotation in {1, 3}:
-            original_rotation = 3 - rotation
+        if nearest_corner_index in {1, 3}:
+            original_rotation = 3 - nearest_corner_index
         else:
-            original_rotation = 1 - rotation
+            original_rotation = 1 - nearest_corner_index
     else:
-        original_rotation = rotation
+        original_rotation = nearest_corner_index
 
+    # Construct the rigid transformation object
     rotation = ClockwiseRotation(original_rotation % 4)
     x_reflection = XReflection(flip_x)
     rigid_transformation = RigidTransformation(rotation, x_reflection)
