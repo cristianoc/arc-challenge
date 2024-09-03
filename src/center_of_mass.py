@@ -91,11 +91,10 @@ def find_inverse_transformation(
         rotation = (rotation - 1) % 4
         if rotation in {0, 2}:
             original_rotation = 2 - rotation
-
     if flip_x and rotation in {0, 2}:
         original_rotation = 2 - rotation
-    elif rotation == 3:
-        original_rotation = (-original_rotation) % 4
+    elif rotation in {1, 3} and flip_x:
+        original_rotation = (-rotation) % 4       
     else:
         original_rotation = rotation
 
@@ -146,7 +145,7 @@ def test_normalize_grid():
             print(f"Inverse transformation: {inverse_transformation}")
             original_grid = apply_inverse_transformation(grid, inverse_transformation)
             print(f"Original grid: {original_grid}")
-            # assert original_grid == grid0
+            assert original_grid == grid0
 
 if __name__ == "__main__":
     test_normalize_grid()
