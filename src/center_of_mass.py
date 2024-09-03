@@ -76,7 +76,7 @@ def find_inverse_transformation(
     # Calculate the center of mass of the grid
     center_of_mass = calculate_center_of_mass(grid, background_color)
 
-    # Define the four corners of the grid
+    # Define the four corners of the grid as tuples
     top_left = (0, 0)
     top_right = (width - 1, 0)
     bottom_left = (0, height - 1)
@@ -103,12 +103,19 @@ def find_inverse_transformation(
 
     # Adjust rotation if flipping is required
     if flip_x:
-        if nearest_corner_index in {1, 3}:
+        if nearest_corner_index in {
+            1,
+            3,
+        }:  # If the nearest corner is top-left or bottom-right
+            # Adjust rotation to account for the flip, mirroring the original rotation
+            # 3 - nearest_corner_index reverses the effect of rotation after a flip
             original_rotation = 3 - nearest_corner_index
         else:
+            # Adjust rotation differently for bottom-left or top-right corners after a flip
+            # 1 - nearest_corner_index ensures correct orientation post-flip
             original_rotation = 1 - nearest_corner_index
     else:
-        original_rotation = nearest_corner_index
+        original_rotation = nearest_corner_index  # No flip, keep the rotation based on the nearest corner
 
     # Construct the rigid transformation object
     rotation = ClockwiseRotation(original_rotation % 4)
@@ -159,6 +166,7 @@ def test_normalize_grid():
             original_grid = apply_inverse_transformation(grid, inverse_transformation)
             print(f"Original grid: {original_grid}")
             assert original_grid == grid0
+
 
 if __name__ == "__main__":
     test_normalize_grid()
