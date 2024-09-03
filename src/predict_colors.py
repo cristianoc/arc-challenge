@@ -181,15 +181,14 @@ xforms: List[ColorXformEntry] = [
 def check_xform_on_examples(
     xform: ColorXform, examples: List[Example], task_name: str, task_type: str
 ) -> bool:
-    grids = [(Object(np.array(example[0])), Object(np.array(example[1]))) for example in examples]
     logger.debug(f"Checking xform {xform.__name__} {task_type}")
     for i, example in enumerate(examples):
         logger.debug(f"  Example {i+1}/{len(examples)}")
-        input = Object(np.array(example[0]))
-        output = Object(np.array(example[1]))
+        input = example[0]
+        output = example[1]
         output_colors = set(output.get_colors())
         logger.debug(f"output_colors:{output_colors}")
-        new_output_colors = xform(grids, input, task_name)
+        new_output_colors = xform(examples, input, task_name)
         logger.debug(f"new_output_colors:{new_output_colors}")
         if new_output_colors is None:
             logger.debug(f"  Example {i+1} failed")
@@ -294,9 +293,7 @@ def process_tasks(tasks: Tasks, set: str):
             f"Could not find correct color transformation for {task_name} {set}"
         )
         if Config.display_not_found:
-            grids: List[Tuple[GridData, Optional[GridData]]] = [
-                (example[0], example[1]) for example in examples
-            ]
+            grids: List[Tuple[Object, Object]] = examples
             display_multiple(grids, title=f"{task_name} {set}")
 
     return num_correct, num_incorrect

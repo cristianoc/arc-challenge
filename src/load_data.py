@@ -1,10 +1,10 @@
 import os
 import json
 from typing import List, Dict, TypedDict, Tuple, Any
+import numpy as np
+from objects import Object
 
-from objects import GridData
-
-Example = Tuple[GridData, GridData]  # (input, output)
+Example = Tuple[Object, Object]  # (input, output)
 
 
 class Task(TypedDict):
@@ -23,11 +23,12 @@ def load_arc_data(directory: str) -> Tasks:
                 obj: Dict[str, Any] = json.load(file)
                 task: Task = {
                     "train": [
-                        (example["input"], example["output"])
+                        (Object(np.array(example["input"])), Object(np.array(example["output"])))
                         for example in obj["train"]
                     ],
                     "test": [
-                        (example["input"], example["output"]) for example in obj["test"]
+                        (Object(np.array(example["input"])), Object(np.array(example["output"])))
+                        for example in obj["test"]
                     ],
                 }
                 tasks[filename] = task
