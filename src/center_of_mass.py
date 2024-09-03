@@ -52,12 +52,12 @@ def mass_of_bottom_right_half(grid: Object, background_color: int) -> int:
     return total_mass
 
 
-def find_inverse_transformation(
+def find_normalizing_transformation(
     grid: Object, background_color: int
 ) -> RigidTransformation:
     """
     Determine the rigid transformation (rotation and reflection) needed to normalize a grid
-    by aligning it with a standard orientation based on its center of mass.
+    by aligning it with a standard orientation based on its center of mass and the mass distribution.
 
     Args:
         grid (Object): The grid object representing the 2D grid.
@@ -133,7 +133,7 @@ def apply_inverse_transformation(
 
 def test_normalize_grid():
     # Example usage
-    grid0 = Object(
+    initial_grid = Object(
         np.array(
             [
                 [1, 0, 0, 0, 0],
@@ -144,28 +144,22 @@ def test_normalize_grid():
             ]
         )
     )
-
-    assert grid0[0, 0] == 1
-    assert grid0[4, 4] == 5
-    assert grid0[4, 3] == 1
-
     background_color = 0
-    # List all 8 rigidtransformations (rotations + flips)
 
-    # Enumerate rigid transformations
+    # Try all 8 rigidtransformations (rotations + flips)
     i = 0
     for rotation in ClockwiseRotation:
         for x_reflection in XReflection:
             rigid_transformation = RigidTransformation(rotation, x_reflection)
-            print(f"\nGrid {i} xform: {rigid_transformation}")
+            print(f"\nTransformation {i+1}/{8}: {rigid_transformation}")
             i += 1
-            grid = grid0.apply_rigid_xform(rigid_transformation)
+            grid = initial_grid.apply_rigid_xform(rigid_transformation)
             print(f"Transformed grid: {grid}")
-            inverse_transformation = find_inverse_transformation(grid, background_color)
-            print(f"Inverse transformation: {inverse_transformation}")
-            original_grid = apply_inverse_transformation(grid, inverse_transformation)
-            print(f"Original grid: {original_grid}")
-            assert original_grid == grid0
+            normalizing_transformation = find_normalizing_transformation(grid, background_color)
+            print(f"Normalizing transformation: {normalizing_transformation}")
+            normalized_grid = apply_inverse_transformation(grid, normalizing_transformation)
+            print(f"Normalized grid: {normalized_grid}")
+            assert normalized_grid == initial_grid
 
 
 if __name__ == "__main__":
