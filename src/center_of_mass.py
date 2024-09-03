@@ -86,19 +86,15 @@ def find_inverse_transformation(
     mass_of_top_left_minus_bottom_right = mass_of_top_left - mass_of_bottom_right
     flip_x = mass_of_top_left_minus_bottom_right > 0
 
-    original_rotation = rotation
     if flip_x:
-        rotation = (rotation - 1) % 4
-        if rotation in {0, 2}:
-            original_rotation = 2 - rotation
-    if flip_x and rotation in {0, 2}:
-        original_rotation = 2 - rotation
-    elif rotation in {1, 3} and flip_x:
-        original_rotation = (-rotation) % 4       
+        if rotation in {1, 3}:
+            original_rotation = 3 - rotation
+        else:
+            original_rotation = 1 - rotation
     else:
         original_rotation = rotation
 
-    rotation = ClockwiseRotation(original_rotation)
+    rotation = ClockwiseRotation(original_rotation % 4)
     x_reflection = XReflection(flip_x)
     rigid_transformation = RigidTransformation(rotation, x_reflection)
 
