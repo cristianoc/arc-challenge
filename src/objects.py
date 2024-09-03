@@ -54,10 +54,10 @@ class Object:
         return Object(self._data.copy())
 
     def apply_rigid_xform(self, xform: RigidTransformation) -> "Object":
-        grid = self
+        grid = self.rot90_clockwise(xform.rotation.value)
         if xform.x_reflection == XReflection.REFLECT:
-            grid = self.flip(Axis.HORIZONTAL)
-        return grid.rot90_clockwise(xform.rotation.value)
+            grid = grid.fliplr()
+        return grid
 
     @property
     def datax(self) -> GridData:
