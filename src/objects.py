@@ -409,7 +409,9 @@ def display_multiple(
     if num_pairs == 1:
         axes = [axes]
 
-    for i, (input_data, output_data) in enumerate(grid_pairs):
+    for i, (input, output) in enumerate(grid_pairs):
+        input_data = input._data
+        output_data = output._data
         ax_input, ax_output = axes[i]
 
 
