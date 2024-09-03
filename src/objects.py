@@ -387,7 +387,7 @@ class Object:
 
 
 def display(
-    input: GridData, output: Optional[GridData] = None, title: Optional[str] = None
+    input: Object, output: Object = Object(np.array([[0]])), title: Optional[str] = None
 ) -> None:
     display_multiple([(input, output)], title)
 
@@ -396,7 +396,7 @@ plt: Any = plt
 
 
 def display_multiple(
-    grid_pairs: List[Tuple[GridData, Optional[GridData]]], title: Optional[str] = None
+    grid_pairs: List[Tuple[Object, Object]], title: Optional[str] = None
 ) -> None:
     num_pairs = len(grid_pairs)
 

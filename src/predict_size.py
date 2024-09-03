@@ -234,12 +234,12 @@ xforms: List[XformEntry] = [
 def check_xform_on_examples(
     xform: SizeXform, examples: List[Example], task_name: str, task_type: str
 ) -> bool:
-    grids = [(Object(np.array(example[0])), Object(np.array(example[1]))) for example in examples]
+    grids = [example for example in examples]
     logger.debug(f"Checking xform {xform.__name__} {task_type}")
     for i, example in enumerate(examples):
         logger.debug(f"  Example {i+1}/{len(examples)}")
-        input = Object(np.array(example[0]))
-        output = Object(np.array(example[1]))
+        input = example[0]
+        output = example[1]
         new_output_size = xform(grids, input, task_name)
         if new_output_size != output.size:
             logger.debug(f"  Example {i+1} failed")
@@ -423,8 +423,8 @@ def find_matched_objects(
         matched_objects: List[ObjectMatch] = []
 
         for example in examples:
-            input = Object(np.array(example[0]))
-            output = Object(np.array(example[1]))
+            input = example[0]
+            output = example[1]
             logger.info(f"  {task_type} {input.size} -> {output.size}")
 
             input_objects = candidate_objects_for_matching(input, output)
@@ -452,8 +452,8 @@ def predict_size_using_regularized_regression(
     target_widths: List[int] = []
 
     for example in examples:
-        input_grid = Object(np.array(example[0]))
-        output_grid = Object(np.array(example[1]))
+        input_grid = example[0]
+        output_grid = example[1]
 
         input_features = detect_numeric_features(input_grid, relative_difficulty)
         target_width, target_height = output_grid.size
@@ -564,11 +564,11 @@ def process_tasks(tasks: Tasks, set: str):
                     # try to remove main color and try again
                     examples2: List[Example] = []
                     for example in examples:
-                        input_obj = Object(np.array(example[0]))
+                        input_obj = example[0]
                         # change the main color to black
                         new_input_data = input_obj.change_color(
                             input_obj.main_color(), BLACK
-                        ).datax.copy()
+                        ).copy()
                         examples2.append((new_input_data, example[1]))
                     predicted_height, predicted_width = try_regularized_regression(
                         examples2
@@ -579,15 +579,11 @@ def process_tasks(tasks: Tasks, set: str):
             current_difficulty += num_difficulties_regularized_regression
 
             if Config.display_not_found:
-                grids: List[Tuple[GridData, Optional[GridData]]] = [
-                    (Object(np.array(example[0])).datax, Object(np.array(example[1])).datax)
-                    for example in examples
-                ]
-                colored_objects = find_colored_objects(Object(np.array(grids[0][0])))
-                display_multiple(grids, title=f"{task_name} {set}")
+                colored_objects = find_colored_objects(examples[0][0])
+                display_multiple(examples, title=f"{task_name} {set}")
                 if colored_objects:
                     display_multiple(
-                        [(o.datax, None) for o in colored_objects],
+                        [(o, Object(np.array([[0]]))) for o in colored_objects],
                         title=f"colored objects",
                     )
 
