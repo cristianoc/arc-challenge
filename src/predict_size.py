@@ -4,7 +4,6 @@ from color_features import detect_color_features
 import numeric_features
 from visual_cortex import (
     Frame,
-    find_colored_objects,
     find_largest_frame,
     find_smallest_frame,
     is_frame_part_of_lattice,
@@ -579,7 +578,7 @@ def process_tasks(tasks: Tasks, set: str):
             current_difficulty += num_difficulties_regularized_regression
 
             if Config.display_not_found:
-                colored_objects = find_colored_objects(examples[0][0])
+                colored_objects = examples[0][0].detect_colored_objects()
                 display_multiple(examples, title=f"{task_name} {set}")
                 if colored_objects:
                     display_multiple(
