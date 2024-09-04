@@ -283,6 +283,7 @@ def extract_subgrid(
         subgrid = extract_subgrid_of_color(grid, c)
         if subgrid:
             return subgrid
+    return None
 
 
 def eval_with_lattice_check():
