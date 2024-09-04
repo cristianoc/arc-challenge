@@ -15,7 +15,8 @@ from grid_types import (
     Axis,
     Rotation,
     color_scheme,
-) 
+)
+import visual_cortex
 
 class Object:
 
@@ -384,6 +385,14 @@ class Object:
                 return False
 
         return True
+
+    def detect_colored_objects(self) -> List["Object"]:
+        """
+        Detects and returns a list of all distinct objects within the grid based on color.
+
+        This method uses the implementation from visual_cortex.py.
+        """
+        return visual_cortex.find_colored_objects(self)
 
 
 def display(

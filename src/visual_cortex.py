@@ -1,10 +1,17 @@
 import time
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Any
 import random
 
 from grid_types import GridData, logger, Cell
-from objects import Object
 import numpy as np
+
+from typing import TYPE_CHECKING
+# To avoid circular imports
+if TYPE_CHECKING:
+    from objects import Object as Object_t
+else:
+    Object_t = None
+
 
 """
 A Frame represents a rectangular region in a grid, defined by the coordinates (top, left, bottom, right).
@@ -215,12 +222,7 @@ def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> b
                         return False
     return True
 
-
-# A Subgrid is a list of lists of grids
-Subgrid = List[List[Object]]
-
-
-def find_dividing_lines(grid: Object, color: int) -> Tuple[List[int], List[int]]:
+def find_dividing_lines(grid: Object_t, color: int) -> Tuple[List[int], List[int]]:
     """Find the indices of vertical and horizontal lines that span the entire grid."""
 
     horizontal_lines: List[int] = []
@@ -237,7 +239,9 @@ def find_dividing_lines(grid: Object, color: int) -> Tuple[List[int], List[int]]
     return horizontal_lines, vertical_lines
 
 
-def extract_subgrid_of_color(grid: Object, color: int) -> Optional[Subgrid]:
+def extract_subgrid_of_color(
+    grid: Object_t, color: int
+) -> Optional[List[List[Object_t]]]:
     """Extract a subgrid from the grid based on vertical and horizontal dividing lines of the same color."""
     horizontal_lines, vertical_lines = find_dividing_lines(grid, color)
 
@@ -250,17 +254,18 @@ def extract_subgrid_of_color(grid: Object, color: int) -> Optional[Subgrid]:
         if vertical_lines[j] + 1 == vertical_lines[j + 1]:
             return None
 
-    subgrid: Subgrid = []
+    subgrid: List[List[Object_t]] = []
     prev_h = 0
 
     for h in horizontal_lines + [grid.height]:
-        row: List[Object] = []
+        row: List[Object_t] = []
         prev_v = 0
         for v in vertical_lines + [grid.width]:
             # Extract the subgrid bounded by (prev_h, prev_v) and (h-1, v-1)
             if prev_v == v or prev_h == h:
                 continue
             sub_grid_data = [row[prev_v:v] for row in grid.datax[prev_h:h]]
+            from objects import Object
             row.append(Object(np.array(sub_grid_data)))
             prev_v = v + 1
         subgrid.append(row)
@@ -269,7 +274,9 @@ def extract_subgrid_of_color(grid: Object, color: int) -> Optional[Subgrid]:
     return subgrid
 
 
-def extract_subgrid(grid: Object, color: Optional[int]) -> Optional[Subgrid]:
+def extract_subgrid(
+    grid: Object_t, color: Optional[int]
+) -> Optional[List[List[Object_t]]]:
     if color is not None:
         return extract_subgrid_of_color(grid, color)
     for c in grid.get_colors():
@@ -381,6 +388,7 @@ def test_lattices():
 
 def test_subgrid_extraction():
     # Example grid with dividing lines
+    from objects import Object
     grid = Object(
         np.array(
             [
@@ -411,7 +419,7 @@ def test_subgrid_extraction():
     assert subgrid[2][3] == Object(np.array([[5]])), "Test failed: Subgrid[2][3]"
 
 
-def extract_object_by_color(grid: Object, color: int) -> Object:
+def extract_object_by_color(grid: Object_t, color: int) -> Object_t:
     # find the bounding box of the object with the given color
     rows = grid.height
     cols = grid.width
@@ -433,10 +441,11 @@ def extract_object_by_color(grid: Object, color: int) -> Object:
         for j in range(len(data[0])):
             if data[i][j] != color:
                 data[i][j] = 0
+    from objects import Object
     return Object(np.array(data), origin)
 
 
-def find_colored_objects(grid: Object) -> List[Object]:
+def find_colored_objects(grid: Object_t) -> List[Object_t]:
     """
     Finds and returns a list of all distinct objects within the grid based on color.
 
@@ -444,6 +453,7 @@ def find_colored_objects(grid: Object) -> List[Object]:
     background color), and extracts each object corresponding to these colors.
     Each object is represented as an instance of the `Object` class.
     """
+    from objects import Object
     grid_as_object = Object(np.array(grid.datax))
     background_color = grid_as_object.main_color(allow_black=True)
     colors = grid.get_colors(allow_black=True)
@@ -456,8 +466,8 @@ def find_colored_objects(grid: Object) -> List[Object]:
     return objects
 
 
-def find_rectangular_objects(data: GridData, allow_multicolor: bool) -> List[Object]:
-    objects: List[Object] = []
+def find_rectangular_objects(data: GridData, allow_multicolor: bool) -> List[Object_t]:
+    objects: List[Object_t] = []
     rows, cols = len(data), len(data[0])
 
     def cell_contained_in_objects(cell: Cell) -> bool:
@@ -559,6 +569,7 @@ def find_rectangular_objects(data: GridData, allow_multicolor: bool) -> List[Obj
                     [data[r][c] for c in range(origin[1], origin[1] + width)]
                     for r in range(origin[0], origin[0] + height)
                 ]
+                from objects import Object
                 current_object = Object(
                     np.array(object_grid_data),
                     origin,
@@ -578,7 +589,7 @@ def test_detect_rectangular_objects():
         [0, 0, 0, 0, 0, 0],
     ]
 
-    objects: List[Object] = find_rectangular_objects(grid, allow_multicolor=False)
+    objects: List[Object_t] = find_rectangular_objects(grid, allow_multicolor=False)
     for obj in objects:
         logger.info(f"Detected rectangular object: {obj}")
     object_dims = [(obj.origin, obj.size) for obj in objects]
