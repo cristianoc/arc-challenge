@@ -44,7 +44,7 @@ class Object:
         return f"\n{self.format_grid(' ')}"
 
     def __getitem__(self, key: Tuple[int, int]) -> int:
-        return self.datax[key[1]][key[0]]
+        return self._data[key[1], key[0]]
 
     def __setitem__(self, key: Tuple[int, int], value: int) -> None:
         self._data[key[1], key[0]] = value  # Corrected the indices
