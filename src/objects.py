@@ -21,7 +21,7 @@ import visual_cortex
 class Object:
 
     def __init__(self, data: np.ndarray[np.int64], origin: Cell = (0, 0)):
-        self._data: np.ndarray[np.int64] = data
+        self._data: np.ndarray[np.int64, Any] = data
         self._data_cached: Optional[GridData] = None
         self._enclosed_cached: Optional[EnclosedCells] = None
         self.origin = origin
