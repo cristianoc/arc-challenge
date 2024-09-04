@@ -10,8 +10,8 @@ DISPLAY = os.getenv("DISPLAY", "True").lower() in ["true", "1", "yes"]
 
 def puzzle(name: str, transform: Callable[[Object], Object]) -> None:
     task = load_data.training_data[name]
-    train_set = task["train"]
-    test_set = task["test"]
+    train_set = task.train
+    test_set = task.test
     for i, example in enumerate(train_set):
         input = example[0]
         output = transform(input)
