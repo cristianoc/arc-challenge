@@ -5,11 +5,12 @@ import numpy as np
 from objects import Object
 
 Example = Tuple[Object, Object]  # (input, output)
+Examples = List[Example]
 
 
 class Task(TypedDict):
-    train: List[Example]
-    test: List[Example]
+    train: Examples
+    test: Examples
 
 
 Tasks = Dict[str, Task]  # xxxx.json -> task
@@ -23,11 +24,17 @@ def load_arc_data(directory: str) -> Tasks:
                 obj: Dict[str, Any] = json.load(file)
                 task: Task = {
                     "train": [
-                        (Object(np.array(example["input"])), Object(np.array(example["output"])))
+                        (
+                            Object(np.array(example["input"])),
+                            Object(np.array(example["output"])),
+                        )
                         for example in obj["train"]
                     ],
                     "test": [
-                        (Object(np.array(example["input"])), Object(np.array(example["output"])))
+                        (
+                            Object(np.array(example["input"])),
+                            Object(np.array(example["output"])),
+                        )
                         for example in obj["test"]
                     ],
                 }

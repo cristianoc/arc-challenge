@@ -10,7 +10,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
+Size = Tuple[int, int]
 Cell = Tuple[int, int]
 GridData = List[List[int]]
 
