@@ -219,7 +219,7 @@ def find_xform(
             logger.info(
                 f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type}"
             )
-            test_examples: List[Example] = task['test']
+            test_examples: List[Example] = task.test
             for i, test_example in enumerate(test_examples):
                 if not check_xform_on_examples(
                     correct_xform["function"], [test_example], task_name, "test"
@@ -246,7 +246,7 @@ def process_tasks(tasks: Tasks, set: str):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
-        examples = task["train"]
+        examples = task.train
         task_type = "train"
 
         current_difficulty = 0
