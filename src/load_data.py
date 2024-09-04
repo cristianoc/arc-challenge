@@ -5,12 +5,10 @@ import numpy as np
 from objects import Object
 
 Example = Tuple[Object, Object]  # (input, output)
-Examples = List[Example]
-
 
 class Task(TypedDict):
-    train: Examples
-    test: Examples
+    train: List[Example]
+    test: List[Example]
 
 
 Tasks = Dict[str, Task]  # xxxx.json -> task
