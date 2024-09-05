@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Optional, Tuple, Callable, Sequence
 
+plt: Any
 from matplotlib import colors, pyplot as plt  # type: ignore
 from matplotlib.colors import ListedColormap  # type: ignore
 import numpy as np
@@ -30,7 +31,11 @@ import visual_cortex
 
 class Object:
 
-    def __init__(self, data: np.ndarray[np.int64, Any], origin: Cell = (0, 0)):
+    def __init__(
+        self,
+        data: np.ndarray[np.int64, Any], # type: ignore
+        origin: Cell = (0, 0),
+    ):
         self._data: np.ndarray[np.int64, Any] = data  # type: ignore
         self._data_cached: Optional[GridData] = None
         self._enclosed_cached: Optional[EnclosedCells] = None
@@ -98,7 +103,7 @@ class Object:
 
     @staticmethod
     def empty(size: Tuple[int, int]) -> "Object":
-        data: np.ndarray[np.int64, Any] = np.zeros(size, dtype=np.int64)
+        data = np.zeros(size, dtype=np.int64)
         return Object(data)
 
     def add_object(self, obj: "Object") -> None:
@@ -407,9 +412,6 @@ def display(
     input: Object, output: Object = Object(np.array([[0]])), title: Optional[str] = None
 ) -> None:
     display_multiple([(input, output)], title)
-
-
-plt: Any = plt
 
 
 def display_multiple(
