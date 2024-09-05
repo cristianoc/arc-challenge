@@ -436,12 +436,12 @@ def extract_object_by_color(grid: Object_t, color: int) -> Object_t:
                 bottom = max(bottom, i)
                 right = max(right, j)
     origin = (top, left)
-    data = [row[left : right + 1] for row in grid.datax[top : bottom + 1]]
-    # remove other colors
-    for i in range(len(data)):
-        for j in range(len(data[0])):
-            if data[i][j] != color:
-                data[i][j] = 0
+
+    # Slicing the array for the specified region
+    data = grid._data[top : bottom + 1, left : right + 1]
+    # Remove other colors by setting elements not equal to the desired color to 0
+    data[data != color] = 0
+
     from objects import Object
     return Object(np.array(data), origin)
 
