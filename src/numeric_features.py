@@ -71,12 +71,12 @@ def detect_numeric_features(grid: Object, relative_difficulty: int) -> Features:
         obj: Object | None = max(
             colored_objects, key=lambda o: o.height, default=None
         )
-        if obj:
+        if obj is not None:
             colored_object_max_height = obj.height
         obj = max(
             colored_objects, key=lambda o: o.width, default=None
         )
-        if obj:
+        if obj is not None:
             colored_object_max_width = obj.width
     grid_height_squared = height * height
     grid_width_squared = width * width

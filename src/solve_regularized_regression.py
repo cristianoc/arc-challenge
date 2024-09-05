@@ -186,7 +186,7 @@ def is_regularized_solution(weights: Features, bias: int) -> bool:
 
 
 # Test function for the regularized linear regression solver
-def test_solve_regularized_regression():
+def test_solve_regularized_regression() -> None:
     random.seed(42)
 
     # Parameters
