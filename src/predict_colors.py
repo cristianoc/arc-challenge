@@ -9,7 +9,8 @@ from predict_size import (
     find_matched_objects,
     num_difficulties_matching,
 )
-from grid_types import BLACK, GREY, GridData, logger
+from logger import logger
+from grid_types import BLACK, GREY, GridData
 from load_data import Example, Task, Tasks, training_data, evaluation_data
 from objects import display_multiple, Object
 

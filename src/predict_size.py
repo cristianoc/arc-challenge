@@ -16,7 +16,7 @@ from rule_based_selector import DecisionRule, Features, select_object_minimal
 from shape_features import detect_shape_features
 from solve_regularized_regression import solve_regularized_regression
 from symmetry_features import detect_symmetry_features
-from grid_types import logger
+from logger import logger
 import numpy as np
 
 Size = Tuple[int, int]

@@ -4,12 +4,6 @@ from typing import List, Tuple, NewType
 from enum import Enum, auto
 from typing import NamedTuple
 
-logging.basicConfig(
-    level=logging.INFO,  # change to logging.DEBUG for more verbose output
-    format="%(message)s",
-)
-logger = logging.getLogger(__name__)
-
 Size = Tuple[int, int]
 Cell = Tuple[int, int]
 GridData = List[List[int]]

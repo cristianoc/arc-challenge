@@ -1,5 +1,5 @@
 from typing import List, Any
-from grid_types import logger
+from logger import logger
 
 
 def calculate_z_array(lst: List[Any]) -> List[int]:

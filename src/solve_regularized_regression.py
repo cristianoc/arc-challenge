@@ -5,13 +5,10 @@ import random
 
 from numeric_features import BooleanSolution, Solution
 from rule_based_selector import Features
-from grid_types import logger
+from logger import logger
 
 pulp: Any = pulp
 random: Any = random
-
-# Suppress the verbose output from the pulp solver
-logging.getLogger("pulp").setLevel(logging.WARNING)
 
 
 def solver(
