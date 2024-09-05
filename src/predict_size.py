@@ -32,7 +32,7 @@ class Config:
     predict_size_using_regularized_regression = True
     try_remove_main_color = True
     difficulty = 1000
-    task_name = None
+    task_name: str | None = None
     # task_name = "746b3537.json"
     find_xform_color = True
     display_not_found = False
@@ -257,11 +257,6 @@ def find_xform(
         func = xform["function"]
         logger.debug(f"Checking xform {func.__name__} {task_type}")
         if check_xform_on_examples(func, examples, task_name, task_type):
-            if False and xform == output_size_is_constant_times_input_size:
-                title = f"{xform.__name__} ({task_name})"
-                logger.info(title)
-                for i, e in enumerate(examples):
-                    display(e["input"], output=e["output"], title=f"Ex{i+1} " + title)
             correct_xform = xform
             logger.info(
                 f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type}"

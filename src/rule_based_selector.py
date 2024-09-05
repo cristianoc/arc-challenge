@@ -99,7 +99,7 @@ def select_object_minimal(
 # Testing the functions with the scenarios
 
 
-def test():
+def test() -> None:
     features1: List[Features] = [
         {"a": 1, "b": 1, "c": 1, "d": 0, "e": 1, "f": 1, "g": 0},
         {"a": 0, "b": 1, "c": 1, "d": 0, "e": 1, "f": 0, "g": 0},

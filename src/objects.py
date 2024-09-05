@@ -3,7 +3,16 @@ from typing import Any, Dict, List, Optional, Tuple, Callable, Sequence
 from matplotlib import colors, pyplot as plt  # type: ignore
 from matplotlib.colors import ListedColormap  # type: ignore
 import numpy as np
-from grid_types import Cell, GridData, Rotation, Axis, BLACK, Color, RigidTransformation, XReflection
+from grid_types import (
+    Cell,
+    GridData,
+    Rotation,
+    Axis,
+    BLACK,
+    Color,
+    RigidTransformation,
+    XReflection,
+)
 from detect_objects import ConnectedComponent, find_connected_components
 from flood_fill import EnclosedCells, find_enclosed_cells
 from logger import logger
@@ -18,17 +27,20 @@ from grid_types import (
 )
 import visual_cortex
 
+
 class Object:
 
     def __init__(self, data: np.ndarray[np.int64], origin: Cell = (0, 0)):
-        self._data: np.ndarray[np.int64, Any] = data # type: ignore
+        self._data: np.ndarray[np.int64] = data  # type: ignore
         self._data_cached: Optional[GridData] = None
         self._enclosed_cached: Optional[EnclosedCells] = None
         self.origin = origin
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Object):
-            return np.array_equal(self._data, other._data) and self.origin == other.origin
+            return (
+                np.array_equal(self._data, other._data) and self.origin == other.origin
+            )
         return False
 
     def format_grid(self) -> str:
@@ -86,7 +98,7 @@ class Object:
 
     @staticmethod
     def empty(size: Tuple[int, int]) -> "Object":
-        data: np.ndarray[np.int64] = np.zeros(size, dtype=np.int64)
+        data: np.ndarray[np.int64, Any] = np.zeros(size, dtype=np.int64)
         return Object(data)
 
     def add_object(self, obj: "Object") -> None:
@@ -159,9 +171,7 @@ class Object:
                 data[r - min_row][c - min_col] = grid.datax[r][c]
             return Object(origin=(min_row, min_col), data=np.array(data))
 
-        connected_components = find_connected_components(
-            self, diagonals, allow_black
-        )
+        connected_components = find_connected_components(self, diagonals, allow_black)
         detected_objects = [
             create_object(self, component) for component in connected_components
         ]
@@ -248,7 +258,6 @@ class Object:
         row, col = cell
         r, c = self.origin
         return r <= row < r + self.height and c <= col < c + self.width
-
 
     def get_colors(self, allow_black: bool = True) -> List[int]:
         colors = np.unique(self._data)
@@ -415,20 +424,19 @@ def display_multiple(
 
     # If there's only one pair, axes won't be a list, so we wrap it in a list
     if num_pairs == 1:
-        axes = [axes]
+        axes = [axes]  # type: ignore
 
     for i, (input, output) in enumerate(grid_pairs):
         input_data = input._data
         output_data = output._data
         ax_input, ax_output = axes[i]
 
-
         # Plot the input grid
         cmap: ListedColormap = colors.ListedColormap(color_scheme)  # type: ignore
         # Adjust the bounds to match the number of colors
         bounds = np.arange(-0.5, len(color_scheme) + 0.5, 1)  # type: ignore
         norm = colors.BoundaryNorm(bounds, cmap.N)  # type: ignore
-        ax_input.imshow(input_data, cmap=cmap, norm=norm)
+        ax_input.imshow(input_data, cmap=cmap, norm=norm)  # type: ignore
         ax_input.set_title(f"Input Grid {i+1}")
         ax_input.axis("off")  # Hide the axes
 
@@ -509,14 +517,16 @@ def test_copy():
 
 
 def test_detect_objects():
-    grid = np.array([
-        [0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0],
-        [0, 1, 0, 0, 1, 0],
-        [0, 0, 1, 0, 1, 0],
-        [0, 0, 0, 1, 1, 0],
-        [0, 0, 0, 0, 0, 0],
-    ])
+    grid = np.array(
+        [
+            [0, 0, 0, 0, 0, 0],
+            [0, 1, 1, 1, 0, 0],
+            [0, 1, 0, 0, 1, 0],
+            [0, 0, 1, 0, 1, 0],
+            [0, 0, 0, 1, 1, 0],
+            [0, 0, 0, 0, 0, 0],
+        ]
+    )
 
     objects = Object(grid).detect_objects()
     for obj in objects:
