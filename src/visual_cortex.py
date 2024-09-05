@@ -4,7 +4,8 @@ import random
 
 from numpy import ndarray
 
-from grid_types import GridData, logger, Cell
+from logger import logger
+from grid_types import Cell
 import numpy as np
 
 from typing import TYPE_CHECKING

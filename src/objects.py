@@ -6,12 +6,12 @@ import numpy as np
 from grid_types import Cell, GridData, Rotation, Axis, BLACK, Color, RigidTransformation, XReflection
 from detect_objects import ConnectedComponent, find_connected_components
 from flood_fill import EnclosedCells, find_enclosed_cells
+from logger import logger
 from grid_types import (
     BLUE,
     GREEN,
     RED,
     YELLOW,
-    logger,
     Axis,
     Rotation,
     color_scheme,
