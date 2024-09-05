@@ -430,7 +430,7 @@ def extract_object_by_color(grid: Object_t, color: int) -> Object_t:
     right = 0
     for i in range(rows):
         for j in range(cols):
-            if grid.datax[i][j] == color:
+            if grid._data[i, j] == color:
                 top = min(top, i)
                 left = min(left, j)
                 bottom = max(bottom, i)
@@ -455,8 +455,7 @@ def find_colored_objects(grid: Object_t) -> List[Object_t]:
     Each object is represented as an instance of the `Object` class.
     """
     from objects import Object
-    grid_as_object = Object(np.array(grid.datax))
-    background_color = grid_as_object.main_color(allow_black=True)
+    background_color = grid.main_color(allow_black=True)
     colors = grid.get_colors(allow_black=True)
     objects: List[Object] = []
     for color in colors:

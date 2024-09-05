@@ -192,7 +192,7 @@ class Object:
             return self.rot90_clockwise(-1)
 
     def translate(self, dy: int, dx: int) -> "Object":
-        height, width = len(self.datax), len(self.datax[0])
+        width, height = self.size
         new_grid: GridData = [[BLACK] * width for _ in range(height)]
         for y in range(height):
             for x in range(width):
@@ -200,7 +200,7 @@ class Object:
                 new_y = y + dy
                 # Ensure the new position is within bounds
                 if 0 <= new_x < width and 0 <= new_y < height:
-                    new_grid[new_y][new_x] = self.datax[y][x]
+                    new_grid[new_y][new_x] = self._data[y, x]
 
         return Object(np.array(new_grid))
 
@@ -250,7 +250,7 @@ class Object:
 
     def get_colors(self, allow_black: bool = True) -> List[int]:
         colors: set[Color] = set()
-        for row in self.datax:
+        for row in self._data:
             for color in row:
                 if color == BLACK and not allow_black:
                     continue
@@ -264,7 +264,7 @@ class Object:
         """
         for row in range(self.height):
             for col in range(self.width):
-                color = self.datax[row][col]
+                color = self._data[row, col]
                 if color != 0:
                     return color
         return 0
@@ -277,7 +277,7 @@ class Object:
         color_count: Dict[int, int] = {}
         for row in range(self.height):
             for col in range(self.width):
-                color = self.datax[row][col]
+                color = self._data[row][col]
                 if allow_black or color != 0:
                     color_count[color] = color_count.get(color, 0) + 1
         if not color_count:
