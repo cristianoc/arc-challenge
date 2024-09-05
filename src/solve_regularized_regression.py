@@ -205,7 +205,7 @@ def test_solve_regularized_regression() -> None:
     ]
 
     # Call the regularized regression solver
-    result = solve_regularized_regression(features, targets, "Test")  # type: ignore
+    result: Solution = solve_regularized_regression(features, targets, "Test")  # type: ignore
 
     # Output the generated data, solution, and check result
     logger.info("Feature Vectors:")
@@ -213,7 +213,6 @@ def test_solve_regularized_regression() -> None:
         logger.info(feature)
 
     if result:
-        result: Solution = result
         weights, bias = result
         logger.info(f"\nOptimized Weights: {weights}")
         logger.info(f"Optimized Bias: {bias}")
