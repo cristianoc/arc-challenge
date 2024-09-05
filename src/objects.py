@@ -160,7 +160,7 @@ class Object:
             return Object(origin=(min_row, min_col), data=np.array(data))
 
         connected_components = find_connected_components(
-            self.datax, diagonals, allow_black
+            self, diagonals, allow_black
         )
         detected_objects = [
             create_object(self, component) for component in connected_components
