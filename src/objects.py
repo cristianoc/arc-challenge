@@ -429,14 +429,15 @@ def display_multiple(
     for i, (input, output) in enumerate(grid_pairs):
         input_data = input._data
         output_data = output._data
+        ac_input : Any
         ax_input, ax_output = axes[i]
 
         # Plot the input grid
-        cmap: ListedColormap = colors.ListedColormap(color_scheme)  # type: ignore
+        cmap: ListedColormap = colors.ListedColormap(color_scheme)
         # Adjust the bounds to match the number of colors
-        bounds = np.arange(-0.5, len(color_scheme) + 0.5, 1)  # type: ignore
-        norm = colors.BoundaryNorm(bounds, cmap.N)  # type: ignore
-        ax_input.imshow(input_data, cmap=cmap, norm=norm)  # type: ignore
+        bounds = np.arange(-0.5, len(color_scheme) + 0.5, 1)
+        norm = colors.BoundaryNorm(bounds, cmap.N)
+        ax_input.imshow(input_data, cmap=cmap, norm=norm)
         ax_input.set_title(f"Input Grid {i+1}")
         ax_input.axis("off")  # Hide the axes
 
@@ -446,7 +447,7 @@ def display_multiple(
             ax_output.set_title(f"Output Grid {i+1}")
         else:
             # If output_data is None, just show a blank plot
-            ax_output.imshow(input_data, cmap="gray")  # type: ignore
+            ax_output.imshow(input_data, cmap="gray")
             ax_output.set_title(f"Output Grid {i+1} (None)")
 
         ax_output.axis("off")  # Hide the axes
