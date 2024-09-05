@@ -277,7 +277,7 @@ class Object:
         color_count: Dict[int, int] = {}
         for row in range(self.height):
             for col in range(self.width):
-                color = self._data[row][col]
+                color = self._data[row, col]
                 if allow_black or color != 0:
                     color_count[color] = color_count.get(color, 0) + 1
         if not color_count:
