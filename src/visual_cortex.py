@@ -2,6 +2,8 @@ import time
 from typing import List, Optional, Tuple, Any
 import random
 
+from numpy import ndarray
+
 from grid_types import GridData, logger, Cell
 import numpy as np
 
@@ -27,44 +29,49 @@ def calculate_area(top: int, left: int, bottom: int, right: int) -> int:
     return (bottom - top + 1) * (right - left + 1)
 
 
-def precompute_sums(grid: GridData, color: int) -> Tuple[GridData, GridData]:
+import numpy as np
+from typing import Optional, Tuple
+
+GridData = np.ndarray
+Frame = Tuple[int, int, int, int]
+
+
+def precompute_sums(grid: Object_t, color: int) -> Tuple[ndarray, ndarray]:
     """Precompute the row and column sums for the grid to optimize the frame-checking process."""
-    rows = len(grid)
-    cols = len(grid[0])
+    rows, cols = grid._data.shape
+    row_sum = np.zeros((rows, cols))
+    col_sum = np.zeros((rows, cols))
 
-    row_sum = [[0] * cols for _ in range(rows)]
-    col_sum = [[0] * cols for _ in range(rows)]
+    row_sum[grid == color] = 1
+    col_sum[grid == color] = 1
 
-    for i in range(rows):
-        for j in range(cols):
-            if grid[i][j] == color:
-                row_sum[i][j] = row_sum[i][j - 1] + 1 if j > 0 else 1
-                col_sum[i][j] = col_sum[i - 1][j] + 1 if i > 0 else 1
+    row_sum = np.cumsum(row_sum, axis=1)
+    col_sum = np.cumsum(col_sum, axis=0)
 
     return row_sum, col_sum
 
 
 def is_frame_dp(
-    row_sum: GridData, col_sum: GridData, top: int, left: int, bottom: int, right: int
+    row_sum: np.ndarray, col_sum: np.ndarray, top: int, left: int, bottom: int, right: int
 ) -> bool:
     """Check if the rectangle defined by (top, left) to (bottom, right) forms a frame using precomputed sums."""
     if (
-        row_sum[top][right] - (row_sum[top][left - 1] if left > 0 else 0)
+        row_sum[top, right] - (row_sum[top, left - 1] if left > 0 else 0)
         != right - left + 1
     ):
         return False
     if (
-        row_sum[bottom][right] - (row_sum[bottom][left - 1] if left > 0 else 0)
+        row_sum[bottom, right] - (row_sum[bottom, left - 1] if left > 0 else 0)
         != right - left + 1
     ):
         return False
     if (
-        col_sum[bottom][left] - (col_sum[top - 1][left] if top > 0 else 0)
+        col_sum[bottom, left] - (col_sum[top - 1, left] if top > 0 else 0)
         != bottom - top + 1
     ):
         return False
     if (
-        col_sum[bottom][right] - (col_sum[top - 1][right] if top > 0 else 0)
+        col_sum[bottom, right] - (col_sum[top - 1, right] if top > 0 else 0)
         != bottom - top + 1
     ):
         return False
@@ -72,29 +79,32 @@ def is_frame_dp(
 
 
 def is_frame(
-    grid: GridData, top: int, left: int, bottom: int, right: int, color: int
+    grid: Object_t, top: int, left: int, bottom: int, right: int, color: int
 ) -> bool:
     """Check if the rectangle defined by (top, left) to (bottom, right) forms a frame."""
-    for i in range(left, right + 1):
-        if grid[top][i] != color or grid[bottom][i] != color:
-            return False
-    for i in range(top, bottom + 1):
-        if grid[i][left] != color or grid[i][right] != color:
-            return False
+    if not np.all(grid._data[top, left : right + 1] == color):
+        return False
+    if not np.all(grid._data[bottom, left : right + 1] == color):
+        return False
+    if not np.all(grid._data[top : bottom + 1, left] == color):
+        return False
+    if not np.all(grid._data[top : bottom + 1, right] == color):
+        return False
     return True
 
 
-def find_largest_frame(grid: GridData, color: Optional[int]) -> Optional[Frame]:
+def find_largest_frame(grid: Object_t, color: Optional[int]) -> Optional[Frame]:
     """
     Find the largest frame in the grid that has all border cells matching the specified color.
     If the color is None, the function will find the largest frame with any color.
     """
-    row_sum, col_sum = precompute_sums(grid, color) if color else (None, None)
+    row_sum, col_sum = (
+        precompute_sums(grid, color) if color is not None else (None, None)
+    )
     max_area = 0
     max_frame = None
 
-    rows = len(grid)
-    cols = len(grid[0])
+    rows, cols = grid._data.shape
 
     for top in range(rows):
         for left in range(cols):
@@ -103,10 +113,10 @@ def find_largest_frame(grid: GridData, color: Optional[int]) -> Optional[Frame]:
                 if (rows - top) * (cols - left) <= max_area:
                     break
                 for right in range(left, cols):
-                    top_left_corner_color = grid[top][left]
+                    top_left_corner_color = grid._data[top, left]
                     if (
                         is_frame_dp(row_sum, col_sum, top, left, bottom, right)
-                        if row_sum and col_sum
+                        if row_sum is not None and col_sum is not None
                         else is_frame(
                             grid, top, left, bottom, right, top_left_corner_color
                         )
@@ -120,18 +130,19 @@ def find_largest_frame(grid: GridData, color: Optional[int]) -> Optional[Frame]:
 
 
 def find_smallest_frame(
-    grid: GridData, color: Optional[int], min_size: Optional[Tuple[int, int]] = None
+    grid: Object_t, color: Optional[int], min_size: Optional[Tuple[int, int]] = None
 ) -> Optional[Frame]:
     """
     Find the smallest frame in the grid that has all border cells matching the specified color.
     If the color is None, the function will find the smallest frame with any color.
     """
-    row_sum, col_sum = precompute_sums(grid, color) if color else (None, None)
+    row_sum, col_sum = (
+        precompute_sums(grid, color) if color is not None else (None, None)
+    )
     min_area = float("inf")
     min_frame = None
 
-    rows = len(grid)
-    cols = len(grid[0])
+    rows, cols = grid._data.shape
 
     for top in range(rows):
         for left in range(cols):
@@ -144,10 +155,10 @@ def find_smallest_frame(
                     width = right - left + 1
                     if min_size and (height < min_size[0] or width < min_size[1]):
                         continue
-                    top_left_corner_color = grid[top][left]
+                    top_left_corner_color = grid[left, top]
                     if (
                         is_frame_dp(row_sum, col_sum, top, left, bottom, right)
-                        if row_sum and col_sum
+                        if row_sum is not None and col_sum is not None
                         else is_frame(
                             grid, top, left, bottom, right, top_left_corner_color
                         )
@@ -160,7 +171,7 @@ def find_smallest_frame(
     return min_frame
 
 
-def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> bool:
+def is_frame_part_of_lattice(grid: Object_t, frame: Frame, foreground: int) -> bool:
     """
     Determines whether the rectangular frame defined by the coordinates (top, left) to (bottom, right) can be part of a
     repeating pattern in the grid, where all the borders of the frame match the specified foreground color.
@@ -190,8 +201,8 @@ def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> b
     top, left, bottom, right = frame
     frame_height = bottom - top + 1
     frame_width = right - left + 1
-    rows = len(grid)
-    cols = len(grid[0])
+    rows = grid.height
+    cols = grid.width
 
     # Adjust the starting points to ensure alignment with the top-left corner
     start_y = top % frame_height
@@ -208,16 +219,16 @@ def is_frame_part_of_lattice(grid: GridData, frame: Frame, foreground: int) -> b
             for i in range(frame_width):
                 if y < rows and (x + i) < cols:
                     if (
-                        grid[y][x + i] != foreground
-                        or grid[y + frame_height - 1][x + i] != foreground
+                        grid._data[y, x + i] != foreground
+                        or grid._data[y + frame_height - 1, x + i] != foreground
                     ):
                         return False
             # Check left and right borders of the frame
             for j in range(frame_height):
                 if y + j < rows and x < cols:
                     if (
-                        grid[y + j][x] != foreground
-                        or grid[y + j][x + frame_width - 1] != foreground
+                        grid._data[y + j, x] != foreground
+                        or grid._data[y + j, x + frame_width - 1] != foreground
                     ):
                         return False
     return True
@@ -345,7 +356,8 @@ def eval_with_lattice_check():
 
 def test_lattices():
     # Correct Lattice Grid
-    grid = [
+    from objects import Object
+    grid = Object(np.array([
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -353,13 +365,13 @@ def test_lattices():
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-    ]
+    ]))
     frame = (2, 2, 5, 8)
     is_lattice = is_frame_part_of_lattice(grid, frame, 1)
     assert is_lattice == True, f"Correct Lattice Grid: Frame {frame}"
 
     # Interrupted Lattice Grid
-    grid = [
+    grid = Object(np.array([
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
         [1, 1, 1, 1, 1, 1, 1, 9, 1, 0],  # Break in the lattice pattern
@@ -367,13 +379,13 @@ def test_lattices():
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-    ]
+    ]))
     frame = (2, 2, 5, 5)
     is_lattice = is_frame_part_of_lattice(grid, frame, 1)
     assert is_lattice == False, f"Interrupted Lattice Grid: Frame {frame}"
 
     # Break outside frames that fit in the grid does not affect lattice check
-    grid = [
+    grid = Object(np.array([
         [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
         [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
         [2, 2, 2, 2, 2, 2, 2, 2, 2, 0],
@@ -381,7 +393,7 @@ def test_lattices():
         [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
         [2, 2, 2, 2, 2, 2, 2, 2, 2, 9],  # Break near edge
         [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
-    ]
+    ]))
     frame = (2, 2, 5, 5)
     is_lattice = is_frame_part_of_lattice(grid, frame, 2)
     assert is_lattice == True, f"Break outside frames: Frame {frame}"
@@ -466,9 +478,10 @@ def find_colored_objects(grid: Object_t) -> List[Object_t]:
     return objects
 
 
-def find_rectangular_objects(data: GridData, allow_multicolor: bool) -> List[Object_t]:
+def find_rectangular_objects(grid: Object_t, allow_multicolor: bool) -> List[Object_t]:
     objects: List[Object_t] = []
-    rows, cols = len(data), len(data[0])
+    rows, cols = grid.height, grid.width
+    data = grid._data
 
     def cell_contained_in_objects(cell: Cell) -> bool:
         return any(obj.contains_cell(cell) for obj in objects)
@@ -484,27 +497,27 @@ def find_rectangular_objects(data: GridData, allow_multicolor: bool) -> List[Obj
             return False
         for r in range(start_r, start_r + height):
             for c in range(start_c, start_c + width):
-                if not allow_multicolor and data[r][c] != color and data[r][c] != 0:
+                if not allow_multicolor and data[r, c] != color and data[r, c] != 0:
                     return False
         # check that the first and last rows and columns are not all 0
-        if all(data[start_r][c] == 0 for c in range(start_c, start_c + width)):
+        if all(data[start_r, c] == 0 for c in range(start_c, start_c + width)):
             return False
         if all(
-            data[start_r + height - 1][c] == 0 for c in range(start_c, start_c + width)
+            data[start_r + height - 1, c] == 0 for c in range(start_c, start_c + width)
         ):
             return False
-        if all(data[r][start_c] == 0 for r in range(start_r, start_r + height)):
+        if all(data[r, start_c] == 0 for r in range(start_r, start_r + height)):
             return False
         if all(
-            data[r][start_c + width - 1] == 0 for r in range(start_r, start_r + height)
+            data[r, start_c + width - 1] == 0 for r in range(start_r, start_r + height)
         ):
             return False
         return True
 
     for r in range(rows):
         for c in range(cols):
-            if not cell_contained_in_objects((r, c)) and data[r][c] != 0:
-                main_color = data[r][c]
+            if not cell_contained_in_objects((r, c)) and data[r, c] != 0:
+                main_color = data[r, c]
                 origin: Cell = (r, c)
                 height, width = 1, 1
 
@@ -566,7 +579,7 @@ def find_rectangular_objects(data: GridData, allow_multicolor: bool) -> List[Obj
 
                 # Once the largest rectangle is found, create the grid data for the object
                 object_grid_data = [
-                    [data[r][c] for c in range(origin[1], origin[1] + width)]
+                    [data[r, c] for c in range(origin[1], origin[1] + width)]
                     for r in range(origin[0], origin[0] + height)
                 ]
                 from objects import Object
@@ -580,14 +593,15 @@ def find_rectangular_objects(data: GridData, allow_multicolor: bool) -> List[Obj
 
 
 def test_detect_rectangular_objects():
-    grid = [
+    from objects import Object
+    grid = Object(np.array([
         [0, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 0, 0],
         [0, 1, 0, 0, 1, 0],
         [0, 0, 1, 0, 1, 0],
         [0, 0, 0, 1, 1, 0],
         [0, 0, 0, 0, 0, 0],
-    ]
+    ]))
 
     objects: List[Object_t] = find_rectangular_objects(grid, allow_multicolor=False)
     for obj in objects:
@@ -597,14 +611,15 @@ def test_detect_rectangular_objects():
 
 
 def test_several_rectangular_objects_of_different_color():
-    grid = [
+    from objects import Object
+    grid = Object(np.array([
         [0, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 0, 0],
         [0, 1, 0, 0, 2, 0],
         [0, 0, 1, 0, 2, 2],
         [0, 0, 0, 1, 2, 0],
         [0, 0, 0, 0, 0, 0],
-    ]
+    ]))
 
     objects = find_rectangular_objects(grid, allow_multicolor=False)
     for obj in objects:
