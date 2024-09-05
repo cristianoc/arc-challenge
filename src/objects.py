@@ -30,8 +30,8 @@ import visual_cortex
 
 class Object:
 
-    def __init__(self, data: np.ndarray[np.int64], origin: Cell = (0, 0)):
-        self._data: np.ndarray[np.int64] = data  # type: ignore
+    def __init__(self, data: np.ndarray[np.int64, Any], origin: Cell = (0, 0)):
+        self._data: np.ndarray[np.int64, Any] = data  # type: ignore
         self._data_cached: Optional[GridData] = None
         self._enclosed_cached: Optional[EnclosedCells] = None
         self.origin = origin
@@ -429,7 +429,8 @@ def display_multiple(
     for i, (input, output) in enumerate(grid_pairs):
         input_data = input._data
         output_data = output._data
-        ax_input : Any
+        ax_input: Any
+        ax_output: Any
         ax_input, ax_output = axes[i]
 
         # Plot the input grid
