@@ -240,11 +240,11 @@ def find_dividing_lines(grid: Object_t, color: int) -> Tuple[List[int], List[int
     vertical_lines: List[int] = []
 
     for i in range(grid.height):
-        if all(grid.datax[i][j] == color for j in range(grid.width)):
+        if all(grid[j, i] == color for j in range(grid.width)):
             horizontal_lines.append(i)
 
     for j in range(grid.width):
-        if all(grid.datax[i][j] == color for i in range(grid.height)):
+        if all(grid[j, i] == color for i in range(grid.height)):
             vertical_lines.append(j)
 
     return horizontal_lines, vertical_lines
@@ -275,7 +275,7 @@ def extract_subgrid_of_color(
             # Extract the subgrid bounded by (prev_h, prev_v) and (h-1, v-1)
             if prev_v == v or prev_h == h:
                 continue
-            sub_grid_data = [row[prev_v:v] for row in grid.datax[prev_h:h]]
+            sub_grid_data = grid._data[prev_h:h, prev_v:v]
             from objects import Object
             row.append(Object(np.array(sub_grid_data)))
             prev_v = v + 1
