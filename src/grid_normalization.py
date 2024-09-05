@@ -50,6 +50,11 @@ def mass_of_bottom_right_half(grid: Object, background_color: int) -> int:
     return total_mass
 
 
+def distance(point1: Tuple[float, float], point2: Tuple[float, float]) -> float:
+    """Calculate the Euclidean distance between two points."""
+    return sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+
+
 def find_normalizing_transformation(
     grid: Object, background_color: int
 ) -> RigidTransformation:
@@ -66,10 +71,6 @@ def find_normalizing_transformation(
     """
 
     width, height = grid.size
-
-    def distance(point1: Tuple[float, float], point2: Tuple[float, float]) -> float:
-        """Calculate the Euclidean distance between two points."""
-        return sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
 
     # Calculate the center of mass of the grid
     center_of_mass = calculate_center_of_mass(grid, background_color)
