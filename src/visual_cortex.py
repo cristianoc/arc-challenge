@@ -38,7 +38,7 @@ Frame = Tuple[int, int, int, int]
 
 def precompute_sums(grid: Object_t, color: int) -> Tuple[ndarray, ndarray]:
     """Precompute the row and column sums for the grid to optimize the frame-checking process."""
-    rows, cols = grid._data.shape
+    cols, rows = grid.size
     row_sum = np.zeros((rows, cols))
     col_sum = np.zeros((rows, cols))
 
@@ -104,7 +104,7 @@ def find_largest_frame(grid: Object_t, color: Optional[int]) -> Optional[Frame]:
     max_area = 0
     max_frame = None
 
-    rows, cols = grid._data.shape
+    cols, rows = grid.size
 
     for top in range(rows):
         for left in range(cols):
@@ -113,7 +113,7 @@ def find_largest_frame(grid: Object_t, color: Optional[int]) -> Optional[Frame]:
                 if (rows - top) * (cols - left) <= max_area:
                     break
                 for right in range(left, cols):
-                    top_left_corner_color = grid._data[top, left]
+                    top_left_corner_color = grid[left, top]
                     if (
                         is_frame_dp(row_sum, col_sum, top, left, bottom, right)
                         if row_sum is not None and col_sum is not None
@@ -142,7 +142,7 @@ def find_smallest_frame(
     min_area = float("inf")
     min_frame = None
 
-    rows, cols = grid._data.shape
+    cols, rows = grid.size
 
     for top in range(rows):
         for left in range(cols):
@@ -219,16 +219,16 @@ def is_frame_part_of_lattice(grid: Object_t, frame: Frame, foreground: int) -> b
             for i in range(frame_width):
                 if y < rows and (x + i) < cols:
                     if (
-                        grid._data[y, x + i] != foreground
-                        or grid._data[y + frame_height - 1, x + i] != foreground
+                        grid[x + i, y] != foreground
+                        or grid[x + i, y + frame_height - 1] != foreground
                     ):
                         return False
             # Check left and right borders of the frame
             for j in range(frame_height):
                 if y + j < rows and x < cols:
                     if (
-                        grid._data[y + j, x] != foreground
-                        or grid._data[y + j, x + frame_width - 1] != foreground
+                        grid[x, y + j] != foreground
+                        or grid[x + frame_width - 1, y + j] != foreground
                     ):
                         return False
     return True
@@ -442,7 +442,7 @@ def extract_object_by_color(grid: Object_t, color: int) -> Object_t:
     right = 0
     for i in range(rows):
         for j in range(cols):
-            if grid._data[i, j] == color:
+            if grid[j, i] == color:
                 top = min(top, i)
                 left = min(left, j)
                 bottom = max(bottom, i)
