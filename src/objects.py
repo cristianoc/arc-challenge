@@ -21,7 +21,7 @@ import visual_cortex
 class Object:
 
     def __init__(self, data: np.ndarray[np.int64], origin: Cell = (0, 0)):
-        self._data: np.ndarray[np.int64, Any] = data
+        self._data: np.ndarray[np.int64, Any] = data # type: ignore
         self._data_cached: Optional[GridData] = None
         self._enclosed_cached: Optional[EnclosedCells] = None
         self.origin = origin
@@ -30,7 +30,6 @@ class Object:
         if isinstance(other, Object):
             return np.array_equal(self._data, other._data) and self.origin == other.origin
         return False
-
 
     def format_grid(self) -> str:
         return f"{self._data}"
@@ -63,6 +62,7 @@ class Object:
 
     @property
     def datax(self) -> GridData:
+        # assert False
         if self._data_cached is None:
             d: GridData = self._data.tolist()  # type: ignore
             self._data_cached = d
@@ -249,14 +249,12 @@ class Object:
         r, c = self.origin
         return r <= row < r + self.height and c <= col < c + self.width
 
+
     def get_colors(self, allow_black: bool = True) -> List[int]:
-        colors: set[Color] = set()
-        for row in self._data:
-            for color in row:
-                if color == BLACK and not allow_black:
-                    continue
-                colors.add(color)  # type: ignore
-        return sorted(list(colors))
+        colors = np.unique(self._data)
+        if not allow_black:
+            colors = colors[colors != BLACK]
+        return sorted(colors.tolist())
 
     @property
     def first_color(self) -> int:
