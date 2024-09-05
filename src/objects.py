@@ -32,7 +32,7 @@ class Object:
         return False
 
     def format_grid(self, indent: str = '') -> str:
-        return '\n'.join(indent + ' '.join(f'{cell:2}' for cell in row) for row in self.datax)
+        return '\n'.join(indent + ' '.join(f'{cell:2}' for cell in row) for row in self._data)
 
     def __str__(self) -> str:
         return self.format_grid()
@@ -69,11 +69,11 @@ class Object:
 
     @property
     def height(self) -> int:
-        return len(self.datax)
+        return self._data.shape[0]
 
     @property
     def width(self) -> int:
-        return len(self.datax[0]) if self.datax else 0
+        return self._data.shape[1]
 
     @property
     def area(self) -> int:
