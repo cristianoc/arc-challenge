@@ -106,7 +106,7 @@ def solver(
         optimized_weights, optimized_bias
     ):
         return optimized_weights, optimized_bias
-
+    return None
 
 def solve_regularized_regression(
     features: List[Features], targets: List[int], description: str
@@ -147,6 +147,8 @@ def solve_regularized_regression(
 
         if solution_true and solution_false:
             return (name, solution_true, solution_false)
+    return None
+
 
 
 def is_regularized_solution(weights: Features, bias: int) -> bool:

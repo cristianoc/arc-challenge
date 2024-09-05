@@ -34,7 +34,6 @@ import numpy as np
 from typing import Optional, Tuple
 
 GridData = np.ndarray
-Frame = Tuple[int, int, int, int]
 
 
 def precompute_sums(grid: Object_t, color: int) -> Tuple[ndarray, ndarray]:
@@ -593,7 +592,7 @@ def find_rectangular_objects(grid: Object_t, allow_multicolor: bool) -> List[Obj
     return objects
 
 
-def test_detect_rectangular_objects():
+def test_detect_rectangular_objects() -> None:
     from objects import Object
     grid = Object(np.array([
         [0, 0, 0, 0, 0, 0],

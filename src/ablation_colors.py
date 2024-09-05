@@ -31,7 +31,7 @@ def get_current_time() -> str:
     return datetime.now().strftime("%H:%M:%S.%f")[:-3]
 
 
-def ablation_study():
+def ablation_study() -> None:
     if not logger.hasHandlers():
         console_handler = logging.StreamHandler()
         logger.addHandler(console_handler)

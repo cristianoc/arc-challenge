@@ -211,11 +211,6 @@ def find_xform(
         func = xform["function"]
         logger.debug(f"Checking xform {func.__name__} {task_type}")
         if check_xform_on_examples(func, examples, task_name, task_type):
-            if False and xform == output_size_is_constant_times_input_size:
-                title = f"{xform.__name__} ({task_name})"
-                logger.info(title)
-                for i, e in enumerate(examples):
-                    display(e["input"], output=e["output"], title=f"Ex{i+1} " + title)
             correct_xform = xform
             logger.info(
                 f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type}"
