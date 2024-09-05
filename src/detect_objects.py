@@ -2,6 +2,15 @@ from typing import List
 
 from grid_types import DIRECTIONS4, DIRECTIONS8, Cell, GridData
 
+from typing import TYPE_CHECKING
+
+# To avoid circular imports
+if TYPE_CHECKING:
+    from objects import Object as Object_t
+else:
+    Object_t = None
+
+
 # Type alias for the id of visited objects
 VISITED = List[List[bool]]
 
@@ -10,7 +19,7 @@ ConnectedComponent = List[Cell]
 
 
 def dfs_recursive_list(
-    data: GridData,
+    grid: Object_t,
     visited: VISITED,
     r: int,
     c: int,
@@ -19,9 +28,9 @@ def dfs_recursive_list(
     diagonals: bool,
 ):
     # Base conditions to stop recursion
-    if r < 0 or r >= len(data) or c < 0 or c >= len(data[0]):
+    if r < 0 or r >= grid.height or c < 0 or c >= grid.width:
         return
-    if visited[r][c] or data[r][c] != color:
+    if visited[r][c] or grid[c, r] != color:
         return
 
     # Mark the cell as visited
@@ -33,25 +42,24 @@ def dfs_recursive_list(
     # Recursively visit all 8 neighbors
     directions = DIRECTIONS8 if diagonals else DIRECTIONS4
     for dr, dc in directions:
-        dfs_recursive_list(data, visited, r + dr, c + dc, color, component, diagonals)
+        dfs_recursive_list(grid, visited, r + dr, c + dc, color, component, diagonals)
 
 
 def find_connected_components(
-    data: GridData, diagonals: bool, allow_black: bool
+    grid: Object_t, diagonals: bool, allow_black: bool
 ) -> List[ConnectedComponent]:
-    rows = len(data)
-    cols = len(data[0])
+    cols, rows = grid.size
     visited: VISITED = [[False for _ in range(cols)] for _ in range(rows)]
     connected_components: List[ConnectedComponent] = []
 
     for r in range(rows):
         for c in range(cols):
             # Skip cells with color 0
-            if visited[r][c] == False and (allow_black or data[r][c] != 0):
+            if visited[r][c] == False and (allow_black or grid[c, r] != 0):
                 # Create a new component
                 component: ConnectedComponent = []
                 dfs_recursive_list(
-                    data, visited, r, c, data[r][c], component, diagonals
+                    grid, visited, r, c, grid[c, r], component, diagonals
                 )
                 # Add the component to the list of connected components
                 if component:
