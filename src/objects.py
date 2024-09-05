@@ -31,8 +31,9 @@ class Object:
             return np.array_equal(self._data, other._data) and self.origin == other.origin
         return False
 
-    def format_grid(self, indent: str = '') -> str:
-        return '\n'.join(indent + ' '.join(f'{cell:2}' for cell in row) for row in self._data)
+
+    def format_grid(self) -> str:
+        return f"{self._data}"
 
     def __str__(self) -> str:
         return self.format_grid()
@@ -41,7 +42,7 @@ class Object:
         return f"Object(origin={self.origin}, data={self._data})"
 
     def __format__(self, format_spec: str) -> str:
-        return f"\n{self.format_grid(' ')}"
+        return f"\n{self.format_grid()}"
 
     def __getitem__(self, key: Tuple[int, int]) -> int:
         return self._data[key[1], key[0]]
