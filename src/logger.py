@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt  # early import to silence initialization log me
 logging.getLogger("pulp").setLevel(logging.ERROR)  # Suppress the verbose output from the pulp solver
 
 logging.basicConfig(
-    level=logging.DEBUG,  # change to logging.DEBUG for more verbose output
+    level=logging.INFO,  # change to logging.DEBUG for more verbose output
     format="%(message)s",
 )
 logger = logging.getLogger(__name__)
