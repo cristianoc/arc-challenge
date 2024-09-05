@@ -429,7 +429,7 @@ def display_multiple(
     for i, (input, output) in enumerate(grid_pairs):
         input_data = input._data
         output_data = output._data
-        ac_input : Any
+        ax_input : Any
         ax_input, ax_output = axes[i]
 
         # Plot the input grid
