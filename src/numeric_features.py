@@ -64,7 +64,7 @@ def detect_numeric_features(grid: Object, relative_difficulty: int) -> Features:
     if subgrid:
         subgrid_height = len(subgrid)
         subgrid_width = len(subgrid[0])
-    colored_objects: List[Object] = grid.detect_colored_objects()
+    colored_objects: List[Object] = grid.detect_colored_objects(background_color=grid.main_color(allow_black=True))
     colored_object_max_height = None
     colored_object_max_width = None
     if len(colored_objects) >= 2:

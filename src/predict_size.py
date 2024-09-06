@@ -400,9 +400,7 @@ def find_matched_objects(
             # If the output is a frame, detect objects in the input as frames
             logger.debug("  Output is a frame")
         num_colors_output = len(output.get_colors(allow_black=True))
-        return find_rectangular_objects(
-            input, allow_multicolor=num_colors_output > 1
-        )
+        return find_rectangular_objects(input, allow_multicolor=num_colors_output > 1)
 
     def find_matching_input_object(
         input_objects: List[Object], output: Object
@@ -573,7 +571,10 @@ def process_tasks(tasks: Tasks, set: str):
             current_difficulty += num_difficulties_regularized_regression
 
             if Config.display_not_found:
-                colored_objects = examples[0][0].detect_colored_objects()
+                obj = examples[0][0]
+                colored_objects = obj.detect_colored_objects(
+                    background_color=obj.main_color(allow_black=True)
+                )
                 display_multiple(examples, title=f"{task_name} {set}")
                 if colored_objects:
                     display_multiple(
