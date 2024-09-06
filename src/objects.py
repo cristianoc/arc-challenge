@@ -33,7 +33,7 @@ class Object:
 
     def __init__(
         self,
-        data: np.ndarray[np.int64, Any], # type: ignore
+        data: np.ndarray[np.int64, Any],  # type: ignore
         origin: Cell = (0, 0),
     ):
         self._data: np.ndarray[np.int64, Any] = data  # type: ignore
@@ -399,7 +399,9 @@ class Object:
 
         return True
 
-    def detect_colored_objects(self, background_color: Optional[int]= None) -> List["Object"]:
+    def detect_colored_objects(
+        self, background_color: Optional[int] = None
+    ) -> List["Object"]:
         """
         Detects and returns a list of all distinct objects within the grid based on color.
 
@@ -435,25 +437,48 @@ def display_multiple(
         ax_output: Any
         ax_input, ax_output = axes[i]
 
-        # Plot the input grid
-        cmap: ListedColormap = colors.ListedColormap(color_scheme)
-        # Adjust the bounds to match the number of colors
-        bounds = np.arange(-0.5, len(color_scheme) + 0.5, 1)
-        norm = colors.BoundaryNorm(bounds, cmap.N)
-        ax_input.imshow(input_data, cmap=cmap, norm=norm)
+        # Custom rectangle-based plot for input grid with provided color scheme
+        for row in range(input_data.shape[0]):
+            for col in range(input_data.shape[1]):
+                color = color_scheme[input_data[row, col] % len(color_scheme)]
+                rect = plt.Rectangle(
+                    [col, row], 1, 1, facecolor=color, edgecolor="grey", linewidth=0.5
+                )
+                ax_input.add_patch(rect)
+
+        # Set limits, aspect ratio, and grid appearance for the input grid
+        ax_input.set_xlim(0, input_data.shape[1])
+        ax_input.set_ylim(0, input_data.shape[0])
+        ax_input.set_aspect("equal")
+        ax_input.invert_yaxis()  # Invert to match `imshow`
         ax_input.set_title(f"Input Grid {i+1}")
         ax_input.axis("off")  # Hide the axes
 
         if output_data is not None:
-            # Plot the output grid if provided
-            ax_output.imshow(output_data, cmap=cmap, norm=norm)
+            # Custom rectangle-based plot for output grid with provided color scheme
+            for row in range(output_data.shape[0]):
+                for col in range(output_data.shape[1]):
+                    color = color_scheme[output_data[row, col] % len(color_scheme)]
+                    rect = plt.Rectangle(
+                        [col, row],
+                        1,
+                        1,
+                        facecolor=color,
+                        edgecolor="grey",
+                        linewidth=0.5,
+                    )
+                    ax_output.add_patch(rect)
+
+            # Set limits, aspect ratio, and grid appearance for the output grid
+            ax_output.set_xlim(0, output_data.shape[1])
+            ax_output.set_ylim(0, output_data.shape[0])
+            ax_output.set_aspect("equal")
+            ax_output.invert_yaxis()  # Invert to match `imshow`
             ax_output.set_title(f"Output Grid {i+1}")
         else:
             # If output_data is None, just show a blank plot
-            ax_output.imshow(input_data, cmap="gray")
             ax_output.set_title(f"Output Grid {i+1} (None)")
-
-        ax_output.axis("off")  # Hide the axes
+            ax_output.axis("off")  # Hide the axes for a blank plot
 
     if title:
         fig.suptitle(title, fontsize=16)
