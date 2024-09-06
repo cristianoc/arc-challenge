@@ -450,7 +450,8 @@ def extract_object_by_color(grid: Object_t, color: int) -> Object_t:
     origin = (top, left)
 
     # Slicing the array for the specified region
-    data = grid._data[top : bottom + 1, left : right + 1]
+    data = grid._data[top : bottom + 1, left : right + 1].copy()
+
     # Remove other colors by setting elements not equal to the desired color to 0
     data[data != color] = 0
 
@@ -458,7 +459,7 @@ def extract_object_by_color(grid: Object_t, color: int) -> Object_t:
     return Object(np.array(data), origin)
 
 
-def find_colored_objects(grid: Object_t) -> List[Object_t]:
+def find_colored_objects(grid: Object_t, with_background: bool) -> List[Object_t]:
     """
     Finds and returns a list of all distinct objects within the grid based on color.
 
@@ -471,7 +472,7 @@ def find_colored_objects(grid: Object_t) -> List[Object_t]:
     colors = grid.get_colors(allow_black=True)
     objects: List[Object] = []
     for color in colors:
-        if color == background_color:
+        if color == background_color and not with_background:
             continue
         object = extract_object_by_color(grid, color)
         objects.append(object)

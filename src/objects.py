@@ -399,13 +399,13 @@ class Object:
 
         return True
 
-    def detect_colored_objects(self) -> List["Object"]:
+    def detect_colored_objects(self, with_background: bool = False) -> List["Object"]:
         """
         Detects and returns a list of all distinct objects within the grid based on color.
 
         This method uses the implementation from visual_cortex.py.
         """
-        return visual_cortex.find_colored_objects(self)
+        return visual_cortex.find_colored_objects(self, with_background)
 
 
 def display(
