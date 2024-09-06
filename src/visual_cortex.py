@@ -459,7 +459,7 @@ def extract_object_by_color(grid: Object_t, color: int) -> Object_t:
     return Object(np.array(data), origin)
 
 
-def find_colored_objects(grid: Object_t, backround_color: Optional[int]) -> List[Object_t]:
+def find_colored_objects(grid: Object_t, background_color: Optional[int]) -> List[Object_t]:
     """
     Finds and returns a list of all distinct objects within the grid based on color.
 
@@ -468,7 +468,6 @@ def find_colored_objects(grid: Object_t, backround_color: Optional[int]) -> List
     Each object is represented as an instance of the `Object` class.
     """
     from objects import Object
-    background_color = grid.main_color(allow_black=True)
     colors = grid.get_colors(allow_black=True)
     objects: List[Object] = []
     for color in colors:
