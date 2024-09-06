@@ -1,5 +1,5 @@
 import time
-from typing import List, Optional, Tuple, Any
+from typing import List, Optional, Tuple, Any, Optional
 import random
 
 from numpy import ndarray
@@ -459,7 +459,7 @@ def extract_object_by_color(grid: Object_t, color: int) -> Object_t:
     return Object(np.array(data), origin)
 
 
-def find_colored_objects(grid: Object_t, with_background: bool) -> List[Object_t]:
+def find_colored_objects(grid: Object_t, backround_color: Optional[int]) -> List[Object_t]:
     """
     Finds and returns a list of all distinct objects within the grid based on color.
 
@@ -472,7 +472,7 @@ def find_colored_objects(grid: Object_t, with_background: bool) -> List[Object_t
     colors = grid.get_colors(allow_black=True)
     objects: List[Object] = []
     for color in colors:
-        if color == background_color and not with_background:
+        if background_color is not None and color == background_color:
             continue
         object = extract_object_by_color(grid, color)
         objects.append(object)
