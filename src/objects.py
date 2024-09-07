@@ -107,12 +107,12 @@ class Object:
         data = np.zeros((height, width), dtype=np.int64)
         return Object(data)
 
-    def add_object(self, obj: "Object") -> None:
+    def add_object(self, obj: "Object", background_color: int = 0) -> None:
         r_off, c_off = obj.origin
         for r in range(obj.height):
             for c in range(obj.width):
                 color = obj[c, r]
-                if color != BLACK:
+                if color != background_color:
                     # Only add the color if it's in bounds
                     new_r, new_c = r + r_off, c + c_off
                     if 0 <= new_r < self.height and 0 <= new_c < self.width:
