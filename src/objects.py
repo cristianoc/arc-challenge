@@ -103,7 +103,8 @@ class Object:
 
     @staticmethod
     def empty(size: Tuple[int, int]) -> "Object":
-        data = np.zeros(size, dtype=np.int64)
+        width, height = size
+        data = np.zeros((height, width), dtype=np.int64)
         return Object(data)
 
     def add_object(self, obj: "Object") -> None:
