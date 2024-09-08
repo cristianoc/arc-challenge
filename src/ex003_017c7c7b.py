@@ -18,9 +18,10 @@ def extend_list(lst: List[Any], length: int):
 
 
 def transform(input: Object) -> Object:
-    vertical_period: int = find_shortest_period(input.datax)
-    pattern = input.datax[:vertical_period]
-    assert len(input.datax) == 6
+    data = input._data.tolist()
+    vertical_period: int = find_shortest_period(data)
+    pattern = data[:vertical_period]
+    assert len(data) == 6
     extended_pattern = extend_list(pattern, 9)
     grid = Object(np.array(extended_pattern))
     return grid.color_change(BLUE, RED)
