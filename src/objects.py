@@ -339,31 +339,30 @@ class Object:
         the meaningful arrangement of elements.
         """
 
-        def remove_last_black(lst: List[int]) -> List[int]:
+        def remove_last_black(row: np.ndarray) -> np.ndarray:
             """
-            Remove the last BLACK cell in the list.
+            Remove the last BLACK cell in the row (NumPy array).
+            If no BLACK is found, remove the first element of the row.
             """
-            if BLACK in lst:
-                lst.reverse()
-                lst.remove(BLACK)
-                lst.reverse()
+            if BLACK in row:
+                # Get index of the last BLACK and remove it
+                last_black_index = np.max(np.where(row == BLACK))
+                row = np.delete(row, last_black_index)
             else:
-                lst = lst[1:]
-            return lst
+                # Remove the first element if no BLACK is found
+                row = row[1:]
+            return row
 
-        def squash_row(row: List[int]) -> List[int]:
+        def squash_row(row: np.ndarray) -> np.ndarray:
             """
             Process each row by removing the last BLACK cell or the first cell.
             """
-            if BLACK in row:
-                new_row = remove_last_black(row)
-            else:
-                new_row = row[1:]
-            return new_row
+            return remove_last_black(row)
 
-        # Apply squash_row to each row in self.datax
-        new_data = [squash_row(row) for row in self.datax]
-        return Object(np.array(new_data), self.origin)
+        # Apply squash_row to each row of the NumPy array
+        new_data = np.array([squash_row(row) for row in self._data])
+
+        return Object(new_data, self.origin)
 
     def has_frame(self) -> bool:
         """
@@ -392,7 +391,6 @@ class Object:
             return False
 
         return True
-
 
     def is_block(self) -> bool:
         obj_color = self.first_color
