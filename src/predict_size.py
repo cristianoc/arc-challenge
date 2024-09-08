@@ -406,7 +406,7 @@ def find_matched_objects(
         input_objects: List[Object], output: Object
     ) -> Optional[int]:
         for i, io in enumerate(input_objects):
-            if io.size == output.size and io.datax == output.datax:
+            if io.size == output.size and np.array_equal(io._data, output._data):
                 logger.debug(f"  Input object matching output: {io}")
                 return i
         return None
