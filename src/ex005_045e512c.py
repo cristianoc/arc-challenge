@@ -16,10 +16,9 @@ illustrates how to manipulate and extend patterns within a grid-like structure.
 """
 
 
-def find_main_object(objects: List[Object]) -> Object:
+def find_max_area_object(objects: List[Object]) -> Object:
     """Find and return the largest object from the detected objects."""
-    obj = max(objects, key=lambda obj: obj.height * obj.width)
-    return obj
+    return max(objects, key=lambda obj: obj.area)
 
 
 def find_subsets(
@@ -28,22 +27,22 @@ def find_subsets(
     """Find subset objects around the main object and determine their directions and colors."""
     subsets: List[Tuple[Tuple[int, int], int]] = []
 
-    for dr, dc in DIRECTIONS8:
+    for dx, dy in DIRECTIONS8:
         # Calculate expected position for a subset
-        off_row = main_object.origin[0] + 4 * dr
-        off_col = main_object.origin[1] + 4 * dc
+        off_x = main_object.origin[0] + 4 * dx
+        off_y = main_object.origin[1] + 4 * dy
 
         # Find the first color in the subset object (assuming uniform color)
         color = 0
-        for r in range(main_object.height):
-            for c in range(main_object.width):
+        for x in range(main_object.width):
+            for y in range(main_object.height):
                 if color == 0:
                     try:
-                        color = grid[c + off_col, r + off_row]
+                        color = grid[x + off_x, y + off_y]
                     except IndexError:
                         continue
         if color != 0:
-            subsets.append(((dr, dc), color))
+            subsets.append(((dx, dy), color))
 
     return subsets
 
@@ -53,7 +52,7 @@ def transform(input: Object) -> Object:
     objects = input.detect_objects()
 
     # Find the main 3x3 object
-    main_object = find_main_object(objects)
+    main_object = find_max_area_object(objects)
 
     if not main_object:
         return input  # Return the original grid if no main object is found
@@ -69,24 +68,24 @@ def transform(input: Object) -> Object:
 
     # Extend the main object in the direction of subsets
     for direction, color in subsets:
-        dr, dc = direction
+        dx, dy = direction
         current_object = main_object
 
         while True:
             # Calculate new origin for the object
-            new_origin = current_object.origin + 4 * (dr, dc)
+            new_origin = current_object.origin + 4 * (dx, dy)
 
             # Check if the new object is completely outside the grid boundaries
             if (
-                new_origin[0] >= input.height
-                or new_origin[1] >= input.width
-                or new_origin[0] + current_object.height <= 0
-                or new_origin[1] + current_object.width <= 0
+                new_origin[0] >= input.width
+                or new_origin[1] >= input.height
+                or new_origin[0] + current_object.width <= 0
+                or new_origin[1] + current_object.height <= 0
             ):
                 break
 
             # Create a new object with the specified color and new origin
-            new_object = current_object.move(4 * dr, 4 * dc).change_color(None, color)
+            new_object = current_object.move(4 * dx, 4 * dy).change_color(None, color)
 
             # Add the new object to the grid
             new_grid.add_object(new_object)

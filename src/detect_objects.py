@@ -10,56 +10,53 @@ if TYPE_CHECKING:
 else:
     Object_t = None
 
-
-# Type alias for the id of visited objects
-VISITED = List[List[bool]]
-
 # Defining a type alias for a connected component
 ConnectedComponent = List[Cell]
 
 
 def dfs_recursive_list(
     grid: Object_t,
-    visited: VISITED,
-    r: int,
-    c: int,
+    visited: Object_t,
+    x: int,
+    y: int,
     color: int,
     component: ConnectedComponent,
     diagonals: bool,
 ):
     # Base conditions to stop recursion
-    if r < 0 or r >= grid.height or c < 0 or c >= grid.width:
+    if x < 0 or x >= grid.width or y < 0 or y >= grid.height:
         return
-    if visited[r][c] or grid[c, r] != color:
+    if visited[x, y] or grid[x, y] != color:
         return
 
     # Mark the cell as visited
-    visited[r][c] = True
+    visited[x, y] = 1
 
     # Add the cell to the current component
-    component.append((r, c))
+    component.append((x, y))
 
     # Recursively visit all 8 neighbors
     directions = DIRECTIONS8 if diagonals else DIRECTIONS4
-    for dr, dc in directions:
-        dfs_recursive_list(grid, visited, r + dr, c + dc, color, component, diagonals)
+    for dx, dy in directions:
+        dfs_recursive_list(grid, visited, x + dx, y + dy, color, component, diagonals)
 
 
 def find_connected_components(
     grid: Object_t, diagonals: bool, allow_black: bool
 ) -> List[ConnectedComponent]:
-    cols, rows = grid.size
-    visited: VISITED = [[False for _ in range(cols)] for _ in range(rows)]
+    width, height = grid.size
+    from objects import Object
+    visited: Object_t = Object.empty(size=grid.size) 
     connected_components: List[ConnectedComponent] = []
 
-    for r in range(rows):
-        for c in range(cols):
+    for x in range(width):
+        for y in range(height):
             # Skip cells with color 0
-            if visited[r][c] == False and (allow_black or grid[c, r] != 0):
+            if visited[x, y] == 0 and (allow_black or grid[x, y] != 0):
                 # Create a new component
                 component: ConnectedComponent = []
                 dfs_recursive_list(
-                    grid, visited, r, c, grid[c, r], component, diagonals
+                    grid, visited, x, y, grid[x, y], component, diagonals
                 )
                 # Add the component to the list of connected components
                 if component:
