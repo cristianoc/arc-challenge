@@ -243,7 +243,6 @@ class Object:
         new_origin = (self.origin[0] + dx, self.origin[1] + dy)
         return Object(self._data.copy(), new_origin)
 
-
     def change_color(self, from_color: Optional[int], to_color: int) -> "Object":
         """
         Changes the color of all cells in the object to `to_color`.
@@ -368,7 +367,7 @@ class Object:
 
     def has_frame(self) -> bool:
         """
-        Check if the object is a frame, i.e., has a border of 1 cell width and the color is not 0.
+        Check if the object has a frame (border of 1 cell width) and the color is not 0.
 
         A frame is defined as having non-zero cells in the entire first and last row,
         as well as the first and last column of the object. Additionally, the frame's color
@@ -381,17 +380,19 @@ class Object:
         obj_color = self.main_color()
 
         # Check top and bottom rows
-        if not all(cell == obj_color for cell in self.datax[0]) or not all(
-            cell == obj_color for cell in self.datax[-1]
+        if not np.all(self._data[0, :] == obj_color) or not np.all(
+            self._data[-1, :] == obj_color
         ):
             return False
 
         # Check left and right columns
-        for row in self.datax:
-            if row[0] != obj_color or row[-1] != obj_color:
-                return False
+        if not np.all(self._data[:, 0] == obj_color) or not np.all(
+            self._data[:, -1] == obj_color
+        ):
+            return False
 
         return True
+
 
     def is_block(self) -> bool:
         obj_color = self.first_color
