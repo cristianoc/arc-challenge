@@ -122,8 +122,8 @@ class Object:
 
     def map(self, func: Callable[[int, int], int]) -> "Object":
         new_grid = [
-            [func(x, y) for y in range(len(self.datax[0]))]
-            for x in range(len(self.datax))
+            [func(x, y) for y in range(self.width)]
+            for x in range(self.height)
         ]
         return Object(np.array(new_grid))
 
@@ -145,7 +145,7 @@ class Object:
             return new_grid
 
         new_grid: List[List[GridData]] = [
-            [func(i, j).datax for j in range(self.width)] for i in range(self.height)
+            [func(i, j)._data.tolist() for j in range(self.width)] for i in range(self.height)
         ]
         return Object(np.array(transform_data(new_grid)))
 
