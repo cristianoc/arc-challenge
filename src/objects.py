@@ -108,15 +108,15 @@ class Object:
         return Object(data)
 
     def add_object(self, obj: "Object", background_color: int = 0) -> None:
-        r_off, c_off = obj.origin
-        for r in range(obj.height):
-            for c in range(obj.width):
-                color = obj[c, r]
+        x_off, y_off = obj.origin
+        for x in range(obj.width):
+            for y in range(obj.height):
+                color = obj[x, y]
                 if color != background_color:
                     # Only add the color if it's in bounds
-                    new_r, new_c = r + r_off, c + c_off
-                    if 0 <= new_r < self.height and 0 <= new_c < self.width:
-                        self[new_c, new_r] = color
+                    new_x, new_y = x + x_off, y + y_off
+                    if 0 <= new_x < self.width and 0 <= new_y < self.height:
+                        self[new_x, new_y] = color
         self._data_cached = None
         self._enclosed_cached = None
 
@@ -168,14 +168,17 @@ class Object:
             """
             Create an object from a connected component in a grid
             """
-            min_row = min(r for r, _ in component)
-            min_col = min(c for _, c in component)
-            rows = max(r for r, _ in component) - min_row + 1
-            columns = max(c for _, c in component) - min_col + 1
-            data = Object.empty(size=(rows, columns)).datax  # Fix dimensions here
-            for r, c in component:
-                data[r - min_row][c - min_col] = grid.datax[r][c]
-            return Object(origin=(min_row, min_col), data=np.array(data))
+            min_x = min(x for x, _ in component)
+            min_y = min(y for _, y in component)
+            max_x = max(x for x, _ in component)
+            max_y = max(y for _, y in component)
+            width = max_x - min_x + 1
+            height = max_y - min_y + 1
+            data = Object.empty(size=(width, height))
+            for x, y in component:
+                q = grid[x, y]
+                data[x - min_x, y - min_y] = q
+            return Object(origin=(min_x, min_y), data=data._data)
 
         connected_components = find_connected_components(self, diagonals, allow_black)
         detected_objects = [
@@ -233,29 +236,28 @@ class Object:
         else:
             return sum(cell == color for row in self.datax for cell in row)
 
-    def move(self, dr: int, dc: int) -> "Object":
+    def move(self, dx: int, dy: int) -> "Object":
         """
         Moves the object by `dr` rows and `dc` columns.
         """
-        new_origin = (self.origin[0] + dr, self.origin[1] + dc)
+        new_origin = (self.origin[0] + dx, self.origin[1] + dy)
         return Object(self._data.copy(), new_origin)
+
 
     def change_color(self, from_color: Optional[int], to_color: int) -> "Object":
         """
         Changes the color of all cells in the object to `to_color`.
         """
-        new_data = [
-            [
-                (
-                    to_color
-                    if color == from_color or (color != 0 and from_color is None)
-                    else color
-                )
-                for color in row
-            ]
-            for row in self.datax
-        ]
-        return Object(np.array(new_data), self.origin)
+        old_data = self._data
+
+        if from_color is None:
+            # Change all non-zero colors to `to_color` when `from_color` is None
+            new_data = np.where(old_data != 0, to_color, old_data)
+        else:
+            # Change colors that match `from_color` to `to_color`
+            new_data = np.where(old_data == from_color, to_color, old_data)
+
+        return Object(new_data, self.origin)
 
     def contains_cell(self, cell: Cell) -> bool:
         """
