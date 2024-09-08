@@ -155,11 +155,8 @@ class Object:
         return self._enclosed_cached[x][y]
 
     def color_change(self, from_color: Color, to_color: Color) -> "Object":
-        new_grid = [
-            [to_color if cell == from_color else cell for cell in row]
-            for row in self.datax
-        ]
-        return Object(np.array(new_grid))
+        new_data = np.where(self._data == from_color, to_color, self._data)
+        return Object(new_data)
 
     def detect_objects(
         self: "Object", diagonals: bool = True, allow_black: bool = False
@@ -203,9 +200,6 @@ class Object:
         return Object(x)
 
     def rotate(self, direction: Rotation) -> "Object":
-        data: List[List[int]] = self.datax
-        height, width = len(data), len(data[0])
-        rotated_grid = [[0 for _ in range(height)] for _ in range(width)]
         if direction == Rotation.CLOCKWISE:
             return self.rot90_clockwise(1)
         else:  # Rotation.COUNTERCLOCKWISE
@@ -232,9 +226,11 @@ class Object:
 
     def num_cells(self, color: Optional[int]) -> int:
         if color is None:
-            return sum(cell != 0 for row in self.datax for cell in row)
+            # Count all non-zero cells
+            return np.count_nonzero(self._data != 0)
         else:
-            return sum(cell == color for row in self.datax for cell in row)
+            # Count cells equal to the specified color
+            return np.count_nonzero(self._data == color)
 
     def move(self, dx: int, dy: int) -> "Object":
         """
