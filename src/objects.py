@@ -33,11 +33,10 @@ class Object:
 
     def __init__(
         self,
-        data: np.ndarray[np.int64, Any],  # type: ignore
+        data: np.ndarray,
         origin: Cell = (0, 0),
     ):
-        self._data: np.ndarray[np.int64, Any] = data  # type: ignore
-        self._data_cached: Optional[GridData] = None
+        self._data: np.ndarray = data
         self._enclosed_cached: Optional[EnclosedCells] = None
         self.origin = origin
 
@@ -78,14 +77,6 @@ class Object:
         return grid
 
     @property
-    def datax(self) -> GridData:
-        # assert False
-        if self._data_cached is None:
-            d: GridData = self._data.tolist()  # type: ignore
-            self._data_cached = d
-        return self._data_cached
-
-    @property
     def height(self) -> int:
         return self._data.shape[0]
 
@@ -117,7 +108,6 @@ class Object:
                     new_x, new_y = x + x_off, y + y_off
                     if 0 <= new_x < self.width and 0 <= new_y < self.height:
                         self[new_x, new_y] = color
-        self._data_cached = None
         self._enclosed_cached = None
 
     def map(self, func: Callable[[int, int], int]) -> "Object":
