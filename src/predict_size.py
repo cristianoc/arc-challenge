@@ -289,7 +289,7 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
     def detect_common_symmetry_features() -> Optional[DecisionRule]:
         common_decision_rule = None
         for input_objects, index in matched_objects:
-            embeddings = [detect_symmetry_features(obj.datax) for obj in input_objects]
+            embeddings = [detect_symmetry_features(obj) for obj in input_objects]
             decision_rule = select_object_minimal(embeddings, index)
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Symmetry): {decision_rule}")
