@@ -396,11 +396,7 @@ class Object:
     def is_block(self) -> bool:
         obj_color = self.first_color
         # Check if all cells have the same color
-        for row in self.datax:
-            if any(cell != obj_color for cell in row):
-                return False
-
-        return True
+        return bool(np.all(self._data == obj_color))
 
     def detect_colored_objects(
         self, background_color: Optional[int] = None
@@ -498,7 +494,7 @@ class TestSquashLeft:
         obj = Object(np.array(data))
         result = obj.compact_left()
         expected_data = [[1, 2, 3], [BLACK, 4, 5], [7, 8, 9]]
-        assert result.datax == expected_data
+        assert result == Object(np.array(expected_data))
 
 
 def test_rotate():
