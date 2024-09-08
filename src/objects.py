@@ -151,7 +151,7 @@ class Object:
 
     def is_enclosed(self, x: int, y: int) -> bool:
         if self._enclosed_cached is None:
-            self._enclosed_cached = find_enclosed_cells(self.datax)
+            self._enclosed_cached = find_enclosed_cells(self)
         return self._enclosed_cached[x][y]
 
     def color_change(self, from_color: Color, to_color: Color) -> "Object":
