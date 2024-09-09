@@ -64,7 +64,7 @@ def transform(input: Object) -> Object:
     new_grid = Object.empty(input.size)
 
     # Add the main object to the new grid in its original position
-    new_grid.add_object(main_object)
+    new_grid.add_object_in_place(main_object)
 
     # Extend the main object in the direction of subsets
     for direction, color in subsets:
@@ -88,7 +88,7 @@ def transform(input: Object) -> Object:
             new_object = current_object.move(4 * dx, 4 * dy).change_color(None, color)
 
             # Add the new object to the grid
-            new_grid.add_object(new_object)
+            new_grid.add_object_in_place(new_object)
 
             # Move to the next position
             current_object = new_object

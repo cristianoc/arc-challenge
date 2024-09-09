@@ -13,7 +13,7 @@ def transform(input: Object) -> Object:
     objects = input.detect_objects()
     new_grid = Object.empty(input.size)
     for obj in objects:
-        new_grid.add_object(obj.compact_left().move(1, 0))
+        new_grid.add_object_in_place(obj.compact_left().move(1, 0))
     return new_grid
 
 
