@@ -73,7 +73,7 @@ class Object:
         self._enclosed_cached = None
 
     def copy(self) -> "Object":
-        return Object(self._data.copy())
+        return Object(origin=self.origin, data=self._data.copy())
 
     def apply_rigid_xform(self, xform: RigidTransformation) -> "Object":
         grid = self.rot90_clockwise(xform.rotation.value)
@@ -131,10 +131,7 @@ class Object:
                     self[x + x_off, y + y_off] = 0
 
     def map(self, func: Callable[[int, int], int]) -> "Object":
-        new_grid = [
-            [func(x, y) for y in range(self.width)]
-            for x in range(self.height)
-        ]
+        new_grid = [[func(x, y) for y in range(self.width)] for x in range(self.height)]
         return Object(np.array(new_grid))
 
     def map_nested(self, func: Callable[[int, int], "Object"]) -> "Object":
@@ -155,7 +152,8 @@ class Object:
             return new_grid
 
         new_grid: List[List[GridData]] = [
-            [func(i, j)._data.tolist() for j in range(self.width)] for i in range(self.height)
+            [func(i, j)._data.tolist() for j in range(self.width)]
+            for i in range(self.height)
         ]
         return Object(np.array(transform_data(new_grid)))
 
@@ -173,8 +171,11 @@ class Object:
         diagonals: bool = True,
         allow_black: bool = False,
         background_color: int = 0,
+        multicolor: bool = False,
     ) -> List["Object"]:
-        def create_object(grid: Object, component: ConnectedComponent, background_color: int) -> Object:
+        def create_object(
+            grid: Object, component: ConnectedComponent, background_color: int
+        ) -> Object:
             """
             Create an object from a connected component in a grid
             """
@@ -190,27 +191,30 @@ class Object:
                 data[x - min_x, y - min_y] = q
             return Object(origin=(min_x, min_y), data=data._data)
 
-        connected_components = find_connected_components(self, diagonals, allow_black)
+        connected_components = find_connected_components(
+            grid=self, diagonals=diagonals, allow_black=allow_black, multicolor=multicolor
+        )
         detected_objects = [
-            create_object(self, component, background_color) for component in connected_components
+            create_object(self, component, background_color)
+            for component in connected_components
         ]
         return detected_objects
 
     def rot90_clockwise(self, n: int) -> "Object":
-        x: np.ndarray = np.rot90(self._data, -n)  # type: ignore
-        return Object(x)
+        x: np.ndarray = np.rot90(self._data.copy(), -n)
+        return Object(origin=self.origin, data=x)
 
     def fliplr(self) -> "Object":
-        x: np.ndarray = np.fliplr(self._data)  # type: ignore
-        return Object(x)
+        x: np.ndarray = np.fliplr(self._data.copy())
+        return Object(origin=self.origin, data=x)
 
     def flipud(self) -> "Object":
-        x: np.ndarray = np.flipud(self._data)  # type: ignore
-        return Object(x)
+        x: np.ndarray = np.flipud(self._data.copy())
+        return Object(origin=self.origin, data=x)
 
     def invert(self) -> "Object":
-        x: np.ndarray = 1 - self._data  # type: ignore
-        return Object(x)
+        x: np.ndarray = 1 - self._data.copy()
+        return Object(origin=self.origin, data=x)
 
     def rotate(self, direction: Rotation) -> "Object":
         if direction == Rotation.CLOCKWISE:
@@ -218,19 +222,10 @@ class Object:
         else:  # Rotation.COUNTERCLOCKWISE
             return self.rot90_clockwise(-1)
 
-    def translate_in_place(self, dy: int, dx: int) -> "Object":
+    def translate_in_place(self, dx: int, dy: int) -> None:
         self.clear_caches()
-        width, height = self.size
-        new_grid: GridData = [[BLACK] * width for _ in range(height)]
-        for y in range(height):
-            for x in range(width):
-                new_x = x + dx
-                new_y = y + dy
-                # Ensure the new position is within bounds
-                if 0 <= new_x < width and 0 <= new_y < height:
-                    new_grid[new_y][new_x] = self._data[y, x]
-
-        return Object(np.array(new_grid))
+        new_origin = (self.origin[0] + dx, self.origin[1] + dy)
+        self.origin = new_origin
 
     def flip(self, axis: Axis) -> "Object":
         if axis == Axis.HORIZONTAL:
@@ -281,6 +276,12 @@ class Object:
         if not allow_black:
             colors = colors[colors != BLACK]
         return sorted(colors.tolist())
+
+    def get_shape(self, background_color: int = 0) -> "Object":
+        """
+        Make the background color 0, and the rest 1.
+        """
+        return Object(np.where(self._data == background_color, 0, 1).copy())
 
     @property
     def first_color(self) -> int:
@@ -534,8 +535,11 @@ def test_flip():
 
 def test_translate():
     grid = Object(np.array([[1, 2], [3, 4]]))
-    translated_grid = grid.translate_in_place(1, 1)
-    assert translated_grid == Object(np.array([[0, 0], [0, 1]]))
+    obj = grid.copy()
+    obj.translate_in_place(1, 1)
+    new_grid = Object.empty(obj.size)
+    new_grid.add_object_in_place(obj)
+    assert new_grid == Object(np.array([[0, 0], [0, 1]]))
 
 
 def test_color_change():

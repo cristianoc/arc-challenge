@@ -447,7 +447,7 @@ def extract_object_by_color(grid: Object_t, color: int) -> Object_t:
                 left = min(left, j)
                 bottom = max(bottom, i)
                 right = max(right, j)
-    origin = (top, left)
+    origin = (left, top)
 
     # Slicing the array for the specified region
     data = grid._data[top : bottom + 1, left : right + 1].copy()
