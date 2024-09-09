@@ -64,7 +64,12 @@ class Object:
 
     def __setitem__(self, key: Tuple[int, int], value: int) -> None:
         self._data[key[1], key[0]] = value  # Corrected the indices
-        self._data_cached = None
+        self.clear_caches()
+
+    def clear_caches(self) -> None:
+        """
+        Clear the caches for the object whenever the data is modified.
+        """
         self._enclosed_cached = None
 
     def copy(self) -> "Object":
@@ -93,12 +98,16 @@ class Object:
         return self.width, self.height
 
     @staticmethod
-    def empty(size: Tuple[int, int]) -> "Object":
+    def empty(size: Tuple[int, int], background_color: int = 0) -> "Object":
         width, height = size
-        data = np.zeros((height, width), dtype=np.int64)
+        data = np.full((height, width), background_color, dtype=np.int64)
         return Object(data)
 
-    def add_object(self, obj: "Object", background_color: int = 0) -> None:
+    def add_object_in_place(self, obj: "Object", background_color: int = 0) -> None:
+        """
+        Add the object to the grid.
+        """
+        self.clear_caches()
         x_off, y_off = obj.origin
         for x in range(obj.width):
             for y in range(obj.height):
@@ -108,7 +117,18 @@ class Object:
                     new_x, new_y = x + x_off, y + y_off
                     if 0 <= new_x < self.width and 0 <= new_y < self.height:
                         self[new_x, new_y] = color
-        self._enclosed_cached = None
+
+    def remove_object_in_place(self, obj: "Object") -> None:
+        """
+        Remove the object from the grid.
+        """
+        self.clear_caches()
+        x_off, y_off = obj.origin
+        for x in range(obj.width):
+            for y in range(obj.height):
+                color = obj[x, y]
+                if color != 0:
+                    self[x + x_off, y + y_off] = 0
 
     def map(self, func: Callable[[int, int], int]) -> "Object":
         new_grid = [
@@ -149,9 +169,12 @@ class Object:
         return Object(new_data)
 
     def detect_objects(
-        self: "Object", diagonals: bool = True, allow_black: bool = False
+        self: "Object",
+        diagonals: bool = True,
+        allow_black: bool = False,
+        background_color: int = 0,
     ) -> List["Object"]:
-        def create_object(grid: Object, component: ConnectedComponent) -> Object:
+        def create_object(grid: Object, component: ConnectedComponent, background_color: int) -> Object:
             """
             Create an object from a connected component in a grid
             """
@@ -161,7 +184,7 @@ class Object:
             max_y = max(y for _, y in component)
             width = max_x - min_x + 1
             height = max_y - min_y + 1
-            data = Object.empty(size=(width, height))
+            data = Object.empty(size=(width, height), background_color=background_color)
             for x, y in component:
                 q = grid[x, y]
                 data[x - min_x, y - min_y] = q
@@ -169,7 +192,7 @@ class Object:
 
         connected_components = find_connected_components(self, diagonals, allow_black)
         detected_objects = [
-            create_object(self, component) for component in connected_components
+            create_object(self, component, background_color) for component in connected_components
         ]
         return detected_objects
 
@@ -195,7 +218,8 @@ class Object:
         else:  # Rotation.COUNTERCLOCKWISE
             return self.rot90_clockwise(-1)
 
-    def translate(self, dy: int, dx: int) -> "Object":
+    def translate_in_place(self, dy: int, dx: int) -> "Object":
+        self.clear_caches()
         width, height = self.size
         new_grid: GridData = [[BLACK] * width for _ in range(height)]
         for y in range(height):
@@ -242,7 +266,7 @@ class Object:
             # Change colors that match `from_color` to `to_color`
             new_data = np.where(old_data == from_color, to_color, old_data)
 
-        return Object(new_data, self.origin)
+        return Object(new_data.copy(), self.origin)
 
     def contains_cell(self, cell: Cell) -> bool:
         """
@@ -348,7 +372,7 @@ class Object:
         # Apply squash_row to each row of the NumPy array
         new_data = np.array([squash_row(row) for row in self._data])
 
-        return Object(new_data, self.origin)
+        return Object(new_data.copy(), self.origin)
 
     def has_frame(self) -> bool:
         """
@@ -510,7 +534,7 @@ def test_flip():
 
 def test_translate():
     grid = Object(np.array([[1, 2], [3, 4]]))
-    translated_grid = grid.translate(1, 1)
+    translated_grid = grid.translate_in_place(1, 1)
     assert translated_grid == Object(np.array([[0, 0], [0, 1]]))
 
 
