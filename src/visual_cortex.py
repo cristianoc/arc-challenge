@@ -9,6 +9,7 @@ from grid_types import Cell
 import numpy as np
 
 from typing import TYPE_CHECKING
+
 # To avoid circular imports
 if TYPE_CHECKING:
     from objects import Object as Object_t
@@ -52,7 +53,12 @@ def precompute_sums(grid: Object_t, color: int) -> Tuple[ndarray, ndarray]:
 
 
 def is_frame_dp(
-    row_sum: np.ndarray, col_sum: np.ndarray, top: int, left: int, bottom: int, right: int
+    row_sum: np.ndarray,
+    col_sum: np.ndarray,
+    top: int,
+    left: int,
+    bottom: int,
+    right: int,
 ) -> bool:
     """Check if the rectangle defined by (top, left) to (bottom, right) forms a frame using precomputed sums."""
     if (
@@ -233,6 +239,7 @@ def is_frame_part_of_lattice(grid: Object_t, frame: Frame, foreground: int) -> b
                         return False
     return True
 
+
 def find_dividing_lines(grid: Object_t, color: int) -> Tuple[List[int], List[int]]:
     """Find the indices of vertical and horizontal lines that span the entire grid."""
 
@@ -277,6 +284,7 @@ def extract_subgrid_of_color(
                 continue
             sub_grid_data = grid._data[prev_h:h, prev_v:v]
             from objects import Object
+
             row.append(Object(np.array(sub_grid_data)))
             prev_v = v + 1
         subgrid.append(row)
@@ -357,43 +365,56 @@ def eval_with_lattice_check():
 def test_lattices():
     # Correct Lattice Grid
     from objects import Object
-    grid = Object(np.array([
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-    ]))
+
+    grid = Object(
+        np.array(
+            [
+                [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+                [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+                [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+            ]
+        )
+    )
     frame = (2, 2, 5, 8)
     is_lattice = is_frame_part_of_lattice(grid, frame, 1)
     assert is_lattice == True, f"Correct Lattice Grid: Frame {frame}"
 
     # Interrupted Lattice Grid
-    grid = Object(np.array([
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-        [1, 1, 1, 1, 1, 1, 1, 9, 1, 0],  # Break in the lattice pattern
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-    ]))
+    grid = Object(
+        np.array(
+            [
+                [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+                [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+                [1, 1, 1, 1, 1, 1, 1, 9, 1, 0],  # Break in the lattice pattern
+                [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+                [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+            ]
+        )
+    )
     frame = (2, 2, 5, 5)
     is_lattice = is_frame_part_of_lattice(grid, frame, 1)
     assert is_lattice == False, f"Interrupted Lattice Grid: Frame {frame}"
 
     # Break outside frames that fit in the grid does not affect lattice check
-    grid = Object(np.array([
-        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
-        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
-        [2, 2, 2, 2, 2, 2, 2, 2, 2, 0],
-        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
-        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
-        [2, 2, 2, 2, 2, 2, 2, 2, 2, 9],  # Break near edge
-        [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
-    ]))
+    grid = Object(
+        np.array(
+            [
+                [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
+                [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 0],
+                [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
+                [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 9],  # Break near edge
+                [0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
+            ]
+        )
+    )
     frame = (2, 2, 5, 5)
     is_lattice = is_frame_part_of_lattice(grid, frame, 2)
     assert is_lattice == True, f"Break outside frames: Frame {frame}"
@@ -402,6 +423,7 @@ def test_lattices():
 def test_subgrid_extraction():
     # Example grid with dividing lines
     from objects import Object
+
     grid = Object(
         np.array(
             [
@@ -409,7 +431,7 @@ def test_subgrid_extraction():
                 [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                 [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
-            [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
+                [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
                 [6, 6, 1, 7, 7, 1, 8, 8, 1, 9],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                 [2, 2, 1, 3, 3, 1, 4, 4, 1, 5],
@@ -426,8 +448,12 @@ def test_subgrid_extraction():
         3,
         4,
     ), f"Test failed: Subgrid dimensions: {height}x{width}"
-    assert subgrid[0][0] == Object(np.array([[2, 2], [2, 2]])), "Test failed: Subgrid[0][0]"
-    assert subgrid[0][1] == Object(np.array([[3, 3], [3, 3]])), "Test failed: Subgrid[0][1]"
+    assert subgrid[0][0] == Object(
+        np.array([[2, 2], [2, 2]])
+    ), "Test failed: Subgrid[0][0]"
+    assert subgrid[0][1] == Object(
+        np.array([[3, 3], [3, 3]])
+    ), "Test failed: Subgrid[0][1]"
     assert subgrid[0][3] == Object(np.array([[5], [5]])), "Test failed: Subgrid[0][3]"
     assert subgrid[2][3] == Object(np.array([[5]])), "Test failed: Subgrid[2][3]"
 
@@ -456,10 +482,13 @@ def extract_object_by_color(grid: Object_t, color: int) -> Object_t:
     data[data != color] = 0
 
     from objects import Object
+
     return Object(np.array(data), origin)
 
 
-def find_colored_objects(grid: Object_t, background_color: Optional[int]) -> List[Object_t]:
+def find_colored_objects(
+    grid: Object_t, background_color: Optional[int]
+) -> List[Object_t]:
     """
     Finds and returns a list of all distinct objects within the grid based on color.
 
@@ -468,6 +497,7 @@ def find_colored_objects(grid: Object_t, background_color: Optional[int]) -> Lis
     Each object is represented as an instance of the `Object` class.
     """
     from objects import Object
+
     colors = grid.get_colors(allow_black=True)
     objects: List[Object] = []
     for color in colors:
@@ -583,6 +613,7 @@ def find_rectangular_objects(grid: Object_t, allow_multicolor: bool) -> List[Obj
                     for r in range(origin[0], origin[0] + height)
                 ]
                 from objects import Object
+
                 current_object = Object(
                     np.array(object_grid_data),
                     origin,
@@ -592,16 +623,46 @@ def find_rectangular_objects(grid: Object_t, allow_multicolor: bool) -> List[Obj
     return objects
 
 
+def regularity_score(grid: Object_t) -> float:
+    """
+    Score how regular a grid is by scoring every cell.
+    A cell is penalized if one of those in the 8 directions around it has the same color.
+    The score of the cell is the sum of those in the 8 directions.
+    The score of the grid is the average score of all cells.
+    """
+    width, height = grid.width, grid.height
+    total_score = 0
+    from grid_types import DIRECTIONS8
+
+    for x in range(width):
+        for y in range(height):
+            cell_score = 0
+            cell_color = grid[x, y]
+            for dx, dy in DIRECTIONS8:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < width and 0 <= ny < height:
+                    if grid[nx, ny] == cell_color:
+                        cell_score += 1
+            total_score += cell_score
+
+    return total_score / (width * height * 8)
+
+
 def test_detect_rectangular_objects() -> None:
     from objects import Object
-    grid = Object(np.array([
-        [0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0],
-        [0, 1, 0, 0, 1, 0],
-        [0, 0, 1, 0, 1, 0],
-        [0, 0, 0, 1, 1, 0],
-        [0, 0, 0, 0, 0, 0],
-    ]))
+
+    grid = Object(
+        np.array(
+            [
+                [0, 0, 0, 0, 0, 0],
+                [0, 1, 1, 1, 0, 0],
+                [0, 1, 0, 0, 1, 0],
+                [0, 0, 1, 0, 1, 0],
+                [0, 0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0, 0],
+            ]
+        )
+    )
 
     objects: List[Object_t] = find_rectangular_objects(grid, allow_multicolor=False)
     for obj in objects:
@@ -612,14 +673,19 @@ def test_detect_rectangular_objects() -> None:
 
 def test_several_rectangular_objects_of_different_color():
     from objects import Object
-    grid = Object(np.array([
-        [0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0],
-        [0, 1, 0, 0, 2, 0],
-        [0, 0, 1, 0, 2, 2],
-        [0, 0, 0, 1, 2, 0],
-        [0, 0, 0, 0, 0, 0],
-    ]))
+
+    grid = Object(
+        np.array(
+            [
+                [0, 0, 0, 0, 0, 0],
+                [0, 1, 1, 1, 0, 0],
+                [0, 1, 0, 0, 2, 0],
+                [0, 0, 1, 0, 2, 2],
+                [0, 0, 0, 1, 2, 0],
+                [0, 0, 0, 0, 0, 0],
+            ]
+        )
+    )
 
     objects = find_rectangular_objects(grid, allow_multicolor=False)
     for obj in objects:

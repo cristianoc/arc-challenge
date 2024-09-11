@@ -14,6 +14,13 @@ DIRECTIONS4 = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 # Direction vectors for 8 directions (N, NE, E, SE, S, SW, W, NW)
 DIRECTIONS8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 
+# Symmetries: horizontal, vertical, diagonal, anti-diagonal w.r.t. the origin
+class Symmetry(Enum):
+    HORIZONTAL = auto()
+    VERTICAL = auto()  
+    DIAGONAL = auto() # x == y
+    ANTI_DIAGONAL = auto() # x == -y
+
 from enum import Enum, auto
 from typing import NamedTuple
 
@@ -103,11 +110,6 @@ class RigidTransformation(NamedTuple):
 class Rotation(str, Enum):
     CLOCKWISE = "Clockwise"
     COUNTERCLOCKWISE = "CounterClockwise"
-
-
-class Axis(str, Enum):
-    HORIZONTAL = "Horizontal"
-    VERTICAL = "Vertical"
 
 Color = NewType("Color", int)
 
