@@ -187,6 +187,7 @@ def fill_grid(
     px: Optional[int],
     py: Optional[int],
     pd: Optional[int],
+    pa: Optional[int],
     unknown: int = 0,
 ):
     """
@@ -216,7 +217,7 @@ def fill_grid(
                 filled_grid[x_dest, y_dest] == unknown
             ):  # If the destination cell is unknown
                 filled_grid[x_dest, y_dest] = find_source_value(
-                    filled_grid, x_dest, y_dest, px, py, pd, unknown
+                    filled_grid, x_dest, y_dest, px, py, pd, pa, unknown
                 )
 
     return filled_grid
@@ -264,9 +265,9 @@ def test_find_and_fill_symmetry():
     )
 
     def test_grid(grid: Object, unknown: int, title: str):
-        px, py, pd = find_symmetry_with_unknowns(grid, unknown)
-        print(f"{title}: px: {px}, py: {py}, pd: {pd}")
-        filled_grid = fill_grid(grid, px, py, pd, unknown)
+        px, py, pd, pa = find_symmetry_with_unknowns(grid, unknown)
+        print(f"{title}: px: {px}, py: {py}, pd: {pd}, pa: {pa}")
+        filled_grid = fill_grid(grid, px, py, pd, pa, unknown)
         assert unknown not in filled_grid._data
         return filled_grid
 
