@@ -48,7 +48,7 @@ class Config:
     # find_xform_color = True
     display_not_found = False
     display_this_task = False
-    only_simple_examples = False
+    only_simple_examples = True
     max_size = 9
     max_colors = 4
 
@@ -593,9 +593,8 @@ def inpainting_xform(
             pass
         else:
             incorrect_periodic_found = True
-            display(input, filled_grid, title=f"{is_correct} Per-Example Symm")
-            # Config.display_this_task = True
-            # display(input, filled_grid, title=f"{is_correct} Filled Grid")
+            if False:
+                display(input, filled_grid, title=f"{is_correct} Per-Example Symm")
 
     logger.info(
         f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared}"
@@ -614,12 +613,13 @@ def inpainting_xform(
             logger.info(
                 f"#{i} Shared {non_periodic_shared} {periodic_shared} is_correct: {is_correct}"
             )
-            display(input, filled_grid, title=f"{is_correct} Shared Symm")
+            if False:
+                display(input, filled_grid, title=f"{is_correct} Shared Symm")
             if is_correct:
                 logger.info(f"#{i} Found correct solution using shared symmetries")
                 pass
             else:
-                Config.display_this_task = True
+                #Config.display_this_task = True
                 return None
     else:
         logger.info(f"#{i} Found correct solution using per-example symmetries")
@@ -655,11 +655,11 @@ def inpainting_xform(
 
 
 gridxforms: List[XformEntry[Object, str]] = [
-    # XformEntry(match_colored_objects, 3),
-    # XformEntry(xform_identity, 1),
-    # XformEntry(equal_modulo_rigid_transformation, 2),
-    # XformEntry(primitive_to_xform(translate_down_1), 2),
-    # XformEntry(CanvasGridMatch.canvas_grid_xform, 2),
+    XformEntry(match_colored_objects, 3),
+    XformEntry(xform_identity, 1),
+    XformEntry(equal_modulo_rigid_transformation, 2),
+    XformEntry(primitive_to_xform(translate_down_1), 2),
+    XformEntry(CanvasGridMatch.canvas_grid_xform, 2),
     XformEntry(inpainting_xform, 2),
 ]
 
