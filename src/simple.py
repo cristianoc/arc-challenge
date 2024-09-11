@@ -559,11 +559,11 @@ def inpainting_xform(
         if len(output_symmetries) > 0:
             has_symmetries = True
 
-        px, py, pd = find_symmetry_with_unknowns(input, color)
-        if px is not None or py is not None or pd is not None:
-            filled_grid = fill_grid(input, px, py, pd, color)
+        px, py, pd, pa = find_symmetry_with_unknowns(input, color)
+        if px is not None or py is not None or pd is not None or pa is not None:
+            filled_grid = fill_grid(input, px, py, pd, pa, color)
             is_correct = filled_grid == output
-            logger.info(f"px: {px}, py: {py}, pd: {pd} is_correct: {is_correct}")
+            logger.info(f"px: {px}, py: {py}, pd: {pd}, pa: {pa} is_correct: {is_correct}")
             display(input, filled_grid, title=f"{is_correct} Filled Grid")
 
         symmetries = symmetries.intersection(output_symmetries)
