@@ -75,9 +75,8 @@ GridAndObjects = Tuple[Object, List[Object]]
 T = TypeVar("T", bound=Union[Object, GridAndObjects])
 State = TypeVar("State")
 
-ApplyState = Callable[[State, T], T]
 Primitive = Callable[[Object, str, int], Object]
-Match = Tuple[State, ApplyState[State, T]]
+Match = Tuple[State, Callable[[T], T]]
 Xform = Callable[[List[Example[T]], str, int], Optional[Match[State, T]]]
 
 
@@ -103,8 +102,7 @@ def check_primitive_on_examples(
             logger.debug(f"{'  ' * nesting_level}  Example {i+1} failed")
             return None
     state = "prim"
-    apply_state: ApplyState = lambda s, i: prim(i, task_name, nesting_level)
-    return (state, apply_state)
+    return (state, lambda i: prim(i, task_name, nesting_level))
 
 
 def primitive_to_xform(primitive: Primitive) -> Xform[Object, str]:
@@ -163,12 +161,12 @@ def xform_two_primitives_in_sequence(
                 composed_primitive, examples, task_name, nesting_level
             ):
                 state = (p1.__name__, p2.__name__)
-                apply_state = lambda state, input: p2(
+                solve = lambda input: p2(
                     p1(input, task_name, nesting_level + 1),
                     task_name,
                     nesting_level + 1,
                 )
-                return (state, apply_state)
+                return (state, solve)
     return None
 
 
@@ -250,16 +248,14 @@ def match_colored_objects(
             object_list_examples, task_name, nesting_level + 1
         )
         if match is not None:
-            apply_state_list_xform: ApplyState[str, GridAndObjects]
+            apply_state_list_xform: Callable[[GridAndObjects], GridAndObjects]
             state_list_xform, apply_state_list_xform = match
 
-            def apply_state_object(state, input: Object) -> Object:
+            def solve(input: Object) -> Object:
                 background_color = get_background_color(input)
                 input_objects = input.detect_colored_objects(background_color)
                 grid_and_objects: GridAndObjects = (input, input_objects)
-                _, output_objects = apply_state_list_xform(
-                    state_list_xform, grid_and_objects
-                )
+                s, output_objects = apply_state_list_xform(grid_and_objects)
                 output_grid = None
                 if False:
                     display_multiple(
@@ -278,7 +274,7 @@ def match_colored_objects(
 
             return (
                 f"{list_xform.xform.__name__}({state_list_xform})",
-                apply_state_object,
+                solve,
             )
         else:
             logger.info(
@@ -411,13 +407,11 @@ class CanvasGridMatch:
                     continue
                 matched_handles.add(i)
                 matched_holes.add(j)
-                state, apply_state = match
+                state, solve = match
 
                 cobj = compound_objects[i]
 
-                transformed_compound_objects[i] = apply_state(
-                    state, compound_objects[i]
-                )
+                transformed_compound_objects[i] = solve(compound_objects[i])
                 holes_origins[i] = hole.origin
 
                 matches.append(match)
@@ -480,7 +474,7 @@ class CanvasGridMatch:
 
         state = "canvas_grid_xform"
 
-        def apply_state(state, input: Object) -> Object:
+        def solve(input: Object) -> Object:
             canvas_objects = CanvasGridMatch.find_canvas_objects([input], None)
             if canvas_objects is None:
                 return input
@@ -500,7 +494,7 @@ class CanvasGridMatch:
                 display(output, title=f"Output")
             return output
 
-        match = (state, apply_state)
+        match = (state, solve)
         return match
 
 
@@ -518,10 +512,8 @@ def equal_modulo_rigid_transformation(
                     break
             if all_examples_correct:
                 state = rigid_transformation
-                apply_state: ApplyState = lambda state, input: input.apply_rigid_xform(
-                    state
-                )
-                return (state, apply_state)
+                solve = lambda input: input.apply_rigid_xform(state)
+                return (state, solve)
     return None
 
 
@@ -586,8 +578,12 @@ def inpainting_xform(
             input, periodic_symmetry=periodic_symmetry_input, unknown=color
         )
         is_correct = filled_grid == output
-        logger.info(f"#{i} From Input {periodic_symmetry_input} is_correct: {is_correct}")
-        logger.info(f"  From Output {periodic_symmetry_output} {non_periodic_symmetry_output}")
+        logger.info(
+            f"#{i} From Input {periodic_symmetry_input} is_correct: {is_correct}"
+        )
+        logger.info(
+            f"  From Output {periodic_symmetry_output} {non_periodic_symmetry_output}"
+        )
 
         if is_correct:
             pass
@@ -619,7 +615,7 @@ def inpainting_xform(
                 logger.info(f"#{i} Found correct solution using shared symmetries")
                 pass
             else:
-                #Config.display_this_task = True
+                # Config.display_this_task = True
                 return None
     else:
         logger.info(f"#{i} Found correct solution using per-example symmetries")
@@ -737,13 +733,13 @@ class ExpansionMatch:
 
         state = "fractal_expansion"
 
-        def apply_state(state, input: Object) -> Object:
+        def solve(input: Object) -> Object:
             if isinstance(input, Object):
                 return Object(apply_recursive_expansion_numpy_inplace(input._data, 0))
             else:
                 assert False
 
-        return (state, apply_state)
+        return (state, solve)
 
     @staticmethod
     def stretch_height(
@@ -771,7 +767,7 @@ class ExpansionMatch:
                         assert False
         state = "stretch_height"
 
-        def apply_state(state, input: Object) -> Object:
+        def solve(input: Object) -> Object:
             output = Object.empty((input.width, input.height * 2))
             color = input.first_color
             for x in range(input.width):
@@ -784,7 +780,7 @@ class ExpansionMatch:
                         output[x, y] = color
             return output
 
-        match = (state, apply_state)
+        match = (state, solve)
         return match
 
 
@@ -941,15 +937,15 @@ class ObjectListMatch:
                 nesting_level + 1,
             )
             if match is not None:
-                state, apply_state = match
+                state, solve = match
 
-                def apply_state_grid_and_objects(
-                    state, grid_and_objects: GridAndObjects
+                def solve_grid_and_objects(
+                    grid_and_objects: GridAndObjects,
                 ) -> GridAndObjects:
                     grid, objects = grid_and_objects
-                    return (grid, [apply_state(state, obj) for obj in objects])
+                    return (grid, [solve(obj) for obj in objects])
 
-                return state, apply_state_grid_and_objects
+                return state, solve_grid_and_objects
 
         # check if the input objects can be matched to the output objects
         input_to_output_indices = ObjectListMatch.check_list_of_objects_subset(examples)
@@ -995,8 +991,8 @@ class ObjectListMatch:
                 new_state += f"{i}:{s}, "
             new_state += "}"
 
-            def apply_state_grid_and_objects(
-                state, grid_and_objects: GridAndObjects
+            def solve_grid_and_objects(
+                grid_and_objects: GridAndObjects,
             ) -> GridAndObjects:
                 input_grid, input_objects = grid_and_objects
                 outputs = []
@@ -1004,12 +1000,12 @@ class ObjectListMatch:
                 for i, (input_index, output_index) in enumerate(
                     input_to_output_indices
                 ):
-                    state, apply_state = matches[i]
-                    output = apply_state(state, input_objects[input_index])
+                    state, solve = matches[i]
+                    output = solve(input_objects[input_index])
                     outputs.append(output)
                 return (input_grid, outputs)
 
-            return new_state, apply_state_grid_and_objects
+            return new_state, solve_grid_and_objects
 
         logger.info(f"{'  ' * nesting_level}TODO: more cases of match_list_of_objects")
 
@@ -1065,12 +1061,12 @@ def find_xform(
     if match is None:
         return None
 
-    state, apply_state = match
+    state, solve = match
 
     for i, test_example in enumerate(tests):
         test_input = test_example[0]
         test_output = test_example[1]
-        result_on_test = apply_state(state, test_input)
+        result_on_test = solve(test_input)
         if result_on_test != test_output:
             logger.info(f"Xform state:{state} failed for test input {i}")
             if False:
