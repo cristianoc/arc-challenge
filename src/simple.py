@@ -48,7 +48,7 @@ class Config:
     # find_xform_color = True
     display_not_found = False
     display_this_task = False
-    only_simple_examples = True
+    only_simple_examples = False
     max_size = 9
     max_colors = 4
 
