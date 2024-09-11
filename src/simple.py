@@ -700,6 +700,7 @@ class InpaintingMatch:
             )
             return filled_grid
 
+        Config.display_this_task = True
         state = "find_symmetry_for_each_input"
         return (state, solve_find_symmetry)
 
@@ -1073,6 +1074,7 @@ def find_xform_for_examples(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
+    xform_name: List[str] = [],
 ) -> Optional[Match[Object]]:
     logger.info(
         f"\n{'  ' * nesting_level}find_xform_for_examples examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
@@ -1088,6 +1090,7 @@ def find_xform_for_examples(
             logger.info(
                 f"{'  ' * nesting_level}Xform {xform.xform.__name__} state:{match[0]} is correct for examples"
             )
+            xform_name.append(xform.xform.__name__)
             return match
         else:
             logger.info(
@@ -1108,9 +1111,11 @@ def find_xform(
         f"\n{'  ' * nesting_level}find_xform examples:{len(examples)} tests:{len(tests)} task_name:{task_name} nesting_level:{nesting_level}"
     )
 
-    match = find_xform_for_examples(xforms, examples, task_name, nesting_level)
+    xform_name_list = ["no_xform"]
+    match = find_xform_for_examples(xforms, examples, task_name, nesting_level, xform_name_list)
     if match is None:
         return None
+    xform_name = xform_name_list[-1]
 
     state, solve = match
 
@@ -1119,7 +1124,7 @@ def find_xform(
         test_output = test_example[1]
         result_on_test = solve(test_input)
         if result_on_test != test_output:
-            logger.info(f"Xform state:{state} failed for test input {i}")
+            logger.info(f"Xform {xform_name} state:{state} failed for test input {i}")
             if False:
                 display(
                     test_output,
@@ -1128,6 +1133,7 @@ def find_xform(
                 )
             return None
 
+    logger.info(f"Xform {xform_name} state:{state} succeeded for all tests")
     return match
 
 
