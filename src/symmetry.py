@@ -1,6 +1,15 @@
+from dataclasses import dataclass
 import numpy as np
-from typing import Optional
+from typing import Optional, Tuple
 from objects import Object
+
+
+@dataclass(frozen=True)
+class GridSymmetry:
+    px: Optional[int]  # peridic horizontal
+    py: Optional[int]  # peridic vertical
+    pd: Optional[int]  # peridic diagonal
+    pa: Optional[int]  # peridic anti-diagonal
 
 
 def check_vertical_symmetry_with_unknowns(grid: Object, period: int, unknown: int):
@@ -83,7 +92,9 @@ def check_anti_diagonal_symmetry_with_unknowns(grid: Object, period: int, unknow
     return True
 
 
-def find_symmetry_with_unknowns(grid: Object, unknown: int):
+def find_periodic_symmetry_with_unknowns(
+    grid: Object, unknown: int
+) -> GridSymmetry:
     """
     Find the smallest periods px, py, and pd (if any) with unknowns.
     """
@@ -92,18 +103,14 @@ def find_symmetry_with_unknowns(grid: Object, unknown: int):
     # Find smallest horizontal symmetry modulo px
     px = None
     for possible_px in range(1, width // 2 + 1):
-        if width % possible_px == 0 and check_horizontal_symmetry_with_unknowns(
-            grid, possible_px, unknown
-        ):
+        if check_horizontal_symmetry_with_unknowns(grid, possible_px, unknown):
             px = possible_px
             break
 
     # Find smallest vertical symmetry modulo py
     py = None
     for possible_py in range(1, height // 2 + 1):
-        if height % possible_py == 0 and check_vertical_symmetry_with_unknowns(
-            grid, possible_py, unknown
-        ):
+        if check_vertical_symmetry_with_unknowns(grid, possible_py, unknown):
             py = possible_py
             break
 
@@ -125,22 +132,20 @@ def find_symmetry_with_unknowns(grid: Object, unknown: int):
                 pa = possible_pa
                 break
 
-    return px, py, pd, pa
+    return GridSymmetry(px, py, pd, pa)
 
 
 def find_source_value(
     filled_grid: Object,
     x_dest: int,
     y_dest: int,
-    px: Optional[int],
-    py: Optional[int],
-    pd: Optional[int],
-    pa: Optional[int],
+    symmetry: GridSymmetry,
     unknown: int,
 ):
     """
     Find a source value for the given destination coordinates based on symmetry.
     """
+    px, py, pd, pa = symmetry.px, symmetry.py, symmetry.pd, symmetry.pa
     width, height = filled_grid.size
     for x_src in range(x_dest % px, width, px) if px is not None else [x_dest]:
         for y_src in range(y_dest % py, height, py) if py is not None else [y_dest]:
@@ -184,10 +189,7 @@ def find_source_value(
 
 def fill_grid(
     grid: Object,
-    px: Optional[int],
-    py: Optional[int],
-    pd: Optional[int],
-    pa: Optional[int],
+    symmetry: GridSymmetry,
     unknown: int = 0,
 ):
     """
@@ -200,8 +202,7 @@ def fill_grid(
 
     Args:
         grid (Object): The grid containing known and unknown values to be filled.
-        px (Optional[int]): The horizontal symmetry period. If None, no horizontal symmetry is used.
-        py (Optional[int]): The vertical symmetry period. If None, no vertical symmetry is used.
+        symmetry (Symmetry): The symmetry object containing the periods px, py, pd, and pa.
         unknown (int): The value representing unknown cells in the grid, which will be filled.
 
     Returns:
@@ -217,7 +218,7 @@ def fill_grid(
                 filled_grid[x_dest, y_dest] == unknown
             ):  # If the destination cell is unknown
                 filled_grid[x_dest, y_dest] = find_source_value(
-                    filled_grid, x_dest, y_dest, px, py, pd, pa, unknown
+                    filled_grid, x_dest, y_dest, symmetry, unknown
                 )
 
     return filled_grid
@@ -265,15 +266,15 @@ def test_find_and_fill_symmetry():
     )
 
     def test_grid(grid: Object, unknown: int, title: str):
-        px, py, pd, pa = find_symmetry_with_unknowns(grid, unknown)
-        print(f"{title}: px: {px}, py: {py}, pd: {pd}, pa: {pa}")
-        filled_grid = fill_grid(grid, px, py, pd, pa, unknown)
+        symmetry = find_periodic_symmetry_with_unknowns(grid, unknown)
+        print(f"{title}: {symmetry}")
+        filled_grid = fill_grid(grid, symmetry, unknown)
         assert unknown not in filled_grid._data
         return filled_grid
 
-    test_grid(grid_xy, 0, "grid_xy") # horizontal and vertical symmetry
-    test_grid(grid_y, 0, "grid_y") # vertical symmetry
-    test_grid(grid_diagonal, 0, "grid_diagonal") # diagonal symmetry
+    test_grid(grid_xy, 0, "grid_xy")  # horizontal and vertical symmetry
+    test_grid(grid_y, 0, "grid_y")  # vertical symmetry
+    test_grid(grid_diagonal, 0, "grid_diagonal")  # diagonal symmetry
 
 
 if __name__ == "__main__":
