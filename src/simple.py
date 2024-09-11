@@ -73,16 +73,16 @@ def filter_simple_xforms(task: Task, task_name: str):
 GridAndObjects = Tuple[Object, List[Object]]
 
 T = TypeVar("T", bound=Union[Object, GridAndObjects])
-State = TypeVar("State")
+State = str
 
 Primitive = Callable[[Object, str, int], Object]
 Match = Tuple[State, Callable[[T], T]]
-Xform = Callable[[List[Example[T]], str, int], Optional[Match[State, T]]]
+Xform = Callable[[List[Example[T]], str, int], Optional[Match[T]]]
 
 
 @dataclass
-class XformEntry(Generic[T, State]):
-    xform: Xform[T, State]
+class XformEntry(Generic[T]):
+    xform: Xform[T]
     difficulty: int
 
 
@@ -91,7 +91,7 @@ def check_primitive_on_examples(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[str, Object]]:
+) -> Optional[Match[Object]]:
     logger.debug(f"{'  ' * nesting_level}Checking primitive {prim.__name__}")
     for i, example in enumerate(examples):
         logger.debug(f"{'  ' * nesting_level}  Example {i+1}/{len(examples)}")
@@ -105,7 +105,7 @@ def check_primitive_on_examples(
     return (state, lambda i: prim(i, task_name, nesting_level))
 
 
-def primitive_to_xform(primitive: Primitive) -> Xform[Object, str]:
+def primitive_to_xform(primitive: Primitive) -> Xform[Object]:
     def xform(
         examples: List[Example],
         task_name: str,
@@ -160,7 +160,7 @@ def xform_two_primitives_in_sequence(
             if check_primitive_on_examples(
                 composed_primitive, examples, task_name, nesting_level
             ):
-                state = (p1.__name__, p2.__name__)
+                state = f"({p1.__name__}, {p2.__name__})"
                 solve = lambda input: p2(
                     p1(input, task_name, nesting_level + 1),
                     task_name,
@@ -191,7 +191,7 @@ def match_colored_objects(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[str, Object]]:
+) -> Optional[Match[Object]]:
 
     logger.info(
         f"{'  ' * nesting_level}match_colored_objects examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
@@ -244,7 +244,7 @@ def match_colored_objects(
         object_list_examples.append(object_list_example)
 
     for list_xform in list_xforms:
-        match: Optional[Match[str, GridAndObjects]] = list_xform.xform(
+        match: Optional[Match[GridAndObjects]] = list_xform.xform(
             object_list_examples, task_name, nesting_level + 1
         )
         if match is not None:
@@ -445,7 +445,7 @@ class CanvasGridMatch:
         examples: List[Example[Object]],
         task_name: str,
         nesting_level: int,
-    ) -> Optional[Match[str, Object]]:
+    ) -> Optional[Match[Object]]:
         # every example has a canvas
         canvas_objects = CanvasGridMatch.find_canvas_objects(
             inputs=[input for input, _ in examples],
@@ -511,8 +511,8 @@ def equal_modulo_rigid_transformation(
                     all_examples_correct = False
                     break
             if all_examples_correct:
-                state = rigid_transformation
-                solve = lambda input: input.apply_rigid_xform(state)
+                state = f"({rigid_transformation})"
+                solve = lambda input: input.apply_rigid_xform(rigid_transformation)
                 return (state, solve)
     return None
 
@@ -521,7 +521,7 @@ def inpainting_xform(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[str, Object]]:
+) -> Optional[Match[Object]]:
     # check if the input has one more color than the output
     # and the rest of the input is identical to the output
     # then return the inpainting xform
@@ -650,7 +650,7 @@ def inpainting_xform(
     return None
 
 
-gridxforms: List[XformEntry[Object, str]] = [
+gridxforms: List[XformEntry[Object]] = [
     XformEntry(match_colored_objects, 3),
     XformEntry(xform_identity, 1),
     XformEntry(equal_modulo_rigid_transformation, 2),
@@ -688,7 +688,7 @@ class ExpansionMatch:
         examples: List[Example[Object]],
         task_name: str,
         nesting_level: int,
-    ) -> Optional[Match[str, Object]]:
+    ) -> Optional[Match[Object]]:
 
         def map_function_numpy_inplace(
             output_grid: np.ndarray,
@@ -746,7 +746,7 @@ class ExpansionMatch:
         examples: List[Example[Object]],
         task_name: str,
         nesting_level: int,
-    ) -> Optional[Match[str, Object]]:
+    ) -> Optional[Match[Object]]:
         # TODO: implement the inference of the boolean function
         for i, (input, output) in enumerate(examples):
             if output.height != 2 or output.width != input.width:
@@ -784,7 +784,7 @@ class ExpansionMatch:
         return match
 
 
-expansion_xforms: List[XformEntry[Object, str]] = [
+expansion_xforms: List[XformEntry[Object]] = [
     XformEntry(ExpansionMatch.fractal_expansion, 1),
     XformEntry(ExpansionMatch.stretch_height, 1),
 ]
@@ -830,7 +830,7 @@ class MapFunctionMatch:
         examples: List[Example[Object]],
         task_name: str,
         nesting_level: int,
-    ) -> Optional[Match[str, Object]]:
+    ) -> Optional[Match[Object]]:
         logger.info(
             f"stretch_height examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
         )
@@ -866,7 +866,7 @@ class MapFunctionMatch:
         return None
 
 
-map_xforms: List[XformEntry[Object, str]] = [
+map_xforms: List[XformEntry[Object]] = [
     XformEntry(MapFunctionMatch.stretch_height, 1)
 ]
 
@@ -919,7 +919,7 @@ class ObjectListMatch:
         examples: List[Example[GridAndObjects]],
         task_name: str,
         nesting_level: int,
-    ) -> Optional[Match[str, GridAndObjects]]:
+    ) -> Optional[Match[GridAndObjects]]:
         logger.info(
             f"{'  ' * nesting_level}match_list_of_objects examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
         )
@@ -930,7 +930,7 @@ class ObjectListMatch:
             )
 
             # now pattern match recursively
-            match: Optional[Match[str, Object]] = find_xform_for_examples(
+            match: Optional[Match[Object]] = find_xform_for_examples(
                 expansion_xforms,
                 input_output_objects_examples,
                 task_name,
@@ -1012,17 +1012,17 @@ class ObjectListMatch:
         return None
 
 
-list_xforms: List[XformEntry[GridAndObjects, str]] = [
+list_xforms: List[XformEntry[GridAndObjects]] = [
     XformEntry(ObjectListMatch.match_list_of_objects, 4),
 ]
 
 
 def find_xform_for_examples(
-    xforms: List[XformEntry[Object, State]],
+    xforms: List[XformEntry[Object]],
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[State, Object]]:
+) -> Optional[Match[Object]]:
     logger.info(
         f"\n{'  ' * nesting_level}find_xform_for_examples examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
     )
@@ -1047,12 +1047,12 @@ def find_xform_for_examples(
 
 
 def find_xform(
-    xforms: List[XformEntry[Object, State]],
+    xforms: List[XformEntry[Object]],
     examples: List[Example[Object]],
     tests: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[State, Object]]:
+) -> Optional[Match[Object]]:
     logger.info(
         f"\n{'  ' * nesting_level}find_xform examples:{len(examples)} tests:{len(tests)} task_name:{task_name} nesting_level:{nesting_level}"
     )
