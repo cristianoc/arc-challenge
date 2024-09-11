@@ -62,10 +62,26 @@ def find_symmetry_with_unknowns(grid: Object, unknown: int):
     return px, py
 
 
-# Function to fill the grid by starting at dest modulo px and py, proceed in steps of px and py
 def fill_grid(
     grid: Object, px: Optional[int] = None, py: Optional[int] = None, unknown: int = 0
 ):
+    """
+    Fills the unknown cells in a grid based on detected horizontal and vertical symmetries.
+
+    This function fills each unknown cell in the grid by propagating values from known cells,
+    using the provided horizontal (px) and vertical (py) symmetry periods. It starts at each
+    destination cell and looks for a matching source cell at symmetrical positions, based on
+    the periods px and py.
+
+    Args:
+        grid (Object): The grid containing known and unknown values to be filled.
+        px (Optional[int]): The horizontal symmetry period. If None, no horizontal symmetry is used.
+        py (Optional[int]): The vertical symmetry period. If None, no vertical symmetry is used.
+        unknown (int): The value representing unknown cells in the grid, which will be filled.
+
+    Returns:
+        Object: A new grid with all unknown cells filled using the provided symmetry periods.
+    """
     width, height = grid.size
     filled_grid = grid.copy()
 
@@ -85,7 +101,10 @@ def fill_grid(
                         # Check if the source is valid (not unknown)
                         if filled_grid[x_src, y_src] != unknown:
                             filled_grid[x_dest, y_dest] = filled_grid[x_src, y_src]
-                            break  # Fill the cell and break out of source loop
+                            break  # Fill the cell and break out of inner loop
+                    else:
+                        continue  # Continue if the inner loop didn't break
+                    break  # Break outer loop if inner loop broke
 
     return filled_grid
 
