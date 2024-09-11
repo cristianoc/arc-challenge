@@ -17,13 +17,11 @@ from load_data import Example, Task, Tasks, training_data, evaluation_data
 from rule_based_selector import DecisionRule, select_object_minimal
 from shape_features import detect_shape_features
 from symmetry_features import detect_symmetry_features
-from symmetry import find_symmetry_with_unknowns, fill_grid
+from symmetry import find_periodic_symmetry_with_unknowns, fill_grid, GridSymmetry
 from visual_cortex import find_rectangular_objects
 import numpy as np
 from dataclasses import dataclass
 from grid_normalization import ClockwiseRotation, XReflection, RigidTransformation
-from visual_cortex import find_largest_frame
-from grid_types import Symmetry
 
 # returns the index of the object to pick
 ObjectPicker = Callable[[List[Object]], int]
@@ -37,6 +35,7 @@ class Config:
     task_name: str | None = None
     # task_name = "e9afcf9a.json"  # map 2 colored objects
     # task_name = "0dfd9992.json"
+    # task_name = "05269061.json"
     task_fractal = "8f2ea7aa.json"  # fractal expansion
     task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
     whitelisted_tasks: List[str] = []
@@ -531,8 +530,9 @@ def inpainting_xform(
     # then return the inpainting xform
 
     regularity_scores = []
-    symmetries: Set[Symmetry] = set(Symmetry)
-    has_symmetries = False
+    symmetries: Set[GridSymmetry] = set()
+    periodic_symmetries: Set[GridSymmetry] = set()
+    incorrect_periodic_found = False
     for i, (input, output) in enumerate(examples):
         if input.size != output.size:
             return None
@@ -559,12 +559,18 @@ def inpainting_xform(
         if len(output_symmetries) > 0:
             has_symmetries = True
 
-        px, py, pd, pa = find_symmetry_with_unknowns(input, color)
-        if px is not None or py is not None or pd is not None or pa is not None:
-            filled_grid = fill_grid(input, px, py, pd, pa, color)
-            is_correct = filled_grid == output
-            logger.info(f"px: {px}, py: {py}, pd: {pd}, pa: {pa} is_correct: {is_correct}")
-            display(input, filled_grid, title=f"{is_correct} Filled Grid")
+        periodic_symmetry = find_periodic_symmetry_with_unknowns(input, color)
+        filled_grid = fill_grid(input, periodic_symmetry, color)
+        is_correct = filled_grid == output
+        logger.info(
+            f"#{i} {periodic_symmetry} is_correct: {is_correct}"
+        )
+        if is_correct:
+            periodic_symmetries.add(periodic_symmetry)
+        else:
+            incorrect_periodic_found = True
+            # Config.display_this_task = True
+            # display(input, filled_grid, title=f"{is_correct} Filled Grid")
 
         symmetries = symmetries.intersection(output_symmetries)
         regularity_scores.append(regularity_score(output))
@@ -574,9 +580,13 @@ def inpainting_xform(
         f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} average_regularity_score:{average_regularity_score:.2f} symmetries:{symmetries}"
     )
     if average_regularity_score < 0.5:
+        if incorrect_periodic_found: # and len(symmetries) == 0:
+            Config.display_this_task = True
+        if len(periodic_symmetries) == 1:
+            logger.info(f"periodic_symmetries: {periodic_symmetries}")
         if len(symmetries) == 0:
             logger.error(f"CHECK: {task_name}")
-            Config.display_this_task = True
+            # Config.display_this_task = True
     # Web view: open -a /Applications/Safari.app "https://arcprize.org/play?task=484b58aa"
     # Tasks with average_regularity_score < 0.5:
     # 484b58aa # sudoku
@@ -588,7 +598,7 @@ def inpainting_xform(
     # 3631a71a
     # 8e5a5113
     # 29ec7d0e
-    # f9d67f8b
+    # f9d67f8b # some uncentered symmetry, to investigate
     # 7c8af763
     # 929ab4e9
     # 47996f11
