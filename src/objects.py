@@ -8,7 +8,7 @@ from grid_types import (
     Cell,
     GridData,
     Rotation,
-    Axis,
+    Symmetry,
     BLACK,
     Color,
     RigidTransformation,
@@ -22,7 +22,6 @@ from grid_types import (
     GREEN,
     RED,
     YELLOW,
-    Axis,
     Rotation,
     color_scheme,
 )
@@ -192,7 +191,10 @@ class Object:
             return Object(origin=(min_x, min_y), data=data._data)
 
         connected_components = find_connected_components(
-            grid=self, diagonals=diagonals, allow_black=allow_black, multicolor=multicolor
+            grid=self,
+            diagonals=diagonals,
+            allow_black=allow_black,
+            multicolor=multicolor,
         )
         detected_objects = [
             create_object(self, component, background_color)
@@ -212,6 +214,14 @@ class Object:
         x: np.ndarray = np.flipud(self._data.copy())
         return Object(origin=self.origin, data=x)
 
+    def flip_diagonal(self) -> "Object":
+        x: np.ndarray = self._data.copy().T
+        return Object(origin=self.origin, data=x)
+
+    def flip_anti_diagonal(self) -> "Object":
+        x: np.ndarray = np.flipud(np.fliplr(self._data.copy()))
+        return Object(origin=self.origin, data=x)
+
     def invert(self) -> "Object":
         x: np.ndarray = 1 - self._data.copy()
         return Object(origin=self.origin, data=x)
@@ -227,11 +237,17 @@ class Object:
         new_origin = (self.origin[0] + dx, self.origin[1] + dy)
         self.origin = new_origin
 
-    def flip(self, axis: Axis) -> "Object":
-        if axis == Axis.HORIZONTAL:
+    def flip(self, symmetry: Symmetry) -> "Object":
+        if symmetry == Symmetry.HORIZONTAL:
             return self.fliplr()
-        else:
+        elif symmetry == Symmetry.VERTICAL:
             return self.flipud()
+        elif symmetry == Symmetry.DIAGONAL:
+            return self.flip_diagonal()
+        elif symmetry == Symmetry.ANTI_DIAGONAL:
+            return self.flip_anti_diagonal()
+        else:
+            raise ValueError(f"Unknown symmetry type: {symmetry}")
 
     def num_cells(self, color: Optional[int]) -> int:
         if color is None:
@@ -418,6 +434,55 @@ class Object:
         """
         return visual_cortex.find_colored_objects(self, background_color)
 
+    def is_symmetric(self, symmetry: Symmetry) -> bool:
+        """
+        Check if the object is symmetric with respect to the given symmetry type.
+
+        Args:
+            symmetry (Symmetry): The type of symmetry to check for.
+
+        Returns:
+            bool: True if the object is symmetric, False otherwise.
+        """
+        data = self._data
+        width, height = self.size
+
+        if symmetry == Symmetry.HORIZONTAL:  # (x, y) == (w-x-1, y)
+            return np.array_equal(data, np.fliplr(data))
+
+        elif symmetry == Symmetry.VERTICAL:  # (x, y) == (x, h-y-1)
+            return np.array_equal(data, np.flipud(data))
+
+        elif symmetry == Symmetry.DIAGONAL:  # (x, y) == (y, x)
+            if height != width:
+                return False
+            return np.array_equal(data, data.T)  # Transpose for diagonal symmetry
+
+        elif symmetry == Symmetry.ANTI_DIAGONAL:  # (x, y) == (w-x-1, h-y-1)
+            if height != width:
+                return False
+            # fliplr: 
+            # then fliplr:
+            return np.array_equal(data, np.fliplr(data.T))
+
+        else:
+            raise ValueError(f"Unknown symmetry type: {symmetry}")
+
+    def find_symmetries(self) -> List[Symmetry]:
+        """
+        Find all symmetries of the object.
+        """
+        symmetries = []
+        if self.is_symmetric(Symmetry.HORIZONTAL):
+            symmetries.append(Symmetry.HORIZONTAL)
+        if self.is_symmetric(Symmetry.VERTICAL):
+            symmetries.append(Symmetry.VERTICAL)
+        if self.is_symmetric(Symmetry.DIAGONAL):
+            symmetries.append(Symmetry.DIAGONAL)
+        if self.is_symmetric(Symmetry.ANTI_DIAGONAL):
+            symmetries.append(Symmetry.ANTI_DIAGONAL)
+        return symmetries
+
 
 def display(
     input: Object, output: Object = Object(np.array([[0]])), title: Optional[str] = None
@@ -522,12 +587,12 @@ def test_rotate():
 
 def test_flip():
     grid = Object(np.array([[1, 2], [3, 4]]))
-    flipped_grid = grid.flip(Axis.HORIZONTAL)
+    flipped_grid = grid.flip(Symmetry.HORIZONTAL)
     assert flipped_grid == Object(
         np.array([[2, 1], [4, 3]])
     ), f"Expected [[2, 1], [4, 3]], but got {flipped_grid}"
 
-    flipped_grid = grid.flip(Axis.VERTICAL)
+    flipped_grid = grid.flip(Symmetry.VERTICAL)
     assert flipped_grid == Object(
         np.array([[3, 4], [1, 2]])
     ), f"Expected [[3, 4], [1, 2]], but got {flipped_grid}"

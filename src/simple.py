@@ -7,6 +7,7 @@ from typing import (
     TypeVar,
     Generic,
     Union,
+    Set,
 )
 
 from color_features import detect_color_features
@@ -21,6 +22,7 @@ import numpy as np
 from dataclasses import dataclass
 from grid_normalization import ClockwiseRotation, XReflection, RigidTransformation
 from visual_cortex import find_largest_frame
+from grid_types import Symmetry
 
 # returns the index of the object to pick
 ObjectPicker = Callable[[List[Object]], int]
@@ -33,6 +35,7 @@ class Config:
     difficulty = 1000
     task_name: str | None = None
     # task_name = "e9afcf9a.json"  # map 2 colored objects
+    # task_name = "0dfd9992.json"
     task_fractal = "8f2ea7aa.json"  # fractal expansion
     task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
     whitelisted_tasks: List[str] = []
@@ -40,7 +43,7 @@ class Config:
     # find_xform_color = True
     display_not_found = False
     display_this_task = False
-    only_simple_examples = True
+    only_simple_examples = False
     max_size = 9
     max_colors = 4
 
@@ -517,12 +520,91 @@ def equal_modulo_rigid_transformation(
     return None
 
 
+def inpainting_xform(
+    examples: List[Example[Object]],
+    task_name: str,
+    nesting_level: int,
+) -> Optional[Match[str, Object]]:
+    # check if the input has one more color than the output
+    # and the rest of the input is identical to the output
+    # then return the inpainting xform
+
+    regularity_scores = []
+    symmetries: Set[Symmetry] = set(Symmetry)
+    has_symmetries = False
+    for i, (input, output) in enumerate(examples):
+        if input.size != output.size:
+            return None
+        if len(input.get_colors(allow_black=True)) - 1 != len(
+            output.get_colors(allow_black=True)
+        ):
+            return None
+        colors_only_in_input = set(input.get_colors(allow_black=True)) - set(
+            output.get_colors(allow_black=True)
+        )
+        if len(colors_only_in_input) != 1:
+            return None
+        color = colors_only_in_input.pop()
+        for x in range(input.width):
+            for y in range(input.height):
+                if input[x, y] == color:
+                    continue
+                if input[x, y] != output[x, y]:
+                    return None
+        from visual_cortex import regularity_score
+
+        output_symmetries = set(output.find_symmetries())
+        logger.info(f"output_symmetries example {i}:{output_symmetries}")
+        if len(output_symmetries) > 0:
+            has_symmetries = True
+        symmetries = symmetries.intersection(output_symmetries)
+        regularity_scores.append(regularity_score(output))
+
+    average_regularity_score = sum(regularity_scores) / len(regularity_scores)
+    logger.info(
+        f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} average_regularity_score:{average_regularity_score:.2f} symmetries:{symmetries}"
+    )
+    if average_regularity_score < 0.5:
+        if len(symmetries) == 0:
+            logger.error(f"CHECK: {task_name}")
+            Config.display_this_task = True
+    # Web view: open -a /Applications/Safari.app "https://arcprize.org/play?task=484b58aa"
+    # Tasks with average_regularity_score < 0.5:
+    # 484b58aa # sudoku
+    # c3f564a4
+    # bd4472b8
+    # b8825c91
+    # 05269061
+    # 0dfd9992
+    # 3631a71a
+    # 8e5a5113
+    # 29ec7d0e
+    # f9d67f8b
+    # 7c8af763
+    # 929ab4e9
+    # 47996f11
+    # 62b74c02
+    # c663677b
+    # ca8f78db  # periodic symmetry x and y (different px and py)
+    # 4aab4007
+    # af22c60d
+    # e95e3d8e
+    # 1d0a4b61  # all have vertical and horizontal symmetry (sometimes need find center), all have periodic symmetry (px and py different)
+    # ef26cbf6
+    # 1e97544e
+    # 4cd1b7b2
+    # 981571dc
+    # 903d1b4a
+    return None
+
+
 gridxforms: List[XformEntry[Object, str]] = [
-    XformEntry(match_colored_objects, 3),
-    XformEntry(xform_identity, 1),
-    XformEntry(equal_modulo_rigid_transformation, 2),
-    XformEntry(primitive_to_xform(translate_down_1), 2),
-    XformEntry(CanvasGridMatch.canvas_grid_xform, 2),
+    # XformEntry(match_colored_objects, 3),
+    # XformEntry(xform_identity, 1),
+    # XformEntry(equal_modulo_rigid_transformation, 2),
+    # XformEntry(primitive_to_xform(translate_down_1), 2),
+    # XformEntry(CanvasGridMatch.canvas_grid_xform, 2),
+    XformEntry(inpainting_xform, 2),
 ]
 
 
@@ -697,7 +779,7 @@ class MapFunctionMatch:
         task_name: str,
         nesting_level: int,
     ) -> Optional[Match[str, Object]]:
-        print(
+        logger.info(
             f"stretch_height examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
         )
         origin = None
@@ -705,17 +787,21 @@ class MapFunctionMatch:
             if origin is None:
                 origin = output.origin
             if origin != output.origin:
-                print(f"Output origin: {output.origin} != Expected origin: {origin}")
+                logger.info(
+                    f"Output origin: {output.origin} != Expected origin: {origin}"
+                )
                 return None
             if input.width != output.width:
-                print(f"Input width: {input.width} != Output width: {output.width}")
+                logger.info(
+                    f"Input width: {input.width} != Output width: {output.width}"
+                )
                 return None
             if input.height * 2 != output.height:
-                print(
+                logger.info(
                     f"Input height * 2: {input.height * 2} != Output height: {output.height}"
                 )
                 return None
-            print(
+            logger.info(
                 f"stretch_height origin:{output.origin} width:{output.width} height:{output.height}"
             )
             if False:
@@ -816,14 +902,14 @@ class ObjectListMatch:
                 f"{'  ' * nesting_level}Found input_to_output_indices: {input_to_output_indices}"
             )
 
-            new_examples_train: List[List[Example]] = [
+            new_examples_train: List[List[Example[Object]]] = [
                 [] for _ in input_to_output_indices
             ]
             for (_, e_inputs), (_, e_outputs) in examples:
                 for i, (input_index, output_index) in enumerate(
                     input_to_output_indices
                 ):
-                    print(f"inputs:{len(e_inputs)} outputs:{len(e_outputs)}")
+                    logger.info(f"inputs:{len(e_inputs)} outputs:{len(e_outputs)}")
                     new_examples_train[i].append(
                         (e_inputs[input_index], e_outputs[output_index])
                     )
@@ -839,14 +925,14 @@ class ObjectListMatch:
                         nesting_level,
                     )
                     if match is None:
-                        print(
+                        logger.info(
                             f"Xform {xform.xform.__name__} index:{output_index} failed: no match"
                         )
                         return None
                     else:
                         matches.append(match)
 
-            print(f"Xform {xform.xform.__name__} succeeded")
+            logger.info(f"Xform {xform.xform.__name__} succeeded")
 
             new_state = "{"
             for i, (s, _) in enumerate(matches):
