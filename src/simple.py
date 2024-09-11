@@ -562,9 +562,7 @@ def inpainting_xform(
         periodic_symmetry = find_periodic_symmetry_with_unknowns(input, color)
         filled_grid = fill_grid(input, periodic_symmetry, color)
         is_correct = filled_grid == output
-        logger.info(
-            f"#{i} {periodic_symmetry} is_correct: {is_correct}"
-        )
+        logger.info(f"#{i} {periodic_symmetry} is_correct: {is_correct}")
         if is_correct:
             periodic_symmetries.add(periodic_symmetry)
         else:
@@ -580,7 +578,7 @@ def inpainting_xform(
         f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} average_regularity_score:{average_regularity_score:.2f} symmetries:{symmetries}"
     )
     if average_regularity_score < 0.5:
-        if incorrect_periodic_found: # and len(symmetries) == 0:
+        if incorrect_periodic_found:  # and len(symmetries) == 0:
             Config.display_this_task = True
         if len(periodic_symmetries) == 1:
             logger.info(f"periodic_symmetries: {periodic_symmetries}")
