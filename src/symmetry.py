@@ -62,6 +62,17 @@ def find_symmetry_with_unknowns(grid: Object, unknown: int):
     return px, py
 
 
+def find_source_value(filled_grid: Object, x_dest: int, y_dest: int, px: Optional[int], py: Optional[int], unknown: int):
+    """
+    Find a source value for the given destination coordinates based on symmetry.
+    """
+    width, height = filled_grid.size
+    for x_src in (range(x_dest % px, width, px) if px is not None else [x_dest]):
+        for y_src in (range(y_dest % py, height, py) if py is not None else [y_dest]):
+            if filled_grid[x_src, y_src] != unknown:
+                return filled_grid[x_src, y_src]
+    return unknown
+
 def fill_grid(
     grid: Object, px: Optional[int] = None, py: Optional[int] = None, unknown: int = 0
 ):
@@ -91,20 +102,7 @@ def fill_grid(
             if (
                 filled_grid[x_dest, y_dest] == unknown
             ):  # If the destination cell is unknown
-                # Loop over all source cells but start from (y_dest % py, x_dest % px)
-                for x_src in (
-                    range(x_dest % px, width, px) if px is not None else [x_dest]
-                ):
-                    for y_src in (
-                        range(y_dest % py, height, py) if py is not None else [y_dest]
-                    ):
-                        # Check if the source is valid (not unknown)
-                        if filled_grid[x_src, y_src] != unknown:
-                            filled_grid[x_dest, y_dest] = filled_grid[x_src, y_src]
-                            break  # Fill the cell and break out of inner loop
-                    else:
-                        continue  # Continue if the inner loop didn't break
-                    break  # Break outer loop if inner loop broke
+                filled_grid[x_dest, y_dest] = find_source_value(filled_grid, x_dest, y_dest, px, py, unknown)
 
     return filled_grid
 
