@@ -961,7 +961,6 @@ class ObjectListMatch:
                 for i, (input_index, output_index) in enumerate(
                     input_to_output_indices
                 ):
-                    logger.info(f"inputs:{len(e_inputs)} outputs:{len(e_outputs)}")
                     new_examples_train[i].append(
                         (e_inputs[input_index], e_outputs[output_index])
                     )
