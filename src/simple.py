@@ -24,7 +24,7 @@ from symmetry import (
     PeriodicGridSymmetry,
     NonPeriodicGridSymmetry,
 )
-from visual_cortex import find_rectangular_objects
+from visual_cortex import find_rectangular_objects, regularity_score
 import numpy as np
 from dataclasses import dataclass
 from grid_normalization import ClockwiseRotation, XReflection, RigidTransformation
@@ -535,12 +535,14 @@ def inpainting_xform(
     # and the rest of the input is identical to the output
     # then return the inpainting xform
 
-    regularity_scores = []
-    non_periodic_symmetries = NonPeriodicGridSymmetry()
+    non_periodic_symmetries = NonPeriodicGridSymmetry(True, True, True, True)
     incorrect_periodic_found = False
     for i, (input, output) in enumerate(examples):
+        # check if input and output are the same size
         if input.size != output.size:
             return None
+
+        # check if input has one more color than output
         if len(input.get_colors(allow_black=True)) - 1 != len(
             output.get_colors(allow_black=True)
         ):
@@ -551,41 +553,63 @@ def inpainting_xform(
         if len(colors_only_in_input) != 1:
             return None
         color = colors_only_in_input.pop()
+
+        # check if input and output are the same except for the color
         for x in range(input.width):
             for y in range(input.height):
                 if input[x, y] == color:
                     continue
                 if input[x, y] != output[x, y]:
                     return None
-        from visual_cortex import regularity_score
+
+        # check if output has high regularity score
+        if regularity_score(output) >= 0.5:
+            return None
 
         # on input, to simulate the puzzle solving process (same as test procedure)
         periodic_symmetry = find_periodic_symmetry_with_unknowns(input, color)
 
         # on output, as looking for common pattern shared by all examples
         non_periodic_symmetry_output = find_non_periodic_symmetry(output)
-        non_periodic_symmetries = non_periodic_symmetries.intersection(non_periodic_symmetry_output)
+        non_periodic_symmetries = non_periodic_symmetries.intersection(
+            non_periodic_symmetry_output
+        )
 
-        filled_grid = fill_grid(input, periodic_symmetry, non_periodic_symmetry_output, color)
+        filled_grid = fill_grid(
+            input, periodic_symmetry=periodic_symmetry, unknown=color
+        )
         is_correct = filled_grid == output
-        logger.info(f"#{i} {periodic_symmetry} {non_periodic_symmetries} is_correct: {is_correct}")
+        logger.info(f"#{i} {periodic_symmetry} is_correct: {is_correct}")
+        logger.info(f"#{i} {non_periodic_symmetry_output}")
+
         if is_correct:
             pass
         else:
             incorrect_periodic_found = True
+            display(input, filled_grid, title=f"{is_correct} Periodic")
             # Config.display_this_task = True
             # display(input, filled_grid, title=f"{is_correct} Filled Grid")
 
-        regularity_scores.append(regularity_score(output))
-
-    average_regularity_score = sum(regularity_scores) / len(regularity_scores)
     logger.info(
-        f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} average_regularity_score:{average_regularity_score:.2f} non_periodic_symmetries:{non_periodic_symmetries}"
+        f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_symmetries}"
     )
-    if average_regularity_score < 0.5:
-        if incorrect_periodic_found:
-            Config.display_this_task = True
-        logger.info(f"non_periodic_symmetries: {non_periodic_symmetries}")
+
+    if incorrect_periodic_found:
+        # try non_periodic_symmetries
+        for i, (input, output) in enumerate(examples):
+            filled_grid = fill_grid(
+                input, non_periodic_symmetry=non_periodic_symmetries, unknown=color
+            )
+            is_correct = filled_grid == output
+            logger.info(f"#{i} {non_periodic_symmetries} is_correct: {is_correct}")
+            display(input, filled_grid, title=f"{is_correct} Non Periodic")
+            if is_correct:
+                pass
+            else:
+                Config.display_this_task = True
+                return None
+
+
     # Web view: open -a /Applications/Safari.app "https://arcprize.org/play?task=484b58aa"
     # Tasks with average_regularity_score < 0.5:
     # 484b58aa # sudoku

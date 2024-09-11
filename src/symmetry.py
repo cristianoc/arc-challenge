@@ -14,10 +14,10 @@ else:
 
 @dataclass(frozen=True)
 class PeriodicGridSymmetry:
-    px: Optional[int]  # periodic horizontal
-    py: Optional[int]  # periodic vertical
-    pd: Optional[int]  # periodic diagonal
-    pa: Optional[int]  # periodic anti-diagonal
+    px: Optional[int] = None  # periodic horizontal
+    py: Optional[int] = None  # periodic vertical
+    pd: Optional[int] = None  # periodic diagonal
+    pa: Optional[int] = None  # periodic anti-diagonal
 
 
 @dataclass(frozen=True)
@@ -228,13 +228,34 @@ def find_source_value(
             ):
                 return filled_grid[x_src, y_src]
 
+    # Check non-periodic symmetries
+    if non_periodic_symmetry.hx:
+        x_src = width - 1 - x_dest
+        if filled_grid[x_src, y_dest] != unknown:
+            return filled_grid[x_src, y_dest]
+
+    if non_periodic_symmetry.vy:
+        y_src = height - 1 - y_dest
+        if filled_grid[x_dest, y_src] != unknown:
+            return filled_grid[x_dest, y_src]
+
+    if non_periodic_symmetry.dg and width == height:
+        x_src, y_src = y_dest, x_dest
+        if filled_grid[x_src, y_src] != unknown:
+            return filled_grid[x_src, y_src]
+
+    if non_periodic_symmetry.ag and width == height:
+        x_src, y_src = width - 1 - y_dest, height - 1 - x_dest
+        if filled_grid[x_src, y_src] != unknown:
+            return filled_grid[x_src, y_src]
+
     return unknown
 
 
 def fill_grid(
     grid: Object,
-    periodic_symmetry: PeriodicGridSymmetry,
-    non_periodic_symmetry: NonPeriodicGridSymmetry,
+    periodic_symmetry: PeriodicGridSymmetry = PeriodicGridSymmetry(),
+    non_periodic_symmetry: NonPeriodicGridSymmetry = NonPeriodicGridSymmetry(),
     unknown: int = 0,
 ):
     """
