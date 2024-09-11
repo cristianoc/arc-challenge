@@ -4,6 +4,7 @@ from typing import Optional, Tuple
 from objects import Object
 from grid_types import Symmetry
 from typing import TYPE_CHECKING
+from math import gcd, lcm
 
 # To avoid circular imports
 if TYPE_CHECKING:
@@ -18,6 +19,22 @@ class PeriodicGridSymmetry:
     py: Optional[int] = None  # periodic vertical
     pd: Optional[int] = None  # periodic diagonal
     pa: Optional[int] = None  # periodic anti-diagonal
+
+    def intersection(self, other: "PeriodicGridSymmetry") -> "PeriodicGridSymmetry":
+        def intersect(a: Optional[int], b: Optional[int]) -> Optional[int]:
+            if a is None or b is None:
+                return None
+            if a == b:
+                return a
+            else:
+                return lcm(a, b)
+
+        return PeriodicGridSymmetry(
+            intersect(self.px, other.px),
+            intersect(self.py, other.py),
+            intersect(self.pd, other.pd),
+            intersect(self.pa, other.pa),
+        )
 
 
 @dataclass(frozen=True)
