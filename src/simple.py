@@ -517,6 +517,38 @@ def equal_modulo_rigid_transformation(
     return None
 
 
+def check_inpainting_conditions(input: Object, output: Object) -> Optional[int]:
+    # check if input and output are the same size
+    if input.size != output.size:
+        return None
+
+    # check if input has one more color than output
+    if len(input.get_colors(allow_black=True)) - 1 != len(
+        output.get_colors(allow_black=True)
+    ):
+        return None
+    colors_only_in_input = set(input.get_colors(allow_black=True)) - set(
+        output.get_colors(allow_black=True)
+    )
+    if len(colors_only_in_input) != 1:
+        return None
+    color = colors_only_in_input.pop()
+
+    # check if input and output are the same except for the color
+    for x in range(input.width):
+        for y in range(input.height):
+            if input[x, y] == color:
+                continue
+            if input[x, y] != output[x, y]:
+                return None
+
+    # check if output has high regularity score
+    if regularity_score(output) >= 0.5:
+        return None
+
+    return color
+
+
 def inpainting_xform(
     examples: List[Example[Object]],
     task_name: str,
@@ -531,33 +563,10 @@ def inpainting_xform(
     periodic_shared = None
 
     incorrect_periodic_found = False
+
     for i, (input, output) in enumerate(examples):
-        # check if input and output are the same size
-        if input.size != output.size:
-            return None
-
-        # check if input has one more color than output
-        if len(input.get_colors(allow_black=True)) - 1 != len(
-            output.get_colors(allow_black=True)
-        ):
-            return None
-        colors_only_in_input = set(input.get_colors(allow_black=True)) - set(
-            output.get_colors(allow_black=True)
-        )
-        if len(colors_only_in_input) != 1:
-            return None
-        color = colors_only_in_input.pop()
-
-        # check if input and output are the same except for the color
-        for x in range(input.width):
-            for y in range(input.height):
-                if input[x, y] == color:
-                    continue
-                if input[x, y] != output[x, y]:
-                    return None
-
-        # check if output has high regularity score
-        if regularity_score(output) >= 0.5:
+        color = check_inpainting_conditions(input, output)
+        if color is None:
             return None
 
         # on input, to simulate the puzzle solving process (same as test procedure)
@@ -617,7 +626,9 @@ def inpainting_xform(
             else:
                 # Config.display_this_task = True
                 return None
+            state = f"symmetry({non_periodic_shared}, {periodic_shared})"
     else:
+        state = "find_symmetry_for_each_input"
         logger.info(f"#{i} Found correct solution using per-example symmetries")
 
     # Web view: open -a /Applications/Safari.app "https://arcprize.org/play?task=484b58aa"
@@ -647,6 +658,7 @@ def inpainting_xform(
     # 4cd1b7b2
     # 981571dc
     # 903d1b4a
+
     return None
 
 
@@ -866,9 +878,7 @@ class MapFunctionMatch:
         return None
 
 
-map_xforms: List[XformEntry[Object]] = [
-    XformEntry(MapFunctionMatch.stretch_height, 1)
-]
+map_xforms: List[XformEntry[Object]] = [XformEntry(MapFunctionMatch.stretch_height, 1)]
 
 
 from typing import List, Tuple
