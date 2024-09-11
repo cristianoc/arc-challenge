@@ -517,102 +517,153 @@ def equal_modulo_rigid_transformation(
     return None
 
 
-def check_inpainting_conditions(input: Object, output: Object) -> Optional[int]:
-    # check if input and output are the same size
-    if input.size != output.size:
-        return None
+class InpaintingMatch:
 
-    # check if input has one more color than output
-    if len(input.get_colors(allow_black=True)) - 1 != len(
-        output.get_colors(allow_black=True)
-    ):
-        return None
-    colors_only_in_input = set(input.get_colors(allow_black=True)) - set(
-        output.get_colors(allow_black=True)
-    )
-    if len(colors_only_in_input) != 1:
-        return None
-    color = colors_only_in_input.pop()
-
-    # check if input and output are the same except for the color
-    for x in range(input.width):
-        for y in range(input.height):
-            if input[x, y] == color:
-                continue
-            if input[x, y] != output[x, y]:
-                return None
-
-    # check if output has high regularity score
-    if regularity_score(output) >= 0.5:
-        return None
-
-    return color
-
-
-def inpainting_xform(
-    examples: List[Example[Object]],
-    task_name: str,
-    nesting_level: int,
-) -> Optional[Match[Object]]:
-    # check if the input has one more color than the output
-    # and the rest of the input is identical to the output
-    # then return the inpainting xform
-
-    # non periodic symmetries shared by all examples
-    non_periodic_shared = NonPeriodicGridSymmetry(True, True, True, True)
-    periodic_shared = None
-
-    incorrect_periodic_found = False
-
-    for i, (input, output) in enumerate(examples):
-        color = check_inpainting_conditions(input, output)
-        if color is None:
+    @staticmethod
+    def check_inpainting_conditions(input: Object, output: Object) -> Optional[int]:
+        # Check if input and output are the same size
+        if input.size != output.size:
             return None
 
-        # on input, to simulate the puzzle solving process (same as test procedure)
-        periodic_symmetry_input = find_periodic_symmetry_with_unknowns(input, color)
-
-        # on output, as looking for common pattern shared by all examples
-        non_periodic_symmetry_output = find_non_periodic_symmetry(output)
-        non_periodic_shared = non_periodic_shared.intersection(
-            non_periodic_symmetry_output
+        # check if input has one more color than output
+        if len(input.get_colors(allow_black=True)) - 1 != len(
+            output.get_colors(allow_black=True)
+        ):
+            return None
+        colors_only_in_input = set(input.get_colors(allow_black=True)) - set(
+            output.get_colors(allow_black=True)
         )
-        periodic_symmetry_output = find_periodic_symmetry_with_unknowns(output, color)
-        if periodic_shared is None:
-            periodic_shared = periodic_symmetry_output
-        else:
-            periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
+        if len(colors_only_in_input) != 1:
+            return None
+        color = colors_only_in_input.pop()
 
+        # check if input and output are the same except for the color
+        for x in range(input.width):
+            for y in range(input.height):
+                if input[x, y] == color:
+                    continue
+                if input[x, y] != output[x, y]:
+                    return None
+
+        # check if output has high regularity score
+        if regularity_score(output) >= 0.5:
+            return None
+
+        return color
+
+    @staticmethod
+    def compute_shared_symmetries(
+        examples,
+    ) -> Optional[Tuple[NonPeriodicGridSymmetry, PeriodicGridSymmetry, int]]:
+        non_periodic_shared = None
+        periodic_shared = None
+
+        color_only_in_input = None
+
+        for i, (input, output) in enumerate(examples):
+            color = InpaintingMatch.check_inpainting_conditions(input, output)
+            if color is None:
+                return None
+            if color_only_in_input is None:
+                color_only_in_input = color
+            else:
+                if color != color_only_in_input:
+                    logger.info(f"Color mismatch: {color} != {color_only_in_input}")
+                    return None
+
+            non_periodic_symmetry_output = find_non_periodic_symmetry(output)
+            if non_periodic_shared is None:
+                non_periodic_shared = non_periodic_symmetry_output
+            else:
+                non_periodic_shared = non_periodic_shared.intersection(
+                    non_periodic_symmetry_output
+                )
+
+            periodic_symmetry_output = find_periodic_symmetry_with_unknowns(
+                output, color
+            )
+            if periodic_shared is None:
+                periodic_shared = periodic_symmetry_output
+            else:
+                periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
+
+            logger.info(
+                f"#{i} From Output {periodic_symmetry_output} {non_periodic_symmetry_output}"
+            )
+        if (
+            periodic_shared is None
+            or non_periodic_shared is None
+            or color_only_in_input is None
+        ):
+            return None
+
+        return non_periodic_shared, periodic_shared, color_only_in_input
+
+    @staticmethod
+    def apply_shared(
+        input: Object,
+        non_periodic_shared: NonPeriodicGridSymmetry,
+        periodic_shared: PeriodicGridSymmetry,
+        color: int,
+    ) -> Object:
         filled_grid = fill_grid(
-            input, periodic_symmetry=periodic_symmetry_input, unknown=color
+            input,
+            non_periodic_symmetry=non_periodic_shared,
+            periodic_symmetry=periodic_shared,
+            unknown=color,
         )
-        is_correct = filled_grid == output
+        return filled_grid
+
+    @staticmethod
+    def inpainting_xform(
+        examples: List[Example[Object]],
+        task_name: str,
+        nesting_level: int,
+    ) -> Optional[Match[Object]]:
+
+        # Web view: open -a /Applications/Safari.app "https://arcprize.org/play?task=484b58aa"
+        # Tasks with average_regularity_score < 0.5:
+        # 484b58aa # sudoku
+        # c3f564a4
+        # bd4472b8
+        # b8825c91
+        # 05269061
+        # 0dfd9992
+        # 3631a71a
+        # 8e5a5113
+        # 29ec7d0e
+        # f9d67f8b # some uncentered symmetry, to investigate
+        # 7c8af763
+        # 929ab4e9
+        # 47996f11
+        # 62b74c02
+        # c663677b
+        # ca8f78db  # periodic symmetry x and y (different px and py)
+        # 4aab4007
+        # af22c60d
+        # e95e3d8e
+        # 1d0a4b61  # all have vertical and horizontal symmetry (sometimes need find center), all have periodic symmetry (px and py different)
+        # ef26cbf6
+        # 1e97544e
+        # 4cd1b7b2
+        # 981571dc
+        # 903d1b4a
+
+        shared_symmetries = InpaintingMatch.compute_shared_symmetries(examples)
+        if shared_symmetries is None:
+            return None
+        non_periodic_shared, periodic_shared, color_only_in_input = shared_symmetries
+
         logger.info(
-            f"#{i} From Input {periodic_symmetry_input} is_correct: {is_correct}"
-        )
-        logger.info(
-            f"  From Output {periodic_symmetry_output} {non_periodic_symmetry_output}"
+            f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared}"
         )
 
-        if is_correct:
-            pass
-        else:
-            incorrect_periodic_found = True
-            if False:
-                display(input, filled_grid, title=f"{is_correct} Per-Example Symm")
-
-    logger.info(
-        f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared}"
-    )
-
-    if incorrect_periodic_found:
-        # try non_periodic_symmetries
         for i, (input, output) in enumerate(examples):
             filled_grid = fill_grid(
                 input,
-                non_periodic_symmetry=non_periodic_shared,
-                periodic_symmetry=periodic_shared or PeriodicGridSymmetry(),
-                unknown=color,
+                periodic_shared,
+                non_periodic_shared,
+                color_only_in_input,
             )
             is_correct = filled_grid == output
             logger.info(
@@ -624,42 +675,33 @@ def inpainting_xform(
                 logger.info(f"#{i} Found correct solution using shared symmetries")
                 pass
             else:
-                # Config.display_this_task = True
-                return None
+                break
+        else:
             state = f"symmetry({non_periodic_shared}, {periodic_shared})"
-    else:
+
+            def solve_shared(input: Object) -> Object:
+                return fill_grid(
+                    input,
+                    periodic_shared,
+                    non_periodic_shared,
+                    color_only_in_input,
+                )
+
+            return (state, solve_shared)
+
+        def solve_find_symmetry(input: Object) -> Object:
+            periodic_symmetry_input = find_periodic_symmetry_with_unknowns(
+                input, color_only_in_input
+            )
+            filled_grid = fill_grid(
+                input,
+                periodic_symmetry=periodic_symmetry_input,
+                unknown=color_only_in_input,
+            )
+            return filled_grid
+
         state = "find_symmetry_for_each_input"
-        logger.info(f"#{i} Found correct solution using per-example symmetries")
-
-    # Web view: open -a /Applications/Safari.app "https://arcprize.org/play?task=484b58aa"
-    # Tasks with average_regularity_score < 0.5:
-    # 484b58aa # sudoku
-    # c3f564a4
-    # bd4472b8
-    # b8825c91
-    # 05269061
-    # 0dfd9992
-    # 3631a71a
-    # 8e5a5113
-    # 29ec7d0e
-    # f9d67f8b # some uncentered symmetry, to investigate
-    # 7c8af763
-    # 929ab4e9
-    # 47996f11
-    # 62b74c02
-    # c663677b
-    # ca8f78db  # periodic symmetry x and y (different px and py)
-    # 4aab4007
-    # af22c60d
-    # e95e3d8e
-    # 1d0a4b61  # all have vertical and horizontal symmetry (sometimes need find center), all have periodic symmetry (px and py different)
-    # ef26cbf6
-    # 1e97544e
-    # 4cd1b7b2
-    # 981571dc
-    # 903d1b4a
-
-    return None
+        return (state, solve_find_symmetry)
 
 
 gridxforms: List[XformEntry[Object]] = [
@@ -668,7 +710,7 @@ gridxforms: List[XformEntry[Object]] = [
     XformEntry(equal_modulo_rigid_transformation, 2),
     XformEntry(primitive_to_xform(translate_down_1), 2),
     XformEntry(CanvasGridMatch.canvas_grid_xform, 2),
-    XformEntry(inpainting_xform, 2),
+    XformEntry(InpaintingMatch.inpainting_xform, 2),
 ]
 
 
