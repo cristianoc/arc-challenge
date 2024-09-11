@@ -2,14 +2,40 @@ from dataclasses import dataclass
 import numpy as np
 from typing import Optional, Tuple
 from objects import Object
+from grid_types import Symmetry
+from typing import TYPE_CHECKING
+
+# To avoid circular imports
+if TYPE_CHECKING:
+    from objects import Object as Object_t
+else:
+    Object_t = None
 
 
 @dataclass(frozen=True)
-class GridSymmetry:
-    px: Optional[int]  # peridic horizontal
-    py: Optional[int]  # peridic vertical
-    pd: Optional[int]  # peridic diagonal
-    pa: Optional[int]  # peridic anti-diagonal
+class PeriodicGridSymmetry:
+    px: Optional[int]  # periodic horizontal
+    py: Optional[int]  # periodic vertical
+    pd: Optional[int]  # periodic diagonal
+    pa: Optional[int]  # periodic anti-diagonal
+
+
+@dataclass(frozen=True)
+class NonPeriodicGridSymmetry:
+    hx: bool = False  # non-periodic horizontal
+    vy: bool = False  # non-periodic vertical
+    dg: bool = False  # non-periodic diagonal
+    ag: bool = False  # non-periodic anti-diagonal
+
+    def intersection(
+        self, other: "NonPeriodicGridSymmetry"
+    ) -> "NonPeriodicGridSymmetry":
+        return NonPeriodicGridSymmetry(
+            self.hx and other.hx,
+            self.vy and other.vy,
+            self.dg and other.dg,
+            self.ag and other.ag,
+        )
 
 
 def check_vertical_symmetry_with_unknowns(grid: Object, period: int, unknown: int):
@@ -94,9 +120,9 @@ def check_anti_diagonal_symmetry_with_unknowns(grid: Object, period: int, unknow
 
 def find_periodic_symmetry_with_unknowns(
     grid: Object, unknown: int
-) -> GridSymmetry:
+) -> PeriodicGridSymmetry:
     """
-    Find the smallest periods px, py, and pd (if any) with unknowns.
+    Find the smallest periods px, py, pd, pa (if any) and non-periodic symmetries with unknowns.
     """
     width, height = grid.size
 
@@ -132,20 +158,38 @@ def find_periodic_symmetry_with_unknowns(
                 pa = possible_pa
                 break
 
-    return GridSymmetry(px, py, pd, pa)
+    return PeriodicGridSymmetry(px, py, pd, pa)
+
+
+def find_non_periodic_symmetry(grid: Object) -> NonPeriodicGridSymmetry:
+    """
+    Find the non-periodic symmetries of the grid.
+    """
+    return NonPeriodicGridSymmetry(
+        hx=grid.is_symmetric(Symmetry.HORIZONTAL),
+        vy=grid.is_symmetric(Symmetry.VERTICAL),
+        dg=grid.is_symmetric(Symmetry.DIAGONAL),
+        ag=grid.is_symmetric(Symmetry.ANTI_DIAGONAL),
+    )
 
 
 def find_source_value(
     filled_grid: Object,
     x_dest: int,
     y_dest: int,
-    symmetry: GridSymmetry,
+    periodic_symmetry: PeriodicGridSymmetry,
+    non_periodic_symmetry: NonPeriodicGridSymmetry,
     unknown: int,
 ):
     """
     Find a source value for the given destination coordinates based on symmetry.
     """
-    px, py, pd, pa = symmetry.px, symmetry.py, symmetry.pd, symmetry.pa
+    px, py, pd, pa = (
+        periodic_symmetry.px,
+        periodic_symmetry.py,
+        periodic_symmetry.pd,
+        periodic_symmetry.pa,
+    )
     width, height = filled_grid.size
     for x_src in range(x_dest % px, width, px) if px is not None else [x_dest]:
         for y_src in range(y_dest % py, height, py) if py is not None else [y_dest]:
@@ -189,7 +233,8 @@ def find_source_value(
 
 def fill_grid(
     grid: Object,
-    symmetry: GridSymmetry,
+    periodic_symmetry: PeriodicGridSymmetry,
+    non_periodic_symmetry: NonPeriodicGridSymmetry,
     unknown: int = 0,
 ):
     """
@@ -218,13 +263,19 @@ def fill_grid(
                 filled_grid[x_dest, y_dest] == unknown
             ):  # If the destination cell is unknown
                 filled_grid[x_dest, y_dest] = find_source_value(
-                    filled_grid, x_dest, y_dest, symmetry, unknown
+                    filled_grid,
+                    x_dest,
+                    y_dest,
+                    periodic_symmetry,
+                    non_periodic_symmetry,
+                    unknown,
                 )
 
     return filled_grid
 
 
 def test_find_and_fill_symmetry():
+    from objects import Object
 
     grid_xy = Object(
         np.array(
@@ -266,9 +317,10 @@ def test_find_and_fill_symmetry():
     )
 
     def test_grid(grid: Object, unknown: int, title: str):
-        symmetry = find_periodic_symmetry_with_unknowns(grid, unknown)
-        print(f"{title}: {symmetry}")
-        filled_grid = fill_grid(grid, symmetry, unknown)
+        periodic_symmetry = find_periodic_symmetry_with_unknowns(grid, unknown)
+        non_periodic_symmetry = find_non_periodic_symmetry(grid)
+        print(f"{title}: {periodic_symmetry}, {non_periodic_symmetry}")
+        filled_grid = fill_grid(grid, periodic_symmetry, non_periodic_symmetry, unknown)
         assert unknown not in filled_grid._data
         return filled_grid
 
