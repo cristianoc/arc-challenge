@@ -17,6 +17,7 @@ from load_data import Example, Task, Tasks, training_data, evaluation_data
 from rule_based_selector import DecisionRule, select_object_minimal
 from shape_features import detect_shape_features
 from symmetry_features import detect_symmetry_features
+from symmetry import find_symmetry_with_unknowns, fill_grid
 from visual_cortex import find_rectangular_objects
 import numpy as np
 from dataclasses import dataclass
@@ -557,6 +558,14 @@ def inpainting_xform(
         logger.info(f"output_symmetries example {i}:{output_symmetries}")
         if len(output_symmetries) > 0:
             has_symmetries = True
+
+        px, py, pd = find_symmetry_with_unknowns(input, color)
+        if px is not None or py is not None or pd is not None:
+            filled_grid = fill_grid(input, px, py, pd, color)
+            is_correct = filled_grid == output
+            logger.info(f"px: {px}, py: {py}, pd: {pd} is_correct: {is_correct}")
+            display(input, filled_grid, title=f"{is_correct} Filled Grid")
+
         symmetries = symmetries.intersection(output_symmetries)
         regularity_scores.append(regularity_score(output))
 
