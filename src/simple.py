@@ -7,7 +7,6 @@ from typing import (
     TypeVar,
     Generic,
     Union,
-    Set,
 )
 
 from color_features import detect_color_features
@@ -535,7 +534,10 @@ def inpainting_xform(
     # and the rest of the input is identical to the output
     # then return the inpainting xform
 
-    non_periodic_symmetries = NonPeriodicGridSymmetry(True, True, True, True)
+    # non periodic symmetries shared by all examples
+    non_periodic_shared = NonPeriodicGridSymmetry(True, True, True, True)
+    periodic_shared = None
+
     incorrect_periodic_found = False
     for i, (input, output) in enumerate(examples):
         # check if input and output are the same size
@@ -567,48 +569,60 @@ def inpainting_xform(
             return None
 
         # on input, to simulate the puzzle solving process (same as test procedure)
-        periodic_symmetry = find_periodic_symmetry_with_unknowns(input, color)
+        periodic_symmetry_input = find_periodic_symmetry_with_unknowns(input, color)
 
         # on output, as looking for common pattern shared by all examples
         non_periodic_symmetry_output = find_non_periodic_symmetry(output)
-        non_periodic_symmetries = non_periodic_symmetries.intersection(
+        non_periodic_shared = non_periodic_shared.intersection(
             non_periodic_symmetry_output
         )
+        periodic_symmetry_output = find_periodic_symmetry_with_unknowns(output, color)
+        if periodic_shared is None:
+            periodic_shared = periodic_symmetry_output
+        else:
+            periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
 
         filled_grid = fill_grid(
-            input, periodic_symmetry=periodic_symmetry, unknown=color
+            input, periodic_symmetry=periodic_symmetry_input, unknown=color
         )
         is_correct = filled_grid == output
-        logger.info(f"#{i} {periodic_symmetry} is_correct: {is_correct}")
-        logger.info(f"#{i} {non_periodic_symmetry_output}")
+        logger.info(f"#{i} From Input {periodic_symmetry_input} is_correct: {is_correct}")
+        logger.info(f"  From Output {periodic_symmetry_output} {non_periodic_symmetry_output}")
 
         if is_correct:
             pass
         else:
             incorrect_periodic_found = True
-            display(input, filled_grid, title=f"{is_correct} Periodic")
+            display(input, filled_grid, title=f"{is_correct} Per-Example Symm")
             # Config.display_this_task = True
             # display(input, filled_grid, title=f"{is_correct} Filled Grid")
 
     logger.info(
-        f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_symmetries}"
+        f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared}"
     )
 
     if incorrect_periodic_found:
         # try non_periodic_symmetries
         for i, (input, output) in enumerate(examples):
             filled_grid = fill_grid(
-                input, non_periodic_symmetry=non_periodic_symmetries, unknown=color
+                input,
+                non_periodic_symmetry=non_periodic_shared,
+                periodic_symmetry=periodic_shared or PeriodicGridSymmetry(),
+                unknown=color,
             )
             is_correct = filled_grid == output
-            logger.info(f"#{i} {non_periodic_symmetries} is_correct: {is_correct}")
-            display(input, filled_grid, title=f"{is_correct} Non Periodic")
+            logger.info(
+                f"#{i} Shared {non_periodic_shared} {periodic_shared} is_correct: {is_correct}"
+            )
+            display(input, filled_grid, title=f"{is_correct} Shared Symm")
             if is_correct:
+                logger.info(f"#{i} Found correct solution using shared symmetries")
                 pass
             else:
                 Config.display_this_task = True
                 return None
-
+    else:
+        logger.info(f"#{i} Found correct solution using per-example symmetries")
 
     # Web view: open -a /Applications/Safari.app "https://arcprize.org/play?task=484b58aa"
     # Tasks with average_regularity_score < 0.5:
