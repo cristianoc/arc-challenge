@@ -59,6 +59,30 @@ def check_diagonal_symmetry_with_unknowns(grid: Object, period: int, unknown: in
     return True
 
 
+def check_anti_diagonal_symmetry_with_unknowns(grid: Object, period: int, unknown: int):
+    """
+    Check if the grid has anti-diagonal symmetry with a given period, allowing for unknown cells.
+    Moving anti-diagonally (bottom-left to top-right), we check that the same element is found every 'period' steps.
+    """
+    width, height = grid.size
+
+    # Only iterate over the range where anti-diagonal steps are valid
+    for x in range(width):
+        for y in range(height):
+            next_x = x + period
+            next_y = y - period
+            if next_x >= width or next_y < 0:
+                continue
+
+            if (
+                grid[x, y] != unknown
+                and grid[next_x, next_y] != unknown
+                and grid[x, y] != grid[next_x, next_y]
+            ):
+                return False
+    return True
+
+
 def find_symmetry_with_unknowns(grid: Object, unknown: int):
     """
     Find the smallest periods px, py, and pd (if any) with unknowns.
@@ -92,7 +116,16 @@ def find_symmetry_with_unknowns(grid: Object, unknown: int):
                 pd = possible_pd
                 break
 
-    return px, py, pd
+    # Find smallest anti-diagonal symmetry modulo pa
+    pa = None
+    # Ensure the grid is square for anti-diagonal symmetry
+    if width == height:
+        for possible_pa in range(1, width // 2 + 1):
+            if check_anti_diagonal_symmetry_with_unknowns(grid, possible_pa, unknown):
+                pa = possible_pa
+                break
+
+    return px, py, pd, pa
 
 
 def find_source_value(
@@ -102,6 +135,7 @@ def find_source_value(
     px: Optional[int],
     py: Optional[int],
     pd: Optional[int],
+    pa: Optional[int],
     unknown: int,
 ):
     """
@@ -121,6 +155,22 @@ def find_source_value(
         for i in range(-size, size, pd):
             x_src = x_dest + i
             y_src = y_dest + i
+
+            if (
+                0 <= x_src < size
+                and 0 <= y_src < size
+                and filled_grid[x_src, y_src] != unknown
+            ):
+                return filled_grid[x_src, y_src]
+
+    # Search based on anti-diagonal symmetry (bottom-left to top-right)
+    if pa is not None and width == height:
+        size = (width // pa) * pa
+
+        # Walk along the anti-diagonal in both directions, by starting negative and going positive
+        for i in range(-size, size, pa):
+            x_src = x_dest + i
+            y_src = y_dest - i
 
             if (
                 0 <= x_src < size
