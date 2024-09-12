@@ -209,28 +209,23 @@ def find_non_periodic_symmetry(grid: Object, unknown: int) -> NonPeriodicGridSym
     dg, dg_offset = check_symmetry_with_offset(lambda g: g.flip(Symmetry.DIAGONAL))
     ag, ag_offset = check_symmetry_with_offset(lambda g: g.flip(Symmetry.ANTI_DIAGONAL))
 
-    # Use the first offset where the corresponding symmetry is True
-    offset = next(
-        (
-            off
-            for (sym, off) in [
-                (hx, hx_offset),
-                (vy, vy_offset),
-                (dg, dg_offset),
-                (ag, ag_offset),
-            ]
-            if sym
-        ),
-        (0, 0),
-    )
-    if hx_offset != offset:
-        hx = False
-    if vy_offset != offset:
-        vy = False
-    if dg_offset != offset:
-        dg = False
-    if ag_offset != offset:
-        ag = False
+    # combine the offsets
+    offset = (0, 0)
+    if hx:
+        # for horizontal symmetry, only the x-offset is relevant
+        offset = (hx_offset[0], offset[1])
+    if vy:
+        # for vertical symmetry, only the y-offset is relevant
+        offset = (offset[0], vy_offset[1])
+    # diagonal symmetry is invariant wrt translations, so the offset is always (0, 0)
+    if ag and (hx or vy):
+        if ag_offset != offset:
+            # anti-diagonal symmetry is not invariant wrt translations
+            # so we set all symmetries to False as this is a contradiction
+            hx = False
+            vy = False
+            dg = False
+            offset = (0, 0)
 
     return NonPeriodicGridSymmetry(hx, vy, dg, ag, offset)
 
