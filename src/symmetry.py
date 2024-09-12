@@ -232,8 +232,8 @@ def find_non_periodic_symmetry(grid: Object, unknown: int) -> NonPeriodicGridSym
 
 def find_source_value(
     filled_grid: Object,
-    x_dest: int,
-    y_dest: int,
+    x: int,
+    y: int,
     periodic_symmetry: PeriodicGridSymmetry,
     non_periodic_symmetry: NonPeriodicGridSymmetry,
     unknown: int,
@@ -248,8 +248,8 @@ def find_source_value(
         periodic_symmetry.pa,
     )
     width, height = filled_grid.size
-    for x_src in range(x_dest % px, width, px) if px is not None else [x_dest]:
-        for y_src in range(y_dest % py, height, py) if py is not None else [y_dest]:
+    for x_src in range(x % px, width, px) if px is not None else [x]:
+        for y_src in range(y % py, height, py) if py is not None else [y]:
             if filled_grid[x_src, y_src] != unknown:
                 return filled_grid[x_src, y_src]
 
@@ -259,8 +259,8 @@ def find_source_value(
 
         # Walk along the diagonal in both directions, by starting negative and going positive
         for i in range(-size, size, pd):
-            x_src = x_dest + i
-            y_src = y_dest + i
+            x_src = x + i
+            y_src = y + i
 
             if (
                 0 <= x_src < size
@@ -275,8 +275,8 @@ def find_source_value(
 
         # Walk along the anti-diagonal in both directions, by starting negative and going positive
         for i in range(-size, size, pa):
-            x_src = x_dest + i
-            y_src = y_dest - i
+            x_src = x + i
+            y_src = y - i
 
             if (
                 0 <= x_src < size
@@ -286,10 +286,10 @@ def find_source_value(
                 return filled_grid[x_src, y_src]
 
     # Check non-periodic symmetries with offset
-    offset_x, offset_y = non_periodic_symmetry.offset
+    dx, dy = non_periodic_symmetry.offset
 
-    x_dest_sym = x_dest - offset_x
-    y_dest_sym = y_dest - offset_y
+    x_dest_sym = x - dx
+    y_dest_sym = y - dy
 
     def fill_from_symmetry(x_src, y_src):
         if (
@@ -307,17 +307,17 @@ def find_source_value(
     ag = non_periodic_symmetry.ag
     
     if hx:
-        x_src, y_src = width - 1 - x_dest_sym, y_dest
+        x_src, y_src = width - 1 - (x-dx), y
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
     if vy:
-        x_src, y_src = x_dest, height - 1 - y_dest_sym
+        x_src, y_src = x, height - 1 - (y-dy)
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
     if dg:
-        x_src, y_src = y_dest_sym, x_dest_sym
+        x_src, y_src = y, x
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
