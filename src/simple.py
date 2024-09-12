@@ -41,6 +41,7 @@ class Config:
     # task_name = "e9afcf9a.json"  # map 2 colored objects
     # task_name = "0dfd9992.json"
     # task_name = "05269061.json"
+    # task_name = "47996f11.json"
     task_fractal = "8f2ea7aa.json"  # fractal expansion
     task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
     whitelisted_tasks: List[str] = []
