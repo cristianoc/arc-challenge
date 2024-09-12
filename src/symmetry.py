@@ -371,9 +371,6 @@ if __name__ == "__main__":
     test_find_and_fill_symmetry()
 
 
-import numpy as np
-
-
 # Function to check if the visible parts of grid g2 match grid g1 at offset (ox, oy)
 # with an "unknown" value that is equal to any other value in comparisons
 def check_visible_subgrid_with_unknown(
@@ -433,26 +430,28 @@ def test_find_matching_subgrid_offset():
     g1 = Object(
         np.array(
             [
-                [1, 2, 3, 4],
-                [5, 6, 7, 8],
-                [9, 10, 11, 12],
-                [13, 14, 15, 16],
+                [1, 2, 3, 4, 5],
+                [6, 7, 8, 9, 10],
+                [11, 12, 13, 14, 15],
+                [16, 17, 18, 19, 20],
+                [21, 22, 23, 24, 25],
             ]
         )
     )
 
-    # Modify g2 so the center has 11, 12, 15, 16 with 0 treated as unknown
+    # Modify g2 so the center has some values from g1 with 0 treated as unknown
     g2 = Object(
         np.array(
             [
-                [0, 0, 0, 0],
-                [0, 11, 12, 0],
-                [0, 15, 16, 0],
-                [0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 1, 2, 3, 4],
+                [0, 6, 7, 8, 9],
+                [0, 11, 12, 13, 14],
             ]
         )
     )
 
     unknown_value = 0  # Treat 0 as "unknown"
-    result = find_matching_subgrid_offset(g1, g2, max_distance=2, unknown=unknown_value)
-    assert result == (1, 1), f"Expected (1, 1), but got {result}"
+    result = find_matching_subgrid_offset(g1, g2, max_distance=3, unknown=unknown_value)
+    assert result == (-1, -2), f"Expected (-1, -2), but got {result}"
