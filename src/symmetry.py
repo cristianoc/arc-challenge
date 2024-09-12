@@ -293,12 +293,20 @@ def find_source_value(
 
     if non_periodic_symmetry.hx:
         x_src, y_src = width - 1 - x_dest_sym, y_dest
-        if 0 <= x_src < width and filled_grid[x_src, y_src] != unknown:
+        if (
+            0 <= x_src < width
+            and 0 <= y_src < height
+            and filled_grid[x_src, y_src] != unknown
+        ):
             return filled_grid[x_src, y_src]
 
     if non_periodic_symmetry.vy:
         x_src, y_src = x_dest, height - 1 - y_dest_sym
-        if 0 <= y_src < height and filled_grid[x_src, y_src] != unknown:
+        if (
+            0 <= x_src < width
+            and 0 <= y_src < height
+            and filled_grid[x_src, y_src] != unknown
+        ):
             return filled_grid[x_src, y_src]
 
     if non_periodic_symmetry.dg and width == height:
