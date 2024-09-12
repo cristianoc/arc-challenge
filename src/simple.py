@@ -42,6 +42,8 @@ class Config:
     # task_name = "0dfd9992.json"
     # task_name = "05269061.json"
     # task_name = "47996f11.json"
+    # task_name = "f9d67f8b.json"
+    # task_name = "47996f11.json"
     task_fractal = "8f2ea7aa.json"  # fractal expansion
     task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
     whitelisted_tasks: List[str] = []
@@ -549,6 +551,7 @@ class InpaintingMatch:
         # check if output has high regularity score
         if regularity_score(output) >= 0.5:
             return None
+        Config.display_this_task = True
 
         return color
 
@@ -624,31 +627,16 @@ class InpaintingMatch:
 
         # Web view: open -a /Applications/Safari.app "https://arcprize.org/play?task=484b58aa"
         # Tasks with average_regularity_score < 0.5:
-        # 484b58aa # sudoku
-        # c3f564a4
+
         # bd4472b8
-        # b8825c91
-        # 05269061
-        # 0dfd9992
-        # 3631a71a
         # 8e5a5113
-        # 29ec7d0e
-        # f9d67f8b # some uncentered symmetry, to investigate
-        # 7c8af763
-        # 929ab4e9
-        # 47996f11
         # 62b74c02
-        # c663677b
-        # ca8f78db  # periodic symmetry x and y (different px and py)
-        # 4aab4007
-        # af22c60d
-        # e95e3d8e
-        # 1d0a4b61  # all have vertical and horizontal symmetry (sometimes need find center), all have periodic symmetry (px and py different)
+        # 4aab4007 # solve two halves (top left and bottom right) separately
         # ef26cbf6
-        # 1e97544e
-        # 4cd1b7b2
-        # 981571dc
-        # 903d1b4a
+        # 1e97544e # solve two halves (top left and bottom right) separately
+        # 4cd1b7b2 # sudoku
+
+        # f9d67f8b # solve two halves (top left and bottom right) separately
 
         shared_symmetries = InpaintingMatch.compute_shared_symmetries(examples)
         if shared_symmetries is None:
@@ -681,12 +669,18 @@ class InpaintingMatch:
             state = f"symmetry({non_periodic_shared}, {periodic_shared})"
 
             def solve_shared(input: Object) -> Object:
-                return fill_grid(
+                filled_grid = fill_grid(
                     input,
                     periodic_shared,
                     non_periodic_shared,
                     color_only_in_input,
                 )
+                if False:
+                    logger.info(
+                        f"Test Shared {non_periodic_shared} {periodic_shared} is_correct: {is_correct}"
+                    )
+                    display(input, filled_grid, title=f"Test Shared")
+                return filled_grid
 
             return (state, solve_shared)
 
@@ -1127,6 +1121,11 @@ def find_xform(
         if result_on_test != test_output:
             logger.info(f"Xform {xform_name} state:{state} failed for test input {i}")
             if False:
+                width, height = test_output.size
+                for x in range(width):
+                    for y in range(height):
+                        if test_output[x, y] != result_on_test[x, y]:
+                            logger.info(f"Xform {xform_name} state:{state} failed for test input {i} at {x},{y}: {test_output[x, y]} != {result_on_test[x, y]}")
                 display(
                     test_output,
                     result_on_test,
