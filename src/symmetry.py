@@ -305,14 +305,14 @@ def find_source_value(
     vy = non_periodic_symmetry.vy
     dg = non_periodic_symmetry.dg
     ag = non_periodic_symmetry.ag
-    
+
     if hx:
-        x_src, y_src = width - 1 - (x-dx), y
+        x_src, y_src = width - 1 - (x - dx), y
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
     if vy:
-        x_src, y_src = x, height - 1 - (y-dy)
+        x_src, y_src = x, height - 1 - (y - dy)
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
@@ -322,7 +322,8 @@ def find_source_value(
             return filled_grid[x_src, y_src]
 
     if ag:
-        x_src, y_src = width - 1 - y_dest_sym, height - 1 - x_dest_sym
+        x_src = (width - 1) - (y - dy) + dx
+        y_src = (height - 1) - (x - dx) + dy
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
