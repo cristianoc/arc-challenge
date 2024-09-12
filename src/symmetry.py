@@ -301,22 +301,27 @@ def find_source_value(
         else:
             return False
 
-    if non_periodic_symmetry.hx:
+    hx = non_periodic_symmetry.hx
+    vy = non_periodic_symmetry.vy
+    dg = non_periodic_symmetry.dg
+    ag = non_periodic_symmetry.ag
+    
+    if hx:
         x_src, y_src = width - 1 - x_dest_sym, y_dest
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
-    if non_periodic_symmetry.vy:
+    if vy:
         x_src, y_src = x_dest, height - 1 - y_dest_sym
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
-    if non_periodic_symmetry.dg and width == height:
+    if dg:
         x_src, y_src = y_dest_sym, x_dest_sym
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
-    if non_periodic_symmetry.ag and width == height:
+    if ag:
         x_src, y_src = width - 1 - y_dest_sym, height - 1 - x_dest_sym
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
