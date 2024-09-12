@@ -317,7 +317,7 @@ def find_source_value(
             return filled_grid[x_src, y_src]
 
     if dg:
-        x_src, y_src = y, x
+        x_src, y_src = y - dy + dx, x - dx + dy
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
