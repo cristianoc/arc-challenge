@@ -551,7 +551,7 @@ class InpaintingMatch:
         # check if output has high regularity score
         if regularity_score(output) >= 0.5:
             return None
-        Config.display_this_task = True
+        # Config.display_this_task = True
 
         return color
 

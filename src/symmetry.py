@@ -217,7 +217,8 @@ def find_non_periodic_symmetry(grid: Object, unknown: int) -> NonPeriodicGridSym
     if vy:
         # for vertical symmetry, only the y-offset is relevant
         offset = (offset[0], vy_offset[1])
-    # diagonal symmetry is invariant wrt translations, so the offset is always (0, 0)
+    # diagonal symmetry has offset dy-dx, so for square grids the offset is (0, 0)
+    # will assume that dx==dy and assume there's nothing to check
     if ag and (hx or vy):
         if ag_offset != offset:
             # anti-diagonal symmetry is not invariant wrt translations
@@ -225,6 +226,7 @@ def find_non_periodic_symmetry(grid: Object, unknown: int) -> NonPeriodicGridSym
             hx = False
             vy = False
             dg = False
+            ag = False
             offset = (0, 0)
 
     return NonPeriodicGridSymmetry(hx, vy, dg, ag, offset)
