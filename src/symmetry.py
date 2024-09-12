@@ -307,12 +307,12 @@ def find_source_value(
     ag = non_periodic_symmetry.ag
     
     if hx:
-        x_src, y_src = width - 1 - x_dest_sym, y_dest
+        x_src, y_src = width - 1 - x_dest_sym, y_dest_sym
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
     if vy:
-        x_src, y_src = x_dest, height - 1 - y_dest_sym
+        x_src, y_src = x_dest_sym, height - 1 - y_dest_sym
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
