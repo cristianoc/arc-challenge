@@ -415,7 +415,7 @@ def find_matching_subgrid_offset(
     - (ox, oy) is the offset that satisfies the following properties:
         1. The Manhattan distance |ox| + |oy| is minimized and is <= max_distance.
         2. For all coordinates (x, y) in g2, if (x + ox, y + oy) is within the bounds of g1,
-           g1 and g2 are equal at those coordinates, *modulo unknown values*.
+           g1 and g2 are considered equal at those coordinates, *modulo unknown values*.
 
     - Definition of equality modulo unknown:
         g1[a, b] ~= g2[c, d] if:
