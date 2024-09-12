@@ -307,23 +307,28 @@ def find_source_value(
     ag = non_periodic_symmetry.ag
 
     if hx:
-        x_src, y_src = width - 1 - (x - dx), y
+        # (x,y) -> (x-dx, y-dy) -> ((w-dx)-1-x+dx, y-dy) ->
+        # -> ((w-dx)-1-x+dx+dx, y-dy+dy) = (w-1-x+dx, y)
+        x_src, y_src = width - 1 - x + dx, y
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
     if vy:
-        x_src, y_src = x, height - 1 - (y - dy)
+        x_src, y_src = x, height - 1 - y + dy
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
     if dg:
+        # (x,y) -> (x-dx, y-dy) -> (y-dy, x-dx) -> (y-dy+dx, x-dx+dy)
         x_src, y_src = y - dy + dx, x - dx + dy
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
     if ag:
-        x_src = (width - 1) - (y - dy) + dx
-        y_src = (height - 1) - (x - dx) + dy
+        # (x,y) -> (x-dx, y-dy) -> ((h-dy)-1-y+dy, (w-dx)-1-x+dx) ->
+        # -> (h-dy-1-y+dy+dx, w-dx-1-x+dx+dy) == (h-1-y+dx, w-1-x+dy)
+        x_src = height - 1 - y + dx
+        y_src = width - 1 - x + dy
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
