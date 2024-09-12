@@ -571,7 +571,7 @@ class InpaintingMatch:
                     logger.info(f"Color mismatch: {color} != {color_only_in_input}")
                     return None
 
-            non_periodic_symmetry_output = find_non_periodic_symmetry(output)
+            non_periodic_symmetry_output = find_non_periodic_symmetry(output, color)
             if non_periodic_shared is None:
                 non_periodic_shared = non_periodic_symmetry_output
             else:
@@ -588,7 +588,7 @@ class InpaintingMatch:
                 periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
 
             logger.info(
-                f"#{i} From Output {periodic_symmetry_output} {non_periodic_symmetry_output}"
+                f"#{i} From Output {non_periodic_symmetry_output} {periodic_symmetry_output}"
             )
         if (
             periodic_shared is None
@@ -669,7 +669,7 @@ class InpaintingMatch:
             logger.info(
                 f"#{i} Shared {non_periodic_shared} {periodic_shared} is_correct: {is_correct}"
             )
-            if False:
+            if not is_correct:
                 display(input, filled_grid, title=f"{is_correct} Shared Symm")
             if is_correct:
                 logger.info(f"#{i} Found correct solution using shared symmetries")
