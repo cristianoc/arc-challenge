@@ -52,6 +52,7 @@ class Config:
     display_not_found = False
     display_this_task = False
     only_simple_examples = False
+    only_inpainting_puzzles = True
     max_size = 9
     max_colors = 4
 
@@ -521,6 +522,13 @@ def equal_modulo_rigid_transformation(
 
 
 class InpaintingMatch:
+    @staticmethod
+    def is_inpainting_puzzle(examples: List[Example[Object]]) -> bool:
+        # check the inpainting conditions on all examples
+        for input, output in examples:
+            if InpaintingMatch.check_inpainting_conditions(input, output) is None:
+                return False
+        return True
 
     @staticmethod
     def check_inpainting_conditions(input: Object, output: Object) -> Optional[int]:
@@ -1107,7 +1115,9 @@ def find_xform(
     )
 
     xform_name_list = ["no_xform"]
-    match = find_xform_for_examples(xforms, examples, task_name, nesting_level, xform_name_list)
+    match = find_xform_for_examples(
+        xforms, examples, task_name, nesting_level, xform_name_list
+    )
     if match is None:
         return None
     xform_name = xform_name_list[-1]
@@ -1125,7 +1135,9 @@ def find_xform(
                 for x in range(width):
                     for y in range(height):
                         if test_output[x, y] != result_on_test[x, y]:
-                            logger.info(f"Xform {xform_name} state:{state} failed for test input {i} at {x},{y}: {test_output[x, y]} != {result_on_test[x, y]}")
+                            logger.info(
+                                f"Xform {xform_name} state:{state} failed for test input {i} at {x},{y}: {test_output[x, y]} != {result_on_test[x, y]}"
+                            )
                 display(
                     test_output,
                     result_on_test,
@@ -1309,6 +1321,8 @@ def process_tasks(tasks: Tasks, set: str):
             and Config.only_simple_examples
             and task_name not in Config.whitelisted_tasks
         ):
+            continue
+        if Config.only_inpainting_puzzles and not InpaintingMatch.is_inpainting_puzzle(task.train):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
