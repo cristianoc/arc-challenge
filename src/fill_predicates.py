@@ -126,30 +126,29 @@ def test_fill_grid_based_on_predicate():
 
 def test_sudoku_example():
     # Define color variables
-    blue = BLUE
-    black = BLACK
-    green = GREEN
-    yellow = YELLOW
-    red = RED
+    b = BLUE
+    g = GREEN
+    y = YELLOW
+    r = RED
 
     print("\nSudoku Example:")
     initial_grid = Object(
         np.array(
             [
-                [blue, black, green, yellow],
-                [black, black, red, blue],
-                [red, blue, yellow, black],
-                [black, green, blue, red],
+                [b, 0, g, 0, 0, 0, r, b],
+                [0, 0, r, b, r, b, y, g],
+                [r, b, y, 0, b, r, 0, y],
+                [0, g, 0, r, g, 0, 0, r],
             ]
         )
     )
 
-    unknown_value = black
+    unknown_value = 0
     sudoku_grid = initial_grid.copy()
 
     all_predicates = []
-    for value in [blue, green, yellow, red]:  # Only non-black colors
-        row_predicate = CardinalityInRowPredicate(value=value, count=1)
+    for value in [b, g, y, r]:  # Only non-black colors
+        row_predicate = CardinalityInRowPredicate(value=value, count=2)
         col_predicate = CardinalityInColumnPredicate(value=value, count=1)
         all_predicates.append(row_predicate)
         all_predicates.append(col_predicate)  # Add column predicates as well
