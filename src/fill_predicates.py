@@ -49,7 +49,6 @@ def fill_grid_based_on_predicate(
             current_row = grid._data[y, :]
             value_count = np.sum(current_row == color)
             blanks = np.sum(current_row == unknown_value)
-            
 
             remaining_occurrences = occurrences_required - value_count
             if remaining_occurrences > 0 and remaining_occurrences == blanks:
@@ -132,6 +131,7 @@ def test_sudoku_example():
     r = RED
 
     print("\nSudoku Example:")
+    # double sudoku example: 2 colors in every row, but one in every column
     initial_grid = Object(
         np.array(
             [
@@ -157,13 +157,10 @@ def test_sudoku_example():
     fill_grid_until_stable(sudoku_grid, all_predicates, unknown_value)
 
     print("Filled Sudoku Grid:\n", sudoku_grid)
-    display(initial_grid, sudoku_grid, title="Filled Sudoku Grid")
-
-    # Color mapping for visualization
-    color_mapping = {1: "blue", 2: "black", 3: "green", 4: "yellow", 0: "red"}
-    print("\nColor representation:")
-    for row in sudoku_grid._data:
-        print(" ".join(color_mapping[value] for value in row))
+    if False:
+        display(initial_grid, sudoku_grid, title="Filled Sudoku Grid")
+    # check that there are no blanks left
+    assert np.sum(sudoku_grid._data == unknown_value) == 0
 
 
 if __name__ == "__main__":
