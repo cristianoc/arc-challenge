@@ -5,7 +5,7 @@ from typing import Union
 from grid_types import BLUE, BLACK, GREEN, YELLOW, RED
 from objects import display
 
-@dataclass
+@dataclass(frozen=True)
 class CardinalityInRowPredicate:
     value: int
     count: int
@@ -13,7 +13,7 @@ class CardinalityInRowPredicate:
     def __str__(self):
         return f"CardinalityInRow({self.value}) == {self.count}"
 
-@dataclass
+@dataclass(frozen=True)
 class CardinalityInColumnPredicate:
     value: int
     count: int
@@ -203,6 +203,19 @@ def test_sudoku_example():
         display(initial_grid, sudoku_grid, title="Filled Sudoku Grid")
     # check that there are no blanks left
     assert np.sum(sudoku_grid._data == unknown_value) == 0
+
+    # Determine the global row and column predicates that hold in the filled grid
+    detected_row_predicates, detected_column_predicates = determine_global_predicates(sudoku_grid)
+
+    # Print the detected predicates
+    print("\nDetected Row Predicates:")
+    print_predicates_better_notation(detected_row_predicates, [])
+
+    print("\nDetected Column Predicates:")
+    print_predicates_better_notation([], detected_column_predicates)
+
+    # Verify that the detected predicates match the initial predicates
+    assert set(all_predicates) == set(detected_row_predicates + detected_column_predicates), "Detected predicates do not match the initial predicates."
 
 def test_determine_global_predicates():
     # Example filled grid
