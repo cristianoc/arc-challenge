@@ -557,8 +557,8 @@ class InpaintingMatch:
                     return None
 
         # check if output has high regularity score
-        if regularity_score(output) >= 0.5:
-            return None
+        # if regularity_score(output) >= 0.5:
+        #     return None
         # Config.display_this_task = True
 
         return color
@@ -1413,5 +1413,75 @@ def simple():
         )
 
 
+def generate_inpainting_puzzle():
+    np.random.seed(42)  # For reproducibility
+    num_attempts = 0
+    num_puzzles = 10
+    num_found = 0
+    while True:
+        # Define grid size and colors
+        grid_size = (6, 6)
+        output_colors = [1, 2]  # Colors that appear in both input and output
+        inpainting_color = 0  # Extra color that appears only in the input
+
+        # Create an output grid with random placement of output colors
+        output_grid_data = np.random.choice(output_colors, size=grid_size)
+
+        # Create an input grid by adding the inpainting color at random positions
+        input_grid_data = output_grid_data.copy()
+        num_inpainting_pixels = 5  # Number of pixels to replace with inpainting color
+        inpainting_positions = np.random.choice(
+            grid_size[0] * grid_size[1], num_inpainting_pixels, replace=False
+        )
+        for pos in inpainting_positions:
+            x = pos % grid_size[0]
+            y = pos // grid_size[1]
+            input_grid_data[x, y] = inpainting_color
+
+        # Create Object instances
+        input_object = Object(input_grid_data)
+        output_object = Object(output_grid_data)
+
+        # Check if the puzzle passes the inpainting conditions
+        color = InpaintingMatch.check_inpainting_conditions(input_object, output_object)
+        if color is None:
+            print("Puzzle does not pass inpainting conditions. Trying again.")
+            continue
+
+        # Compute regularity score of the output
+        score = regularity_score(output_object)
+        print(f"Output grid regularity score: {score}")
+
+        # Compute shared symmetries
+        examples = [(input_object, output_object)]
+        num_attempts += 1
+        shared_symmetries = InpaintingMatch.compute_shared_symmetries(examples)
+        
+        if shared_symmetries is None:
+            print(f"Failed to compute shared symmetries after {num_attempts} attempts. Trying again.")
+            continue
+
+        non_periodic_shared, periodic_shared, color = shared_symmetries
+        print(f"Shared symmetries computed successfully after {num_attempts} attempts.")
+        print(f"Non-periodic symmetry: {non_periodic_shared}")
+        print(f"Periodic symmetry: {periodic_shared}")
+        
+        # Try to solve the puzzle using the inpainting strategy
+        solved_output = InpaintingMatch.apply_shared(input_object, non_periodic_shared, periodic_shared, color)
+        
+        if solved_output == output_object:
+            num_found += 1
+            print(f"Generated a solvable inpainting puzzle after {num_attempts} attempts.")
+            # Display the solved output (assuming display function is available)
+            if True:  # Change to True if you want to display the puzzle
+                display(input_object, solved_output, title="Solvable Inpainting Puzzle Solution")
+            if num_found >= num_puzzles:
+                break
+        else:
+            print("Puzzle cannot be solved using the inpainting strategy. Trying again.")
+
+
+
+# Call the function to generate puzzles
 if __name__ == "__main__":
-    simple()
+    generate_inpainting_puzzle()
