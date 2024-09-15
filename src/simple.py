@@ -699,7 +699,7 @@ class InpaintingMatch:
             logger.info(
                 f"#{i} Shared {non_periodic_shared} {periodic_shared} {cardinality_shared} is_correct: {is_correct}"
             )
-            if not is_correct:
+            if False and not is_correct:
                 display(input, filled_grid, title=f"{is_correct} Shared Symm")
             if is_correct:
                 logger.info(f"#{i} Found correct solution using shared symmetries")
