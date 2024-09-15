@@ -491,14 +491,14 @@ class CanvasGridMatch:
         def solve(input: Object) -> Object:
             canvas_objects = CanvasGridMatch.find_canvas_objects([input], None)
             if canvas_objects is None:
-                return input
+                return None
             canvas = canvas_objects[0]
             solution = CanvasGridMatch.solve_puzzle(
                 input, task_name, nesting_level, canvas
             )
             if solution is None:
                 logger.info(f"No solution found for input")
-                return input
+                return None
             canvas, new_objects = solution
             output = canvas.copy()
             output.origin = (0, 0)
