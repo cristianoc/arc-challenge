@@ -76,7 +76,9 @@ class NonPeriodicGridSymmetry:
             )
 
 
-def check_vertical_symmetry_with_unknowns(grid: Object, period: int, unknown: int):
+def check_vertical_symmetry_with_unknowns(
+    grid: Object, period: int, unknown: int, mask: Optional[Object]
+):
     """
     Check if rows repeat every 'period' rows, allowing for unknown cells.
     """
@@ -84,7 +86,9 @@ def check_vertical_symmetry_with_unknowns(grid: Object, period: int, unknown: in
     for x in range(width):
         for y in range(period, height):
             if (
-                grid[x, y] != unknown
+                (mask is None or mask[x, y] == unknown)
+                and grid[x, y] != unknown
+                and (mask is None or mask[x, y - period] == unknown)
                 and grid[x, y - period] != unknown
                 and grid[x, y] != grid[x, y - period]
             ):
@@ -92,7 +96,9 @@ def check_vertical_symmetry_with_unknowns(grid: Object, period: int, unknown: in
     return True
 
 
-def check_horizontal_symmetry_with_unknowns(grid: Object, period: int, unknown: int):
+def check_horizontal_symmetry_with_unknowns(
+    grid: Object, period: int, unknown: int, mask: Optional[Object]
+):
     """
     Check if columns repeat every 'period' columns, allowing for unknown cells.
     """
@@ -100,7 +106,9 @@ def check_horizontal_symmetry_with_unknowns(grid: Object, period: int, unknown: 
     for x in range(period, width):
         for y in range(height):
             if (
-                grid[x, y] != unknown
+                (mask is None or mask[x, y] == unknown)
+                and grid[x, y] != unknown
+                and (mask is None or mask[x - period, y] == unknown)
                 and grid[x - period, y] != unknown
                 and grid[x, y] != grid[x - period, y]
             ):
@@ -108,7 +116,9 @@ def check_horizontal_symmetry_with_unknowns(grid: Object, period: int, unknown: 
     return True
 
 
-def check_diagonal_symmetry_with_unknowns(grid: Object, period: int, unknown: int):
+def check_diagonal_symmetry_with_unknowns(
+    grid: Object, period: int, unknown: int, mask: Optional[Object]
+):
     """
     Check if the grid has diagonal symmetry with a given period, allowing for unknown cells.
     Moving diagonally, we check that the same element is found every 'period' steps, without wrapping around.
@@ -124,7 +134,9 @@ def check_diagonal_symmetry_with_unknowns(grid: Object, period: int, unknown: in
                 continue
 
             if (
-                grid[x, y] != unknown
+                (mask is None or mask[x, y] == unknown)
+                and grid[x, y] != unknown
+                and (mask is None or mask[next_x, next_y] == unknown)
                 and grid[next_x, next_y] != unknown
                 and grid[x, y] != grid[next_x, next_y]
             ):
@@ -132,7 +144,9 @@ def check_diagonal_symmetry_with_unknowns(grid: Object, period: int, unknown: in
     return True
 
 
-def check_anti_diagonal_symmetry_with_unknowns(grid: Object, period: int, unknown: int):
+def check_anti_diagonal_symmetry_with_unknowns(
+    grid: Object, period: int, unknown: int, mask: Optional[Object]
+):
     """
     Check if the grid has anti-diagonal symmetry with a given period, allowing for unknown cells.
     Moving anti-diagonally (bottom-left to top-right), we check that the same element is found every 'period' steps.
@@ -148,7 +162,9 @@ def check_anti_diagonal_symmetry_with_unknowns(grid: Object, period: int, unknow
                 continue
 
             if (
-                grid[x, y] != unknown
+                (mask is None or mask[x, y] == unknown)
+                and grid[x, y] != unknown
+                and (mask is None or mask[next_x, next_y] == unknown)
                 and grid[next_x, next_y] != unknown
                 and grid[x, y] != grid[next_x, next_y]
             ):
@@ -157,7 +173,7 @@ def check_anti_diagonal_symmetry_with_unknowns(grid: Object, period: int, unknow
 
 
 def find_periodic_symmetry_with_unknowns(
-    grid: Object, unknown: int
+    grid: Object, unknown: int, mask: Optional[Object]
 ) -> PeriodicGridSymmetry:
     """
     Find the smallest periods px, py, pd, pa (if any) and non-periodic symmetries with unknowns.
@@ -167,14 +183,14 @@ def find_periodic_symmetry_with_unknowns(
     # Find smallest horizontal symmetry modulo px
     px = None
     for possible_px in range(1, width // 2 + 1):
-        if check_horizontal_symmetry_with_unknowns(grid, possible_px, unknown):
+        if check_horizontal_symmetry_with_unknowns(grid, possible_px, unknown, mask):
             px = possible_px
             break
 
     # Find smallest vertical symmetry modulo py
     py = None
     for possible_py in range(1, height // 2 + 1):
-        if check_vertical_symmetry_with_unknowns(grid, possible_py, unknown):
+        if check_vertical_symmetry_with_unknowns(grid, possible_py, unknown, mask):
             py = possible_py
             break
 
@@ -183,7 +199,7 @@ def find_periodic_symmetry_with_unknowns(
     # Ensure the grid is square for diagonal symmetry
     if width == height:
         for possible_pd in range(1, width // 2 + 1):
-            if check_diagonal_symmetry_with_unknowns(grid, possible_pd, unknown):
+            if check_diagonal_symmetry_with_unknowns(grid, possible_pd, unknown, mask):
                 pd = possible_pd
                 break
 
@@ -192,7 +208,9 @@ def find_periodic_symmetry_with_unknowns(
     # Ensure the grid is square for anti-diagonal symmetry
     if width == height:
         for possible_pa in range(1, width // 2 + 1):
-            if check_anti_diagonal_symmetry_with_unknowns(grid, possible_pa, unknown):
+            if check_anti_diagonal_symmetry_with_unknowns(
+                grid, possible_pa, unknown, mask
+            ):
                 pa = possible_pa
                 break
 
@@ -247,6 +265,7 @@ def find_source_value(
     periodic_symmetry: PeriodicGridSymmetry,
     non_periodic_symmetry: NonPeriodicGridSymmetry,
     unknown: int,
+    mask: Optional[Object],
 ):
     """
     Find a source value for the given destination coordinates based on symmetry.
@@ -260,7 +279,7 @@ def find_source_value(
     width, height = filled_grid.size
     for x_src in range(x % px, width, px) if px is not None else [x]:
         for y_src in range(y % py, height, py) if py is not None else [y]:
-            if filled_grid[x_src, y_src] != unknown:
+            if filled_grid[x_src, y_src] != unknown and (mask is None or mask[x_src, y_src] == unknown):
                 return filled_grid[x_src, y_src]
 
     # Search based on diagonal (pd) symmetry if provided
@@ -276,6 +295,7 @@ def find_source_value(
                 0 <= x_src < size
                 and 0 <= y_src < size
                 and filled_grid[x_src, y_src] != unknown
+                and (mask is None or mask[x_src, y_src] == unknown)
             ):
                 return filled_grid[x_src, y_src]
 
@@ -292,6 +312,7 @@ def find_source_value(
                 0 <= x_src < size
                 and 0 <= y_src < size
                 and filled_grid[x_src, y_src] != unknown
+                and (mask is None or mask[x_src, y_src] == unknown)
             ):
                 return filled_grid[x_src, y_src]
 
@@ -306,6 +327,7 @@ def find_source_value(
             0 <= x_src < width
             and 0 <= y_src < height
             and filled_grid[x_src, y_src] != unknown
+            and (mask is None or mask[x_src, y_src] == unknown)
         ):
             return True
         else:
@@ -347,6 +369,7 @@ def find_source_value(
 
 def fill_grid(
     grid: Object,
+    mask: Optional[Object] = None,
     periodic_symmetry: PeriodicGridSymmetry = PeriodicGridSymmetry(),
     non_periodic_symmetry: NonPeriodicGridSymmetry = NonPeriodicGridSymmetry(),
     cardinality_predicates: List[CardinalityPredicate] = [],
@@ -386,6 +409,7 @@ def fill_grid(
                     periodic_symmetry,
                     non_periodic_symmetry,
                     unknown,
+                    mask,
                 )
 
     # Fill based on cardinality predicates
@@ -443,14 +467,17 @@ def test_find_and_fill_symmetry():
     )
 
     def test_grid(grid: Object, unknown: int, title: str):
-        periodic_symmetry = find_periodic_symmetry_with_unknowns(grid, unknown)
+        mask = grid.copy()
+        periodic_symmetry = find_periodic_symmetry_with_unknowns(grid, unknown, mask)
         non_periodic_symmetry = find_non_periodic_symmetry(grid, unknown)
         cardinality_predicates = find_cardinality_predicates(grid)
         print(
             f"{title}: {periodic_symmetry}, {non_periodic_symmetry}, {cardinality_predicates}"
         )
+        mask = grid.copy()
         filled_grid = fill_grid(
             grid,
+            None,
             periodic_symmetry,
             non_periodic_symmetry,
             cardinality_predicates,
@@ -518,7 +545,10 @@ def manhattan_offset_iterator():
 
 # Brute-force search to find the matching subgrid offset with expanding Manhattan distances
 def find_matching_subgrid_offset(
-    g1: Object, g2: Object, max_distance: int, unknown: int
+    g1: Object,
+    g2: Object,
+    max_distance: int,
+    unknown: int,
 ) -> Optional[Tuple[int, int]]:
     """
     Returns a tuple (ox, oy) or None, where:
