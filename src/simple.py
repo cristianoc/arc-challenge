@@ -27,6 +27,11 @@ from visual_cortex import find_rectangular_objects, regularity_score
 import numpy as np
 from dataclasses import dataclass
 from grid_normalization import ClockwiseRotation, XReflection, RigidTransformation
+from cardinality_predicates import (
+    find_cardinality_predicates,
+    CardinalityPredicate,
+    predicates_intersection,
+)
 
 # returns the index of the object to pick
 ObjectPicker = Callable[[List[Object]], int]
@@ -44,6 +49,7 @@ class Config:
     # task_name = "47996f11.json"
     # task_name = "f9d67f8b.json"
     # task_name = "47996f11.json"
+    # task_name = "4cd1b7b2.json"  # sudoku
     task_fractal = "8f2ea7aa.json"  # fractal expansion
     task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
     whitelisted_tasks: List[str] = []
@@ -566,9 +572,17 @@ class InpaintingMatch:
     @staticmethod
     def compute_shared_symmetries(
         examples,
-    ) -> Optional[Tuple[NonPeriodicGridSymmetry, PeriodicGridSymmetry, int]]:
+    ) -> Optional[
+        Tuple[
+            NonPeriodicGridSymmetry,
+            PeriodicGridSymmetry,
+            List[CardinalityPredicate],
+            int,
+        ]
+    ]:
         non_periodic_shared = None
         periodic_shared = None
+        cardinality_shared: Optional[List[CardinalityPredicate]] = None
 
         color_only_in_input = None
 
@@ -591,6 +605,13 @@ class InpaintingMatch:
                     non_periodic_symmetry_output
                 )
 
+            cardinality_shared_output = find_cardinality_predicates(output)
+            if cardinality_shared is None:
+                cardinality_shared = cardinality_shared_output
+            else:
+                cardinality_shared = predicates_intersection(
+                    cardinality_shared, cardinality_shared_output
+                )
             periodic_symmetry_output = find_periodic_symmetry_with_unknowns(
                 output, color
             )
@@ -600,16 +621,22 @@ class InpaintingMatch:
                 periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
 
             logger.info(
-                f"#{i} From Output {non_periodic_symmetry_output} {periodic_symmetry_output}"
+                f"#{i} From Output {non_periodic_symmetry_output} {periodic_symmetry_output} {cardinality_shared}"
             )
         if (
             periodic_shared is None
             or non_periodic_shared is None
+            or cardinality_shared is None
             or color_only_in_input is None
         ):
             return None
 
-        return non_periodic_shared, periodic_shared, color_only_in_input
+        return (
+            non_periodic_shared,
+            periodic_shared,
+            cardinality_shared,
+            color_only_in_input,
+        )
 
     @staticmethod
     def apply_shared(
@@ -649,10 +676,15 @@ class InpaintingMatch:
         shared_symmetries = InpaintingMatch.compute_shared_symmetries(examples)
         if shared_symmetries is None:
             return None
-        non_periodic_shared, periodic_shared, color_only_in_input = shared_symmetries
+        (
+            non_periodic_shared,
+            periodic_shared,
+            cardinality_shared,
+            color_only_in_input,
+        ) = shared_symmetries
 
         logger.info(
-            f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared}"
+            f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared} cardinality_shared:{cardinality_shared}"
         )
 
         for i, (input, output) in enumerate(examples):
@@ -660,11 +692,12 @@ class InpaintingMatch:
                 input,
                 periodic_shared,
                 non_periodic_shared,
+                cardinality_shared,
                 color_only_in_input,
             )
             is_correct = filled_grid == output
             logger.info(
-                f"#{i} Shared {non_periodic_shared} {periodic_shared} is_correct: {is_correct}"
+                f"#{i} Shared {non_periodic_shared} {periodic_shared} {cardinality_shared} is_correct: {is_correct}"
             )
             if not is_correct:
                 display(input, filled_grid, title=f"{is_correct} Shared Symm")
@@ -681,11 +714,12 @@ class InpaintingMatch:
                     input,
                     periodic_shared,
                     non_periodic_shared,
+                    cardinality_shared,
                     color_only_in_input,
                 )
                 if False:
                     logger.info(
-                        f"Test Shared {non_periodic_shared} {periodic_shared} is_correct: {is_correct}"
+                        f"Test Shared {non_periodic_shared} {periodic_shared} {cardinality_shared} is_correct: {is_correct}"
                     )
                     display(input, filled_grid, title=f"Test Shared")
                 return filled_grid
@@ -1322,7 +1356,9 @@ def process_tasks(tasks: Tasks, set: str):
             and task_name not in Config.whitelisted_tasks
         ):
             continue
-        if Config.only_inpainting_puzzles and not InpaintingMatch.is_inpainting_puzzle(task.train):
+        if Config.only_inpainting_puzzles and not InpaintingMatch.is_inpainting_puzzle(
+            task.train
+        ):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 

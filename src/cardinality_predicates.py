@@ -1,9 +1,10 @@
 import numpy as np
 from objects import Object
 from dataclasses import dataclass
-from typing import Union
+from typing import Union, List, Optional
 from grid_types import BLUE, BLACK, GREEN, YELLOW, RED
 from objects import display
+
 
 @dataclass(frozen=True)
 class CardinalityInRowPredicate:
@@ -13,6 +14,7 @@ class CardinalityInRowPredicate:
     def __str__(self):
         return f"CardinalityInRow({self.value}) == {self.count}"
 
+
 @dataclass(frozen=True)
 class CardinalityInColumnPredicate:
     value: int
@@ -21,9 +23,13 @@ class CardinalityInColumnPredicate:
     def __str__(self):
         return f"CardinalityInColumn({self.value}) == {self.count}"
 
+
+CardinalityPredicate = Union[CardinalityInRowPredicate, CardinalityInColumnPredicate]
+
+
 def fill_grid_based_on_predicate(
     grid: Object,
-    predicate: Union[CardinalityInRowPredicate, CardinalityInColumnPredicate],
+    predicate: CardinalityPredicate,
     unknown_value: int,
 ) -> bool:
     """
@@ -69,6 +75,7 @@ def fill_grid_based_on_predicate(
 
     return changes_made
 
+
 def fill_grid_until_stable(
     grid: Object,
     predicates: list[Union[CardinalityInRowPredicate, CardinalityInColumnPredicate]],
@@ -86,7 +93,8 @@ def fill_grid_until_stable(
             break
     return grid
 
-def determine_global_predicates(grid: Object):
+
+def find_cardinality_predicates(grid: Object) -> List[CardinalityPredicate]:
     """
     This function determines which row and column predicates hold globally in the grid.
     A predicate holds if each value appears exactly k times in every row or every column.
@@ -110,29 +118,47 @@ def determine_global_predicates(grid: Object):
 
     # Check column predicates
     for value in unique_values:
-        counts_in_columns = [np.sum(grid._data[:, col] == value) for col in range(width)]
+        counts_in_columns = [
+            np.sum(grid._data[:, col] == value) for col in range(width)
+        ]
         if np.all(
             counts_in_columns == counts_in_columns[0]
         ):  # If same count in every column
-            column_predicates.append(CardinalityInColumnPredicate(value, counts_in_columns[0]))
+            column_predicates.append(
+                CardinalityInColumnPredicate(value, counts_in_columns[0])
+            )
 
-    return row_predicates, column_predicates
+    return row_predicates + column_predicates
 
-def print_predicates_better_notation(row_predicates, column_predicates):
-    """
-    This function prints the predicates in their improved syntactic form for both rows and columns.
-    """
-    if row_predicates:
-        for predicate in row_predicates:
-            print(predicate)
+
+def predicate_intersection(
+    p1: CardinalityPredicate, p2: CardinalityPredicate
+) -> Optional[CardinalityPredicate]:
+    if isinstance(p1, type(p2)) and p1.value == p2.value and p1.count == p2.count:
+        return p1
     else:
-        print("No row predicates hold.")
+        return None
 
-    if column_predicates:
-        for predicate in column_predicates:
-            print(predicate)
-    else:
-        print("No column predicates hold.")
+
+def predicates_intersection(
+    p1: List[CardinalityPredicate], p2: List[CardinalityPredicate]
+) -> List[CardinalityPredicate]:
+    result = []
+
+    # Create a dictionary with both the type and value as the key for predicates in p2
+    p2_predicates_by_type_value = {(type(pred), pred.value): pred for pred in p2}
+
+    # Iterate through p1 and find matching predicates in p2
+    for pred1 in p1:
+        key = (type(pred1), pred1.value)
+        pred2 = p2_predicates_by_type_value.get(key)
+        if pred2 is not None:
+            intersection = predicate_intersection(pred1, pred2)
+            if intersection is not None:
+                result.append(intersection)
+
+    return result
+
 
 def test_fill_grid_based_on_predicate():
     # Example usage
@@ -164,6 +190,7 @@ def test_fill_grid_based_on_predicate():
         grid_with_blanks.copy(), column_predicate, unknown_value
     )
     print("Filled Grid (Column Predicate):\n", filled_grid_column)
+
 
 def test_sudoku_example():
     # Define color variables
@@ -199,23 +226,24 @@ def test_sudoku_example():
     fill_grid_until_stable(sudoku_grid, all_predicates, unknown_value)
 
     print("Filled Sudoku Grid:\n", sudoku_grid)
-    if True:
+    if False:
         display(initial_grid, sudoku_grid, title="Filled Sudoku Grid")
     # check that there are no blanks left
     assert np.sum(sudoku_grid._data == unknown_value) == 0
 
     # Determine the global row and column predicates that hold in the filled grid
-    detected_row_predicates, detected_column_predicates = determine_global_predicates(sudoku_grid)
+    detected_predicates = find_cardinality_predicates(sudoku_grid)
 
     # Print the detected predicates
-    print("\nDetected Row Predicates:")
-    print_predicates_better_notation(detected_row_predicates, [])
-
-    print("\nDetected Column Predicates:")
-    print_predicates_better_notation([], detected_column_predicates)
+    print("\nDetected Predicates:")
+    for p in detected_predicates:
+        print(p)
 
     # Verify that the detected predicates match the initial predicates
-    assert set(all_predicates) == set(detected_row_predicates + detected_column_predicates), "Detected predicates do not match the initial predicates."
+    assert set(all_predicates) == set(
+        detected_predicates
+    ), "Detected predicates do not match the initial predicates."
+
 
 def test_determine_global_predicates():
     # Example filled grid
@@ -233,14 +261,12 @@ def test_determine_global_predicates():
     print(f"Original grid: {grid_filled_non_trivial}")
 
     # Determine the global row and column predicates that hold
-    global_row_predicates_non_trivial, global_column_predicates_non_trivial = (
-        determine_global_predicates(grid_filled_non_trivial)
-    )
+    predicates = find_cardinality_predicates(grid_filled_non_trivial)
 
     # Print the predicates with improved notation
-    print_predicates_better_notation(
-        global_row_predicates_non_trivial, global_column_predicates_non_trivial
-    )
+    for p in predicates:
+        print(p)
+
 
 if __name__ == "__main__":
     test_fill_grid_based_on_predicate()
