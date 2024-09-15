@@ -57,6 +57,7 @@ class Config:
     whitelisted_tasks.append(task_puzzle)
     # find_xform_color = True
     display_not_found = False
+    display_not_found_verbose = False
     display_this_task = False
     only_simple_examples = False
     only_inpainting_puzzles = True
@@ -751,7 +752,8 @@ class InpaintingMatch:
         else:
             mask = None
         if mask is not None:
-            display(mask, title=f"Mask")
+            if Config.display_not_found_verbose:
+                display(mask, title=f"Mask")
 
         shared_symmetries = InpaintingMatch.compute_shared_symmetries(examples, mask)
         if shared_symmetries is None:
@@ -833,11 +835,12 @@ class InpaintingMatch:
             data = filled_grid._data
             if np.any(data == color_only_in_input):
                 logger.info(f"Test: Leftover unknown color: {color_only_in_input}")
-                display(input, filled_grid, title=f"Test: Leftover covered cells")
+                if Config.display_not_found_verbose:
+                    display(input, filled_grid, title=f"Test: Leftover covered cells")
                 return None
             return filled_grid
 
-        Config.display_this_task = True
+        # Config.display_this_task = True
         state = "find_symmetry_for_each_input"
         return (state, solve_find_symmetry)
 
