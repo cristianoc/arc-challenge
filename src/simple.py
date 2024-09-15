@@ -488,7 +488,7 @@ class CanvasGridMatch:
 
         state = "canvas_grid_xform"
 
-        def solve(input: Object) -> Object:
+        def solve(input: Object) -> Optional[Object]:
             canvas_objects = CanvasGridMatch.find_canvas_objects([input], None)
             if canvas_objects is None:
                 return None
