@@ -1,10 +1,18 @@
 from dataclasses import dataclass
 import numpy as np
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union, List
 from objects import Object
-from grid_types import Symmetry
+from grid_types import BLUE, BLACK, GREEN, YELLOW, RED, Symmetry
 from typing import TYPE_CHECKING
 from math import gcd, lcm
+from cardinality_predicates import (
+    CardinalityInRowPredicate,
+    CardinalityInColumnPredicate,
+    fill_grid_based_on_predicate,
+    find_cardinality_predicates,
+    CardinalityPredicate,
+)
+
 
 # To avoid circular imports
 if TYPE_CHECKING:
@@ -341,10 +349,11 @@ def fill_grid(
     grid: Object,
     periodic_symmetry: PeriodicGridSymmetry = PeriodicGridSymmetry(),
     non_periodic_symmetry: NonPeriodicGridSymmetry = NonPeriodicGridSymmetry(),
+    cardinality_predicates: List[CardinalityPredicate] = [],
     unknown: int = 0,
 ):
     """
-    Fills the unknown cells in a grid based on detected horizontal and vertical symmetries.
+    Fills the unknown cells in a grid based on detected horizontal and vertical symmetries and cardinality predicates.
 
     This function fills each unknown cell in the grid by propagating values from known cells,
     using the provided horizontal (px) and vertical (py) symmetry periods. It starts at each
@@ -353,16 +362,18 @@ def fill_grid(
 
     Args:
         grid (Object): The grid containing known and unknown values to be filled.
-        symmetry (Symmetry): The symmetry object containing the periods px, py, pd, and pa.
+        periodic_symmetry (PeriodicGridSymmetry): The symmetry object containing the periods px, py, pd, and pa.
+        non_periodic_symmetry (NonPeriodicGridSymmetry): The non-periodic symmetry object.
+        cardinality_predicates (List[Union[CardinalityInRowPredicate, CardinalityInColumnPredicate]]): List of cardinality predicates.
         unknown (int): The value representing unknown cells in the grid, which will be filled.
 
     Returns:
-        Object: A new grid with all unknown cells filled using the provided symmetry periods.
+        Object: A new grid with all unknown cells filled using the provided symmetry periods and cardinality predicates.
     """
     width, height = grid.size
     filled_grid = grid.copy()
 
-    # Loop over all destination cells
+    # Fill based on symmetry
     for x_dest in range(width):
         for y_dest in range(height):
             if (
@@ -376,6 +387,15 @@ def fill_grid(
                     non_periodic_symmetry,
                     unknown,
                 )
+
+    # Fill based on cardinality predicates
+    while True:
+        changes_made = False
+        for predicate in cardinality_predicates:
+            if fill_grid_based_on_predicate(filled_grid, predicate, unknown):
+                changes_made = True
+        if not changes_made:
+            break
 
     return filled_grid
 
@@ -425,8 +445,17 @@ def test_find_and_fill_symmetry():
     def test_grid(grid: Object, unknown: int, title: str):
         periodic_symmetry = find_periodic_symmetry_with_unknowns(grid, unknown)
         non_periodic_symmetry = find_non_periodic_symmetry(grid, unknown)
-        print(f"{title}: {periodic_symmetry}, {non_periodic_symmetry}")
-        filled_grid = fill_grid(grid, periodic_symmetry, non_periodic_symmetry, unknown)
+        cardinality_predicates = find_cardinality_predicates(grid)
+        print(
+            f"{title}: {periodic_symmetry}, {non_periodic_symmetry}, {cardinality_predicates}"
+        )
+        filled_grid = fill_grid(
+            grid,
+            periodic_symmetry,
+            non_periodic_symmetry,
+            cardinality_predicates,
+            unknown,
+        )
         if False:
             print(f"grid: {grid}")
             print(f"filled_grid: {filled_grid}")
