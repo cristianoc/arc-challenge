@@ -824,7 +824,7 @@ class InpaintingMatch:
                     f"Test Shared {non_periodic_shared} {periodic_shared} {cardinality_shared}"
                 )
                 if Config.display_verbose:
-                        display(input, filled_grid, title=f"Test Shared")
+                    display(input, filled_grid, title=f"Test Shared")
                 return filled_grid
 
             return (state, solve_shared)
@@ -1371,7 +1371,9 @@ def find_xform(
         test_output = test_example[1]
         result_on_test = solve(test_input)
         if result_on_test is None:
-            logger.info(f"Xform {xform_name} state:{state} failed returning None for test input {i}")
+            logger.info(
+                f"Xform {xform_name} state:{state} failed returning None for test input {i}"
+            )
             return None
         if result_on_test != test_output:
             logger.info(f"Xform {xform_name} state:{state} failed for test input {i}")
