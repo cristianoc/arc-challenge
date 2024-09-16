@@ -47,18 +47,20 @@ class Config:
     # task_name = "0dfd9992.json"
     # task_name = "05269061.json"
     # task_name = "47996f11.json"
-    task_name = "f9d67f8b.json"
     # task_name = "47996f11.json"
     # task_name = "4cd1b7b2.json"  # sudoku
     # task_name = "4aab4007.json"
-    # task_name = "1e97544e.json"
+
+    # task_name = "1e97544e.json" # snake-like pattern
+    # task_name = "f9d67f8b.json" # maybe a mistake in the task
+
     task_fractal = "8f2ea7aa.json"  # fractal expansion
     task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
     whitelisted_tasks: List[str] = []
     whitelisted_tasks.append(task_puzzle)
     # find_xform_color = True
     display_not_found = True
-    display_verbose = True
+    display_verbose = False
     display_this_task = False
     only_simple_examples = False
     only_inpainting_puzzles = True
@@ -929,7 +931,7 @@ class SplitAndMirrorMatch:
             if output_tr is None or output_bl is None:
                 return None
             if Config.display_verbose:
-                display(output_tr, output_bl, title="TestOutput tr+bl")
+                display(output_tr, output_bl, title="TestOutput tr+bl", left_title="tr", right_title="bl")
             combined = combine_grids(output_tr, output_bl)
             if Config.display_verbose:
                 display(combined, title="Combined")
