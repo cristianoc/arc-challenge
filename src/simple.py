@@ -51,13 +51,14 @@ class Config:
     # task_name = "47996f11.json"
     # task_name = "4cd1b7b2.json"  # sudoku
     # task_name = "4aab4007.json"
+    # task_name = "1e97544e.json"
     task_fractal = "8f2ea7aa.json"  # fractal expansion
     task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
     whitelisted_tasks: List[str] = []
     whitelisted_tasks.append(task_puzzle)
     # find_xform_color = True
-    display_not_found = False
-    display_not_found_verbose = False
+    display_not_found = True
+    display_verbose = False
     display_this_task = False
     only_simple_examples = False
     only_inpainting_puzzles = True
@@ -606,10 +607,27 @@ class InpaintingMatch:
             InpaintingMatch.update_mask(output_grid, mask, color)
         return mask
 
+    # check that the color only in input is the same for all examples
+    @staticmethod
+    def check_color_only_in_input(examples: List[Example[Object]]) -> Optional[int]:
+        color_only_in_input = None
+        for input, output in examples:
+            color = InpaintingMatch.check_inpainting_conditions(input, output)
+            if color is None:
+                return None
+            if color_only_in_input is None:
+                color_only_in_input = color
+            else:
+                if color != color_only_in_input:
+                    logger.info(f"Color mismatch: {color} != {color_only_in_input}")
+                    return None
+        return color_only_in_input
+
     @staticmethod
     def compute_shared_symmetries(
         examples: List[Example[Object]],
         mask: Optional[Object],
+        color_only_in_input: int,
     ) -> Optional[
         Tuple[
             NonPeriodicGridSymmetry,
@@ -622,20 +640,10 @@ class InpaintingMatch:
         periodic_shared = None
         cardinality_shared: Optional[List[CardinalityPredicate]] = None
 
-        color_only_in_input = None
-
         for i, (input, output) in enumerate(examples):
-            color = InpaintingMatch.check_inpainting_conditions(input, output)
-            if color is None:
-                return None
-            if color_only_in_input is None:
-                color_only_in_input = color
-            else:
-                if color != color_only_in_input:
-                    logger.info(f"Color mismatch: {color} != {color_only_in_input}")
-                    return None
-
-            non_periodic_symmetry_output = find_non_periodic_symmetry(output, color)
+            non_periodic_symmetry_output = find_non_periodic_symmetry(
+                output, color_only_in_input
+            )
             if non_periodic_shared is None:
                 non_periodic_shared = non_periodic_symmetry_output
             else:
@@ -651,7 +659,7 @@ class InpaintingMatch:
                     cardinality_shared, cardinality_shared_output
                 )
             periodic_symmetry_output = find_periodic_symmetry_with_unknowns(
-                output, color, mask
+                output, color_only_in_input, mask
             )
             if periodic_shared is None:
                 periodic_shared = periodic_symmetry_output
@@ -713,7 +721,7 @@ class InpaintingMatch:
         nesting_level: int,
     ) -> Optional[Match[Object]]:
         return InpaintingMatch.inpainting_xform(
-            examples, task_name, nesting_level, use_mask=False
+            examples, task_name, nesting_level, mask=None
         )
 
     @staticmethod
@@ -722,8 +730,12 @@ class InpaintingMatch:
         task_name: str,
         nesting_level: int,
     ) -> Optional[Match[Object]]:
+        mask = InpaintingMatch.find_mask_for_examples(examples)
+        if mask is not None:
+            if Config.display_verbose:
+                display(mask, title=f"Mask")
         return InpaintingMatch.inpainting_xform(
-            examples, task_name, nesting_level, use_mask=True
+            examples, task_name, nesting_level, mask=mask
         )
 
     @staticmethod
@@ -731,7 +743,7 @@ class InpaintingMatch:
         examples: List[Example[Object]],
         task_name: str,
         nesting_level: int,
-        use_mask: bool,
+        mask: Optional[Object],
     ) -> Optional[Match[Object]]:
 
         # Web view: open -a /Applications/Safari.app "https://arcprize.org/play?task=484b58aa"
@@ -747,15 +759,13 @@ class InpaintingMatch:
 
         # f9d67f8b # solve two halves (top left and bottom right) separately
 
-        if use_mask:
-            mask = InpaintingMatch.find_mask_for_examples(examples)
-        else:
-            mask = None
-        if mask is not None:
-            if Config.display_not_found_verbose:
-                display(mask, title=f"Mask")
+        color = InpaintingMatch.check_color_only_in_input(examples)
+        if color is None:
+            return None
 
-        shared_symmetries = InpaintingMatch.compute_shared_symmetries(examples, mask)
+        shared_symmetries = InpaintingMatch.compute_shared_symmetries(
+            examples, mask, color
+        )
         if shared_symmetries is None:
             return None
         (
@@ -785,8 +795,10 @@ class InpaintingMatch:
                 f"#{i} Shared {non_periodic_shared} {periodic_shared} {cardinality_shared} is_correct: {is_correct}"
             )
             if not is_correct:
-                if False:
+                if Config.display_verbose:
                     display(input, filled_grid, title=f"{is_correct} Shared Symm")
+                    if mask is not None:
+                        display(mask, title=f"{is_correct} Mask")
             if is_correct:
                 logger.info(f"#{i} Found correct solution using shared symmetries")
                 pass
@@ -835,7 +847,7 @@ class InpaintingMatch:
             data = filled_grid._data
             if np.any(data == color_only_in_input):
                 logger.info(f"Test: Leftover unknown color: {color_only_in_input}")
-                if Config.display_not_found_verbose:
+                if Config.display_verbose:
                     display(input, filled_grid, title=f"Test: Leftover covered cells")
                 return None
             return filled_grid
@@ -853,6 +865,82 @@ gridxforms: List[XformEntry[Object]] = [
     XformEntry(CanvasGridMatch.canvas_grid_xform, 2),
     XformEntry(InpaintingMatch.inpainting_xform_no_mask, 2),
     XformEntry(InpaintingMatch.inpainting_xform_with_mask, 2),
+]
+
+
+class SplitAndMirrorMatch:
+    @staticmethod
+    def split_and_mirror_xform(
+        examples: List[Example[Object]],
+        task_name: str,
+        nesting_level: int,
+    ) -> Optional[Match[Object]]:
+        logger.info(
+            f"{'  ' * nesting_level}split_and_mirror_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
+        )
+
+        def get_split_masks(size: Tuple[int, int]) -> Tuple[Object, Object]:
+            width, height = size
+            top_right = Object.empty(size, background_color=1)
+            bottom_left = Object.empty(size, background_color=1)
+            for x in range(width):
+                for y in range(height):
+                    if x - y >= 0:  # Split along the other diagonal
+                        top_right[x, y] = 0
+                    else:
+                        bottom_left[x, y] = 0
+            if False:
+                display(top_right, bottom_left, title=f"split_grid")
+            return top_right, bottom_left
+
+        def combine_grids(top_right: Object, bottom_left: Object) -> Object:
+            size = top_right.size
+            width, height = size
+            combined = Object.empty(size)
+            for x in range(width):
+                for y in range(height):
+                    if x - y >= 0:
+                        combined[x, y] = top_right[x, y]
+                    else:
+                        combined[x, y] = bottom_left[x, y]
+            return combined
+
+        if InpaintingMatch.find_mask_for_examples(examples) is None:
+            # abuse the function to check if the examples are valid for inpainting
+            return None
+
+        mask_tr, mask_bl = get_split_masks(examples[0][0].size)
+        match_tr = InpaintingMatch.inpainting_xform(
+            examples, task_name + "_tr", nesting_level + 1, mask_tr
+        )
+        match_bl = InpaintingMatch.inpainting_xform(
+            examples, task_name + "_bl", nesting_level + 1, mask_bl
+        )
+
+        if match_tr is None or match_bl is None:
+            return None
+
+        state_tr, solve_tr = match_tr
+        state_bl, solve_bl = match_bl
+
+        def solve(input: Object) -> Optional[Object]:
+            output_tr = solve_tr(input)
+            output_bl = solve_bl(input)
+            if output_tr is None or output_bl is None:
+                return None
+            if Config.display_verbose:
+                display(output_tr, output_bl, title="TestOutput tr+bl")
+            combined = combine_grids(output_tr, output_bl)
+            if Config.display_verbose:
+                display(combined, title="Combined")
+            return combined
+
+        return (f"split_and_mirror({state_tr}, {state_bl})", solve)
+
+
+# brute force search xforms to be used when all else fails
+desperatexforms: List[XformEntry[Object]] = [
+    XformEntry(SplitAndMirrorMatch.split_and_mirror_xform, 100),
 ]
 
 
@@ -1245,8 +1333,8 @@ def find_xform_for_examples(
                 continue
             else:
                 logger.info(
-                f"{'  ' * nesting_level}Xform {xform.xform.__name__} state:{match[0]} is correct for examples"
-            )
+                    f"{'  ' * nesting_level}Xform {xform.xform.__name__} state:{match[0]} is correct for examples"
+                )
             xform_name.append(xform.xform.__name__)
             return match
         else:
@@ -1458,7 +1546,7 @@ def find_matched_objects(
     return matched_objects
 
 
-num_difficulties_xform = max(xform.difficulty for xform in gridxforms)
+num_difficulties_xform = max(xform.difficulty for xform in gridxforms + desperatexforms)
 num_difficulties_matching = 3
 num_difficulties_total = num_difficulties_xform + num_difficulties_matching
 
@@ -1491,7 +1579,9 @@ def process_tasks(tasks: Tasks, set: str):
             current_difficulty = 0
 
             if Config.find_xform:
-                correct_xform = find_xform(gridxforms, examples, tests, task_name, 0)
+                correct_xform = find_xform(
+                    gridxforms + desperatexforms, examples, tests, task_name, 0
+                )
                 if correct_xform is not None:
                     num_correct += 1
                     continue
