@@ -47,7 +47,7 @@ class Config:
     # task_name = "0dfd9992.json"
     # task_name = "05269061.json"
     # task_name = "47996f11.json"
-    # task_name = "f9d67f8b.json"
+    task_name = "f9d67f8b.json"
     # task_name = "47996f11.json"
     # task_name = "4cd1b7b2.json"  # sudoku
     # task_name = "4aab4007.json"
@@ -58,7 +58,7 @@ class Config:
     whitelisted_tasks.append(task_puzzle)
     # find_xform_color = True
     display_not_found = True
-    display_verbose = False
+    display_verbose = True
     display_this_task = False
     only_simple_examples = False
     only_inpainting_puzzles = True
@@ -820,11 +820,11 @@ class InpaintingMatch:
                     filled_grid.add_object_in_place(
                         mask, background_color=color_only_in_input
                     )
-                if False:
-                    logger.info(
-                        f"Test Shared {non_periodic_shared} {periodic_shared} {cardinality_shared} is_correct: {is_correct}"
-                    )
-                    display(input, filled_grid, title=f"Test Shared")
+                logger.info(
+                    f"Test Shared {non_periodic_shared} {periodic_shared} {cardinality_shared}"
+                )
+                if Config.display_verbose:
+                        display(input, filled_grid, title=f"Test Shared")
                 return filled_grid
 
             return (state, solve_shared)
@@ -1370,9 +1370,12 @@ def find_xform(
         test_input = test_example[0]
         test_output = test_example[1]
         result_on_test = solve(test_input)
+        if result_on_test is None:
+            logger.info(f"Xform {xform_name} state:{state} failed returning None for test input {i}")
+            return None
         if result_on_test != test_output:
             logger.info(f"Xform {xform_name} state:{state} failed for test input {i}")
-            if False:
+            if Config.display_verbose:
                 width, height = test_output.size
                 for x in range(width):
                     for y in range(height):
@@ -1381,9 +1384,11 @@ def find_xform(
                                 f"Xform {xform_name} state:{state} failed for test input {i} at {x},{y}: {test_output[x, y]} != {result_on_test[x, y]}"
                             )
                 display(
-                    test_output,
                     result_on_test,
-                    title=f"Ex{i} state:{state}",
+                    test_output,
+                    title=f"Test {i} Fail",
+                    left_title=f"Result",
+                    right_title=f"Expected",
                 )
             return None
 
