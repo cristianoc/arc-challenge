@@ -44,6 +44,22 @@ class PeriodicGridSymmetry:
             intersect(self.pa, other.pa),
         )
 
+    def __str__(self):
+        symmetries = []
+        if self.px:
+            symmetries.append(f"px={self.px}")
+        if self.py:
+            symmetries.append(f"py={self.py}")
+        if self.pd:
+            symmetries.append(f"pd={self.pd}")
+        if self.pa:
+            symmetries.append(f"pa={self.pa}")
+        
+        return f"PeriodicGridSymmetry({', '.join(symmetries)})"
+
+    def __repr__(self):
+        return self.__str__()
+
 
 @dataclass(frozen=True)
 class NonPeriodicGridSymmetry:
@@ -52,6 +68,29 @@ class NonPeriodicGridSymmetry:
     dg: bool = False  # non-periodic diagonal
     ag: bool = False  # non-periodic anti-diagonal
     offset: Tuple[int, int] = (0, 0)  # offset for symmetry checks
+
+    def __str__(self):
+        symmetries = []
+        if self.hx:
+            symmetries.append("hx")
+        if self.vy:
+            symmetries.append("vy")
+        if self.dg:
+            symmetries.append("dg")
+        if self.ag:
+            symmetries.append("ag")
+        
+        symmetry_str = ", ".join(symmetries)
+        
+        if self.offset != (0, 0):
+            return f"NonPeriodicGridSymmetry({symmetry_str}, offset={self.offset})"
+        elif symmetries:
+            return f"NonPeriodicGridSymmetry({symmetry_str})"
+        else:
+            return "NonPeriodicGridSymmetry()"
+
+    def __repr__(self):
+        return self.__str__()
 
     def intersection(
         self, other: "NonPeriodicGridSymmetry"
@@ -396,30 +435,33 @@ def fill_grid(
     width, height = grid.size
     filled_grid = grid.copy()
 
-    # Fill based on symmetry
-    for x_dest in range(width):
-        for y_dest in range(height):
-            if (
-                filled_grid[x_dest, y_dest] == unknown
-            ):  # If the destination cell is unknown
-                filled_grid[x_dest, y_dest] = find_source_value(
-                    filled_grid,
-                    x_dest,
-                    y_dest,
-                    periodic_symmetry,
-                    non_periodic_symmetry,
-                    unknown,
-                    mask,
-                )
-
-    # Fill based on cardinality predicates
-    while True:
+    changes_made = True
+    while changes_made:
         changes_made = False
+
+        # Fill based on symmetry
+        for x_dest in range(width):
+            for y_dest in range(height):
+                if (
+                    filled_grid[x_dest, y_dest] == unknown
+                ):  # If the destination cell is unknown
+                    color = find_source_value(
+                        filled_grid,
+                        x_dest,
+                        y_dest,
+                        periodic_symmetry,
+                        non_periodic_symmetry,
+                        unknown,
+                        mask,
+                    )
+                    if color == unknown:
+                        continue
+                    changes_made = True
+                    filled_grid[x_dest, y_dest] = color
+        # Fill based on cardinality predicates
         for predicate in cardinality_predicates:
             if fill_grid_based_on_predicate(filled_grid, predicate, unknown):
                 changes_made = True
-        if not changes_made:
-            break
 
     return filled_grid
 

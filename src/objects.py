@@ -485,13 +485,15 @@ class Object:
 
 
 def display(
-    input: Object, output: Object = Object(np.array([[0]])), title: Optional[str] = None
+    input: Object, output: Object = Object(np.array([[0]])), title: Optional[str] = None,
+    left_title: Optional[str] = None, right_title: Optional[str] = None
 ) -> None:
-    display_multiple([(input, output)], title)
+    display_multiple([(input, output)], title, left_title, right_title)
 
 
 def display_multiple(
-    grid_pairs: List[Tuple[Object, Object]], title: Optional[str] = None
+    grid_pairs: List[Tuple[Object, Object]], title: Optional[str] = None,
+    left_title: Optional[str] = None, right_title: Optional[str] = None
 ) -> None:
     num_pairs = len(grid_pairs)
 
@@ -525,7 +527,10 @@ def display_multiple(
         ax_input.set_ylim(0, input_data.shape[0])
         ax_input.set_aspect("equal")
         ax_input.invert_yaxis()  # Invert to match `imshow`
-        ax_input.set_title(f"Input Grid {i+1}")
+        if left_title:
+            ax_input.set_title(left_title)
+        else:
+            ax_input.set_title(f"Input Grid {i+1}")
         ax_input.axis("off")  # Hide the axes
 
         if output_data is not None:
@@ -548,10 +553,16 @@ def display_multiple(
             ax_output.set_ylim(0, output_data.shape[0])
             ax_output.set_aspect("equal")
             ax_output.invert_yaxis()  # Invert to match `imshow`
-            ax_output.set_title(f"Output Grid {i+1}")
+            if right_title:
+                ax_output.set_title(right_title)
+            else:
+                ax_output.set_title(f"Output Grid {i+1}")
         else:
             # If output_data is None, just show a blank plot
-            ax_output.set_title(f"Output Grid {i+1} (None)")
+            if right_title:
+                ax_output.set_title(right_title)
+            else:
+                ax_output.set_title(f"Output Grid {i+1} (None)")
             ax_output.axis("off")  # Hide the axes for a blank plot
 
     if title:
