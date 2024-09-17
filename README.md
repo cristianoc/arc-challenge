@@ -1,4 +1,4 @@
-# ARC Challenge Framework: SizeARC, ColorsARC, and Grid Transformation Instantiations
+# ARC Challenge Framework: SizeARC, ColorsARC, InPaintingARC, and Foundations.
 
 This repository explores various simplified versions of the [Abstraction and Reasoning Corpus (ARC) challenge](https://www.kaggle.com/c/abstraction-and-reasoning-challenge), along with the theoretical framework and practical instantiations developed to solve them.
 
@@ -7,6 +7,7 @@ This repository explores various simplified versions of the [Abstraction and Rea
 The repository covers:
 - **SizeARC**: A challenge focused on predicting the dimensions of output grids based on input grids.
 - **ColorsARC**: A related challenge where the task is to predict the color patterns in the output grid.
+- **InPaintingARC**: A vertical subset of ARC-AGI: the in-painting puzzles of any difficulty.
 - **Theory**: The underlying theoretical framework that guides the development of these challenges and solutions.
 - **MicroARC**: A foundational instantiation of the theory focused on the simplest grid transformations.
 - **MiniARC**: An extension of MicroARC that deals with more complex sequences of transformations.
@@ -86,7 +87,20 @@ The graph below summarizes the performance of the model on both the training and
 
 The approach to ColorsARC is similar to SizeARC but focuses on color transformations rather than size transformations. Predefined transformation rules and domain-specific knowledge are used to predict the color configurations in the output grid.
 
-## 3. Theory: The Foundation of the Approach
+## 3. InPaintingARC: A vertical subset of ARC-AGI
+
+**InPaintingARC** is a variant of the ARC challenge intended to be smaller in variety, but not simpler on a per-puzzle basis, than full ARC-AGI.
+
+### Solution Approach
+
+The approach to InPaintingARC requires a re-thinking of the way solutions are represented and explored.
+Solutions consists of spatial specifications that are composable and make use of predicates capturing certain aspects of the priors required (objects, color, symmetry, frames).
+To drive the seach of solutions, a special form of bi-abducrive inference is developed, where given a set of examples and one input, one derives the spec for the transformation that the examples represent, and the corresponding final  output.
+
+For more detailed information, please refer to the [InPaintingARC.md](./InPaintingARC.md) document.
+
+
+## 4. Theory: The Foundation of the Approach
 
 The [ARC_Problem_Theory.md](./ARC_Problem_Theory.md) document provides an in-depth explanation of the theoretical framework guiding this project. The theory defines a general approach to solving ARC problems through minimal and well-defined transformation specifications.
 
