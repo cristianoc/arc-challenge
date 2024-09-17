@@ -122,14 +122,14 @@ $$\text{Pattern}(X) \iff (x + y) \bmod 2 = 0$$
 From the examples (excluding the top three rows):
 
 
-$$
+$`
 \text{Spec}(X) \iff \neg \text{Frame}(X) \implies \left\{
   \begin{array}{ll}
     \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_{\text{blue}} \\
     \neg \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_{\text{red}}
   \end{array}
 \right.
-$$
+`$
 
 
 #### Step 3: Identify Frame (`R`)
