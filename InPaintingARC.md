@@ -13,7 +13,6 @@ The solution to InPaintingARC leverages **bi-abductive inference** to derive tra
 **Bi-abduction** is a reasoning process that simultaneously infers both the missing specifications and the frame conditions required to explain observed behavior. In the context of grid transformations, bi-abduction aims to derive:
 
 - **Specification (`Spec`)**: The minimal set of rules that explain the transformations in the examples.
-- **Frame (`R`)**: The part of the grid that remains unchanged during the transformation.
 
 #### General Shape of Bi-Abduction
 
@@ -21,13 +20,14 @@ The general form of bi-abduction can be expressed as:
 
 
 $$
-[\text{Spec}] \quad \text{Examples} \quad \vdash \quad \text{Input} \quad \rightarrow \quad [\text{Output}]
+[\text{Spec}] \quad \text{Examples} \quad \vdash \quad \text{Input} \rightarrow [\text{Output}]
 $$
 
-- **`[Spec]`**: The specification inferred from the examples.
-- **`Examples`**: Input-output pairs demonstrating the transformation.
-- **`Input`**: The grid to which the specification will be applied.
-- **`Output`**: The resulting grid after applying the specification to the input.
+- `[Spec]`: The specification inferred from the examples.
+- `Examples`: Given input-output pairs demonstrating the transformation.
+- `Input`: Gven grid to which the specification will be applied.
+- `[Output]`: The inferred resulting grid after applying the specification to the input.
+
 
 #### The Frame Rule
 
@@ -37,25 +37,25 @@ $$
 \frac{[\text{Spec}] \quad \text{Examples} \quad \vdash \quad \text{Input} \quad \rightarrow \quad [\text{Output}]}{[\text{Spec} * R] \quad \text{Examples} * R \quad \vdash \quad \text{Input} * R \quad \rightarrow \quad [\text{Output} * R]}
 $$
 
-- **`[Spec * R]`**: The combined specification, where `Spec` and `R` are combined using the separating conjunction `*`, indicating they operate on disjoint parts of the grid.
-- **`Examples * R`**, **`Input * R`**, **`[Output * R]`**: The extension of examples, input, and output by including the frame `R`.
+- `Spec * R`: The combined specification, where `Spec` and `R` are combined using the separating conjunction `*`, indicating they operate on disjoint parts of the grid.
+- `Examples * R`, `Input * R`, `Output * R`: The extension of examples, input, and output by including the frame `R`.
 
 The **separating conjunction** `*` asserts that the domains of `Spec` and `R` are disjoint, ensuring that the transformation and the frame do not interfere with each other.
 
 ---
 
-## Detailed Methodology
+## Formalization
 
-### 1. Formal Definitions
+### 1. Definitions
 
 #### Grid and Cells
 
-- **Grid (`G`)**: A finite two-dimensional array of cells.
-- **Cell (`X`)**: Identified by its coordinates \( X = (x, y) \).
+- **Grid (`G`)**: A finite set of colored cells.
+- **Position (`X`)**: Identified by its coordinates \( X = (x, y) \).
 
 #### Color Predicate
 
-- **`Color_G(C, X)`**: Predicate indicating that cell `X` in grid `G` has color `C`.
+- **`G[X] = C`**: Predicate indicating that cell `X` in grid `G` has color `C`.
 
 #### Pattern Predicate
 
@@ -181,17 +181,3 @@ For all cells `X`:
     - $` \text{Color}_{G_{\text{out}}}(X) = C_{\text{blue}} `$
   - **Else**:
     - $` \text{Color}_{G_{\text{out}}}(X) = C_{\text{red}} `$
-
----
-
-## Conclusion
-
-By utilizing **bi-abductive inference** and the **frame rule**, we derive precise and modular specifications for grid transformations in InPaintingARC puzzles. The process involves:
-
-- **Defining formal predicates** to capture properties of cells.
-- **Inferring the transformation specification (`Spec`)** from examples.
-- **Identifying the frame (`R`)** that remains unchanged.
-- **Applying the frame rule** to combine `Spec` and `R` into a combined specification `[Spec * R]`.
-- **Applying the combined specification** to the input grid to obtain the desired output grid.
-
-This methodology ensures that transformations are correctly applied to the intended parts of the grid while preserving the invariant regions, enabling effective and accurate solutions to complex grid-based puzzles.
