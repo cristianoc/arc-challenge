@@ -85,9 +85,9 @@ $`
 
 - **`R(X)`**: Ensures that cells in the frame remain unchanged.
 
-$$
+`$
 R(X) \iff \text{Frame}(X) \implies \text{Color}_{G_{\text{out}}}(X) = \text{Color}_{G_{\text{in}}}(X)
-$$
+`$
 
 #### Separating Conjunction (`*`)
 
