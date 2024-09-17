@@ -45,12 +45,11 @@ $$
 - `Pattern(X)`: A predicate defining a pattern for cell `X`. For example, in a checkerboard pattern:
 
 $$
-\text{Pattern}(x,y) \iff G[x,y] = \left\{
+\text{Pattern}(x,y) \iff G[x,y] =
 \begin{array}{ll}
 black  & \text{if} \quad (x + y) \bmod 2 = 0 \\
 red  & \text{otherwise}
 \end{array}
-\right.
 $$
 
 ### Examples
