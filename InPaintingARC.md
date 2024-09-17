@@ -72,14 +72,14 @@ $$\text{Frame}(x,y) \iff y \in \{0, 1, 2\}$$
 
 - **`Spec(X)`**: Defines the transformation for cells not in the frame.
 
-$$
+$`
 \text{Spec}(X) \iff \neg \text{Frame}(X) \implies \left\{
 \begin{array}{ll}
 \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_1 \\
 \neg \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_2
 \end{array}
 \right\}
-$$
+`$
 
 #### Frame (`R`)
 
