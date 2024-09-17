@@ -65,7 +65,7 @@ TODO
 The **frame rule** allows us to extend the specification to include parts of the grid that remain unaffected by the transformation. It is formulated as:
 
 $$
-\frac{[\text{Spec}] \quad \text{Examples} \quad \vdash \quad \text{Input} \quad \rightarrow \quad [\text{Output}]}{[\text{Spec} * R] \quad \text{Examples} * R \quad \vdash \quad \text{Input} * R \quad \rightarrow \quad [\text{Output} * R]}
+\frac{[\text{Spec}] \quad \text{Examples} \quad \vdash \quad \text{Input} \rightarrow [\text{Output}]}{[\text{Spec} * R] \quad \text{Examples} * R \quad \vdash \quad \text{Input} * R \rightarrow [\text{Output} * R]}
 $$
 
 - `Spec * R`: The combined specification, where `Spec` and `R` are combined using the separating conjunction `*`, indicating they operate on disjoint parts of the grid.
