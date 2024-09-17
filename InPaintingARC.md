@@ -38,7 +38,7 @@ $$
 $$
 
 - **`[Spec * R]`**: The combined specification, where `Spec` and `R` are combined using the separating conjunction `*`, indicating they operate on disjoint parts of the grid.
-- **`Examples * R`**, **`Input * R`**, **`Output * R]`**: The extension of examples, input, and output by including the frame `R`.
+- **`Examples * R`**, **`Input * R`**, **`[Output * R]`**: The extension of examples, input, and output by including the frame `R`.
 
 The **separating conjunction** `*` asserts that the domains of `Spec` and `R` are disjoint, ensuring that the transformation and the frame do not interfere with each other.
 
@@ -61,31 +61,31 @@ The **separating conjunction** `*` asserts that the domains of `Spec` and `R` ar
 
 - **`Pattern(X)`**: A predicate defining a pattern for cell `X`. For example, in a checkerboard pattern:
 
-$$\text{Pattern}(X) \iff (x + y) \bmod 2 = 0$$
+$$\text{Pattern}(x,y) \iff (x + y) \bmod 2 = 0$$
 
 #### Frame Predicate
 
 - **`Frame(X)`**: Indicates that cell `X` is part of the frame and should remain unchanged.
-$$\text{Frame}(X) \iff y \in \{0, 1, 2\}$$
+$$\text{Frame}(x,y) \iff y \in \{0, 1, 2\}$$
 
 #### Specification (`Spec`)
 
 - **`Spec(X)`**: Defines the transformation for cells not in the frame.
 
-$`
+$$
 \text{Spec}(X) \iff \neg \text{Frame}(X) \implies \left\{
 \begin{array}{ll}
 \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_1 \\
 \neg \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_2
 \end{array}
 \right\}
-`$
+$$
 
 #### Frame (`R`)
 
 - **`R(X)`**: Ensures that cells in the frame remain unchanged.
 
-$`R(X) \iff \text{Frame}(X) \implies \text{Color}_{G_{\text{out}}}(X) = \text{Color}_{G_{\text{in}}}(X)`$
+$$R(X) \iff \text{Frame}(X) \implies \text{Color}_{G_{\text{out}}}(X) = \text{Color}_{G_{\text{in}}}(X)$$
 
 #### Separating Conjunction (`*`)
 
@@ -95,69 +95,15 @@ $`R(X) \iff \text{Frame}(X) \implies \text{Color}_{G_{\text{out}}}(X) = \text{Co
 
 ### 2. Derivation Using Bi-Abductive Inference
 
-#### Step 1: Infer Specification (`Spec`) from Examples
-
-Given examples where transformations occur outside the frame, we infer:
-
-$$\forall X, \quad \text{Spec}(X)$$
-
-This specification captures the transformation rules necessary to produce the observed outputs from the inputs in the examples.
-
-#### Step 2: Identify Frame (`R`)
-
-From the examples, we observe that certain cells remain unchanged. We define the frame:
-
-$$\forall X, \quad R(X)$$
-
-#### Step 3: Apply the Frame Rule
-
-Using the frame rule:
-
-$`
-\frac{[\text{Spec}] \quad \text{Examples} \quad \vdash \quad G_{\text{in}} \quad \rightarrow \quad [G_{\text{out}}]}{[\text{Spec} * R] \quad \text{Examples} * R \quad \vdash \quad G_{\text{in}} * R \quad \rightarrow \quad [G_{\text{out}} * R]}
-`$
-
-#### Step 4: Formulate the Combined Specification
-
-The combined specification `[Spec * R]` is:
-
-$$\forall X, \quad \text{Spec}(X) \land R(X)$$
-
-Expanding this:
-
-$`
-\forall X, \quad \left\{
-  \begin{array}{ll}
-    \text{Frame}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = \text{Color}_{G_{\text{in}}}(X) \\
-    \neg \text{Frame}(X) & \implies \left\{
-      \begin{array}{ll}
-        \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_1 \\
-        \neg \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_2
-      \end{array}
-    \right.
-  \end{array}
-\right.
-`$
-
-#### Step 5: Apply to the Input Grid
-
-For each cell `X` in $` G_{\text{in}} `$ :
-
-- **If** $` \text{Frame}(X) `$ holds:
-  - $` \text{Color}_{G_{\text{out}}}(X) = \text{Color}_{G_{\text{in}}}(X) `$ (cell remains unchanged).
-- **Else**:
-  - **If** $` \text{Pattern}(X) `$ holds:
-    - $` \text{Color}_{G_{\text{out}}}(X) = C_1 `$
-  - **Else**:
-    - $` \text{Color}_{G_{\text{out}}}(X) = C_2 `$
-
+TODO
 ---
+
 
 ## Example Workflow
 
 ### Problem Statement
 
-- **Input Grid (\( G_{\text{in}} \))**: A grid where the top three rows ($` y = 0, 1, 2 `$) are solid yellow ($` C_{\text{yellow}} `$), and the remaining rows are unpatterned.
+- **Input Grid ( $`G_{\text{in}}`$ )**: A grid where the top three rows ( $` y = 0, 1, 2 `$ ) are solid yellow ($` C_{\text{yellow}} `$), and the remaining rows are unpatterned.
 - **Desired Output Grid ($` G_{\text{out}} `$)**: The top three rows remain yellow, and the remaining rows form a checkerboard pattern with colors $` C_{\text{blue}} `$ and $` C_{\text{red}} `$.
 
 ### Step-by-Step Solution
@@ -166,24 +112,24 @@ For each cell `X` in $` G_{\text{in}} `$ :
 
 - **Frame Predicate**:
 
-$`\text{Frame}(X) \iff y \in \{0, 1, 2\}`$
+$$\text{Frame}(X) \iff y \in \{0, 1, 2\}$$
 
 - **Pattern Predicate**:
-`\text{Pattern}(X) \iff (x + y) \bmod 2 = 0`$
+$$\text{Pattern}(X) \iff (x + y) \bmod 2 = 0$$
 
 #### Step 2: Infer Specification (`Spec`)
 
 From the examples (excluding the top three rows):
 
 
-$`
+$$
 \text{Spec}(X) \iff \neg \text{Frame}(X) \implies \left\{
   \begin{array}{ll}
     \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_{\text{blue}} \\
     \neg \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_{\text{red}}
   \end{array}
 \right.
-`$
+$$
 
 
 #### Step 3: Identify Frame (`R`)
