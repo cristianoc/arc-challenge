@@ -125,9 +125,9 @@ def check_vertical_symmetry_with_unknowns(
     for x in range(width):
         for y in range(period, height):
             if (
-                (mask is None or mask[x, y] == unknown)
+                (mask is None or mask[x, y] == 0)
                 and grid[x, y] != unknown
-                and (mask is None or mask[x, y - period] == unknown)
+                and (mask is None or mask[x, y - period] == 0)
                 and grid[x, y - period] != unknown
                 and grid[x, y] != grid[x, y - period]
             ):
@@ -145,9 +145,9 @@ def check_horizontal_symmetry_with_unknowns(
     for x in range(period, width):
         for y in range(height):
             if (
-                (mask is None or mask[x, y] == unknown)
+                (mask is None or mask[x, y] == 0)
                 and grid[x, y] != unknown
-                and (mask is None or mask[x - period, y] == unknown)
+                and (mask is None or mask[x - period, y] == 0)
                 and grid[x - period, y] != unknown
                 and grid[x, y] != grid[x - period, y]
             ):
@@ -173,9 +173,9 @@ def check_diagonal_symmetry_with_unknowns(
                 continue
 
             if (
-                (mask is None or mask[x, y] == unknown)
+                (mask is None or mask[x, y] == 0)
                 and grid[x, y] != unknown
-                and (mask is None or mask[next_x, next_y] == unknown)
+                and (mask is None or mask[next_x, next_y] == 0)
                 and grid[next_x, next_y] != unknown
                 and grid[x, y] != grid[next_x, next_y]
             ):
@@ -201,9 +201,9 @@ def check_anti_diagonal_symmetry_with_unknowns(
                 continue
 
             if (
-                (mask is None or mask[x, y] == unknown)
+                (mask is None or mask[x, y] == 0)
                 and grid[x, y] != unknown
-                and (mask is None or mask[next_x, next_y] == unknown)
+                and (mask is None or mask[next_x, next_y] == 0)
                 and grid[next_x, next_y] != unknown
                 and grid[x, y] != grid[next_x, next_y]
             ):
@@ -318,7 +318,7 @@ def find_source_value(
     width, height = filled_grid.size
     for x_src in range(x % px, width, px) if px is not None else [x]:
         for y_src in range(y % py, height, py) if py is not None else [y]:
-            if filled_grid[x_src, y_src] != unknown and (mask is None or mask[x_src, y_src] == unknown):
+            if filled_grid[x_src, y_src] != unknown and (mask is None or mask[x_src, y_src] == 0):
                 return filled_grid[x_src, y_src]
 
     # Search based on diagonal (pd) symmetry if provided
@@ -334,7 +334,7 @@ def find_source_value(
                 0 <= x_src < size
                 and 0 <= y_src < size
                 and filled_grid[x_src, y_src] != unknown
-                and (mask is None or mask[x_src, y_src] == unknown)
+                and (mask is None or mask[x_src, y_src] == 0)
             ):
                 return filled_grid[x_src, y_src]
 
@@ -351,7 +351,7 @@ def find_source_value(
                 0 <= x_src < size
                 and 0 <= y_src < size
                 and filled_grid[x_src, y_src] != unknown
-                and (mask is None or mask[x_src, y_src] == unknown)
+                and (mask is None or mask[x_src, y_src] == 0)
             ):
                 return filled_grid[x_src, y_src]
 
@@ -366,7 +366,7 @@ def find_source_value(
             0 <= x_src < width
             and 0 <= y_src < height
             and filled_grid[x_src, y_src] != unknown
-            and (mask is None or mask[x_src, y_src] == unknown)
+            and (mask is None or mask[x_src, y_src] == 0)
         ):
             return True
         else:
@@ -444,6 +444,7 @@ def fill_grid(
             for y_dest in range(height):
                 if (
                     filled_grid[x_dest, y_dest] == unknown
+                    and (mask is None or mask[x_dest, y_dest] == 0)
                 ):  # If the destination cell is unknown
                     color = find_source_value(
                         filled_grid,

@@ -49,9 +49,9 @@ class Config:
     # task_name = "47996f11.json"
     # task_name = "47996f11.json"
     # task_name = "4cd1b7b2.json"  # sudoku
-    # task_name = "4aab4007.json"
 
-    # task_name = "1e97544e.json" # snake-like pattern
+    # task_name = "4aab4007.json"  # diagonal pattern with shared mask
+    # task_name = "1e97544e.json"  # snake-like pattern
     # task_name = "f9d67f8b.json" # maybe a mistake in the task
 
     task_fractal = "8f2ea7aa.json"  # fractal expansion
@@ -578,35 +578,34 @@ class InpaintingMatch:
         return color
 
     @staticmethod
-    def update_mask(output: Object, mask: Object, unknown: int) -> None:
+    def update_mask(input: Object, output: Object, mask: Object) -> None:
         """
         Update the mask grid with 0s where the current object and the other object differ.
         """
         for x in range(output.width):
             for y in range(output.height):
-                if output[x, y] != mask[x, y]:
-                    mask[x, y] = unknown
+                if input[x, y] != output[x, y]:
+                    mask[x, y] = 0
 
     @staticmethod
-    def find_mask_for_examples(examples: List[Example[Object]]) -> Optional[Object]:
+    def mask_from_all_outputs(examples: List[Example[Object]]) -> Optional[Object]:
         """
         Find the mask for a set of examples where all examples have the same size.
         """
         if not examples:
             return None
 
-        mask = None
+        _, first_output = examples[0]
+        mask = Object.empty(first_output.size, background_color=1)
 
         # Update the mask with each example
-        for input_grid, output_grid in examples:
-            color = InpaintingMatch.check_inpainting_conditions(input_grid, output_grid)
+        for input, output in examples:
+            color = InpaintingMatch.check_inpainting_conditions(input, output)
             if color is None:
                 return None
-            if mask is None:
-                mask = output_grid.copy()
-            if mask.size != output_grid.size:
+            if mask.size != output.size:
                 return None
-            InpaintingMatch.update_mask(output_grid, mask, color)
+            InpaintingMatch.update_mask(first_output, output, mask)
         return mask
 
     # check that the color only in input is the same for all examples
@@ -706,13 +705,11 @@ class InpaintingMatch:
 
     @staticmethod
     def check_equality_modulo_mask(
-        grid1: Object, grid2: Object, mask: Optional[Object], unknown: int
+        grid1: Object, grid2: Object, mask: Optional[Object]
     ) -> bool:
         for x in range(grid1.width):
             for y in range(grid1.height):
-                if grid1[x, y] != grid2[x, y] and (
-                    mask is None or mask[x, y] == unknown
-                ):
+                if grid1[x, y] != grid2[x, y] and (mask is None or mask[x, y] == 0):
                     return False
         return True
 
@@ -723,7 +720,7 @@ class InpaintingMatch:
         nesting_level: int,
     ) -> Optional[Match[Object]]:
         return InpaintingMatch.inpainting_xform(
-            examples, task_name, nesting_level, mask=None
+            examples, task_name, nesting_level, mask=None, apply_mask_to_input=False
         )
 
     @staticmethod
@@ -732,12 +729,12 @@ class InpaintingMatch:
         task_name: str,
         nesting_level: int,
     ) -> Optional[Match[Object]]:
-        mask = InpaintingMatch.find_mask_for_examples(examples)
+        mask = InpaintingMatch.mask_from_all_outputs(examples)
         if mask is not None:
             if Config.display_verbose:
                 display(mask, title=f"Mask")
         return InpaintingMatch.inpainting_xform(
-            examples, task_name, nesting_level, mask=mask
+            examples, task_name, nesting_level, mask=mask, apply_mask_to_input=False
         )
 
     @staticmethod
@@ -746,20 +743,21 @@ class InpaintingMatch:
         task_name: str,
         nesting_level: int,
         mask: Optional[Object],
+        apply_mask_to_input: bool,
     ) -> Optional[Match[Object]]:
 
-        # Web view: open -a /Applications/Safari.app "https://arcprize.org/play?task=484b58aa"
-        # Tasks with average_regularity_score < 0.5:
-
-        # bd4472b8
-        # 8e5a5113
-        # 62b74c02
-        # 4aab4007 # solve two halves (top left and bottom right) separately
-        # ef26cbf6
-        # 1e97544e # solve two halves (top left and bottom right) separately
-        # 4cd1b7b2 # sudoku
-
-        # f9d67f8b # solve two halves (top left and bottom right) separately
+        def apply_mask_to_filled_grid(filled_grid, input, mask, color_only_in_input):
+            if mask is not None:
+                if apply_mask_to_input:
+                    source = input
+                else:
+                    first_output = examples[0][1]
+                    source = first_output
+                filled_grid.add_object_in_place(
+                    source.apply_mask(mask, background_color=color_only_in_input),
+                    background_color=color_only_in_input,
+                )
+            return filled_grid
 
         color = InpaintingMatch.check_color_only_in_input(examples)
         if color is None:
@@ -790,8 +788,13 @@ class InpaintingMatch:
                 cardinality_shared,
                 color_only_in_input,
             )
+
+            filled_grid = apply_mask_to_filled_grid(
+                filled_grid, input, mask, color_only_in_input
+            )
+
             is_correct = InpaintingMatch.check_equality_modulo_mask(
-                filled_grid, output, mask, color_only_in_input
+                filled_grid, output, mask
             )
             logger.info(
                 f"#{i} Shared {non_periodic_shared} {periodic_shared} {cardinality_shared} is_correct: {is_correct}"
@@ -818,10 +821,9 @@ class InpaintingMatch:
                     cardinality_shared,
                     color_only_in_input,
                 )
-                if mask is not None:
-                    filled_grid.add_object_in_place(
-                        mask, background_color=color_only_in_input
-                    )
+                filled_grid = apply_mask_to_filled_grid(
+                    filled_grid, input, mask, color_only_in_input
+                )
                 logger.info(
                     f"Test Shared {non_periodic_shared} {periodic_shared} {cardinality_shared}"
                 )
@@ -843,7 +845,8 @@ class InpaintingMatch:
             )
             if mask is not None:
                 filled_grid.add_object_in_place(
-                    mask, background_color=color_only_in_input
+                    input.apply_mask(mask, background_color=color_only_in_input),
+                    background_color=color_only_in_input,
                 )
             # check if there are leftover unknown colors
             data = filled_grid._data
@@ -907,16 +910,25 @@ class SplitAndMirrorMatch:
                         combined[x, y] = bottom_left[x, y]
             return combined
 
-        if InpaintingMatch.find_mask_for_examples(examples) is None:
+        if InpaintingMatch.mask_from_all_outputs(examples) is None:
             # abuse the function to check if the examples are valid for inpainting
             return None
 
-        mask_tr, mask_bl = get_split_masks(examples[0][0].size)
+        first_input = examples[0][0]
+        mask_tr, mask_bl = get_split_masks(first_input.size)
         match_tr = InpaintingMatch.inpainting_xform(
-            examples, task_name + "_tr", nesting_level + 1, mask_tr
+            examples,
+            task_name + "_tr",
+            nesting_level + 1,
+            mask_tr,
+            apply_mask_to_input=True,
         )
         match_bl = InpaintingMatch.inpainting_xform(
-            examples, task_name + "_bl", nesting_level + 1, mask_bl
+            examples,
+            task_name + "_bl",
+            nesting_level + 1,
+            mask_bl,
+            apply_mask_to_input=True,
         )
 
         if match_tr is None or match_bl is None:
@@ -931,7 +943,13 @@ class SplitAndMirrorMatch:
             if output_tr is None or output_bl is None:
                 return None
             if Config.display_verbose:
-                display(output_tr, output_bl, title="TestOutput tr+bl", left_title="tr", right_title="bl")
+                display(
+                    output_tr,
+                    output_bl,
+                    title="TestOutput tr+bl",
+                    left_title="tr",
+                    right_title="bl",
+                )
             combined = combine_grids(output_tr, output_bl)
             if Config.display_verbose:
                 display(combined, title="Combined")

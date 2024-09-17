@@ -129,6 +129,14 @@ class Object:
                 if color != 0:
                     self[x + x_off, y + y_off] = 0
 
+    def apply_mask(self, mask: "Object", background_color: int = 0) -> "Object":
+        """
+        Apply a mask to the current object. Keeps original colors where mask is 1,
+        sets to background_color elsewhere. Returns a new Object.
+        """
+        new_data = np.where(mask._data == 1, self._data, background_color)
+        return Object(new_data)
+
     def map(self, func: Callable[[int, int], int]) -> "Object":
         new_grid = [[func(x, y) for y in range(self.width)] for x in range(self.height)]
         return Object(np.array(new_grid))
@@ -461,7 +469,7 @@ class Object:
         elif symmetry == Symmetry.ANTI_DIAGONAL:  # (x, y) == (w-x-1, h-y-1)
             if height != width:
                 return False
-            # fliplr: 
+            # fliplr:
             # then fliplr:
             return np.array_equal(data, np.fliplr(data.T))
 
@@ -485,15 +493,20 @@ class Object:
 
 
 def display(
-    input: Object, output: Object = Object(np.array([[0]])), title: Optional[str] = None,
-    left_title: Optional[str] = None, right_title: Optional[str] = None
+    input: Object,
+    output: Object = Object(np.array([[0]])),
+    title: Optional[str] = None,
+    left_title: Optional[str] = None,
+    right_title: Optional[str] = None,
 ) -> None:
     display_multiple([(input, output)], title, left_title, right_title)
 
 
 def display_multiple(
-    grid_pairs: List[Tuple[Object, Object]], title: Optional[str] = None,
-    left_title: Optional[str] = None, right_title: Optional[str] = None
+    grid_pairs: List[Tuple[Object, Object]],
+    title: Optional[str] = None,
+    left_title: Optional[str] = None,
+    right_title: Optional[str] = None,
 ) -> None:
     num_pairs = len(grid_pairs)
 
