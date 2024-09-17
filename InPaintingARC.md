@@ -29,6 +29,38 @@ $$
 - `[Output]`: The inferred resulting grid after applying the specification to the input.
 
 
+### Notation
+
+#### Grid and Cells
+
+- **Grid (`G`)**: A finite set of colored cells.
+- **Position (`X`)**: Identified by its coordinates \( X = (x, y) \).
+
+#### Color Predicate
+
+- `G[X] = C`: Predicate indicating that cell `X` in grid `G` has color `C`.
+
+#### Pattern Predicate
+
+- `Pattern(X)`: A predicate defining a pattern for cell `X`. For example, in a checkerboard pattern:
+
+$$
+\text{Pattern}(x,y) \iff G[x,y] = \left\{
+\begin{array}{ll}
+black  & \text{if} \quad (x + y) \bmod 2 = 0 \\
+red  & \text{otherwise}
+\end{array}
+\right.
+$$
+
+### Examples
+
+TODO
+
+-----
+
+TODO
+
 #### The Frame Rule
 
 The **frame rule** allows us to extend the specification to include parts of the grid that remain unaffected by the transformation. It is formulated as:
@@ -42,142 +74,3 @@ $$
 
 The **separating conjunction** `*` asserts that the domains of `Spec` and `R` are disjoint, ensuring that the transformation and the frame do not interfere with each other.
 
----
-
-## Formalization
-
-### 1. Definitions
-
-#### Grid and Cells
-
-- **Grid (`G`)**: A finite set of colored cells.
-- **Position (`X`)**: Identified by its coordinates \( X = (x, y) \).
-
-#### Color Predicate
-
-- **`G[X] = C`**: Predicate indicating that cell `X` in grid `G` has color `C`.
-
-#### Pattern Predicate
-
-- **`Pattern(X)`**: A predicate defining a pattern for cell `X`. For example, in a checkerboard pattern:
-
-$$\text{Pattern}(x,y) \iff (x + y) \bmod 2 = 0$$
-
-#### Frame Predicate
-
-- **`Frame(X)`**: Indicates that cell `X` is part of the frame and should remain unchanged.
-$$\text{Frame}(x,y) \iff y \in \{0, 1, 2\}$$
-
-#### Specification (`Spec`)
-
-- **`Spec(X)`**: Defines the transformation for cells not in the frame.
-
-$$
-\text{Spec}(X) \iff \neg \text{Frame}(X) \implies \left\{
-\begin{array}{ll}
-\text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_1 \\
-\neg \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_2
-\end{array}
-\right.
-$$
-
-#### Frame (`R`)
-
-- **`R(X)`**: Ensures that cells in the frame remain unchanged.
-
-$`R(X) \iff \text{Frame}(X) \implies \text{Color}_{G_{\text{out}}}(X) = \text{Color}_{G_{\text{in}}}(X)`$
-
-#### Separating Conjunction (`*`)
-
-- Combines specifications or grids operating on disjoint domains.
-
----
-
-### 2. Derivation Using Bi-Abductive Inference
-
-TODO
----
-
-
-## Example Workflow
-
-### Problem Statement
-
-- **Input Grid ( $`G_{\text{in}}`$ )**: A grid where the top three rows ( $` y = 0, 1, 2 `$ ) are solid yellow ($` C_{\text{yellow}} `$), and the remaining rows are unpatterned.
-- **Desired Output Grid ($` G_{\text{out}} `$)**: The top three rows remain yellow, and the remaining rows form a checkerboard pattern with colors $` C_{\text{blue}} `$ and $` C_{\text{red}} `$.
-
-### Step-by-Step Solution
-
-#### Step 1: Define Predicates
-
-- **Frame Predicate**:
-
-$$\text{Frame}(X) \iff y \in \{0, 1, 2\}$$
-
-- **Pattern Predicate**:
-$$\text{Pattern}(X) \iff (x + y) \bmod 2 = 0$$
-
-#### Step 2: Infer Specification (`Spec`)
-
-From the examples (excluding the top three rows):
-
-
-$`
-\text{Spec}(X) \iff \neg \text{Frame}(X) \implies \left\{
-  \begin{array}{ll}
-    \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_{\text{blue}} \\
-    \neg \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_{\text{red}}
-  \end{array}
-\right.
-`$
-
-
-#### Step 3: Identify Frame (`R`)
-
-Frame ensuring top rows remain unchanged:
-
-$`
-R(X) \iff \text{Frame}(X) \implies \text{Color}_{G_{\text{out}}}(X) = C_{\text{yellow}}
-`$
-
-#### Step 4: Apply the Frame Rule
-
-Using the frame rule:
-
-$`
-\frac{[\text{Spec}] \quad \text{Examples} \quad \vdash \quad G_{\text{in}} \quad \rightarrow \quad [G_{\text{out}}]}{[\text{Spec} * R] \quad \text{Examples} * R \quad \vdash \quad G_{\text{in}} * R \quad \rightarrow \quad [G_{\text{out}} * R]}
-`$
-
-#### Step 5: Formulate Combined Specification
-
-$`
-[\text{Spec} * R] \iff \forall X, \quad \text{Spec}(X) \land R(X)
-`$
-
-Expanding:
-
-$`
-\forall X, \quad \left\{
-  \begin{array}{ll}
-    y \in \{0, 1, 2\} & \implies \text{Color}_{G_{\text{out}}}(X) = C_{\text{yellow}} \\
-    y \geq 3 & \implies \left\{
-      \begin{array}{ll}
-        (x + y) \bmod 2 = 0 & \implies \text{Color}_{G_{\text{out}}}(X) = C_{\text{blue}} \\
-        (x + y) \bmod 2 = 1 & \implies \text{Color}_{G_{\text{out}}}(X) = C_{\text{red}}
-      \end{array}
-    \right.
-  \end{array}
-\right.
-`$
-
-#### Step 6: Apply to Input Grid
-
-For all cells `X`:
-
-- **If** $` y \in \{0, 1, 2\} `$:
-  - $` \text{Color}_{G_{\text{out}}}(X) = C_{\text{yellow}} `$ (unchanged).
-- **Else**:
-  - **If** $` (x + y) \bmod 2 = 0 `$:
-    - $` \text{Color}_{G_{\text{out}}}(X) = C_{\text{blue}} `$
-  - **Else**:
-    - $` \text{Color}_{G_{\text{out}}}(X) = C_{\text{red}} `$
