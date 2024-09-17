@@ -52,9 +52,22 @@ red  & \text{otherwise}
 \end{array}
 $$
 
-### Examples
+### Example
 
-TODO
+![bi-abduction-ex1-a](https://github.com/user-attachments/assets/d403a048-bfb4-48cb-8945-9704e2ae2c77)
+
+
+
+From the examples one can infer
+
+$$
+Spec \iff \text{in}.\text{rot90()} = \text{out}
+$$
+
+So the final derivation is
+
+![bi-abduction-ex1-b](https://github.com/user-attachments/assets/690cf3a6-bb00-4344-bc23-6fab242e3435)
+
 
 -----
 
