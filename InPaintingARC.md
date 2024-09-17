@@ -20,9 +20,9 @@ The solution to InPaintingARC leverages **bi-abductive inference** to derive tra
 The general form of bi-abduction can be expressed as:
 
 
-$$`
+$$
 [\text{Spec}] \quad \text{Examples} \quad \vdash \quad \text{Input} \quad \rightarrow \quad [\text{Output}]
-`$$
+$$
 
 - **`[Spec]`**: The specification inferred from the examples.
 - **`Examples`**: Input-output pairs demonstrating the transformation.
@@ -33,9 +33,9 @@ $$`
 
 The **frame rule** allows us to extend the specification to include parts of the grid that remain unaffected by the transformation. It is formulated as:
 
-$$`
+$$
 \frac{[\text{Spec}] \quad \text{Examples} \quad \vdash \quad \text{Input} \quad \rightarrow \quad [\text{Output}]}{[\text{Spec} * R] \quad \text{Examples} * R \quad \vdash \quad \text{Input} * R \quad \rightarrow \quad [\text{Output} * R]}
-`$$
+$$
 
 - **`[Spec * R]`**: The combined specification, where `Spec` and `R` are combined using the separating conjunction `*`, indicating they operate on disjoint parts of the grid.
 - **`Examples * R`**, **`Input * R`**, **`Output * R]`**: The extension of examples, input, and output by including the frame `R`.
@@ -72,14 +72,14 @@ $$\text{Frame}(X) \iff y \in \{0, 1, 2\}$$
 
 - **`Spec(X)`**: Defines the transformation for cells not in the frame.
 
-  $`
+$$
 \text{Spec}(X) \iff \neg \text{Frame}(X) \implies \left\{
 \begin{array}{ll}
 \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_1 \\
 \neg \text{Pattern}(X) & \implies \text{Color}_{G_{\text{out}}}(X) = C_2
 \end{array}
 \right\}
-`$
+$$
 
 #### Frame (`R`)
 
