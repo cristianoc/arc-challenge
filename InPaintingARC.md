@@ -19,25 +19,26 @@ The solution to InPaintingARC leverages **bi-abductive inference** to derive tra
 
 The general form of bi-abduction can be expressed as:
 
-$$
+
+$$`
 [\text{Spec}] \quad \text{Examples} \quad \vdash \quad \text{Input} \quad \rightarrow \quad [\text{Output}]
-$$
+`$$
 
 - **`[Spec]`**: The specification inferred from the examples.
 - **`Examples`**: Input-output pairs demonstrating the transformation.
 - **`Input`**: The grid to which the specification will be applied.
-- ** $`[\text{Output}]`$ **: The resulting grid after applying the specification to the input.
+- **`Output`**: The resulting grid after applying the specification to the input.
 
 #### The Frame Rule
 
 The **frame rule** allows us to extend the specification to include parts of the grid that remain unaffected by the transformation. It is formulated as:
 
-$$
+$$`
 \frac{[\text{Spec}] \quad \text{Examples} \quad \vdash \quad \text{Input} \quad \rightarrow \quad [\text{Output}]}{[\text{Spec} * R] \quad \text{Examples} * R \quad \vdash \quad \text{Input} * R \quad \rightarrow \quad [\text{Output} * R]}
-$$
+`$$
 
-- ** $`[\text{Spec} * R]`$ **: The combined specification, where `Spec` and `R` are combined using the separating conjunction `*`, indicating they operate on disjoint parts of the grid.
-- ** $`Examples * R`$ **, ** $`Input * R`$ **, ** $`[\text{Output} * R]`$ **: The extension of examples, input, and output by including the frame `R`.
+- **`[Spec * R]`**: The combined specification, where `Spec` and `R` are combined using the separating conjunction `*`, indicating they operate on disjoint parts of the grid.
+- **`Examples * R`**, **`Input * R`**, **`Output * R]`**: The extension of examples, input, and output by including the frame `R`.
 
 The **separating conjunction** `*` asserts that the domains of `Spec` and `R` are disjoint, ensuring that the transformation and the frame do not interfere with each other.
 
