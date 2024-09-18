@@ -116,16 +116,39 @@ There are 2 kinds of row and column color cardinality:
 
 ### Puzzles solved by predicate classes
 
+Out of 8 training and 13 evaluation puzzles, the following distribution of predicates is observed:
 
-
+- Periodic Symmetry: 5 training, 4 evaluation
+- Non-Periodic Symmetry: 2 training, 5 evaluation
+- Cardinality: 0 training, 1 evaluation
+- All Three: 7 training, 10 evaluation
 
 -----
 
-TODO
+## Addvanced Cases
 
-#### The Frame Rule
+We consider two advanced cases where the input is more complex and requires more advanced reasoning techniques. The goal of these techniques it to reduce the reasoning complexity by breaking down the problem into smaller subproblems, which can then be solved using the predicates described above.
 
-The **frame rule** allows us to extend the specification to include parts of the grid that remain unaffected by the transformation. It is formulated as:
+We present a single reasoning extension: the **frame rule** to handle both cases.
+
+### Pattern In Context
+
+In this puzzle, the pattern is not isolated but part of a larger grid.
+
+![pattern-in-context](images/pattern-in-context.png)
+
+### Multiple Patterns
+
+In this puzzle, the pattern is complicated and appears to follwo some snake-like lines.
+However, if one splitc along the diagonal, then two regular patterns emerge.
+
+![multiple-patterns](images/multiple-patterns.png)
+
+### The Frame Rule
+
+The **frame rule** allows us to extend the specification to include parts of the grid that remain unaffected by the transformation. It was first formulated for Separation Logic in the context of program verifcation and shape analysis.
+
+It is formulated as:
 
 $$
 \frac{[\text{Spec}] \quad \text{Examples} \quad \vdash \quad \text{Input} \rightarrow [\text{Output}]}{[\text{Spec} * R] \quad \text{Examples} * R \quad \vdash \quad \text{Input} * R \rightarrow [\text{Output} * R]}
@@ -136,3 +159,12 @@ $$
 
 The **separating conjunction** `*` asserts that the domains of `Spec` and `R` are disjoint, ensuring that the transformation and the frame do not interfere with each other.
 
+### Application of the Frame Rule
+
+For the first puzzle, the frame rule can be applied by literelly using the frame as a frame.
+
+For the second puzzle, the frame rule can be applied by splitting the problem along the diagonal.
+
+### Puzzles solved by the frame rule
+
+- All predicats and Frame Rule: 7 out of 8 training, 12 out of 13 evaluation

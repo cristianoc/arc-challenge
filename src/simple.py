@@ -68,10 +68,10 @@ class Config:
         "7c8af763.json",
         "2a5f8217.json",
     ]
-    find_non_periodic_symmetry = False
-    find_cardinality_predicates = False
-    find_periodic_symmetry = False
-    find_frame_rule = False
+    find_periodic_symmetry = True
+    find_non_periodic_symmetry = True
+    find_cardinality_predicates = True
+    find_frame_rule = True
 
     blacklisted_tasks: List[str] = []
     blacklisted_tasks.extend(non_inpainting_tasks)
