@@ -86,7 +86,7 @@ This section presents the predicates used to describe patterns used to solve inp
 
 #### Periodic Symmetry
 
-![periodic-symmetries](images/periodic-symmetries.png)
+<img src="images/periodic-symmetries.png" alt="periodic-symmetries" width="300"/>
 
 There are 4 kinds of periodic symmetries:
 - Horizontal: `px=3` means that the pattern repeats every 3 cells horizontally.
@@ -96,7 +96,7 @@ There are 4 kinds of periodic symmetries:
 
 #### NonPeriodic Symmetry with Offset
 
-![nonperiodic-symmetries](images/nonperiodic-symmetries.png)
+<img src="images/nonperiodic-symmetries.png" alt="nonperiodic-symmetries" width="300"/>
 
 There are 4 kinds of nonperiodic symmetries with offset:
 - Horizontal: `hx` means that the grid is reflected horizontally.
