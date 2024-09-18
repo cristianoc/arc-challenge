@@ -8,10 +8,11 @@
 
 An inpainting task consists of grids where the input is the same as the output except for a number of cells covered with a specific color. The outputs contain a recognizable patterns so that based on that it is possible to reconstruct the original grid from just the input.
 
-Here's an example of an inpainting task:
+Here's an example:
 
 ![inpainting-example](images/inpainting-example.png)
 
+The ARC-AGI dataset contains 21 inpainting tasks, 8 of which are for training and 13 for evaluation.
 
 ## Solution Approach
 
@@ -76,6 +77,46 @@ $$
 So the final derivation is
 
 ![bi-abduction-ex1-b](images/bi-abduction-ex1-b.png)
+
+-----
+
+## InPaintingARC Evaluation
+
+This section presents the predicates used to describe patterns used to solve inpainting tasks, and which tasks they can solve.
+
+### Predicates
+
+
+#### Periodic Symmetry
+
+There are 4 kinds of periodic symmetries:
+- Horizontal: `px=3` means that the pattern repeats every 3 cells horizontally.
+- Vertical: `py=3` means that the pattern repeats every 3 cells vertically.
+- Diagonal: `pd=3` means that the pattern repeats every 3 cells diagonally.
+- Anti-diagonal: `pa=3` means that the pattern repeats every 3 cells anti-diagonally.
+
+#### NonPeriodic Symmetry with Offset
+
+There are 4 kinds of nonperiodic symmetries with offset:
+- Horizontal: `hx` means that the grid is reflected horizontally.
+- Vertical: `vy` means that the grid is reflected vertically.
+- Diagonal: `rd` means that the grid is reflected diagonally.
+- Anti-diagonal: `ra` means that the grid is reflected anti-diagonally.
+- Offset: `(3,2)` means that the centre of rotations is shifted 3 cells horizontally and 2 cells vertically.
+
+#### Row and Column Color Cardinality
+
+There are 2 kinds of row and column color cardinality:
+
+- **Row Cardinality (`CardinalityInRowPredicate(color, count)`)**: This predicate checks if each row in the grid contains exactly `count` occurrences of the specified `color`. For example, `CardinalityInRowPredicate(RED, 3)` means that each row in the grid must have exactly 3 cells colored red.
+
+- **Column Cardinality (`CardinalityInColumnPredicate(color, count)`)**: This predicate checks if each column in the grid contains exactly `count` occurrences of the specified `color`. For example, `CardinalityInColumnPredicate(BLUE, 2)` means that each column in the grid must have exactly 2 cells colored blue.
+
+
+
+### Puzzles solved by predicate classes
+
+
 
 
 -----
