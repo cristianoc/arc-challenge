@@ -5,14 +5,26 @@ This repository explores various simplified versions of the [Abstraction and Rea
 ## Overview
 
 The repository covers:
+- **InPaintingARC**: A vertical subset of ARC-AGI: the in-painting puzzles of any difficulty.
 - **SizeARC**: A challenge focused on predicting the dimensions of output grids based on input grids.
 - **ColorsARC**: A related challenge where the task is to predict the color patterns in the output grid.
-- **InPaintingARC**: A vertical subset of ARC-AGI: the in-painting puzzles of any difficulty.
 - **Theory**: The underlying theoretical framework that guides the development of these challenges and solutions.
 - **MicroARC**: A foundational instantiation of the theory focused on the simplest grid transformations.
 - **MiniARC**: An extension of MicroARC that deals with more complex sequences of transformations.
 
-## 1. SizeARC: A Simplified ARC Challenge
+## 1. InPaintingARC: A vertical subset of ARC-AGI
+
+**InPaintingARC** is a variant of the ARC challenge intended to be smaller in variety, but not simpler on a per-puzzle basis, than full ARC-AGI.
+
+### Solution Approach
+
+The approach to InPaintingARC requires a re-thinking of the way solutions are represented and explored.
+Solutions consists of spatial specifications that are composable and make use of predicates capturing certain aspects of the priors required (objects, color, symmetry, frames).
+To drive the seach of solutions, a special form of bi-abducrive inference is developed, where given a set of examples and one input, one derives the spec for the transformation that the examples represent, and the corresponding final  output.
+
+For more detailed information, please refer to the [InPaintingARC.md](./InPaintingARC.md) document.
+
+## 2. SizeARC: A Simplified ARC Challenge
 
 **SizeARC** is a focused task derived from the ARC challenge, where the objective is to predict the dimensions of the output grid based on a given input grid, isolating this specific facet for exploration.
 
@@ -79,26 +91,13 @@ The graph below summarizes the performance of the model on both the training and
 
 - **Robust Performance**: As more advanced techniques are introduced, the model maintains robust performance, with accuracy steadily improving or stabilizing as complexity increases. These results guided the integration of regularized regression at higher complexity levels to ensure stability and accuracy in difficult cases.
 
-## 2. ColorsARC: Predicting Color Patterns
+## 3. ColorsARC: Predicting Color Patterns
 
 **ColorsARC** is a variant of the ARC challenge where the focus is on predicting the color patterns in the output grid, rather than its size.
 
 ### Solution Approach
 
 The approach to ColorsARC is similar to SizeARC but focuses on color transformations rather than size transformations. Predefined transformation rules and domain-specific knowledge are used to predict the color configurations in the output grid.
-
-## 3. InPaintingARC: A vertical subset of ARC-AGI
-
-**InPaintingARC** is a variant of the ARC challenge intended to be smaller in variety, but not simpler on a per-puzzle basis, than full ARC-AGI.
-
-### Solution Approach
-
-The approach to InPaintingARC requires a re-thinking of the way solutions are represented and explored.
-Solutions consists of spatial specifications that are composable and make use of predicates capturing certain aspects of the priors required (objects, color, symmetry, frames).
-To drive the seach of solutions, a special form of bi-abducrive inference is developed, where given a set of examples and one input, one derives the spec for the transformation that the examples represent, and the corresponding final  output.
-
-For more detailed information, please refer to the [InPaintingARC.md](./InPaintingARC.md) document.
-
 
 ## 4. Theory: The Foundation of the Approach
 
