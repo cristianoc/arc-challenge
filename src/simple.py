@@ -17,8 +17,8 @@ from rule_based_selector import DecisionRule, select_object_minimal
 from shape_features import detect_shape_features
 from symmetry_features import detect_symmetry_features
 from symmetry import (
-    find_periodic_symmetry_with_unknowns,
-    find_non_periodic_symmetry,
+    find_periodic_symmetry_predicates,
+    find_non_periodic_symmetry_predicates,
     fill_grid,
     PeriodicGridSymmetry,
     NonPeriodicGridSymmetry,
@@ -662,7 +662,7 @@ class InpaintingMatch:
         cardinality_shared: Optional[List[CardinalityPredicate]] = None
 
         for i, (input, output) in enumerate(examples):
-            non_periodic_symmetry_output = find_non_periodic_symmetry(
+            non_periodic_symmetry_output = find_non_periodic_symmetry_predicates(
                 output, color_only_in_input
             )
             if non_periodic_shared is None:
@@ -679,7 +679,7 @@ class InpaintingMatch:
                 cardinality_shared = predicates_intersection(
                     cardinality_shared, cardinality_shared_output
                 )
-            periodic_symmetry_output = find_periodic_symmetry_with_unknowns(
+            periodic_symmetry_output = find_periodic_symmetry_predicates(
                 output, color_only_in_input, mask
             )
             if periodic_shared is None:
@@ -854,7 +854,7 @@ class InpaintingMatch:
             return (state, solve_shared)
 
         def solve_find_symmetry(input: Object) -> Optional[Object]:
-            periodic_symmetry_input = find_periodic_symmetry_with_unknowns(
+            periodic_symmetry_input = find_periodic_symmetry_predicates(
                 input, color_only_in_input, mask
             )
             filled_grid = fill_grid(
