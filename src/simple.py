@@ -68,10 +68,10 @@ class Config:
         "7c8af763.json",
         "2a5f8217.json",
     ]
-    find_non_periodic_symmetry = True
-    find_cardinality_predicates = True
-    find_periodic_symmetry = True
-    find_frame_rule = True
+    find_non_periodic_symmetry = False
+    find_cardinality_predicates = False
+    find_periodic_symmetry = False
+    find_frame_rule = False
 
     blacklisted_tasks: List[str] = []
     blacklisted_tasks.extend(non_inpainting_tasks)
@@ -870,9 +870,12 @@ class InpaintingMatch:
             return (state, solve_shared)
 
         def solve_find_symmetry(input: Object) -> Optional[Object]:
-            periodic_symmetry_input = find_periodic_symmetry_predicates(
-                input, color_only_in_input, mask
-            )
+            if Config.find_periodic_symmetry:
+                periodic_symmetry_input = find_periodic_symmetry_predicates(
+                    input, color_only_in_input, mask
+                )
+            else:
+                periodic_symmetry_input = PeriodicGridSymmetry()
             filled_grid = fill_grid(
                 input,
                 mask,
@@ -1656,6 +1659,9 @@ def process_tasks(tasks: Tasks, set: str):
                 )
                 if correct_xform is not None:
                     num_correct += 1
+                    if False:
+                        grids = [(example[0], example[1]) for example in examples]
+                        display_multiple(grids, title=f"{task_name} {set}")
                     continue
 
             current_difficulty += num_difficulties_xform
