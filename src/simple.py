@@ -54,12 +54,18 @@ class Config:
     task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
     whitelisted_tasks: List[str] = []
     whitelisted_tasks.append(task_puzzle)
+    # "f9d67f8b.json", # this is the possibly wrong in-painting task
+    # "73251a56.json", # this has rays shooting from the top left
     non_inpainting_tasks: List[str] = [
         "bd4472b8.json",
         "8e5a5113.json",
-        # "f9d67f8b.json", # this is the possibly wrong in-painting task
         "62b74c02.json",
         "ef26cbf6.json",
+        "c9f8e694.json",
+        "e76a88a6.json",
+        "63613498.json",
+        "7c8af763.json",
+        "2a5f8217.json",
     ]
     blacklisted_tasks: List[str] = []
     blacklisted_tasks.extend(non_inpainting_tasks)
@@ -67,9 +73,7 @@ class Config:
     display_not_found = True
     display_verbose = False
     only_inpainting_puzzles = True
-    inpainting_regularity_score_threshold = 0.5
-
-
+    inpainting_regularity_score_threshold = 0.6
 
     only_simple_examples = False
     max_size = 9
