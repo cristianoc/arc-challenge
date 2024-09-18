@@ -8,7 +8,9 @@
 
 An inpainting task consists of grids where the input is the same as the output except for a number of cells covered with a specific color. The outputs contain a recognizable patterns so that based on that it is possible to reconstruct the original grid from just the input.
 
+Here's an example of an inpainting task:
 
+![inpainting-example](images/inpainting-example.png)
 
 
 ## Solution Approach
