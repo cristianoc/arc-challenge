@@ -4,6 +4,13 @@
 
 ---
 
+## InPainting Tasks
+
+An inpainting task consists of grids where the input is the same as the output except for a number of cells covered with a specific color. The outputs contain a recognizable patterns so that based on that it is possible to reconstruct the original grid from just the input.
+
+
+
+
 ## Solution Approach
 
 The solution to InPaintingARC leverages **bi-abductive inference** to derive transformation specifications from given examples. This involves formulating **spatial specifications** that are composable and capturing key puzzle elements through formal **predicates**. The approach focuses on both inferring the transformations (`Spec`) and identifying the invariant parts of the grid (`Frame` or `R`) that remain unaffected.
@@ -54,7 +61,7 @@ $$
 
 ### Example
 
-![bi-abduction-ex1-a](https://github.com/user-attachments/assets/d403a048-bfb4-48cb-8945-9704e2ae2c77)
+![bi-abduction-ex1-a](images/bi-abduction-ex1-a.png)
 
 
 
@@ -66,7 +73,7 @@ $$
 
 So the final derivation is
 
-![bi-abduction-ex1-b](https://github.com/user-attachments/assets/690cf3a6-bb00-4344-bc23-6fab242e3435)
+![bi-abduction-ex1-b](images/bi-abduction-ex1-b.png)
 
 
 -----
