@@ -74,7 +74,7 @@ class Config:
     whitelisted_tasks: List[str] = []
     whitelisted_tasks.append(task_puzzle)
 
-    display_not_found = True
+    display_not_found = False
     display_verbose = False
     only_inpainting_puzzles = True
 
@@ -86,6 +86,10 @@ class Config:
     find_matched_objects = False
     difficulty = 1000
     display_this_task = False
+
+    find_non_periodic_symmetry = True
+    find_cardinality_predicates = True
+    find_periodic_symmetry = True
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -662,30 +666,40 @@ class InpaintingMatch:
         cardinality_shared: Optional[List[CardinalityPredicate]] = None
 
         for i, (input, output) in enumerate(examples):
-            non_periodic_symmetry_output = find_non_periodic_symmetry_predicates(
-                output, color_only_in_input
-            )
-            if non_periodic_shared is None:
-                non_periodic_shared = non_periodic_symmetry_output
-            else:
-                non_periodic_shared = non_periodic_shared.intersection(
-                    non_periodic_symmetry_output
+            if Config.find_non_periodic_symmetry:
+                non_periodic_symmetry_output = find_non_periodic_symmetry_predicates(
+                    output, color_only_in_input
                 )
+                if non_periodic_shared is None:
+                    non_periodic_shared = non_periodic_symmetry_output
+                else:
+                    non_periodic_shared = non_periodic_shared.intersection(
+                        non_periodic_symmetry_output
+                    )
+            else:
+                non_periodic_shared = NonPeriodicGridSymmetry()
 
-            cardinality_shared_output = find_cardinality_predicates(output)
-            if cardinality_shared is None:
-                cardinality_shared = cardinality_shared_output
+            if Config.find_cardinality_predicates:
+                cardinality_shared_output = find_cardinality_predicates(output)
+                if cardinality_shared is None:
+                    cardinality_shared = cardinality_shared_output
+                else:
+                    cardinality_shared = predicates_intersection(
+                        cardinality_shared, cardinality_shared_output
+                    )
             else:
-                cardinality_shared = predicates_intersection(
-                    cardinality_shared, cardinality_shared_output
+                cardinality_shared = []
+
+            if Config.find_periodic_symmetry:
+                periodic_symmetry_output = find_periodic_symmetry_predicates(
+                    output, color_only_in_input, mask
                 )
-            periodic_symmetry_output = find_periodic_symmetry_predicates(
-                output, color_only_in_input, mask
-            )
-            if periodic_shared is None:
-                periodic_shared = periodic_symmetry_output
+                if periodic_shared is None:
+                    periodic_shared = periodic_symmetry_output
+                else:
+                    periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
             else:
-                periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
+                periodic_shared = PeriodicGridSymmetry()
 
             logger.info(
                 f"#{i} From Output {non_periodic_symmetry_output} {periodic_symmetry_output} {cardinality_shared}"
