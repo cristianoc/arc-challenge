@@ -211,7 +211,7 @@ def check_anti_diagonal_symmetry_with_unknowns(
     return True
 
 
-def find_periodic_symmetry_with_unknowns(
+def find_periodic_symmetry_predicates(
     grid: Object, unknown: int, mask: Optional[Object]
 ) -> PeriodicGridSymmetry:
     """
@@ -256,7 +256,7 @@ def find_periodic_symmetry_with_unknowns(
     return PeriodicGridSymmetry(px, py, pd, pa)
 
 
-def find_non_periodic_symmetry(grid: Object, unknown: int) -> NonPeriodicGridSymmetry:
+def find_non_periodic_symmetry_predicates(grid: Object, unknown: int) -> NonPeriodicGridSymmetry:
     """
     Find the non-periodic symmetries of the grid, considering offsets.
     """
@@ -511,8 +511,8 @@ def test_find_and_fill_symmetry():
 
     def test_grid(grid: Object, unknown: int, title: str):
         mask = grid.copy()
-        periodic_symmetry = find_periodic_symmetry_with_unknowns(grid, unknown, mask)
-        non_periodic_symmetry = find_non_periodic_symmetry(grid, unknown)
+        periodic_symmetry = find_periodic_symmetry_predicates(grid, unknown, mask)
+        non_periodic_symmetry = find_non_periodic_symmetry_predicates(grid, unknown)
         cardinality_predicates = find_cardinality_predicates(grid)
         print(
             f"{title}: {periodic_symmetry}, {non_periodic_symmetry}, {cardinality_predicates}"
