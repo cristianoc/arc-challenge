@@ -544,7 +544,7 @@ def display_multiple(
             ax_input.set_title(left_title)
         else:
             ax_input.set_title(f"Input Grid {i+1}")
-        ax_input.axis("off")  # Hide the axes
+        # ax_input.axis("off")  # Remove this line to show the axes
 
         if output_data is not None:
             # Custom rectangle-based plot for output grid with provided color scheme
