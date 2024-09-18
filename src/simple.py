@@ -38,10 +38,6 @@ ObjectPicker = Callable[[List[Object]], int]
 
 
 class Config:
-    find_xform = True
-    find_matched_objects = False
-    try_remove_main_color = False
-    difficulty = 1000
     task_name: str | None = None
     # task_name = "e9afcf9a.json"  # map 2 colored objects
     # task_name = "0dfd9992.json"
@@ -67,14 +63,22 @@ class Config:
     ]
     blacklisted_tasks: List[str] = []
     blacklisted_tasks.extend(non_inpainting_tasks)
-    # find_xform_color = True
+
     display_not_found = True
     display_verbose = False
-    display_this_task = False
-    only_simple_examples = False
     only_inpainting_puzzles = True
+    inpainting_regularity_score_threshold = 0.5
+
+
+
+    only_simple_examples = False
     max_size = 9
     max_colors = 4
+
+    find_xform = True
+    find_matched_objects = False
+    difficulty = 1000
+    display_this_task = False
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -580,7 +584,7 @@ class InpaintingMatch:
                     return None
 
         # check if output has high regularity score
-        if regularity_score(output) >= 0.5:
+        if regularity_score(output) >= Config.inpainting_regularity_score_threshold:
             return None
         # Config.display_this_task = True
 
