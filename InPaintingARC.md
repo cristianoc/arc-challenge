@@ -1,6 +1,8 @@
 # InPaintingARC: A Vertical Subset of ARC-AGI
 
-**InPaintingARC** is a specialized variant of the ARC (Abstraction and Reasoning Corpus) challenge. It focuses on a narrower variety of puzzles while maintaining the complexity of individual tasks found in the broader ARC-AGI domain. InPaintingARC emphasizes deep understanding of spatial patterns, transformations, and frame invariants, making it an ideal platform for exploring advanced reasoning techniques such as **bi-abductive inference** and the application of the **frame rule**.
+**InPaintingARC** is a specialized variant of the ARC (Abstraction and Reasoning Corpus) challenge. It focuses on a narrower variety of puzzles while maintaining the complexity of individual tasks found in the broader ARC-AGI domain. InPaintingARC emphasizes deep understanding of spatial patterns, transformations, and frame invariants, making it an ideal platform for exploring advanced reasoning techniques such as [bi-abductive inference](https://fbinfer.com/docs/separation-logic-and-bi-abduction/) and the application of the [frame rule](https://link.springer.com/chapter/10.1007/978-3-031-27792-8_11).
+
+
 
 ---
 
@@ -84,6 +86,8 @@ This section presents the predicates used to describe patterns used to solve inp
 
 #### Periodic Symmetry
 
+![periodic-symmetries](images/periodic-symmetries.png)
+
 There are 4 kinds of periodic symmetries:
 - Horizontal: `px=3` means that the pattern repeats every 3 cells horizontally.
 - Vertical: `py=3` means that the pattern repeats every 3 cells vertically.
@@ -91,6 +95,8 @@ There are 4 kinds of periodic symmetries:
 - Anti-diagonal: `pa=3` means that the pattern repeats every 3 cells anti-diagonally.
 
 #### NonPeriodic Symmetry with Offset
+
+![nonperiodic-symmetries](images/nonperiodic-symmetries.png)
 
 There are 4 kinds of nonperiodic symmetries with offset:
 - Horizontal: `hx` means that the grid is reflected horizontally.
