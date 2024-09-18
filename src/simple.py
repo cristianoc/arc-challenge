@@ -58,6 +58,15 @@ class Config:
     task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
     whitelisted_tasks: List[str] = []
     whitelisted_tasks.append(task_puzzle)
+    non_inpainting_tasks: List[str] = [
+        "bd4472b8.json",
+        "8e5a5113.json",
+        # "f9d67f8b.json", # this is the possibly wrong in-painting task
+        "62b74c02.json",
+        "ef26cbf6.json",
+    ]
+    blacklisted_tasks: List[str] = []
+    blacklisted_tasks.extend(non_inpainting_tasks)
     # find_xform_color = True
     display_not_found = True
     display_verbose = False
@@ -1584,6 +1593,8 @@ def process_tasks(tasks: Tasks, set: str):
     for task_name, task in tasks.items():
         Config.display_this_task = False
         if Config.task_name and task_name != Config.task_name:
+            continue
+        if task_name in Config.blacklisted_tasks:
             continue
         if (
             filter_simple_xforms(task, task_name) == False
