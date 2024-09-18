@@ -6,7 +6,7 @@
 
 ## InPainting Tasks
 
-An inpainting task consists of grids where the input is the same as the output except for a number of cells covered with a specific color. The outputs contain a recognizable patterns so that based on that it is possible to reconstruct the original grid from just the input.
+An inpainting task consists of grids where the input is the same as the output except for a number of cells covered with a specific color. The outputs contain recognizable patterns, allowing the reconstruction of the original grid from just the input.
 
 Here's an example:
 
@@ -28,16 +28,14 @@ The solution to InPaintingARC leverages **bi-abductive inference** to derive tra
 
 The general form of bi-abduction can be expressed as:
 
-
 $$
 [\text{Spec}] \quad \text{Examples} \quad \vdash \quad \text{Input} \rightarrow [\text{Output}]
 $$
 
 - `[Spec]`: The specification inferred from the examples.
 - `Examples`: Given input-output pairs demonstrating the transformation.
-- `Input`: Gven grid to which the specification will be applied.
+- `Input`: Given grid to which the specification will be applied.
 - `[Output]`: The inferred resulting grid after applying the specification to the input.
-
 
 ### Notation
 
@@ -66,8 +64,6 @@ $$
 
 ![bi-abduction-ex1-a](images/bi-abduction-ex1-a.png)
 
-
-
 From the examples one can infer
 
 $$
@@ -85,7 +81,6 @@ So the final derivation is
 This section presents the predicates used to describe patterns used to solve inpainting tasks, and which tasks they can solve.
 
 ### Predicates
-
 
 #### Periodic Symmetry
 
@@ -112,8 +107,6 @@ There are 2 kinds of row and column color cardinality:
 
 - **Column Cardinality (`CardinalityInColumnPredicate(color, count)`)**: This predicate checks if each column in the grid contains exactly `count` occurrences of the specified `color`. For example, `CardinalityInColumnPredicate(BLUE, 2)` means that each column in the grid must have exactly 2 cells colored blue.
 
-
-
 ### Puzzles solved by predicate classes
 
 Out of 8 training and 13 evaluation puzzles, the following distribution of predicates is observed:
@@ -125,9 +118,9 @@ Out of 8 training and 13 evaluation puzzles, the following distribution of predi
 
 -----
 
-## Addvanced Cases
+## Advanced Cases
 
-We consider two advanced cases where the input is more complex and requires more advanced reasoning techniques. The goal of these techniques it to reduce the reasoning complexity by breaking down the problem into smaller subproblems, which can then be solved using the predicates described above.
+We consider two advanced cases where the input is more complex and requires more advanced reasoning techniques. The goal of these techniques is to reduce the reasoning complexity by breaking down the problem into smaller subproblems, which can then be solved using the predicates described above.
 
 We present a single reasoning extension: the **frame rule** to handle both cases.
 
@@ -139,14 +132,13 @@ In this puzzle, the pattern is not isolated but part of a larger grid.
 
 ### Multiple Patterns
 
-In this puzzle, the pattern is complicated and appears to follwo some snake-like lines.
-However, if one splitc along the diagonal, then two regular patterns emerge.
+In this puzzle, the pattern is complicated and appears to follow some snake-like lines. However, if one splits along the diagonal, then two regular patterns emerge.
 
 ![multiple-patterns](images/multiple-patterns.png)
 
 ### The Frame Rule
 
-The **frame rule** allows us to extend the specification to include parts of the grid that remain unaffected by the transformation. It was first formulated for Separation Logic in the context of program verifcation and shape analysis.
+The **frame rule** allows us to extend the specification to include parts of the grid that remain unaffected by the transformation. It was first formulated for Separation Logic in the context of program verification and shape analysis.
 
 It is formulated as:
 
@@ -161,10 +153,11 @@ The **separating conjunction** `*` asserts that the domains of `Spec` and `R` ar
 
 ### Application of the Frame Rule
 
-For the first puzzle, the frame rule can be applied by literelly using the frame as a frame.
+For the first puzzle, the frame rule can be applied by literally using the frame as a frame.
 
 For the second puzzle, the frame rule can be applied by splitting the problem along the diagonal.
 
 ### Puzzles solved by the frame rule
 
-- All predicats and Frame Rule: 7 out of 8 training, 12 out of 13 evaluation
+- All predicates and Frame Rule: 7 out of 8 training, 12 out of 13 evaluation
+
