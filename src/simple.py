@@ -670,38 +670,38 @@ class InpaintingMatch:
                 non_periodic_symmetry_output = find_non_periodic_symmetry_predicates(
                     output, color_only_in_input
                 )
-                if non_periodic_shared is None:
-                    non_periodic_shared = non_periodic_symmetry_output
-                else:
-                    non_periodic_shared = non_periodic_shared.intersection(
-                        non_periodic_symmetry_output
-                    )
             else:
-                non_periodic_shared = NonPeriodicGridSymmetry()
+                non_periodic_symmetry_output = NonPeriodicGridSymmetry()
+            if non_periodic_shared is None:
+                non_periodic_shared = non_periodic_symmetry_output
+            else:
+                non_periodic_shared = non_periodic_shared.intersection(
+                    non_periodic_symmetry_output
+                )
 
             if Config.find_cardinality_predicates:
                 cardinality_shared_output = find_cardinality_predicates(output)
-                if cardinality_shared is None:
-                    cardinality_shared = cardinality_shared_output
-                else:
-                    cardinality_shared = predicates_intersection(
-                        cardinality_shared, cardinality_shared_output
-                    )
             else:
-                cardinality_shared = []
+                cardinality_shared_output = []
+            if cardinality_shared is None:
+                cardinality_shared = cardinality_shared_output
+            else:
+                cardinality_shared = predicates_intersection(
+                    cardinality_shared, cardinality_shared_output
+                )
 
             if Config.find_periodic_symmetry:
                 periodic_symmetry_output = find_periodic_symmetry_predicates(
                     output, color_only_in_input, mask
                 )
-                if periodic_shared is None:
-                    periodic_shared = periodic_symmetry_output
-                else:
-                    periodic_shared = periodic_shared.intersection(
-                        periodic_symmetry_output
-                    )
             else:
-                periodic_shared = PeriodicGridSymmetry()
+                periodic_symmetry_output = PeriodicGridSymmetry()
+            if periodic_shared is None:
+                periodic_shared = periodic_symmetry_output
+            else:
+                periodic_shared = periodic_shared.intersection(
+                    periodic_symmetry_output
+                )
 
             logger.info(
                 f"#{i} From Output {non_periodic_symmetry_output} {periodic_symmetry_output} {cardinality_shared}"
