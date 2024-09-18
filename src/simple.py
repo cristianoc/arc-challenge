@@ -898,16 +898,15 @@ class InpaintingMatch:
         return (state, solve_find_symmetry)
 
 
-gridxforms: List[XformEntry[Object]] = (
+gridxforms: List[XformEntry[Object]] = [
+    XformEntry(match_colored_objects, 3),
+    XformEntry(xform_identity, 1),
+    XformEntry(equal_modulo_rigid_transformation, 2),
+    XformEntry(primitive_to_xform(translate_down_1), 2),
+    XformEntry(CanvasGridMatch.canvas_grid_xform, 2),
+    XformEntry(InpaintingMatch.inpainting_xform_no_mask, 2),
+] + (
     [
-        XformEntry(match_colored_objects, 3),
-        XformEntry(xform_identity, 1),
-        XformEntry(equal_modulo_rigid_transformation, 2),
-        XformEntry(primitive_to_xform(translate_down_1), 2),
-        XformEntry(CanvasGridMatch.canvas_grid_xform, 2),
-        XformEntry(InpaintingMatch.inpainting_xform_no_mask, 2),
-    ]
-    + [
         XformEntry(InpaintingMatch.inpainting_xform_with_mask, 2),
     ]
     if Config.find_frame_rule
