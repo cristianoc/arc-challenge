@@ -68,6 +68,10 @@ class Config:
         "7c8af763.json",
         "2a5f8217.json",
     ]
+    find_non_periodic_symmetry = True
+    find_cardinality_predicates = True
+    find_periodic_symmetry = True
+    find_frame_rule = True
 
     blacklisted_tasks: List[str] = []
     blacklisted_tasks.extend(non_inpainting_tasks)
@@ -86,10 +90,6 @@ class Config:
     find_matched_objects = False
     difficulty = 1000
     display_this_task = False
-
-    find_non_periodic_symmetry = True
-    find_cardinality_predicates = True
-    find_periodic_symmetry = True
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -697,7 +697,9 @@ class InpaintingMatch:
                 if periodic_shared is None:
                     periodic_shared = periodic_symmetry_output
                 else:
-                    periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
+                    periodic_shared = periodic_shared.intersection(
+                        periodic_symmetry_output
+                    )
             else:
                 periodic_shared = PeriodicGridSymmetry()
 
@@ -896,20 +898,26 @@ class InpaintingMatch:
         return (state, solve_find_symmetry)
 
 
-gridxforms: List[XformEntry[Object]] = [
-    XformEntry(match_colored_objects, 3),
-    XformEntry(xform_identity, 1),
-    XformEntry(equal_modulo_rigid_transformation, 2),
-    XformEntry(primitive_to_xform(translate_down_1), 2),
-    XformEntry(CanvasGridMatch.canvas_grid_xform, 2),
-    XformEntry(InpaintingMatch.inpainting_xform_no_mask, 2),
-    XformEntry(InpaintingMatch.inpainting_xform_with_mask, 2),
-]
+gridxforms: List[XformEntry[Object]] = (
+    [
+        XformEntry(match_colored_objects, 3),
+        XformEntry(xform_identity, 1),
+        XformEntry(equal_modulo_rigid_transformation, 2),
+        XformEntry(primitive_to_xform(translate_down_1), 2),
+        XformEntry(CanvasGridMatch.canvas_grid_xform, 2),
+        XformEntry(InpaintingMatch.inpainting_xform_no_mask, 2),
+    ]
+    + [
+        XformEntry(InpaintingMatch.inpainting_xform_with_mask, 2),
+    ]
+    if Config.find_frame_rule
+    else []
+)
 
 
 class SplitAndMirrorMatch:
     @staticmethod
-    def split_and_mirror_xform(
+    def frame_split_and_mirror_xform(
         examples: List[Example[Object]],
         task_name: str,
         nesting_level: int,
@@ -993,9 +1001,11 @@ class SplitAndMirrorMatch:
 
 
 # brute force search xforms to be used when all else fails
-desperatexforms: List[XformEntry[Object]] = [
-    XformEntry(SplitAndMirrorMatch.split_and_mirror_xform, 100),
-]
+desperatexforms: List[XformEntry[Object]] = [] + (
+    [XformEntry(SplitAndMirrorMatch.frame_split_and_mirror_xform, 100)]
+    if Config.find_frame_rule
+    else []
+)
 
 
 class ExpansionMatch:
