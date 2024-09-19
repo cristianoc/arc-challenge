@@ -27,63 +27,16 @@ from cardinality_predicates import (
     CardinalityPredicate,
     predicates_intersection,
 )
-from bi_types import Match, GridAndObjects, XformEntry
+from bi_types import Match, GridAndObjects, XformEntry, Config
 from primitives import xform_identity, primitive_to_xform, translate_down_1
-
-
-class Config:
-    task_name: str | None = None
-    # task_name = "e9afcf9a.json"  # map 2 colored objects
-    # task_name = "0dfd9992.json"
-    # task_name = "05269061.json"
-    # task_name = "47996f11.json"
-    # task_name = "47996f11.json"
-    # task_name = "4cd1b7b2.json"  # sudoku
-
-    # task_name = "4aab4007.json"  # diagonal pattern with shared mask
-    # task_name = "1e97544e.json"  # snake-like pattern
-    # task_name = "f9d67f8b.json" # maybe a mistake in the task
-
-    task_fractal = "8f2ea7aa.json"  # fractal expansion
-    task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
-
-    task_possibly_wrong_inpainting = "f9d67f8b.json"
-    task_rays_top_left_inpainting = "73251a56.json"
-    inpainting_regularity_score_threshold = 0.6
-    # non-inpainting tasks present at regularty threshold 0.6
-    non_inpainting_tasks: List[str] = [
-        "bd4472b8.json",
-        "8e5a5113.json",
-        "62b74c02.json",
-        "ef26cbf6.json",
-        "c9f8e694.json",
-        "e76a88a6.json",
-        "63613498.json",
-        "7c8af763.json",
-        "2a5f8217.json",
-    ]
-    find_periodic_symmetry = True
-    find_non_periodic_symmetry = True
-    find_cardinality_predicates = True
-    find_frame_rule = True
-
-    blacklisted_tasks: List[str] = []
-    blacklisted_tasks.extend(non_inpainting_tasks)
-    whitelisted_tasks: List[str] = []
-    whitelisted_tasks.append(task_puzzle)
-
-    display_not_found = False
-    display_verbose = False
-    only_inpainting_puzzles = True
-
-    only_simple_examples = False
-    max_size = 9
-    max_colors = 4
-
-    find_xform = True
-    find_matched_objects = False
-    difficulty = 1000
-    display_this_task = False
+from canvas_grid_match import canvas_grid_xform
+from inpainting_match import (
+    is_inpainting_puzzle,
+    inpainting_xform_no_mask,
+    inpainting_xform_with_mask,
+    mask_from_all_outputs,
+    inpainting_xform,
+)
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -219,221 +172,6 @@ def match_colored_objects(
     return None
 
 
-class CanvasGridMatch:
-    @staticmethod
-    def find_canvas_objects(
-        inputs: List[Object], outputs: Optional[List[Object]]
-    ) -> Optional[List[Object]]:
-        """Finds the largest objects in each example's input. Check the size is the same as the output's size, if provided."""
-        canvas_objects = []
-        for i, input in enumerate(inputs):
-            objects = input.detect_objects()
-            canvas = max(objects, key=lambda obj: obj.area, default=None)
-            if canvas is None:
-                return None
-            if outputs is not None:
-                output = outputs[i]
-                if canvas.size != output.size:
-                    return None
-            canvas_objects.append(canvas)
-
-        return canvas_objects
-
-    @staticmethod
-    def solve_puzzle(
-        input: Object, task_name: str, nesting_level: int, canvas: Object
-    ) -> Optional[Tuple[Object, List[Object]]]:
-
-        canvas_color = canvas.main_color()
-        compound_objects = input.detect_objects(
-            background_color=canvas_color, multicolor=True
-        )
-        # remove canvas and input grid from grid_objects
-        compound_objects = [obj for obj in compound_objects if obj.area < canvas.area]
-
-        def compound_object_get_handle(cobj: Object) -> Optional[Object]:
-            colors = set(cobj.get_colors(allow_black=True))
-            if canvas_color not in colors:
-                logger.debug(f"Canvas color: {canvas_color} not in colors: {colors}")
-                return None
-            colors.remove(canvas_color)
-            if len(colors) != 1:
-                logger.debug(f"Canvas color: {canvas_color} colors: {colors}")
-                return None
-            other_color = colors.pop()
-            handle = cobj.detect_colored_objects(background_color=other_color)[0]
-            logger.debug(f"Canvas color: {canvas_color} Handle color: {other_color}")
-
-            return handle
-
-        handles = []
-        handles_shapes = []
-        for cobj in compound_objects:
-            handle = compound_object_get_handle(cobj)
-            if handle is None:
-                return None
-            handles.append(handle)
-            handles_shapes.append(handle.get_shape())
-        holes = canvas.detect_objects(allow_black=True, background_color=canvas_color)
-        # remove object of size the entire max_area_object
-        holes = [obj for obj in holes if obj.area < canvas.area]
-        holes_shapes = [obj.get_shape(background_color=canvas_color) for obj in holes]
-
-        logger.debug(f"compound_objects:{len(compound_objects)} holes:{len(holes)}")
-
-        if len(compound_objects) != len(holes):
-            return None
-        if len(compound_objects) == 0:
-            return None
-
-        # display grid_objects alongsize holes
-        if False:
-            display_multiple(
-                [(o1, o2) for o1, o2 in zip(compound_objects, holes)],
-                title=f"Compound Objects and Canvas Holes",
-            )
-
-        # display objects_holes alonside canvas_holes
-        if False:
-            display_multiple(
-                [
-                    (o1, o2)
-                    for o1, o2 in zip(
-                        handles,
-                        holes,
-                    )
-                ],
-                title=f"Handles and Holes",
-            )
-
-        if False:
-            display_multiple(
-                [(o1, o2) for o1, o2 in zip(handles_shapes, holes_shapes)],
-                title=f"Handles Shapes and Holes Shapes",
-            )
-
-        matches = []
-        num_cases = len(handles_shapes)
-        xform = equal_modulo_rigid_transformation
-        matched_handles = set()
-        matched_holes = set()
-        transformed_compound_objects = compound_objects
-        holes_origins = [(0, 0)] * num_cases
-        for i in range(num_cases):
-            match = None
-            for j in range(num_cases):
-                if i in matched_handles or j in matched_holes:
-                    continue
-                handle = handles[i]
-                hole = holes[j]
-                handle_shape = handles_shapes[i]
-                hole_shape = holes_shapes[j]
-                match = xform(
-                    [
-                        (
-                            handle_shape,
-                            hole_shape,
-                        )
-                    ],
-                    task_name,
-                    nesting_level + 1,
-                )
-                if match is None:
-                    continue
-                matched_handles.add(i)
-                matched_holes.add(j)
-                state, solve = match
-
-                transformed_compound_object = solve(compound_objects[i])
-                if transformed_compound_object is None:
-                    return None
-                transformed_compound_objects[i] = transformed_compound_object
-                holes_origins[i] = hole.origin
-
-                matches.append(match)
-            if match is None:
-                logger.info(f"No match found for handle {i}")
-                return None
-        logger.debug(f"matches found:{len(matches)}")
-
-        if False:
-            display_multiple(
-                [(obj, obj) for obj in transformed_compound_objects],
-                title=f"Transformed Compound Objects",
-            )
-
-        new_objects = []
-        for i, obj in enumerate(transformed_compound_objects):
-            new_handle = compound_object_get_handle(obj)
-            if new_handle is None:
-                return None
-            ox, oy = holes_origins[i]
-            ox -= new_handle.origin[0]
-            oy -= new_handle.origin[1]
-            obj.origin = (ox, oy)
-            logger.debug(f"new origin: {obj.origin}")
-            new_objects.append(obj)
-
-        return canvas, new_objects
-
-    @staticmethod
-    def canvas_grid_xform(
-        examples: List[Example[Object]],
-        task_name: str,
-        nesting_level: int,
-    ) -> Optional[Match[Object]]:
-        # every example has a canvas
-        canvas_objects = CanvasGridMatch.find_canvas_objects(
-            inputs=[input for input, _ in examples],
-            outputs=[output for _, output in examples],
-        )
-        if canvas_objects is None:
-            return None
-        # Config.display_this_task = True
-
-        for i, (input, output) in enumerate(examples):
-            canvas = canvas_objects[i]
-            solution = CanvasGridMatch.solve_puzzle(
-                input, task_name, nesting_level, canvas
-            )
-            if solution is None:
-                return None
-            canvas, new_objects = solution
-            new_input = input.copy()
-            for obj in new_objects:
-                ox, oy = obj.origin
-                ox += canvas.origin[0]
-                oy += canvas.origin[1]
-                obj.origin = (ox, oy)
-                logger.debug(f"new origin: {obj.origin}")
-                new_input.add_object_in_place(obj)
-
-        state = "canvas_grid_xform"
-
-        def solve(input: Object) -> Optional[Object]:
-            canvas_objects = CanvasGridMatch.find_canvas_objects([input], None)
-            if canvas_objects is None:
-                return None
-            canvas = canvas_objects[0]
-            solution = CanvasGridMatch.solve_puzzle(
-                input, task_name, nesting_level, canvas
-            )
-            if solution is None:
-                logger.info(f"No solution found for input")
-                return None
-            canvas, new_objects = solution
-            output = canvas.copy()
-            output.origin = (0, 0)
-            for obj in new_objects:
-                output.add_object_in_place(obj)
-            if False:
-                display(output, title=f"Output")
-            return output
-
-        match = (state, solve)
-        return match
-
-
 def equal_modulo_rigid_transformation(
     examples: List[Example], task_name: str, nesting_level: int
 ) -> Optional[Match]:
@@ -453,365 +191,16 @@ def equal_modulo_rigid_transformation(
     return None
 
 
-class InpaintingMatch:
-    @staticmethod
-    def is_inpainting_puzzle(examples: List[Example[Object]]) -> bool:
-        # check the inpainting conditions on all examples
-        for input, output in examples:
-            if InpaintingMatch.check_inpainting_conditions(input, output) is None:
-                return False
-        return True
-
-    @staticmethod
-    def check_inpainting_conditions(input: Object, output: Object) -> Optional[int]:
-        # Check if input and output are the same size
-        if input.size != output.size:
-            return None
-
-        # check if input has one more color than output
-        if len(input.get_colors(allow_black=True)) - 1 != len(
-            output.get_colors(allow_black=True)
-        ):
-            return None
-        colors_only_in_input = set(input.get_colors(allow_black=True)) - set(
-            output.get_colors(allow_black=True)
-        )
-        if len(colors_only_in_input) != 1:
-            return None
-        color = colors_only_in_input.pop()
-
-        # check if input and output are the same except for the color
-        for x in range(input.width):
-            for y in range(input.height):
-                if input[x, y] == color:
-                    continue
-                if input[x, y] != output[x, y]:
-                    return None
-
-        # check if output has high regularity score
-        if regularity_score(output) >= Config.inpainting_regularity_score_threshold:
-            return None
-        # Config.display_this_task = True
-
-        return color
-
-    @staticmethod
-    def update_mask(input: Object, output: Object, mask: Object) -> None:
-        """
-        Update the mask grid with 0s where the current object and the other object differ.
-        """
-        for x in range(output.width):
-            for y in range(output.height):
-                if input[x, y] != output[x, y]:
-                    mask[x, y] = 0
-
-    @staticmethod
-    def mask_from_all_outputs(examples: List[Example[Object]]) -> Optional[Object]:
-        """
-        Find the mask for a set of examples where all examples have the same size.
-        """
-        if not examples:
-            return None
-
-        _, first_output = examples[0]
-        mask = Object.empty(first_output.size, background_color=1)
-
-        # Update the mask with each example
-        for input, output in examples:
-            color = InpaintingMatch.check_inpainting_conditions(input, output)
-            if color is None:
-                return None
-            if mask.size != output.size:
-                return None
-            InpaintingMatch.update_mask(first_output, output, mask)
-        return mask
-
-    # check that the color only in input is the same for all examples
-    @staticmethod
-    def check_color_only_in_input(examples: List[Example[Object]]) -> Optional[int]:
-        color_only_in_input = None
-        for input, output in examples:
-            color = InpaintingMatch.check_inpainting_conditions(input, output)
-            if color is None:
-                return None
-            if color_only_in_input is None:
-                color_only_in_input = color
-            else:
-                if color != color_only_in_input:
-                    logger.info(f"Color mismatch: {color} != {color_only_in_input}")
-                    return None
-        return color_only_in_input
-
-    @staticmethod
-    def compute_shared_symmetries(
-        examples: List[Example[Object]],
-        mask: Optional[Object],
-        color_only_in_input: int,
-    ) -> Optional[
-        Tuple[
-            NonPeriodicGridSymmetry,
-            PeriodicGridSymmetry,
-            List[CardinalityPredicate],
-            int,
-        ]
-    ]:
-        non_periodic_shared = None
-        periodic_shared = None
-        cardinality_shared: Optional[List[CardinalityPredicate]] = None
-
-        for i, (input, output) in enumerate(examples):
-            if Config.find_non_periodic_symmetry:
-                non_periodic_symmetry_output = find_non_periodic_symmetry_predicates(
-                    output, color_only_in_input
-                )
-            else:
-                non_periodic_symmetry_output = NonPeriodicGridSymmetry()
-            if non_periodic_shared is None:
-                non_periodic_shared = non_periodic_symmetry_output
-            else:
-                non_periodic_shared = non_periodic_shared.intersection(
-                    non_periodic_symmetry_output
-                )
-
-            if Config.find_cardinality_predicates:
-                cardinality_shared_output = find_cardinality_predicates(output)
-            else:
-                cardinality_shared_output = []
-            if cardinality_shared is None:
-                cardinality_shared = cardinality_shared_output
-            else:
-                cardinality_shared = predicates_intersection(
-                    cardinality_shared, cardinality_shared_output
-                )
-
-            if Config.find_periodic_symmetry:
-                periodic_symmetry_output = find_periodic_symmetry_predicates(
-                    output, color_only_in_input, mask
-                )
-            else:
-                periodic_symmetry_output = PeriodicGridSymmetry()
-            if periodic_shared is None:
-                periodic_shared = periodic_symmetry_output
-            else:
-                periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
-
-            logger.info(
-                f"#{i} From Output {non_periodic_symmetry_output} {periodic_symmetry_output} {cardinality_shared}"
-            )
-
-        if (
-            periodic_shared is None
-            or non_periodic_shared is None
-            or cardinality_shared is None
-            or color_only_in_input is None
-        ):
-            return None
-
-        return (
-            non_periodic_shared,
-            periodic_shared,
-            cardinality_shared,
-            color_only_in_input,
-        )
-
-    @staticmethod
-    def apply_shared(
-        input: Object,
-        mask: Optional[Object],
-        non_periodic_shared: NonPeriodicGridSymmetry,
-        periodic_shared: PeriodicGridSymmetry,
-        color: int,
-    ) -> Object:
-        filled_grid = fill_grid(
-            input,
-            mask,
-            non_periodic_symmetry=non_periodic_shared,
-            periodic_symmetry=periodic_shared,
-            unknown=color,
-        )
-        return filled_grid
-
-    @staticmethod
-    def check_equality_modulo_mask(
-        grid1: Object, grid2: Object, mask: Optional[Object]
-    ) -> bool:
-        for x in range(grid1.width):
-            for y in range(grid1.height):
-                if grid1[x, y] != grid2[x, y] and (mask is None or mask[x, y] == 0):
-                    return False
-        return True
-
-    @staticmethod
-    def inpainting_xform_no_mask(
-        examples: List[Example[Object]],
-        task_name: str,
-        nesting_level: int,
-    ) -> Optional[Match[Object]]:
-        return InpaintingMatch.inpainting_xform(
-            examples, task_name, nesting_level, mask=None, apply_mask_to_input=False
-        )
-
-    @staticmethod
-    def inpainting_xform_with_mask(
-        examples: List[Example[Object]],
-        task_name: str,
-        nesting_level: int,
-    ) -> Optional[Match[Object]]:
-        mask = InpaintingMatch.mask_from_all_outputs(examples)
-        if mask is not None:
-            if Config.display_verbose:
-                display(mask, title=f"Mask")
-        return InpaintingMatch.inpainting_xform(
-            examples, task_name, nesting_level, mask=mask, apply_mask_to_input=False
-        )
-
-    @staticmethod
-    def inpainting_xform(
-        examples: List[Example[Object]],
-        task_name: str,
-        nesting_level: int,
-        mask: Optional[Object],
-        apply_mask_to_input: bool,
-    ) -> Optional[Match[Object]]:
-
-        def apply_mask_to_filled_grid(filled_grid, input, mask, color_only_in_input):
-            if mask is not None:
-                if apply_mask_to_input:
-                    source = input
-                else:
-                    first_output = examples[0][1]
-                    source = first_output
-                filled_grid.add_object_in_place(
-                    source.apply_mask(mask, background_color=color_only_in_input),
-                    background_color=color_only_in_input,
-                )
-            return filled_grid
-
-        color = InpaintingMatch.check_color_only_in_input(examples)
-        if color is None:
-            return None
-
-        shared_symmetries = InpaintingMatch.compute_shared_symmetries(
-            examples, mask, color
-        )
-        if shared_symmetries is None:
-            return None
-        (
-            non_periodic_shared,
-            periodic_shared,
-            cardinality_shared,
-            color_only_in_input,
-        ) = shared_symmetries
-
-        logger.info(
-            f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared} cardinality_shared:{cardinality_shared}"
-        )
-
-        for i, (input, output) in enumerate(examples):
-            filled_grid = fill_grid(
-                input,
-                mask,
-                periodic_shared,
-                non_periodic_shared,
-                cardinality_shared,
-                color_only_in_input,
-            )
-
-            filled_grid = apply_mask_to_filled_grid(
-                filled_grid, input, mask, color_only_in_input
-            )
-
-            is_correct = InpaintingMatch.check_equality_modulo_mask(
-                filled_grid, output, mask
-            )
-            logger.info(
-                f"#{i} Shared {non_periodic_shared} {periodic_shared} {cardinality_shared} is_correct: {is_correct}"
-            )
-            if Config.display_verbose and non_periodic_shared.dgm is not None:
-                display(
-                    output,
-                    non_periodic_shared.dgm,
-                    title=f"Shared Diagonal Symmetry",
-                    left_title=f"output",
-                    right_title=f"diagonal symmetry",
-                )
-
-            if not is_correct:
-                if Config.display_verbose:
-                    display(input, filled_grid, title=f"{is_correct} Shared Symm")
-                    if mask is not None:
-                        display(mask, title=f"{is_correct} Mask")
-            if is_correct:
-                logger.info(f"#{i} Found correct solution using shared symmetries")
-                pass
-            else:
-                break
-        else:
-            state = f"symmetry({non_periodic_shared}, {periodic_shared})"
-
-            def solve_shared(input: Object) -> Object:
-                filled_grid = fill_grid(
-                    input,
-                    mask,
-                    periodic_shared,
-                    non_periodic_shared,
-                    cardinality_shared,
-                    color_only_in_input,
-                )
-                filled_grid = apply_mask_to_filled_grid(
-                    filled_grid, input, mask, color_only_in_input
-                )
-                logger.info(
-                    f"Test Shared {non_periodic_shared} {periodic_shared} {cardinality_shared}"
-                )
-                if Config.display_verbose:
-                    display(input, filled_grid, title=f"Test Shared")
-                return filled_grid
-
-            return (state, solve_shared)
-
-        def solve_find_symmetry(input: Object) -> Optional[Object]:
-            if Config.find_periodic_symmetry:
-                periodic_symmetry_input = find_periodic_symmetry_predicates(
-                    input, color_only_in_input, mask
-                )
-            else:
-                periodic_symmetry_input = PeriodicGridSymmetry()
-            filled_grid = fill_grid(
-                input,
-                mask,
-                periodic_symmetry=periodic_symmetry_input,
-                unknown=color_only_in_input,
-            )
-            if mask is not None:
-                filled_grid.add_object_in_place(
-                    input.apply_mask(mask, background_color=color_only_in_input),
-                    background_color=color_only_in_input,
-                )
-            # check if there are leftover unknown colors
-            data = filled_grid._data
-            if np.any(data == color_only_in_input):
-                logger.info(f"Test: Leftover unknown color: {color_only_in_input}")
-                if Config.display_verbose:
-                    display(input, filled_grid, title=f"Test: Leftover covered cells")
-                return None
-            return filled_grid
-
-        # Config.display_this_task = True
-        state = "find_symmetry_for_each_input"
-        return (state, solve_find_symmetry)
-
-
 gridxforms: List[XformEntry[Object]] = [
     XformEntry(match_colored_objects, 3),
     XformEntry(xform_identity, 1),
     XformEntry(equal_modulo_rigid_transformation, 2),
     XformEntry(primitive_to_xform(translate_down_1), 2),
-    XformEntry(CanvasGridMatch.canvas_grid_xform, 2),
-    XformEntry(InpaintingMatch.inpainting_xform_no_mask, 2),
+    XformEntry(canvas_grid_xform, 2),
+    XformEntry(inpainting_xform_no_mask, 2),
 ] + (
     [
-        XformEntry(InpaintingMatch.inpainting_xform_with_mask, 2),
+        XformEntry(inpainting_xform_with_mask, 2),
     ]
     if Config.find_frame_rule
     else []
@@ -855,20 +244,20 @@ class SplitAndMirrorMatch:
                         combined[x, y] = bottom_left[x, y]
             return combined
 
-        if InpaintingMatch.mask_from_all_outputs(examples) is None:
+        if mask_from_all_outputs(examples) is None:
             # abuse the function to check if the examples are valid for inpainting
             return None
 
         first_input = examples[0][0]
         mask_tr, mask_bl = get_split_masks(first_input.size)
-        match_tr = InpaintingMatch.inpainting_xform(
+        match_tr = inpainting_xform(
             examples,
             task_name + "_tr",
             nesting_level + 1,
             mask_tr,
             apply_mask_to_input=True,
         )
-        match_bl = InpaintingMatch.inpainting_xform(
+        match_bl = inpainting_xform(
             examples,
             task_name + "_bl",
             nesting_level + 1,
@@ -1540,9 +929,7 @@ def process_tasks(tasks: Tasks, set: str):
             and task_name not in Config.whitelisted_tasks
         ):
             continue
-        if Config.only_inpainting_puzzles and not InpaintingMatch.is_inpainting_puzzle(
-            task.train
-        ):
+        if Config.only_inpainting_puzzles and not is_inpainting_puzzle(task.train):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
