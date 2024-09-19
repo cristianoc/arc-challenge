@@ -22,9 +22,6 @@ import numpy as np
 Size = Tuple[int, int]
 ExampleObjects = List[Tuple[Object, Object]]
 
-# returns the index of the object to pick
-ObjectPicker = Callable[[List[Object]], int]
-
 
 class Config:
     find_xform = True
