@@ -240,10 +240,13 @@ class Object:
         else:  # Rotation.COUNTERCLOCKWISE
             return self.rot90_clockwise(-1)
 
-    def translate_in_place(self, dx: int, dy: int) -> None:
-        self.clear_caches()
-        new_origin = (self.origin[0] + dx, self.origin[1] + dy)
-        self.origin = new_origin
+    def translate(self, dx: int, dy: int) -> "Object":
+        result = self.empty(self.size)
+        for x in range(self.width):
+            for y in range(self.height):
+                if 0 <= x - dx < self.width and 0 <= y - dy < self.height:
+                    result[x, y] = self[x - dx, y - dy]
+        return result
 
     def flip(self, symmetry: Symmetry) -> "Object":
         if symmetry == Symmetry.HORIZONTAL:
@@ -510,10 +513,11 @@ def display_multiple(
 ) -> None:
     num_pairs = len(grid_pairs)
 
-    # Create a Matplotlib figure with multiple rows, two subplots per row
+    # Dynamically set the figure size based on the number of grid pairs
+    fig_height = 2 * num_pairs + 1  # Adjust height as needed
     fig, axes = plt.subplots(
-        num_pairs, 2, figsize=(4, 2 * num_pairs)
-    )  # Adjust figsize as needed
+        num_pairs, 2, figsize=(8, fig_height)
+    )  # Adjust width and height as needed
 
     # If there's only one pair, axes won't be a list, so we wrap it in a list
     if num_pairs == 1:
@@ -582,7 +586,7 @@ def display_multiple(
         fig.suptitle(title, fontsize=16)
 
     # Adjust layout to make room for title
-    plt.tight_layout(rect=[0, 0, 1, 0.96])
+    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Adjust rect to reduce space
     plt.show()
 
 
@@ -623,12 +627,11 @@ def test_flip():
 
 
 def test_translate():
-    grid = Object(np.array([[1, 2], [3, 4]]))
-    obj = grid.copy()
-    obj.translate_in_place(1, 1)
-    new_grid = Object.empty(obj.size)
-    new_grid.add_object_in_place(obj)
-    assert new_grid == Object(np.array([[0, 0], [0, 1]]))
+    grid = Object(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
+    new_grid = grid.copy().translate(1, 1)
+    logger.info(f"grid: {grid}")
+    logger.info(f"new_grid: {new_grid}")
+    assert new_grid == Object(np.array([[0, 0, 0], [0, 1, 2], [0, 4, 5]]))
 
 
 def test_color_change():
