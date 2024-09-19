@@ -301,6 +301,39 @@ class Object:
             colors = colors[colors != BLACK]
         return sorted(colors.tolist())
 
+    def get_colors_map(self) -> Dict[int, int]:
+        seen = set()
+        colors = []
+        for x in range(self.width):
+            for y in range(self.height):
+                color = self[x, y]
+                if color not in seen and color != BLACK:
+                    seen.add(color)
+                    colors.append(color)
+        return {color: idx for idx, color in enumerate(colors)}
+
+    def equal_modulo_color_renaming(self, other: "Object") -> bool:
+        """
+        Check if two objects are equal modulo color renaming.
+        """
+        if self.size != other.size:
+            return False
+
+        color_map1 = self.get_colors_map()  # {color: idx}
+        color_map2 = other.get_colors_map()  # {color: idx}
+
+        if len(color_map1) != len(color_map2):
+            return False
+
+        for x in range(self.width):
+            for y in range(self.height):
+                color1 = self[x, y]
+                color2 = other[x, y]
+                if color_map1[color1] != color_map2[color2]:
+                    return False
+
+        return True
+
     def get_shape(self, background_color: int = 0) -> "Object":
         """
         Make the background color 0, and the rest 1.

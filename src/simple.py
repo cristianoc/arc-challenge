@@ -55,6 +55,9 @@ class Config:
 
     task_possibly_wrong_inpainting = "f9d67f8b.json"
     task_rays_top_left_inpainting = "73251a56.json"
+
+    task_name = task_rays_top_left_inpainting
+
     inpainting_regularity_score_threshold = 0.6
     # non-inpainting tasks present at regularty threshold 0.6
     non_inpainting_tasks: List[str] = [
@@ -78,7 +81,7 @@ class Config:
     whitelisted_tasks: List[str] = []
     whitelisted_tasks.append(task_puzzle)
 
-    display_not_found = False
+    display_not_found = True
     display_verbose = False
     only_inpainting_puzzles = True
 
@@ -774,6 +777,16 @@ class InpaintingMatch:
         )
 
     @staticmethod
+    def outputs_equal_modulo_color_renaming(examples: List[Example[Object]]) -> bool:
+        if len(examples) == 0:
+            return True
+        first_output = examples[0][1]
+        for input, output in examples:
+            if not output.equal_modulo_color_renaming(first_output):
+                return False
+        return True
+
+    @staticmethod
     def inpainting_xform(
         examples: List[Example[Object]],
         task_name: str,
@@ -781,6 +794,10 @@ class InpaintingMatch:
         mask: Optional[Object],
         apply_mask_to_input: bool,
     ) -> Optional[Match[Object]]:
+
+        if InpaintingMatch.outputs_equal_modulo_color_renaming(examples):
+            logger.info(f"All outputs are equal modulo color renaming")
+            assert False
 
         def apply_mask_to_filled_grid(filled_grid, input, mask, color_only_in_input):
             if mask is not None:
