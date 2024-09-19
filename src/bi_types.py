@@ -71,11 +71,15 @@ class Config:
 
     display_not_found = False
     display_verbose = False
-    only_inpainting_puzzles = True
+    only_inpainting_puzzles = False
 
     only_simple_examples = False
     max_size = 9
     max_colors = 4
+
+    only_complex_examples = True
+    min_size = 23
+    min_colors = 10
 
     find_xform = True
     find_matched_objects = False

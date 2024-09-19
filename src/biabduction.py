@@ -38,6 +38,21 @@ def filter_simple_xforms(task: Task, task_name: str):
     return True
 
 
+def filter_complex_xforms(task: Task, task_name: str):
+    examples = task.train
+    tests = task.test
+    for example in examples:
+        input = example[0]
+        output = example[1]
+        if (
+            input.width < Config.min_size
+            or input.height < Config.min_size
+            or len(input.get_colors(allow_black=True)) < Config.min_colors
+        ):
+            return False
+    return True
+
+
 gridxforms: List[XformEntry[Object]] = [
     XformEntry(match_colored_objects, 3),
     XformEntry(xform_identity, 1),
@@ -75,17 +90,18 @@ def process_tasks(tasks: Tasks, set: str):
         if task_name in Config.blacklisted_tasks:
             continue
         if (
-            filter_simple_xforms(task, task_name) == False
-            and Config.only_simple_examples
+            Config.only_simple_examples
+            and filter_simple_xforms(task, task_name) == False
             and task_name not in Config.whitelisted_tasks
         ):
+            continue
+        if Config.only_complex_examples and filter_complex_xforms(task, task_name) == False:
             continue
         if Config.only_inpainting_puzzles and not is_inpainting_puzzle(task.train):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
         examples = task.train
-
         tests = task.test
         task_type = "train"
 
@@ -134,7 +150,7 @@ def compute_perc_correct(num_correct: int, num_incorrect: int) -> Optional[float
     return None
 
 
-def simple():
+def bi_abduction():
     num_correct_tr, num_incorrect_tr = process_tasks(training_data, "training_data")
     num_correct_ev, num_incorrect_ev = process_tasks(evaluation_data, "evaluation_data")
     perc_correct_tr = compute_perc_correct(num_correct_tr, num_incorrect_tr)
@@ -160,4 +176,4 @@ def simple():
 
 
 if __name__ == "__main__":
-    simple()
+    bi_abduction()

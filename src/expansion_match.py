@@ -110,7 +110,6 @@ def stretch_height(
                     logger.info(
                         f"Example {i} failed: output_color {output_color} != predicted_color {predicted_color}"
                     )
-                    assert False
     state = "stretch_height"
 
     def solve(input: Object) -> Object:
