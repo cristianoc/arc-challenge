@@ -163,8 +163,7 @@ def primitive_to_xform(primitive: Primitive) -> Xform[Object]:
 
 
 def translate_down_1(input: Object, task_name: str, nesting_level: int):
-    obj = input.copy()
-    obj.translate_in_place(dx=0, dy=1)
+    obj = input.translate(dx=0, dy=1)
     result = Object.empty(obj.size)
     result.add_object_in_place(obj)
     return result
@@ -835,6 +834,15 @@ class InpaintingMatch:
             logger.info(
                 f"#{i} Shared {non_periodic_shared} {periodic_shared} {cardinality_shared} is_correct: {is_correct}"
             )
+            if Config.display_verbose and non_periodic_shared.dgm is not None:
+                display(
+                    output,
+                    non_periodic_shared.dgm,
+                    title=f"Shared Diagonal Symmetry",
+                    left_title=f"output",
+                    right_title=f"diagonal symmetry",
+            )
+
             if not is_correct:
                 if Config.display_verbose:
                     display(input, filled_grid, title=f"{is_correct} Shared Symm")

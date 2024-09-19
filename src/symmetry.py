@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import numpy as np
 from typing import Optional, Tuple, Union, List
-from objects import Object
+from objects import Object, display
 from grid_types import BLUE, BLACK, GREEN, YELLOW, RED, Symmetry
 from typing import TYPE_CHECKING
 from math import gcd, lcm
@@ -54,7 +54,7 @@ class PeriodicGridSymmetry:
             symmetries.append(f"pd={self.pd}")
         if self.pa:
             symmetries.append(f"pa={self.pa}")
-        
+
         return f"PeriodicGridSymmetry({', '.join(symmetries)})"
 
     def __repr__(self):
@@ -68,6 +68,10 @@ class NonPeriodicGridSymmetry:
     dg: bool = False  # non-periodic diagonal
     ag: bool = False  # non-periodic anti-diagonal
     offset: Tuple[int, int] = (0, 0)  # offset for symmetry checks
+    hxm: Optional[Object] = None  # mask for horizontal symmetry
+    vym: Optional[Object] = None  # mask for vertical symmetry
+    dgm: Optional[Object] = None  # mask for diagonal symmetry
+    agm: Optional[Object] = None  # mask for anti-diagonal symmetry
 
     def __str__(self):
         symmetries = []
@@ -79,9 +83,16 @@ class NonPeriodicGridSymmetry:
             symmetries.append("dg")
         if self.ag:
             symmetries.append("ag")
-        
+        if self.hxm is not None:
+            symmetries.append(f"hxm={self.hxm.num_cells(None) * 100 // self.hxm.area}%")
+        if self.vym is not None:
+            symmetries.append(f"vym={self.vym.num_cells(None) * 100 // self.vym.area}%")
+        if self.dgm is not None:
+            symmetries.append(f"dgm={self.dgm.num_cells(None) * 100 // self.dgm.area}%")
+        if self.agm is not None:
+            symmetries.append(f"agm={self.agm.num_cells(None) * 100 // self.agm.area}%")
         symmetry_str = ", ".join(symmetries)
-        
+
         if self.offset != (0, 0):
             return f"NonPeriodicGridSymmetry({symmetry_str}, offset={self.offset})"
         elif symmetries:
@@ -92,9 +103,30 @@ class NonPeriodicGridSymmetry:
     def __repr__(self):
         return self.__str__()
 
+    @staticmethod
+    def mask_intersection(g1: Object, g2: Object) -> Object:
+        mask = g1.empty(g1.size)
+        for x in range(g1.width):
+            for y in range(g1.height):
+                if g1[x,y] == 1 and g2[x,y] == 1:
+                    mask[x,y] = 1
+        return mask
+
     def intersection(
         self, other: "NonPeriodicGridSymmetry"
     ) -> "NonPeriodicGridSymmetry":
+        hxm = None
+        vym = None
+        dgm = None
+        agm = None
+        if self.hxm is not None and other.hxm is not None:
+            hxm = NonPeriodicGridSymmetry.mask_intersection(self.hxm, other.hxm)
+        if self.vym is not None and other.vym is not None:
+            vym = NonPeriodicGridSymmetry.mask_intersection(self.vym, other.vym)
+        if self.dgm is not None and other.dgm is not None:
+            dgm = NonPeriodicGridSymmetry.mask_intersection(self.dgm, other.dgm)
+        if self.agm is not None and other.agm is not None:
+            agm = NonPeriodicGridSymmetry.mask_intersection(self.agm, other.agm)
         # If offsets differ, symmetries involving translations should be invalidated (set to False)
         if self.offset != other.offset:
             return NonPeriodicGridSymmetry(
@@ -103,6 +135,10 @@ class NonPeriodicGridSymmetry:
                 dg=False,
                 ag=False,
                 offset=(0, 0),  # Reset the offset since they are different
+                hxm=hxm,
+                vym=vym,
+                dgm=dgm,
+                agm=agm,
             )
         else:
             # If offsets are the same, apply logical "and" to the symmetries
@@ -112,6 +148,10 @@ class NonPeriodicGridSymmetry:
                 dg=self.dg and other.dg,
                 ag=self.ag and other.ag,
                 offset=self.offset,  # Offsets match, so we keep the offset
+                hxm=hxm,
+                vym=vym,
+                dgm=dgm,
+                agm=agm,
             )
 
 
@@ -256,23 +296,59 @@ def find_periodic_symmetry_predicates(
     return PeriodicGridSymmetry(px, py, pd, pa)
 
 
-def find_non_periodic_symmetry_predicates(grid: Object, unknown: int) -> NonPeriodicGridSymmetry:
+def find_non_periodic_symmetry_predicates(
+    grid: Object, unknown: int
+) -> NonPeriodicGridSymmetry:
     """
     Find the non-periodic symmetries of the grid, considering offsets.
     """
     width, height = grid.size
     max_distance = max(width, height) // 2
 
-    def check_symmetry_with_offset(symmetry_func):
+    def check_symmetry_with_offset(symmetry: Symmetry):
         offset = find_matching_subgrid_offset(
-            grid, symmetry_func(grid), max_distance, unknown
+            grid, grid.flip(symmetry), max_distance, unknown
         )
         return offset is not None, offset if offset else (0, 0)
 
-    hx, hx_offset = check_symmetry_with_offset(lambda g: g.flip(Symmetry.HORIZONTAL))
-    vy, vy_offset = check_symmetry_with_offset(lambda g: g.flip(Symmetry.VERTICAL))
-    dg, dg_offset = check_symmetry_with_offset(lambda g: g.flip(Symmetry.DIAGONAL))
-    ag, ag_offset = check_symmetry_with_offset(lambda g: g.flip(Symmetry.ANTI_DIAGONAL))
+    def check_symmetry_with_mask(
+        grid: Object, symmetry: Symmetry, offset: Tuple[int, int], mask: Optional[Object]
+    ) -> bool:
+        all_match = True
+        for x in range(width):
+            for y in range(height):
+                xx = x - offset[0]
+                yy = y - offset[1]
+                if symmetry == Symmetry.HORIZONTAL:
+                    xx2 = width - 1 - xx
+                    yy2 = yy
+                elif symmetry == Symmetry.VERTICAL:
+                    xx2 = xx
+                    yy2 = height - 1 - yy
+                elif symmetry == Symmetry.DIAGONAL:
+                    xx2 = yy
+                    yy2 = xx
+                elif symmetry == Symmetry.ANTI_DIAGONAL:
+                    xx2 = height - 1 - yy
+                    yy2 = width - 1 - xx
+                else:
+                    assert False, "Unknown symmetry"
+                x2 = xx2 + offset[0]
+                y2 = yy2 + offset[1]
+                if 0 <= x2 < width and 0 <= y2 < height and grid[x,y] == grid[x2,y2]:
+                    if mask is not None:
+                        mask[x,y] = 1
+                else:
+                    if mask is None:
+                        return False
+                    all_match = False
+                    mask[x,y] = 0
+        return all_match
+
+    hx, hx_offset = check_symmetry_with_offset(Symmetry.HORIZONTAL)
+    vy, vy_offset = check_symmetry_with_offset(Symmetry.VERTICAL)
+    dg, dg_offset = check_symmetry_with_offset(Symmetry.DIAGONAL)
+    ag, ag_offset = check_symmetry_with_offset(Symmetry.ANTI_DIAGONAL)
 
     # combine the offsets
     offset = (0, 0)
@@ -294,7 +370,29 @@ def find_non_periodic_symmetry_predicates(grid: Object, unknown: int) -> NonPeri
             ag = False
             offset = (0, 0)
 
-    return NonPeriodicGridSymmetry(hx, vy, dg, ag, offset)
+    some_symmetry_is_true = hx or vy or dg or ag
+    MIN_MASK_WEIGHT = 0.5
+
+    def compute_symmetry_mask(symmetry: Symmetry):
+        mask = Object.empty(grid.size)
+        check_symmetry_with_mask(grid, symmetry, offset, mask)
+        mask_weight = mask.num_cells(None) / mask.area
+        return mask if mask_weight > MIN_MASK_WEIGHT else None
+
+    hxm = None
+    if hx is False and some_symmetry_is_true:
+        hxm = compute_symmetry_mask(Symmetry.HORIZONTAL)
+    vym = None
+    if vy is False and some_symmetry_is_true:
+        vym = compute_symmetry_mask(Symmetry.VERTICAL)
+    dgm = None
+    if dg is False and some_symmetry_is_true:
+        dgm = compute_symmetry_mask(Symmetry.DIAGONAL)
+    agm = None
+    if ag is False and some_symmetry_is_true:
+        agm = compute_symmetry_mask(Symmetry.ANTI_DIAGONAL)
+
+    return NonPeriodicGridSymmetry(hx, vy, dg, ag, offset, dgm=dgm, agm=agm, hxm=hxm, vym=vym)
 
 
 def find_source_value(
@@ -318,7 +416,9 @@ def find_source_value(
     width, height = filled_grid.size
     for x_src in range(x % px, width, px) if px is not None else [x]:
         for y_src in range(y % py, height, py) if py is not None else [y]:
-            if filled_grid[x_src, y_src] != unknown and (mask is None or mask[x_src, y_src] == 0):
+            if filled_grid[x_src, y_src] != unknown and (
+                mask is None or mask[x_src, y_src] == 0
+            ):
                 return filled_grid[x_src, y_src]
 
     # Search based on diagonal (pd) symmetry if provided
@@ -376,30 +476,42 @@ def find_source_value(
     vy = non_periodic_symmetry.vy
     dg = non_periodic_symmetry.dg
     ag = non_periodic_symmetry.ag
+    hxm = non_periodic_symmetry.hxm
+    vym = non_periodic_symmetry.vym
+    dgm = non_periodic_symmetry.dgm
+    agm = non_periodic_symmetry.agm
 
     if hx:
         # (x,y) -> (x-dx, y-dy) -> ((w-dx)-1-x+dx, y-dy) ->
         # -> ((w-dx)-1-x+dx+dx, y-dy+dy) = (w-1-x+dx, y)
         x_src, y_src = width - 1 - x + dx, y
+        if hxm is not None and hxm[x_src, y_src] == 0:
+            return unknown
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
     if vy:
         x_src, y_src = x, height - 1 - y + dy
+        if vym is not None and vym[x_src, y_src] == 0:
+            return unknown
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
-    if dg:
+    if dg or dgm is not None:
         # (x,y) -> (x-dx, y-dy) -> (y-dy, x-dx) -> (y-dy+dx, x-dx+dy)
         x_src, y_src = y - dy + dx, x - dx + dy
+        if dgm is not None and dgm[x_src, y_src] == 0:
+            return unknown
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
-
+    
     if ag:
         # (x,y) -> (x-dx, y-dy) -> ((h-dy)-1-y+dy, (w-dx)-1-x+dx) ->
         # -> (h-dy-1-y+dy+dx, w-dx-1-x+dx+dy) == (h-1-y+dx, w-1-x+dy)
         x_src = height - 1 - y + dx
         y_src = width - 1 - x + dy
+        if agm is not None and agm[x_src, y_src] == 0:
+            return unknown
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
 
@@ -442,9 +554,8 @@ def fill_grid(
         # Fill based on symmetry
         for x_dest in range(width):
             for y_dest in range(height):
-                if (
-                    filled_grid[x_dest, y_dest] == unknown
-                    and (mask is None or mask[x_dest, y_dest] == 0)
+                if filled_grid[x_dest, y_dest] == unknown and (
+                    mask is None or mask[x_dest, y_dest] == 0
                 ):  # If the destination cell is unknown
                     color = find_source_value(
                         filled_grid,
@@ -572,6 +683,32 @@ def check_visible_subgrid_with_unknown(
                 if val_g1 != val_g2 and val_g1 != unknown and val_g2 != unknown:
                     return False
     return True
+
+
+def mask_visible_subgrid_with_unknown(g1: Object, g2: Object) -> Object:
+    """
+    Returns a mask indicating the positions where g1 and g2 are considered equal,
+    modulo unknown values, at the given offset (ox, oy).
+    """
+    W1, H1 = g1.size  # Width and height of g1
+    W2, H2 = g2.size  # Width and height of g2
+
+    mask = Object.empty(g2.size, background_color=1)
+
+    display(g1, g2, title=f"mask_visible_subgrid_with_unknown")
+
+    for x in range(W2):
+        for y in range(H2):
+            if 0 <= x < W1 and 0 <= y < H1:
+                val_g1 = g1[x, y]
+                val_g2 = g2[x, y]
+                if val_g1 == val_g2:
+                    mask[x, y] = 1
+                else:
+                    print(f"masking {x}, {y}")
+                    mask[x, y] = 0
+
+    return mask
 
 
 # Iterator that yields all offsets with increasing Manhattan distance
