@@ -113,6 +113,11 @@ There are 2 kinds of row and column color cardinality:
 
 - **Column Cardinality (`CardinalityInColumnPredicate(color, count)`)**: This predicate checks if each column in the grid contains exactly `count` occurrences of the specified `color`. For example, `CardinalityInColumnPredicate(BLUE, 2)` means that each column in the grid must have exactly 2 cells colored blue.
 
+The cardinality predicates, when set to 1 for all colors, encode the rules of sudoku. And there is one such puzzle in the set.
+However, one can also choose different values, for example 2 horizontally gives "double sudoku":
+
+![double-sudoku](images/double-sudoku.png)
+
 ### Puzzles solved by predicate classes
 
 Out of 8 training and 13 evaluation puzzles, the following distribution of predicates is observed:
