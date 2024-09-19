@@ -2,8 +2,8 @@ from typing import List, Optional, Tuple
 from objects import Object, display, display_multiple
 from load_data import Example
 from bi_types import Match
+from grid_types import XReflection, ClockwiseRotation, RigidTransformation
 from logger import logger
-from biabduction import equal_modulo_rigid_transformation
 
 
 def find_canvas_objects(
@@ -23,6 +23,25 @@ def find_canvas_objects(
         canvas_objects.append(canvas)
 
     return canvas_objects
+
+
+def equal_modulo_rigid_transformation(
+    examples: List[Example], task_name: str, nesting_level: int
+) -> Optional[Match]:
+    for x_reflection in XReflection:
+        for rotation in ClockwiseRotation:
+            rigid_transformation = RigidTransformation(rotation, x_reflection)
+            all_examples_correct = True
+            for input, output in examples:
+                trasformed_input = input.apply_rigid_xform(rigid_transformation)
+                if trasformed_input != output:
+                    all_examples_correct = False
+                    break
+            if all_examples_correct:
+                state = f"({rigid_transformation})"
+                solve = lambda input: input.apply_rigid_xform(rigid_transformation)
+                return (state, solve)
+    return None
 
 
 def solve_puzzle(

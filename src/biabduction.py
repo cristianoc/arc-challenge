@@ -37,6 +37,7 @@ from inpainting_match import (
     mask_from_all_outputs,
     inpainting_xform,
 )
+from canvas_grid_match import equal_modulo_rigid_transformation
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -172,23 +173,6 @@ def match_colored_objects(
     return None
 
 
-def equal_modulo_rigid_transformation(
-    examples: List[Example], task_name: str, nesting_level: int
-) -> Optional[Match]:
-    for x_reflection in XReflection:
-        for rotation in ClockwiseRotation:
-            rigid_transformation = RigidTransformation(rotation, x_reflection)
-            all_examples_correct = True
-            for input, output in examples:
-                trasformed_input = input.apply_rigid_xform(rigid_transformation)
-                if trasformed_input != output:
-                    all_examples_correct = False
-                    break
-            if all_examples_correct:
-                state = f"({rigid_transformation})"
-                solve = lambda input: input.apply_rigid_xform(rigid_transformation)
-                return (state, solve)
-    return None
 
 
 gridxforms: List[XformEntry[Object]] = [
