@@ -1,33 +1,12 @@
 from typing import (
     List,
     Optional,
-    Tuple,
 )
 
-from color_features import detect_color_features
 from logger import logger
-from objects import Object, display, display_multiple
-from load_data import Example, Task, Tasks, training_data, evaluation_data
-from rule_based_selector import DecisionRule, select_object_minimal
-from shape_features import detect_shape_features
-from symmetry_features import detect_symmetry_features
-from symmetry import (
-    find_periodic_symmetry_predicates,
-    find_non_periodic_symmetry_predicates,
-    fill_grid,
-    PeriodicGridSymmetry,
-    NonPeriodicGridSymmetry,
-)
-from visual_cortex import find_rectangular_objects, regularity_score
-import numpy as np
-from dataclasses import dataclass
-from grid_normalization import ClockwiseRotation, XReflection, RigidTransformation
-from cardinality_predicates import (
-    find_cardinality_predicates,
-    CardinalityPredicate,
-    predicates_intersection,
-)
-from bi_types import Match, GridAndObjects, XformEntry, Config
+from objects import Object, display_multiple
+from load_data import Task, Tasks, training_data, evaluation_data
+from bi_types import XformEntry, Config
 from primitives import xform_identity, primitive_to_xform, translate_down_1
 from canvas_grid_match import canvas_grid_xform
 from inpainting_match import (
@@ -37,10 +16,9 @@ from inpainting_match import (
 )
 from canvas_grid_match import equal_modulo_rigid_transformation
 from split_mirrot_match import frame_split_and_mirror_xform
-from find_xform import find_xform_for_examples, find_xform
+from find_xform import find_xform
 from matched_objects import handle_matched_objects
 from match_colored_objects import match_colored_objects
-
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -58,8 +36,6 @@ def filter_simple_xforms(task: Task, task_name: str):
         ):
             return False
     return True
-
-
 
 
 gridxforms: List[XformEntry[Object]] = [
@@ -82,8 +58,6 @@ gridxforms: List[XformEntry[Object]] = [
 desperatexforms: List[XformEntry[Object]] = [] + (
     [XformEntry(frame_split_and_mirror_xform, 100)] if Config.find_frame_rule else []
 )
-
-
 
 
 num_difficulties_xform = max(xform.difficulty for xform in gridxforms + desperatexforms)
@@ -132,7 +106,9 @@ def process_tasks(tasks: Tasks, set: str):
             current_difficulty += num_difficulties_xform
 
             if Config.find_matched_objects:
-                should_continue = handle_matched_objects(examples, task_name, task_type, set, current_difficulty)
+                should_continue = handle_matched_objects(
+                    examples, task_name, task_type, set, current_difficulty
+                )
                 if should_continue:
                     continue
             current_difficulty += num_difficulties_matching
