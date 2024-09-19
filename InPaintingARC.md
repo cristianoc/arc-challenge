@@ -165,5 +165,19 @@ For the second puzzle, the frame rule can be applied by splitting the problem al
 
 ### Puzzles solved by the frame rule
 
-- All predicates and Frame Rule: 7 out of 8 training, 12 out of 13 evaluation
+- All predicates and Frame Rule: 7 out of 8 training, 12 out of 13 evaluation.
 
+## Symmetry Masks
+
+The remaining unsolved evaluation puzzle has orizontal, vertical and anti-diagonal symmetries.
+However, that is not sufficient to solve the puzzle.
+The solution relies on having diagonal symmetry on certain parts of the grid.
+To addess this, we refine the non-periodic symmetry predicate to also allow a mask to specify which parts of the grid are affected by the symmetry:
+
+![symmetry-masks](images/symmetry-masks.png)
+
+In the picture above, the black cells in the mask indicate where the diagonal symmetry does not hold.
+
+### Puzzles solved with symmetry masks
+
+- All predicates and Frame Rule and Symmetry Masks: 7 out of 8 training, 13 out of 13 evaluation.
