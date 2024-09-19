@@ -4,6 +4,7 @@ from load_data import Example
 from bi_types import Match, GridAndObjects
 from logger import logger
 import numpy as np
+from bi_types import XformEntry
 
 
 def check_fractal_expansion_sizes(examples: List[Example[GridAndObjects]]):
@@ -127,3 +128,5 @@ def stretch_height(
 
     match = (state, solve)
     return match
+
+
