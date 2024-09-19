@@ -39,8 +39,11 @@ from inpainting_match import (
 )
 from canvas_grid_match import equal_modulo_rigid_transformation
 from split_mirrot_match import frame_split_and_mirror_xform
-from expansion_match import fractal_expansion, stretch_height, check_fractal_expansion_sizes
-
+from expansion_match import (
+    fractal_expansion,
+    stretch_height,
+    check_fractal_expansion_sizes,
+)
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -196,8 +199,6 @@ gridxforms: List[XformEntry[Object]] = [
 desperatexforms: List[XformEntry[Object]] = [] + (
     [XformEntry(frame_split_and_mirror_xform, 100)] if Config.find_frame_rule else []
 )
-
-
 
 
 expansion_xforms: List[XformEntry[Object]] = [
