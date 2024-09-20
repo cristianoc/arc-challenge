@@ -166,6 +166,45 @@ def find_matched_objects(
     return matched_objects
 
 
+def minimize_common_features(
+    common_decision_rule: DecisionRule, matched_objects: List[ObjectMatch]
+):
+    """
+    Minimizes the common features by trying to reduce the number of features one by one.
+
+    Args:
+        common_decision_rule: The initial set of common features discovered.
+        matched_objects: The list of matched input-output object pairs.
+
+    Returns:
+        A minimized set of features that still correctly classifies the object.
+    """
+    # Start with the full set of common features
+    minimized_rule = common_decision_rule
+
+    # Get all the features in the rule
+    features = list(minimized_rule.features)
+
+    for feature in features:
+        # Try removing one feature at a time
+        temp_rule = minimized_rule.without_feature(feature)
+
+        # Check if the reduced set still correctly classifies the objects
+        all_match = True
+        for match in matched_objects:
+            embeddings = [detect_symmetry_features(obj) for obj in match.input_objects]
+            decision_rule = select_object_minimal(embeddings, match.matched_index)
+            if decision_rule is None or not temp_rule.is_subset(decision_rule):
+                all_match = False
+                break
+
+        # If removing the feature doesn't affect classification, keep it removed
+        if all_match:
+            minimized_rule = temp_rule
+
+    return minimized_rule
+
+
 def handle_matched_objects(
     examples, task_name, task_type, set, current_difficulty
 ) -> bool:
