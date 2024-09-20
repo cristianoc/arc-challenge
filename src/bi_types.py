@@ -69,7 +69,7 @@ class Config:
     whitelisted_tasks: List[str] = []
     whitelisted_tasks.append(task_puzzle)
 
-    display_not_found = False
+    display_not_found = True
     display_verbose = False
     only_inpainting_puzzles = False
 

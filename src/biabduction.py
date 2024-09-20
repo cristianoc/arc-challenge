@@ -23,7 +23,6 @@ from match_colored_objects import match_colored_objects
 
 def filter_simple_xforms(task: Task, task_name: str):
     examples = task.train
-    tests = task.test
     for example in examples:
         input = example[0]
         output = example[1]
@@ -40,7 +39,6 @@ def filter_simple_xforms(task: Task, task_name: str):
 
 def filter_complex_xforms(task: Task, task_name: str):
     examples = task.train
-    tests = task.test
     for example in examples:
         input = example[0]
         output = example[1]
