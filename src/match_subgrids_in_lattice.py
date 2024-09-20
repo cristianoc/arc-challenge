@@ -1,12 +1,11 @@
 from typing import List, Optional
 
-from bi_types import Example, Match
+from bi_types import Config, Example, Match
 from logger import logger
 from matched_objects import (
     ObjectMatch,
     check_grid_satisfies_rule,
     detect_common_features,
-    minimize_common_features,
 )
 from objects import Object, display
 from visual_cortex import extract_lattice_subgrids
@@ -66,7 +65,8 @@ def match_subgrids_in_lattice(
         # need to find the subgrid that satisfies the common_decision_rule
         for i, subgrid in enumerate(flattened_subgrids):
             if check_grid_satisfies_rule(subgrid, flattened_subgrids, common_decision_rule):
-                display(input_g, subgrid, title=f"subgrid {i}")
+                if Config.display_verbose:
+                    display(input_g, subgrid, title=f"subgrid {i}")
                 return subgrid
         logger.info(
             f"{'  ' * nesting_level}match_subgrids_in_lattice no subgrid satisfies the rule"
