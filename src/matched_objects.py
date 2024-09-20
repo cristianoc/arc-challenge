@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import List, NamedTuple, Optional
 
 import numpy as np
 
@@ -12,21 +12,21 @@ from shape_features import detect_shape_features
 from symmetry_features import detect_symmetry_features
 from visual_cortex import find_rectangular_objects
 
-# ObjectMatch is a type alias representing a match between a list of detected input objects
-# and the index of the object within that list that is identical to the output object.
-#
-# The first element of the tuple (List[Object]) contains all the detected input objects,
-# while the second element (int) specifies the index of the object in this list that is
-# identical to the output object in terms of size and data.
-ObjectMatch = Tuple[List[Object], int]
+
+class ObjectMatch(NamedTuple):
+    """
+    A match between an input object and an output object.
+    """
+    input_objects: List[Object]
+    matched_index: int
 
 
 def detect_common_features(matched_objects: List[ObjectMatch], initial_difficulty: int):
     def detect_common_symmetry_features() -> Optional[DecisionRule]:
         common_decision_rule = None
-        for input_objects, index in matched_objects:
-            embeddings = [detect_symmetry_features(obj) for obj in input_objects]
-            decision_rule = select_object_minimal(embeddings, index)
+        for match in matched_objects:
+            embeddings = [detect_symmetry_features(obj) for obj in match.input_objects]
+            decision_rule = select_object_minimal(embeddings, match.matched_index)
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Symmetry): {decision_rule}")
                 if common_decision_rule is None:
@@ -45,11 +45,12 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
 
     def detect_common_color_features() -> Optional[DecisionRule]:
         common_decision_rule = None
-        for input_objects, index in matched_objects:
+        for match in matched_objects:
             embeddings = [
-                detect_color_features(obj, input_objects) for obj in input_objects
+                detect_color_features(obj, match.input_objects)
+                for obj in match.input_objects
             ]
-            decision_rule = select_object_minimal(embeddings, index)
+            decision_rule = select_object_minimal(embeddings, match.matched_index)
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Color): {decision_rule}")
                 if common_decision_rule is None:
@@ -68,12 +69,12 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
 
     def detect_common_shape_features(level: int) -> Optional[DecisionRule]:
         common_decision_rule = None
-        for input_objects, index in matched_objects:
+        for match in matched_objects:
             embeddings = [
-                detect_shape_features(obj, input_objects, level)
-                for obj in input_objects
+                detect_shape_features(obj, match.input_objects, level)
+                for obj in match.input_objects
             ]
-            decision_rule = select_object_minimal(embeddings, index)
+            decision_rule = select_object_minimal(embeddings, match.matched_index)
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Shape): {decision_rule}")
                 if common_decision_rule is None:
@@ -124,7 +125,7 @@ def find_matched_objects(
         task_type: A string indicating the type of task (e.g., 'train' or 'test').
 
     Returns:
-        A list of ObjectMatch tuples if matches are found for all examples, otherwise None.
+        A list of ObjectMatch instances if matches are found for all examples, otherwise None.
     """
 
     def candidate_objects_for_matching(input: Object, output: Object) -> List[Object]:
@@ -158,7 +159,7 @@ def find_matched_objects(
             matched_object_index = find_matching_input_object(input_objects, output)
 
             if matched_object_index is not None:
-                matched_objects.append((input_objects, matched_object_index))
+                matched_objects.append(ObjectMatch(input_objects, matched_object_index))
 
         return matched_objects if len(matched_objects) == len(examples) else None
 
@@ -166,9 +167,11 @@ def find_matched_objects(
     return matched_objects
 
 
-def handle_matched_objects(examples, task_name, task_type, set, current_difficulty) -> bool:
+def handle_matched_objects(
+    examples, task_name, task_type, set, current_difficulty
+) -> bool:
     should_continue = False
-    
+
     # Check if the input objects can be matched to the output objects
     logger.debug(f"Checking common features for {task_name} {set}")
     matched_objects = find_matched_objects(examples, task_type)
@@ -189,7 +192,5 @@ def handle_matched_objects(examples, task_name, task_type, set, current_difficul
             #  num_correct += 1
             should_continue = True
         else:
-            logger.warning(
-                f"Could not find common decision rule for {task_name} {set}"
-            )
+            logger.warning(f"Could not find common decision rule for {task_name} {set}")
     return should_continue
