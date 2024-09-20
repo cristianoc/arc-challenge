@@ -2,7 +2,7 @@ from typing import Callable, List, Optional
 
 from bi_types import Example, GridAndObjects, Match
 from logger import logger
-from match_object_list_to_object import match_object_list_to_object
+from match_object_list_to_object import match_object_list_to_object_by_painting
 from objects import Object, display_multiple
 
 
@@ -84,4 +84,4 @@ def match_colored_objects(
         )
         object_list_examples.append(object_list_example)
 
-    return match_object_list_to_object(object_list_examples, get_objects, task_name, nesting_level)
+    return match_object_list_to_object_by_painting(object_list_examples, get_objects, task_name, nesting_level)

@@ -10,12 +10,24 @@ object_list_xforms: List[XformEntry[GridAndObjects]] = [
     XformEntry(match_object_list, 4),
 ]
 
-def match_object_list_to_object(
+def match_object_list_to_object_by_painting(
     examples: List[Example[GridAndObjects]],
     get_objects: Callable[[Object], List[Object]],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object]]:
+    """
+    Attempts to transform a list of examples by sequentially painting objects on top of each other.
+
+    Args:
+        examples (List[Example[GridAndObjects]]): A list of examples to be transformed.
+        get_objects (Callable[[Object], List[Object]]): A callable that extracts a list of objects from an Object.
+        task_name (str): The name of the task for logging and identification.
+        nesting_level (int): The current level of nesting for logging purposes.
+
+    Returns:
+        Optional[Match[Object]]: A tuple containing the transformation name and a solver function if a match is found, otherwise None.
+    """
     for list_xform in object_list_xforms:
         match: Optional[Match[GridAndObjects]] = list_xform.xform(
             examples, task_name, nesting_level + 1
