@@ -46,27 +46,26 @@ def match_subgrids_in_lattice(
             )
         except ValueError:
             logger.info(f"{'  ' * nesting_level}match_subgrids_in_lattice no match")
-    common_decision_rule, features_used = detect_common_features(object_matches, 3)
+    common_decision_rule, features_used = detect_common_features(object_matches, 3, minimal=True)
     if common_decision_rule is None:
         logger.info(
             f"{'  ' * nesting_level}match_subgrids_in_lattice common_decision_rule is None"
         )
         return None
-    minimized_rule = minimize_common_features(common_decision_rule, object_matches)
     logger.info(
-        f"{'  ' * nesting_level}match_subgrids_in_lattice minimized_rule:{minimized_rule}"
+        f"{'  ' * nesting_level}match_subgrids_in_lattice common_decision_rule:{common_decision_rule}"
     )
 
-    state = f"{minimized_rule}"
+    state = f"{common_decision_rule}"
 
     def solve(input_g: Object) -> Optional[Object]:
         input_subgrids = extract_lattice_subgrids(input_g)
         if input_subgrids is None:
             return None
         flattened_subgrids = [obj for sublist in input_subgrids for obj in sublist]
-        # need to find the subgrid that satisfies the minimized_rule
+        # need to find the subgrid that satisfies the common_decision_rule
         for i, subgrid in enumerate(flattened_subgrids):
-            if check_grid_satisfies_rule(subgrid, flattened_subgrids, minimized_rule):
+            if check_grid_satisfies_rule(subgrid, flattened_subgrids, common_decision_rule):
                 display(input_g, subgrid, title=f"subgrid {i}")
                 return subgrid
         logger.info(

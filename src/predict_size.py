@@ -288,7 +288,7 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
         common_decision_rule = None
         for input_objects, index in matched_objects:
             embeddings = [detect_symmetry_features(obj) for obj in input_objects]
-            decision_rule = select_object_minimal(embeddings, index)
+            decision_rule = select_object_minimal(embeddings, index, minimal=False)
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Symmetry): {decision_rule}")
                 if common_decision_rule is None:
@@ -311,7 +311,7 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
             embeddings = [
                 detect_color_features(obj, input_objects) for obj in input_objects
             ]
-            decision_rule = select_object_minimal(embeddings, index)
+            decision_rule = select_object_minimal(embeddings, index, minimal=False)
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Color): {decision_rule}")
                 if common_decision_rule is None:
@@ -335,7 +335,7 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
                 detect_shape_features(obj, input_objects)
                 for obj in input_objects
             ]
-            decision_rule = select_object_minimal(embeddings, index)
+            decision_rule = select_object_minimal(embeddings, index, minimal=False)
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Shape): {decision_rule}")
                 if common_decision_rule is None:

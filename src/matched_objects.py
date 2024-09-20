@@ -16,11 +16,14 @@ class ObjectMatch(NamedTuple):
     """
     A match between an input object and an output object.
     """
+
     input_objects: List[Object]
     matched_index: int
 
 
-def check_grid_satisfies_rule(obj: Object, all_objects: List[Object], decision_rule: DecisionRule) -> bool:
+def check_grid_satisfies_rule(
+    obj: Object, all_objects: List[Object], decision_rule: DecisionRule
+) -> bool:
     """
     Check if the given grid satisfies the specified decision rule.
     """
@@ -36,15 +39,20 @@ def check_grid_satisfies_rule(obj: Object, all_objects: List[Object], decision_r
     features.update(symmetry_features)  # Flattening the nested dictionary
 
     feature_rule = DecisionRule(features)
+
     return decision_rule.is_subset(feature_rule)
 
 
-def detect_common_features(matched_objects: List[ObjectMatch], difficulty: int):
+def detect_common_features(
+    matched_objects: List[ObjectMatch], difficulty: int, minimal: bool
+):
     def detect_common_symmetry_features() -> Optional[DecisionRule]:
         common_decision_rule = None
         for match in matched_objects:
             embeddings = [detect_symmetry_features(obj) for obj in match.input_objects]
-            decision_rule = select_object_minimal(embeddings, match.matched_index)
+            decision_rule = select_object_minimal(
+                embeddings, match.matched_index, minimal
+            )
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Symmetry): {decision_rule}")
                 if common_decision_rule is None:
@@ -68,7 +76,9 @@ def detect_common_features(matched_objects: List[ObjectMatch], difficulty: int):
                 detect_color_features(obj, match.input_objects)
                 for obj in match.input_objects
             ]
-            decision_rule = select_object_minimal(embeddings, match.matched_index)
+            decision_rule = select_object_minimal(
+                embeddings, match.matched_index, minimal
+            )
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Color): {decision_rule}")
                 if common_decision_rule is None:
@@ -92,7 +102,9 @@ def detect_common_features(matched_objects: List[ObjectMatch], difficulty: int):
                 detect_shape_features(obj, match.input_objects)
                 for obj in match.input_objects
             ]
-            decision_rule = select_object_minimal(embeddings, match.matched_index)
+            decision_rule = select_object_minimal(
+                embeddings, match.matched_index, minimal
+            )
             if decision_rule is not None:
                 logger.debug(f"  Decision rule (Shape): {decision_rule}")
                 if common_decision_rule is None:
@@ -212,7 +224,9 @@ def minimize_common_features(
         all_match = True
         for match in matched_objects:
             embeddings = [detect_symmetry_features(obj) for obj in match.input_objects]
-            decision_rule = select_object_minimal(embeddings, match.matched_index)
+            decision_rule = select_object_minimal(
+                embeddings, match.matched_index, minimal=False
+            )
             if decision_rule is None or not temp_rule.is_subset(decision_rule):
                 all_match = False
                 break
@@ -239,7 +253,7 @@ def handle_matched_objects(
             f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}"
         )
         common_decision_rule, features_used = detect_common_features(
-            matched_objects, current_difficulty
+            matched_objects, current_difficulty, minimal=False
         )
         if common_decision_rule:
             logger.info(
