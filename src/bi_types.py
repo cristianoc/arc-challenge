@@ -1,18 +1,11 @@
-from typing import (
-    Callable,
-    List,
-    Optional,
-    Tuple,
-    TypeVar,
-    Generic,
-    Union,
-)
 from dataclasses import dataclass
-from objects import Object, display, display_multiple
-from load_data import Example
+from typing import Callable, Generic, List, Optional, Tuple, TypeVar, Union
 
+from load_data import Example
+from objects import Object
 
 GridAndObjects = Tuple[Object, List[Object]]
+
 
 T = TypeVar("T", bound=Union[Object, GridAndObjects])
 State = str
