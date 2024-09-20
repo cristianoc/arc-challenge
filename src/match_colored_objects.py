@@ -2,12 +2,9 @@ from typing import List, Optional
 
 from bi_types import Example, GridAndObjects, Match, XformEntry
 from logger import logger
-from object_list_match import match_list_of_objects
+from object_list_match import list_xforms
 from objects import Object, display, display_multiple
 
-list_xforms: List[XformEntry[GridAndObjects]] = [
-    XformEntry(match_list_of_objects, 4),
-]
 
 def check_matching_colored_objects_count_and_color(examples: List[Example]) -> bool:
     for input, output in examples:
