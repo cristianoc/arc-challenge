@@ -576,7 +576,7 @@ def process_tasks(tasks: Tasks, set: str):
                 display_multiple(examples, title=f"{task_name} {set}")
                 if colored_objects:
                     display_multiple(
-                        [(o, Object(np.array([[0]]))) for o in colored_objects],
+                        colored_objects,
                         title=f"colored objects",
                     )
 

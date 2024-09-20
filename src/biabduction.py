@@ -15,6 +15,7 @@ from matched_objects import handle_matched_objects
 from objects import Object, display_multiple
 from primitives import primitive_to_xform, translate_down_1, xform_identity
 from split_mirrot_match import frame_split_and_mirror_xform
+from match_subgrids_in_lattice import match_subgrids_in_lattice
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -48,6 +49,7 @@ def filter_complex_xforms(task: Task, task_name: str):
 
 
 gridxforms: List[XformEntry[Object]] = [
+    XformEntry(match_subgrids_in_lattice, 3),
     XformEntry(match_colored_objects, 3),
     XformEntry(xform_identity, 1),
     XformEntry(equal_modulo_rigid_transformation, 2),
