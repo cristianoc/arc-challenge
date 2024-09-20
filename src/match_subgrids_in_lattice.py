@@ -2,8 +2,13 @@ from typing import List, Optional
 
 from bi_types import Example, Match
 from logger import logger
-from matched_objects import ObjectMatch, detect_common_features, minimize_common_features
-from objects import Object
+from matched_objects import (
+    ObjectMatch,
+    check_grid_satisfies_rule,
+    detect_common_features,
+    minimize_common_features,
+)
+from objects import Object, display
 from visual_cortex import extract_lattice_subgrids
 
 
@@ -42,13 +47,31 @@ def match_subgrids_in_lattice(
         except ValueError:
             logger.info(f"{'  ' * nesting_level}match_subgrids_in_lattice no match")
     common_decision_rule, features_used = detect_common_features(object_matches, 3)
-    if common_decision_rule is not None:
-        minimized_rule = minimize_common_features(common_decision_rule, object_matches)
+    if common_decision_rule is None:
         logger.info(
-            f"{'  ' * nesting_level}match_subgrids_in_lattice common_decision_rule:{common_decision_rule} features_used:{features_used}"
+            f"{'  ' * nesting_level}match_subgrids_in_lattice common_decision_rule is None"
         )
-        logger.info(
-            f"{'  ' * nesting_level}match_subgrids_in_lattice minimized_rule:{minimized_rule}"
-        )
+        return None
+    minimized_rule = minimize_common_features(common_decision_rule, object_matches)
+    logger.info(
+        f"{'  ' * nesting_level}match_subgrids_in_lattice minimized_rule:{minimized_rule}"
+    )
 
-    return None
+    state = f"{minimized_rule}"
+
+    def solve(input_g: Object) -> Optional[Object]:
+        input_subgrids = extract_lattice_subgrids(input_g)
+        if input_subgrids is None:
+            return None
+        flattened_subgrids = [obj for sublist in input_subgrids for obj in sublist]
+        # need to find the subgrid that satisfies the minimized_rule
+        for i, subgrid in enumerate(flattened_subgrids):
+            if check_grid_satisfies_rule(subgrid, flattened_subgrids, minimized_rule):
+                display(input_g, subgrid, title=f"subgrid {i}")
+                return subgrid
+        logger.info(
+            f"{'  ' * nesting_level}match_subgrids_in_lattice no subgrid satisfies the rule"
+        )
+        return None
+
+    return (state, solve)
