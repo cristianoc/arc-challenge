@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 from objects import Object
 from rule_based_selector import Features
-from visual_cortex import extract_subgrid, find_colored_objects
+from visual_cortex import extract_lattice_subgrids, find_colored_objects
 
 num_difficulties = 10
 
@@ -58,7 +58,7 @@ def detect_numeric_features(grid: Object, relative_difficulty: int) -> Features:
                 objects_are_vertical = all_vertical
             else:
                 objects_are_vertical = None
-    subgrid = extract_subgrid(grid, color=None)
+    subgrid = extract_lattice_subgrids(grid, color=None)
     subgrid_width = None
     subgrid_height = None
     if subgrid:

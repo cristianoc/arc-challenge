@@ -292,9 +292,33 @@ def extract_subgrid_of_color(
     return subgrid
 
 
-def extract_subgrid(
-    grid: Object_t, color: Optional[int]
+def extract_lattice_subgrids(
+    grid: Object_t, color: Optional[int] = None
 ) -> Optional[List[List[Object_t]]]:
+    """
+    Extracts subgrids from the grid based on dividing lines of the specified color.
+    If color is None, attempts to find dividing lines of any color.
+
+
+    Original Grid:
+    +---+---+---+
+    | 1 | 2 | 3 |
+    +---+---+---+
+    | 4 | 5 | 6 |
+    +---+---+---+
+    | 7 | 8 | 9 |
+    +---+---+---+
+
+    Extracted Subgrids: the 9 subgrids
+
+    **Parameters:**
+    - `grid (Object_t)`: The grid to analyze.
+    - `color (Optional[int])`: The color of the dividing lines. If `None`, any color is considered.
+
+    **Returns:**
+    - `Optional[List[List['Object']]]`: A nested list of subgrids organized as rows of subgrids if extraction is successful; otherwise, `None`.
+
+    """
     if color is not None:
         return extract_subgrid_of_color(grid, color)
     for c in grid.get_colors():
@@ -438,7 +462,7 @@ def test_subgrid_extraction():
         )
     )
 
-    subgrid = extract_subgrid(grid, 1)
+    subgrid = extract_lattice_subgrids(grid, 1)
     assert subgrid is not None, "Test failed: No subgrid extracted"
     height = len(subgrid)
     width = len(subgrid[0])
