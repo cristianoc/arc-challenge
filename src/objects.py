@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 plt: Any
 import numpy as np
@@ -496,7 +496,7 @@ class Object:
 
 def display(
     input: Object,
-    output: Object = Object(np.array([[0]])),
+    output: Optional[Object] = None,
     title: Optional[str] = None,
     left_title: Optional[str] = None,
     right_title: Optional[str] = None,
@@ -505,11 +505,18 @@ def display(
 
 
 def display_multiple(
-    grid_pairs: List[Tuple[Object, Object]],
+    grids: Union[List[Object], List[Tuple[Object, Optional[Object]]]],
     title: Optional[str] = None,
     left_title: Optional[str] = None,
     right_title: Optional[str] = None,
-) -> None:
+):
+    grid_pairs: List[Tuple[Object, Optional[Object]]] = []
+    # Normalize input to a list of pairs
+    if all(isinstance(grid, Object) for grid in grids):
+        grid_pairs = [(grid, None) for grid in grids]  # type: ignore
+    else:
+        grid_pairs = grids  # type: ignore
+
     num_pairs = len(grid_pairs)
 
     # Dynamically set the figure size based on the number of grid pairs
@@ -524,7 +531,6 @@ def display_multiple(
 
     for i, (input, output) in enumerate(grid_pairs):
         input_data = input._data
-        output_data = output._data
         ax_input: Any
         ax_output: Any
         ax_input, ax_output = axes[i]
@@ -549,7 +555,8 @@ def display_multiple(
             ax_input.set_title(f"Input Grid {i+1}")
         # ax_input.axis("off")  # Remove this line to show the axes
 
-        if output_data is not None:
+        if output is not None:
+            output_data = output._data
             # Custom rectangle-based plot for output grid with provided color scheme
             for row in range(output_data.shape[0]):
                 for col in range(output_data.shape[1]):
@@ -574,7 +581,7 @@ def display_multiple(
             else:
                 ax_output.set_title(f"Output Grid {i+1}")
         else:
-            # If output_data is None, just show a blank plot
+            # If output is None, just show a blank plot
             if right_title:
                 ax_output.set_title(right_title)
             else:

@@ -290,8 +290,7 @@ def process_tasks(tasks: Tasks, set: str):
             f"Could not find correct color transformation for {task_name} {set}"
         )
         if Config.display_not_found:
-            grids: List[Tuple[Object, Object]] = examples
-            display_multiple(grids, title=f"{task_name} {set}")
+            display_multiple(examples, title=f"{task_name} {set}")
 
     return num_correct, num_incorrect
 
