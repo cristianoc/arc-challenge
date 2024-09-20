@@ -1,8 +1,8 @@
 # type: ignore
-import numpy as np
-import matplotlib.pyplot as plt
-from typing import Optional, Tuple, List
+from typing import List, Optional, Tuple
 
+import matplotlib.pyplot as plt
+import numpy as np
 from PIL import Image
 
 
