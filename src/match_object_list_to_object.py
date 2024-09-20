@@ -1,0 +1,57 @@
+from typing import Callable, List, Optional
+
+from logger import logger
+from objects import Object, display_multiple, display
+from bi_types import GridAndObjects, Match, XformEntry
+from load_data import Example
+from match_object_list import match_object_list
+
+object_list_xforms: List[XformEntry[GridAndObjects]] = [
+    XformEntry(match_object_list, 4),
+]
+
+def match_object_list_to_object(
+    examples: List[Example[GridAndObjects]],
+    get_objects: Callable[[Object], List[Object]],
+    task_name: str,
+    nesting_level: int,
+) -> Optional[Match[Object]]:
+    for list_xform in object_list_xforms:
+        match: Optional[Match[GridAndObjects]] = list_xform.xform(
+            examples, task_name, nesting_level + 1
+        )
+        if match is not None:
+            state_list_xform, apply_state_list_xform = match
+
+            def solve(input: Object) -> Optional[Object]:
+                input_objects = get_objects(input)
+                grid_and_objects: GridAndObjects = (input, input_objects)
+                result = apply_state_list_xform(grid_and_objects)
+                if result is None:
+                    return None
+                s, output_objects = result
+                output_grid = None
+                if False:
+                    display_multiple(
+                        list(zip(input_objects, output_objects)),
+                        title=f"Output Objects",
+                    )
+                for output in output_objects:
+                    if output_grid is None:
+                        output_grid = output.copy()
+                    else:
+                        output_grid.add_object_in_place(output)
+                assert output_grid is not None
+                if False:
+                    display(output_grid, title=f"Output Grid")
+                return output_grid
+
+            return (
+                f"{list_xform.xform.__name__}({state_list_xform})",
+                solve,
+            )
+        else:
+            logger.info(
+                f"{'  ' * nesting_level}Xform {list_xform.xform.__name__} is not applicable"
+            )
+    return None

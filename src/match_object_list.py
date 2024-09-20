@@ -50,7 +50,7 @@ def map_first_input_to_output_grid(
     return input_output_objects_examples
 
 
-def match_list_of_objects(
+def match_object_list(
     examples: List[Example[GridAndObjects]],
     task_name: str,
     nesting_level: int,
@@ -142,8 +142,3 @@ def match_list_of_objects(
     logger.info(f"{'  ' * nesting_level}TODO: more cases of match_list_of_objects")
 
     return None
-
-
-list_xforms: List[XformEntry[GridAndObjects]] = [
-    XformEntry(match_list_of_objects, 4),
-]
