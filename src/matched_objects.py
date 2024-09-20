@@ -2,7 +2,6 @@ from typing import List, NamedTuple, Optional
 
 import numpy as np
 
-from bi_types import Config
 from color_features import detect_color_features
 from load_data import Example
 from logger import logger
@@ -21,7 +20,7 @@ class ObjectMatch(NamedTuple):
     matched_index: int
 
 
-def detect_common_features(matched_objects: List[ObjectMatch], initial_difficulty: int):
+def detect_common_features(matched_objects: List[ObjectMatch], difficulty: int):
     def detect_common_symmetry_features() -> Optional[DecisionRule]:
         common_decision_rule = None
         for match in matched_objects:
@@ -67,11 +66,11 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
                 break
         return common_decision_rule
 
-    def detect_common_shape_features(level: int) -> Optional[DecisionRule]:
+    def detect_common_shape_features() -> Optional[DecisionRule]:
         common_decision_rule = None
         for match in matched_objects:
             embeddings = [
-                detect_shape_features(obj, match.input_objects, level)
+                detect_shape_features(obj, match.input_objects)
                 for obj in match.input_objects
             ]
             decision_rule = select_object_minimal(embeddings, match.matched_index)
@@ -96,15 +95,15 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
 
     # Try detecting common features in the order of shape, color, and symmetry
 
-    if common_decision_rule is None and Config.difficulty >= initial_difficulty + 1:
-        common_decision_rule = detect_common_shape_features(initial_difficulty + 1)
+    if common_decision_rule is None and difficulty >= 1:
+        common_decision_rule = detect_common_shape_features()
         features_used = "Shape"
 
-    if common_decision_rule is None and Config.difficulty >= initial_difficulty + 2:
+    if common_decision_rule is None and difficulty >= 2:
         common_decision_rule = detect_common_color_features()
         features_used = "Color"
 
-    if common_decision_rule is None and Config.difficulty >= initial_difficulty + 3:
+    if common_decision_rule is None and difficulty >= 3:
         common_decision_rule = detect_common_symmetry_features()
         features_used = "Symmetry"
 

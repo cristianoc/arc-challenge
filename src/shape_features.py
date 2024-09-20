@@ -72,9 +72,7 @@ def detect_has_max_number_nontrivial_subobjects(
     return res
 
 
-def detect_shape_features(
-    object: Object, all_objects: List[Object], level: int
-) -> Features:
+def detect_shape_features(object: Object, all_objects: List[Object]) -> Features:
     features: Features = {
         LARGEST_SIZE.name: detect_has_largest_size(object, all_objects),
         SMALLEST_SIZE.name: detect_has_smallest_size(object, all_objects),

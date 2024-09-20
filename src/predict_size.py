@@ -332,7 +332,7 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
         common_decision_rule = None
         for input_objects, index in matched_objects:
             embeddings = [
-                detect_shape_features(obj, input_objects, level)
+                detect_shape_features(obj, input_objects)
                 for obj in input_objects
             ]
             decision_rule = select_object_minimal(embeddings, index)
