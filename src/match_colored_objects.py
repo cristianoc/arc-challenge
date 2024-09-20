@@ -1,9 +1,9 @@
-from typing import List, Optional
+from typing import Callable, List, Optional
 
-from bi_types import Example, GridAndObjects, Match, XformEntry
+from bi_types import Example, GridAndObjects, Match
 from logger import logger
-from object_list_match import list_xforms
-from objects import Object, display, display_multiple
+from match_object_list_to_object import match_object_list_to_object
+from objects import Object, display_multiple
 
 
 def check_matching_colored_objects_count_and_color(examples: List[Example]) -> bool:
@@ -21,6 +21,7 @@ def check_matching_colored_objects_count_and_color(examples: List[Example]) -> b
         if different_color:
             return False
     return True
+
 
 
 def match_colored_objects(
@@ -46,9 +47,13 @@ def match_colored_objects(
         background_color = 0  # TODO: determine background color
         return background_color
 
-    def get_grid_and_objects(input: Object) -> GridAndObjects:
+    def get_objects(input: Object) -> List[Object]:
         background_color = get_background_color(input)
-        input_objects: List[Object] = input.detect_colored_objects(background_color)
+        input_objects = input.detect_colored_objects(background_color)
+        return input_objects
+
+    def get_grid_and_objects(input: Object) -> GridAndObjects:
+        input_objects = get_objects(input)
         return (input, input_objects)
 
     input_grid_and_objects: GridAndObjects
@@ -79,44 +84,4 @@ def match_colored_objects(
         )
         object_list_examples.append(object_list_example)
 
-    for list_xform in list_xforms:
-        match: Optional[Match[GridAndObjects]] = list_xform.xform(
-            object_list_examples, task_name, nesting_level + 1
-        )
-        if match is not None:
-            state_list_xform, apply_state_list_xform = match
-
-            def solve(input: Object) -> Optional[Object]:
-                background_color = get_background_color(input)
-                input_objects = input.detect_colored_objects(background_color)
-                grid_and_objects: GridAndObjects = (input, input_objects)
-                result = apply_state_list_xform(grid_and_objects)
-                if result is None:
-                    return None
-                s, output_objects = result
-                output_grid = None
-                if False:
-                    display_multiple(
-                        list(zip(input_objects, output_objects)),
-                        title=f"Output Objects",
-                    )
-                for output in output_objects:
-                    if output_grid is None:
-                        output_grid = output.copy()
-                    else:
-                        output_grid.add_object_in_place(output)
-                assert output_grid is not None
-                if False:
-                    display(output_grid, title=f"Output Grid")
-                return output_grid
-
-            return (
-                f"{list_xform.xform.__name__}({state_list_xform})",
-                solve,
-            )
-        else:
-            logger.info(
-                f"{'  ' * nesting_level}Xform {list_xform.xform.__name__} is not applicable"
-            )
-
-    return None
+    return match_object_list_to_object(object_list_examples, get_objects, task_name, nesting_level)
