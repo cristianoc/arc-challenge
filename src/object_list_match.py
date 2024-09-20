@@ -10,6 +10,7 @@ from objects import Object
 
 map_xforms: List[XformEntry[Object]] = [XformEntry(stretch_height, 1)]
 
+
 def check_list_of_objects_subset(
     examples: List[Example[GridAndObjects]],
 ) -> Optional[List[Tuple[int, int]]]:
@@ -59,9 +60,7 @@ def match_list_of_objects(
     )
 
     if check_fractal_expansion_sizes(examples):
-        input_output_objects_examples = map_first_input_to_output_grid(
-            examples
-        )
+        input_output_objects_examples = map_first_input_to_output_grid(examples)
 
         # now pattern match recursively
         match: Optional[Match[Object]] = find_xform_for_examples(
@@ -143,3 +142,8 @@ def match_list_of_objects(
     logger.info(f"{'  ' * nesting_level}TODO: more cases of match_list_of_objects")
 
     return None
+
+
+list_xforms: List[XformEntry[GridAndObjects]] = [
+    XformEntry(match_list_of_objects, 4),
+]
