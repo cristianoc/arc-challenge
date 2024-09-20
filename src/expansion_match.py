@@ -1,10 +1,11 @@
 from typing import List, Optional
-from objects import Object, display_multiple, display
-from load_data import Example
-from bi_types import Match, GridAndObjects
-from logger import logger
+
 import numpy as np
-from bi_types import XformEntry
+
+from bi_types import GridAndObjects, Match, XformEntry
+from load_data import Example
+from logger import logger
+from objects import Object, display, display_multiple
 
 
 def check_fractal_expansion_sizes(examples: List[Example[GridAndObjects]]):

@@ -1,5 +1,5 @@
-from test_runner import puzzle
 from objects import Object
+from test_runner import puzzle
 
 """
 This transformation function takes a grid as input, detects exactly three objects within it, 

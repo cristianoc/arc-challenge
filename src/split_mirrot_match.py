@@ -1,11 +1,10 @@
 from typing import List, Optional, Tuple
-from objects import Object, display
-from load_data import Example
-from bi_types import Match
-from logger import logger
-from inpainting_match import inpainting_xform, mask_from_all_outputs
-from bi_types import Config
 
+from bi_types import Config, Match
+from inpainting_match import inpainting_xform, mask_from_all_outputs
+from load_data import Example
+from logger import logger
+from objects import Object, display
 
 
 def frame_split_and_mirror_xform(

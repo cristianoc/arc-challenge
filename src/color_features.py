@@ -1,9 +1,8 @@
 from enum import Enum, auto
 from typing import List
 
-from logger import logger
-
 from grid_types import RED
+from logger import logger
 from objects import Object
 from rule_based_selector import Features
 

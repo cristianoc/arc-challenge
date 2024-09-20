@@ -1,8 +1,6 @@
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from grid_types import DIRECTIONS4, DIRECTIONS8, Cell, GridData
-
-from typing import TYPE_CHECKING
 
 # To avoid circular imports
 if TYPE_CHECKING:

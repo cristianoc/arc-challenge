@@ -1,8 +1,8 @@
 from typing import List, Tuple
+
 from objects import Object
 from rule_based_selector import Features
 from visual_cortex import extract_subgrid, find_colored_objects
-
 
 num_difficulties = 10
 

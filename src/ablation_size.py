@@ -1,19 +1,19 @@
+import concurrent.futures
+import json
 import logging
+from datetime import datetime
 from typing import Any, Dict
 
 from matplotlib import pyplot as plt  # type: ignore
+
+from load_data import evaluation_data, training_data
 from logger import logger
-from load_data import training_data, evaluation_data
 from predict_size import (
     Config,
     compute_perc_correct,
     num_difficulties_total,
     process_tasks,
 )
-
-from datetime import datetime
-import concurrent.futures
-import json
 
 plt: Any = plt
 

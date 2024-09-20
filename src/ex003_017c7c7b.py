@@ -1,10 +1,11 @@
-from typing import List, Any
-from test_runner import puzzle
-from grid_types import BLUE, RED
-from shortest_period import find_shortest_period  # type: ignore
-from objects import Object
+from typing import Any, List
+
 import numpy as np
 
+from grid_types import BLUE, RED
+from objects import Object
+from shortest_period import find_shortest_period  # type: ignore
+from test_runner import puzzle
 
 """
 This code defines a grid transformation process that involves identifying the shortest repeating vertical pattern,

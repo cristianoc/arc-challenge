@@ -1,8 +1,10 @@
 from enum import Enum, auto
 
+import numpy as np
+
 from objects import Object
 from rule_based_selector import Features
-import numpy as np
+
 
 # Define the SymmetryFeatures Enum
 class SymmetryFeatures(Enum):

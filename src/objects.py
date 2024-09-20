@@ -1,31 +1,30 @@
-from typing import Any, Dict, List, Optional, Tuple, Callable, Sequence
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 plt: Any
-from matplotlib import colors, pyplot as plt  # type: ignore
-from matplotlib.colors import ListedColormap  # type: ignore
 import numpy as np
-from grid_types import (
-    Cell,
-    GridData,
-    Rotation,
-    Symmetry,
-    BLACK,
-    Color,
-    RigidTransformation,
-    XReflection,
-)
+from matplotlib import colors
+from matplotlib import pyplot as plt  # type: ignore
+from matplotlib.colors import ListedColormap  # type: ignore
+
+import visual_cortex
 from detect_objects import ConnectedComponent, find_connected_components
 from flood_fill import EnclosedCells, find_enclosed_cells
-from logger import logger
 from grid_types import (
+    BLACK,
     BLUE,
     GREEN,
     RED,
     YELLOW,
+    Cell,
+    Color,
+    GridData,
+    RigidTransformation,
     Rotation,
+    Symmetry,
+    XReflection,
     color_scheme,
 )
-import visual_cortex
+from logger import logger
 
 
 class Object:

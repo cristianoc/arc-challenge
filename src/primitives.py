@@ -1,6 +1,7 @@
-from bi_types import Match, Example, Object, Primitive, Xform
+from typing import Callable, List, Optional
+
+from bi_types import Example, Match, Object, Primitive, Xform
 from logger import logger
-from typing import List, Optional, Callable
 
 
 def check_primitive_on_examples(

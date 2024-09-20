@@ -1,25 +1,25 @@
-from typing import List, Optional, Tuple
-from objects import Object, display, display_multiple
-from load_data import Example
-from bi_types import Match
-from logger import logger
-from symmetry import (
-    find_periodic_symmetry_predicates,
-    find_non_periodic_symmetry_predicates,
-    fill_grid,
-    PeriodicGridSymmetry,
-    NonPeriodicGridSymmetry,
-)
-from visual_cortex import regularity_score
-from grid_normalization import ClockwiseRotation, XReflection, RigidTransformation
+from typing import TYPE_CHECKING, List, Optional, Tuple
+
+import numpy as np
+
+from bi_types import Config, Match
 from cardinality_predicates import (
-    find_cardinality_predicates,
     CardinalityPredicate,
+    find_cardinality_predicates,
     predicates_intersection,
 )
-from typing import TYPE_CHECKING
-from bi_types import Config
-import numpy as np
+from grid_normalization import ClockwiseRotation, RigidTransformation, XReflection
+from load_data import Example
+from logger import logger
+from objects import Object, display, display_multiple
+from symmetry import (
+    NonPeriodicGridSymmetry,
+    PeriodicGridSymmetry,
+    fill_grid,
+    find_non_periodic_symmetry_predicates,
+    find_periodic_symmetry_predicates,
+)
+from visual_cortex import regularity_score
 
 
 def is_inpainting_puzzle(examples: List[Example[Object]]) -> bool:

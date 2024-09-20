@@ -2,8 +2,9 @@ from enum import Enum, auto
 from typing import List
 
 from logger import logger
-from rule_based_selector import Features
 from objects import Object
+from rule_based_selector import Features
+
 
 class ColorFeatures(Enum):
     LARGEST_SIZE = (

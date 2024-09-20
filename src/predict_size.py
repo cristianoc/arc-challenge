@@ -1,23 +1,24 @@
 from typing import Callable, List, Optional, Tuple, TypedDict
 
-from color_features import detect_color_features
+import numpy as np
+
 import numeric_features
+from color_features import detect_color_features
+from load_data import Example, Task, Tasks, evaluation_data, training_data
+from logger import logger
+from numeric_features import detect_numeric_features, pretty_print_numeric_features
+from objects import BLACK, GridData, Object, display, display_multiple
+from rule_based_selector import DecisionRule, Features, select_object_minimal
+from shape_features import detect_shape_features
+from solve_regularized_regression import solve_regularized_regression
+from symmetry_features import detect_symmetry_features
+from visual_cortex import find_rectangular_objects  # Add this import
 from visual_cortex import (
     Frame,
     find_largest_frame,
     find_smallest_frame,
     is_frame_part_of_lattice,
-    find_rectangular_objects,  # Add this import
 )
-from objects import BLACK, GridData, Object, display, display_multiple
-from load_data import Example, Task, Tasks, training_data, evaluation_data
-from numeric_features import detect_numeric_features, pretty_print_numeric_features
-from rule_based_selector import DecisionRule, Features, select_object_minimal
-from shape_features import detect_shape_features
-from solve_regularized_regression import solve_regularized_regression
-from symmetry_features import detect_symmetry_features
-from logger import logger
-import numpy as np
 
 Size = Tuple[int, int]
 ExampleObjects = List[Tuple[Object, Object]]

@@ -1,18 +1,16 @@
 from dataclasses import dataclass
+from math import lcm
+from typing import TYPE_CHECKING, List, Optional, Tuple
+
 import numpy as np
-from typing import Optional, Tuple, Union, List
-from objects import Object, display
-from grid_types import BLUE, BLACK, GREEN, YELLOW, RED, Symmetry
-from typing import TYPE_CHECKING
-from math import gcd, lcm
+
 from cardinality_predicates import (
-    CardinalityInRowPredicate,
-    CardinalityInColumnPredicate,
+    CardinalityPredicate,
     fill_grid_based_on_predicate,
     find_cardinality_predicates,
-    CardinalityPredicate,
 )
-
+from grid_types import Symmetry
+from objects import Object, display
 
 # To avoid circular imports
 if TYPE_CHECKING:
@@ -108,8 +106,8 @@ class NonPeriodicGridSymmetry:
         mask = g1.empty(g1.size)
         for x in range(g1.width):
             for y in range(g1.height):
-                if g1[x,y] == 1 and g2[x,y] == 1:
-                    mask[x,y] = 1
+                if g1[x, y] == 1 and g2[x, y] == 1:
+                    mask[x, y] = 1
         return mask
 
     def intersection(
@@ -312,7 +310,10 @@ def find_non_periodic_symmetry_predicates(
         return offset is not None, offset if offset else (0, 0)
 
     def check_symmetry_with_mask(
-        grid: Object, symmetry: Symmetry, offset: Tuple[int, int], mask: Optional[Object]
+        grid: Object,
+        symmetry: Symmetry,
+        offset: Tuple[int, int],
+        mask: Optional[Object],
     ) -> bool:
         all_match = True
         for x in range(width):
@@ -335,14 +336,14 @@ def find_non_periodic_symmetry_predicates(
                     assert False, "Unknown symmetry"
                 x2 = xx2 + offset[0]
                 y2 = yy2 + offset[1]
-                if 0 <= x2 < width and 0 <= y2 < height and grid[x,y] == grid[x2,y2]:
+                if 0 <= x2 < width and 0 <= y2 < height and grid[x, y] == grid[x2, y2]:
                     if mask is not None:
-                        mask[x,y] = 1
+                        mask[x, y] = 1
                 else:
                     if mask is None:
                         return False
                     all_match = False
-                    mask[x,y] = 0
+                    mask[x, y] = 0
         return all_match
 
     hx, hx_offset = check_symmetry_with_offset(Symmetry.HORIZONTAL)
@@ -392,7 +393,9 @@ def find_non_periodic_symmetry_predicates(
     if ag is False and some_symmetry_is_true:
         agm = compute_symmetry_mask(Symmetry.ANTI_DIAGONAL)
 
-    return NonPeriodicGridSymmetry(hx, vy, dg, ag, offset, dgm=dgm, agm=agm, hxm=hxm, vym=vym)
+    return NonPeriodicGridSymmetry(
+        hx, vy, dg, ag, offset, dgm=dgm, agm=agm, hxm=hxm, vym=vym
+    )
 
 
 def find_source_value(
@@ -504,7 +507,7 @@ def find_source_value(
             return unknown
         if fill_from_symmetry(x_src, y_src):
             return filled_grid[x_src, y_src]
-    
+
     if ag:
         # (x,y) -> (x-dx, y-dy) -> ((h-dy)-1-y+dy, (w-dx)-1-x+dx) ->
         # -> (h-dy-1-y+dy+dx, w-dx-1-x+dx+dy) == (h-1-y+dx, w-1-x+dy)

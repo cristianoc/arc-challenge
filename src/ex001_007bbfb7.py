@@ -1,5 +1,5 @@
-from test_runner import puzzle
 from objects import Object
+from test_runner import puzzle
 
 """
 This example demonstrates transforming a grid by replacing specific cells with nested grids.

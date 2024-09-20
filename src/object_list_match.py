@@ -1,12 +1,12 @@
 from typing import List, Optional, Tuple
-from load_data import Example
+
 from bi_types import GridAndObjects, Match, XformEntry
-from logger import logger
-from objects import Object
-from map_function_match import expansion_xforms, out_objects_are_a_subset
 from expansion_match import check_fractal_expansion_sizes, stretch_height
 from find_xform import find_xform_for_examples
-
+from load_data import Example
+from logger import logger
+from map_function_match import expansion_xforms, out_objects_are_a_subset
+from objects import Object
 
 map_xforms: List[XformEntry[Object]] = [XformEntry(stretch_height, 1)]
 

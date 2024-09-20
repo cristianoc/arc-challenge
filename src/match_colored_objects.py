@@ -1,11 +1,9 @@
-from bi_types import Example, GridAndObjects, Match
-from logger import logger
-from objects import Object, display_multiple, display
 from typing import List, Optional
-from bi_types import XformEntry
+
+from bi_types import Example, GridAndObjects, Match, XformEntry
+from logger import logger
 from object_list_match import match_list_of_objects
-
-
+from objects import Object, display, display_multiple
 
 list_xforms: List[XformEntry[GridAndObjects]] = [
     XformEntry(match_list_of_objects, 4),
