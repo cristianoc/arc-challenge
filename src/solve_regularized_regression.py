@@ -1,11 +1,11 @@
-import logging
-from typing import Any, List, Tuple, Optional
-import pulp  # type: ignore
 import random
+from typing import Any, List, Optional, Tuple
 
+import pulp  # type: ignore
+
+from logger import logger
 from numeric_features import BooleanSolution, Solution
 from rule_based_selector import Features
-from logger import logger
 
 pulp: Any = pulp
 random: Any = random

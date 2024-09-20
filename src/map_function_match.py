@@ -1,10 +1,11 @@
 from typing import List, Optional, Tuple
-from objects import Object, display_multiple
-from load_data import Example
+
 from bi_types import Match, XformEntry
-from logger import logger
-from objects import display
 from expansion_match import fractal_expansion
+from load_data import Example
+from logger import logger
+from objects import Object, display, display_multiple
+
 
 def out_objects_are_a_subset(
     inputs: List[Object], outputs: List[Object]

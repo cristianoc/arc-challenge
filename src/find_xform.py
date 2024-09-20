@@ -1,10 +1,9 @@
 from typing import List, Optional
+
+from bi_types import Config, Match, XformEntry
 from load_data import Example
-from bi_types import Match, XformEntry
 from logger import logger
-from objects import Object
-from bi_types import Config
-from objects import display
+from objects import Object, display
 
 
 def find_xform_for_examples(

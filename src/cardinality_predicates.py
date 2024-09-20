@@ -1,9 +1,10 @@
-import numpy as np
-from objects import Object
 from dataclasses import dataclass
-from typing import Union, List, Optional
-from grid_types import BLUE, BLACK, GREEN, YELLOW, RED
-from objects import display
+from typing import List, Optional, Union
+
+import numpy as np
+
+from grid_types import BLACK, BLUE, GREEN, RED, YELLOW
+from objects import Object, display
 
 
 @dataclass(frozen=True)

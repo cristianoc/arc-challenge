@@ -1,19 +1,16 @@
 from typing import List, Optional, Tuple
-from logger import logger
-from objects import Object
-from rule_based_selector import DecisionRule
-from color_features import detect_color_features
-from shape_features import detect_shape_features
-from symmetry_features import detect_symmetry_features
-from rule_based_selector import select_object_minimal
-from load_data import Example
-from bi_types import Config
-from visual_cortex import find_rectangular_objects
+
 import numpy as np
 
-
-
-
+from bi_types import Config
+from color_features import detect_color_features
+from load_data import Example
+from logger import logger
+from objects import Object
+from rule_based_selector import DecisionRule, select_object_minimal
+from shape_features import detect_shape_features
+from symmetry_features import detect_symmetry_features
+from visual_cortex import find_rectangular_objects
 
 # ObjectMatch is a type alias representing a match between a list of detected input objects
 # and the index of the object within that list that is identical to the output object.

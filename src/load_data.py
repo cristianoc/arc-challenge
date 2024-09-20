@@ -1,9 +1,10 @@
-import os
 import json
-from typing import List, Dict, Any, Tuple, TypeVar, Generic
-import numpy as np
-from objects import Object
+import os
+from typing import Any, Dict, Generic, List, Tuple, TypeVar
 
+import numpy as np
+
+from objects import Object
 
 T = TypeVar('T')
 

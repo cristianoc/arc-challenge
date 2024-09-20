@@ -1,5 +1,5 @@
-from test_runner import puzzle
 from objects import Object
+from test_runner import puzzle
 
 """
 # Problem:

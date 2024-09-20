@@ -1,6 +1,11 @@
-import numpy as np
 from typing import Callable, List, Optional, Set, Tuple, TypedDict
 
+import numpy as np
+
+from grid_types import BLACK, GREY, GridData
+from load_data import Example, Task, Tasks, evaluation_data, training_data
+from logger import logger
+from objects import Object, display_multiple
 from predict_size import (
     Config,
     ExampleObjects,
@@ -9,10 +14,6 @@ from predict_size import (
     find_matched_objects,
     num_difficulties_matching,
 )
-from logger import logger
-from grid_types import BLACK, GREY, GridData
-from load_data import Example, Task, Tasks, training_data, evaluation_data
-from objects import display_multiple, Object
 
 ColorXform = Callable[
     [ExampleObjects, Object, str], Optional[Set[int]]

@@ -1,8 +1,8 @@
-from test_runner import puzzle
 from typing import List, Tuple
+
 from grid_types import DIRECTIONS8
 from objects import Object
-
+from test_runner import puzzle
 
 """
 This example demonstrates a grid transformation process where a main object

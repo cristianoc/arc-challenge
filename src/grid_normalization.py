@@ -1,9 +1,10 @@
-from objects import Object
-from typing import Tuple, Optional
 from math import sqrt
+from typing import Optional, Tuple
 
-from grid_types import RigidTransformation, ClockwiseRotation, XReflection
 import numpy as np
+
+from grid_types import ClockwiseRotation, RigidTransformation, XReflection
+from objects import Object
 
 
 def calculate_mass(color: int, background_color: int) -> int:

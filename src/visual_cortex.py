@@ -1,14 +1,12 @@
-import time
-from typing import List, Optional, Tuple, Any, Optional
 import random
+import time
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple
 
+import numpy as np
 from numpy import ndarray
 
-from logger import logger
 from grid_types import Cell
-import numpy as np
-
-from typing import TYPE_CHECKING
+from logger import logger
 
 # To avoid circular imports
 if TYPE_CHECKING:
@@ -31,8 +29,9 @@ def calculate_area(top: int, left: int, bottom: int, right: int) -> int:
     return (bottom - top + 1) * (right - left + 1)
 
 
-import numpy as np
 from typing import Optional, Tuple
+
+import numpy as np
 
 GridData = np.ndarray
 

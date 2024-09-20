@@ -1,9 +1,10 @@
 from typing import List, Optional, Tuple
-from objects import Object, display, display_multiple
-from load_data import Example
+
 from bi_types import Match
-from grid_types import XReflection, ClockwiseRotation, RigidTransformation
+from grid_types import ClockwiseRotation, RigidTransformation, XReflection
+from load_data import Example
 from logger import logger
+from objects import Object, display, display_multiple
 
 
 def find_canvas_objects(

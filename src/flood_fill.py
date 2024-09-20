@@ -1,10 +1,10 @@
 from collections import deque
-from typing import List
+from typing import TYPE_CHECKING, List
 
-from logger import logger
-from grid_types import DIRECTIONS4
 import numpy as np
-from typing import TYPE_CHECKING
+
+from grid_types import DIRECTIONS4
+from logger import logger
 
 # To avoid circular imports
 if TYPE_CHECKING:

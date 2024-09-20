@@ -1,8 +1,8 @@
 import numpy as np
-from test_runner import puzzle
+
 from grid_types import RED
 from objects import Object
-
+from test_runner import puzzle
 
 """
 This example extracts the leftmost and rightmost 3x3 sections of a grid 

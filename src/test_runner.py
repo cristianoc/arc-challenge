@@ -1,8 +1,8 @@
 import os
 from typing import Callable
-from objects import display, Object
+
 import load_data
-import numpy as np
+from objects import Object, display
 
 # Get DISPLAY from environment variable or default to True if not set
 DISPLAY = os.getenv("DISPLAY", "True").lower() in ["true", "1", "yes"]
