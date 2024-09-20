@@ -1,4 +1,4 @@
-# ARC Challenge Framework: SizeARC, ColorsARC, InPaintingARC, BigARC, and Foundations.
+# ARC Challenge Framework: InPaintingARC, BigARC, SizeARC, ColorsARC, and Foundations
 
 This repository explores various simplified versions of the [Abstraction and Reasoning Corpus (ARC) challenge](https://www.kaggle.com/c/abstraction-and-reasoning-challenge), along with the theoretical framework and practical instantiations developed to solve them.
 
