@@ -19,6 +19,8 @@ class ColorFeatures(Enum):
     MIN_NON_BACKGROUND_CELLS = (
         auto()
     )  # Whether the object has the minimum number of non-background cells (bool)
+    # TODO: this should not be hardcoded, at the very least the number of colors should be determined from the examples
+    HAS_ONE_COLOR = auto()  # Whether the object has only one color (bool)
 
 
 # Unpack ColorFeatures members into the local scope
@@ -28,6 +30,7 @@ class ColorFeatures(Enum):
     MAX_RED_CELLS,
     MAX_NON_BACKGROUND_CELLS,
     MIN_NON_BACKGROUND_CELLS,
+    HAS_ONE_COLOR,
 ) = ColorFeatures
 
 # Functions to detect the features
@@ -107,6 +110,12 @@ def detect_has_min_non_background_cells(
     )
 
 
+def detect_has_one_color(object: Object, all_objects: List[Object]) -> bool:
+    colors = object.get_colors(allow_black=False)
+    num_colors = len(colors)
+    return num_colors == 1
+
+
 def detect_color_features(object: Object, all_objects: List[Object]) -> Features:
     features: Features = {}
     features[COLOR.name] = detect_color(object, all_objects)
@@ -118,4 +127,5 @@ def detect_color_features(object: Object, all_objects: List[Object]) -> Features
     features[MIN_NON_BACKGROUND_CELLS.name] = detect_has_min_non_background_cells(
         object, all_objects
     )
+    features[HAS_ONE_COLOR.name] = detect_has_one_color(object, all_objects)
     return features

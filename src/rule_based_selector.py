@@ -62,7 +62,7 @@ class DecisionRule:
 
 
 def find_unique_features(
-    features: Features, other_features: List[Features], minimal: bool = False
+    features: Features, other_features: List[Features], minimal: bool
 ) -> Indices:
     """
     Identify the set of unique features that differentiate the features from all the others.
@@ -101,7 +101,7 @@ def generate_decision_rule(
 
 
 def select_object_minimal(
-    features_list: List[Features], correct_object_index: int
+    features_list: List[Features], correct_object_index: int, minimal: bool
 ) -> Optional[DecisionRule]:
     """
     Main function to process the experiment and return the minimal selection rule for a given correct object index.
@@ -112,7 +112,9 @@ def select_object_minimal(
         v for i, v in enumerate(features_list) if i != correct_object_index
     ]
 
-    minimal_unique_features = find_unique_features(correct_vector, other_vectors)
+    minimal_unique_features = find_unique_features(
+        correct_vector, other_vectors, minimal
+    )
     return generate_decision_rule(correct_vector, minimal_unique_features)
 
 
@@ -145,7 +147,7 @@ def test() -> None:
         ("Experiment3", features3, 0),
     ]
 
-    decision_rules = [select_object_minimal(e[1], e[2]) for e in experiments]
+    decision_rules = [select_object_minimal(e[1], e[2], minimal=False) for e in experiments]
 
     for i, decision_rule in enumerate(decision_rules):
         name, features_list, index = experiments[i]
