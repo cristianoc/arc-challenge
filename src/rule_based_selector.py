@@ -9,7 +9,7 @@ Indices = List[str]
 
 
 class DecisionRule:
-    def __init__(self, features: Features):
+    def __init__(self, features: dict):
         self.features = {key: features[key] for key in sorted(features.keys())}
 
     def __str__(self) -> str:
@@ -19,7 +19,7 @@ class DecisionRule:
         rule = " AND ".join(conditions)
         return f"{rule}."
 
-    def evaluate(self, features: Features) -> bool:
+    def evaluate(self, features: dict) -> bool:
         """
         Evaluate if the given features satisfy the decision rule.
         """
@@ -40,6 +40,25 @@ class DecisionRule:
         if not intersection_features:
             return None
         return DecisionRule(intersection_features)
+
+    def without_feature(self, feature: str) -> "DecisionRule":
+        """
+        Returns a new DecisionRule without the specified feature.
+        """
+        if feature not in self.features:
+            return self  # Return the original if the feature is not in the rule
+        new_features = {f: v for f, v in self.features.items() if f != feature}
+        return DecisionRule(new_features)
+
+    def is_subset(self, other: "DecisionRule") -> bool:
+        """
+        Checks if this decision rule is a subset of another decision rule.
+        """
+        return all(
+            feature in other.features
+            and self.features[feature] == other.features[feature]
+            for feature in self.features
+        )
 
 
 def find_unique_features(

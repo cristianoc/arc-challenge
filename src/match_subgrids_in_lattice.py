@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from bi_types import Example, Match
 from logger import logger
-from matched_objects import ObjectMatch, detect_common_features
+from matched_objects import ObjectMatch, detect_common_features, minimize_common_features
 from objects import Object
 from visual_cortex import extract_lattice_subgrids
 
@@ -43,8 +43,12 @@ def match_subgrids_in_lattice(
             logger.info(f"{'  ' * nesting_level}match_subgrids_in_lattice no match")
     common_decision_rule, features_used = detect_common_features(object_matches, 3)
     if common_decision_rule is not None:
+        minimized_rule = minimize_common_features(common_decision_rule, object_matches)
         logger.info(
             f"{'  ' * nesting_level}match_subgrids_in_lattice common_decision_rule:{common_decision_rule} features_used:{features_used}"
+        )
+        logger.info(
+            f"{'  ' * nesting_level}match_subgrids_in_lattice minimized_rule:{minimized_rule}"
         )
 
     return None
