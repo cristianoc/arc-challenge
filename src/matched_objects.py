@@ -6,7 +6,7 @@ from color_features import detect_color_features
 from load_data import Example
 from logger import logger
 from objects import Object
-from rule_based_selector import DecisionRule, select_object_minimal
+from rule_based_selector import DecisionRule, Features, select_object_minimal
 from shape_features import detect_shape_features
 from symmetry_features import detect_symmetry_features
 from visual_cortex import find_rectangular_objects
@@ -18,6 +18,25 @@ class ObjectMatch(NamedTuple):
     """
     input_objects: List[Object]
     matched_index: int
+
+
+def check_grid_satisfies_rule(obj: Object, all_objects: List[Object], decision_rule: DecisionRule) -> bool:
+    """
+    Check if the given grid satisfies the specified decision rule.
+    """
+    features = {}
+
+    shape_features = detect_shape_features(obj, all_objects)
+    features.update(shape_features)  # Flattening the nested dictionary
+
+    color_features = detect_color_features(obj, all_objects)
+    features.update(color_features)  # Flattening the nested dictionary
+
+    symmetry_features = detect_symmetry_features(obj)
+    features.update(symmetry_features)  # Flattening the nested dictionary
+
+    feature_rule = DecisionRule(features)
+    return decision_rule.is_subset(feature_rule)
 
 
 def detect_common_features(matched_objects: List[ObjectMatch], difficulty: int):
