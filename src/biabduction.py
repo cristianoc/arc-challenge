@@ -104,41 +104,40 @@ def process_tasks(tasks: Tasks, set: str):
         tests = task.test
         task_type = "train"
 
-        if True:
-            current_difficulty = 0
+        current_difficulty = 0
 
-            if Config.find_xform:
-                correct_xform = find_xform(
-                    gridxforms + desperatexforms, examples, tests, task_name, 0
-                )
-                if correct_xform is not None:
-                    num_correct += 1
-                    if False:
-                        grids = [(example[0], example[1]) for example in examples]
-                        display_multiple(grids, title=f"{task_name} {set}")
-                    continue
-
-            current_difficulty += num_difficulties_xform
-
-            if Config.find_matched_objects:
-                should_continue = handle_matched_objects(
-                    examples, task_name, task_type, set, current_difficulty
-                )
-                if should_continue:
-                    continue
-            current_difficulty += num_difficulties_matching
-
-            if Config.display_not_found:
-                Config.display_this_task = True
-            if Config.display_this_task:
-                grids = [(example[0], example[1]) for example in examples]
-                display_multiple(grids, title=f"{task_name} {set}")
-
-            # If no valid dimensions could be determined, give up
-            logger.warning(
-                f"Could not find correct transformation for {task_name} {set} examples"
+        if Config.find_xform:
+            correct_xform = find_xform(
+                gridxforms + desperatexforms, examples, tests, task_name, 0
             )
-            num_incorrect += 1
+            if correct_xform is not None:
+                num_correct += 1
+                if False:
+                    grids = [(example[0], example[1]) for example in examples]
+                    display_multiple(grids, title=f"{task_name} {set}")
+                continue
+
+        current_difficulty += num_difficulties_xform
+
+        if Config.find_matched_objects:
+            should_continue = handle_matched_objects(
+                examples, task_name, task_type, set, current_difficulty
+            )
+            if should_continue:
+                continue
+        current_difficulty += num_difficulties_matching
+
+        if Config.display_not_found:
+            Config.display_this_task = True
+        if Config.display_this_task:
+            grids = [(example[0], example[1]) for example in examples]
+            display_multiple(grids, title=f"{task_name} {set}")
+
+        # If no valid dimensions could be determined, give up
+        logger.warning(
+            f"Could not find correct transformation for {task_name} {set} examples"
+        )
+        num_incorrect += 1
 
     return num_correct, num_incorrect
 
