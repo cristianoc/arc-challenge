@@ -1,24 +1,20 @@
-from typing import (
-    List,
-    Optional,
-)
+from typing import List, Optional
 
-from logger import logger
-from objects import Object, display_multiple
-from load_data import Task, Tasks, training_data, evaluation_data
-from bi_types import XformEntry, Config
-from primitives import xform_identity, primitive_to_xform, translate_down_1
-from canvas_grid_match import canvas_grid_xform
+from bi_types import Config, XformEntry
+from canvas_grid_match import canvas_grid_xform, equal_modulo_rigid_transformation
+from find_xform import find_xform
 from inpainting_match import (
-    is_inpainting_puzzle,
     inpainting_xform_no_mask,
     inpainting_xform_with_mask,
+    is_inpainting_puzzle,
 )
-from canvas_grid_match import equal_modulo_rigid_transformation
-from split_mirrot_match import frame_split_and_mirror_xform
-from find_xform import find_xform
-from matched_objects import handle_matched_objects
+from load_data import Task, Tasks, evaluation_data, training_data
+from logger import logger
 from match_colored_objects import match_colored_objects
+from matched_objects import handle_matched_objects
+from objects import Object, display_multiple
+from primitives import primitive_to_xform, translate_down_1, xform_identity
+from split_mirrot_match import frame_split_and_mirror_xform
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -93,7 +89,10 @@ def process_tasks(tasks: Tasks, set: str):
             and task_name not in Config.whitelisted_tasks
         ):
             continue
-        if Config.only_complex_examples and filter_complex_xforms(task, task_name) == False:
+        if (
+            Config.only_complex_examples
+            and filter_complex_xforms(task, task_name) == False
+        ):
             continue
         if Config.only_inpainting_puzzles and not is_inpainting_puzzle(task.train):
             continue
