@@ -79,6 +79,5 @@ class Config:
     min_colors = 10
 
     find_xform = True
-    find_matched_objects = False
     difficulty = 1000
     display_this_task = False
