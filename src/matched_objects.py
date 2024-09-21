@@ -158,6 +158,10 @@ def find_matched_objects(
         A list of ObjectMatch instances if matches are found for all examples, otherwise None.
     """
 
+    def get_objects(input: Object) -> List[Object]:
+        num_colors_input = len(input.get_colors(allow_black=True))
+        return find_rectangular_objects(input, allow_multicolor=num_colors_input > 1)
+
     def candidate_objects_for_matching(input: Object, output: Object) -> List[Object]:
         """
         Detects objects in the input grid that are candidates for matching the output grid.
@@ -165,8 +169,7 @@ def find_matched_objects(
         if output.has_frame():
             # If the output is a frame, detect objects in the input as frames
             logger.debug("  Output is a frame")
-        num_colors_output = len(output.get_colors(allow_black=True))
-        return find_rectangular_objects(input, allow_multicolor=num_colors_output > 1)
+        return get_objects(input)
 
     def find_matching_input_object(
         input_objects: List[Object], output: Object
@@ -180,9 +183,8 @@ def find_matched_objects(
     def get_matched_objects(examples: List[Example]) -> Optional[List[ObjectMatch]]:
         matched_objects: List[ObjectMatch] = []
 
-        for example in examples:
-            input = example[0]
-            output = example[1]
+        for input, output in examples:
+            logger.info(f"  {task_type} {input.size} -> {output.size}")
             logger.info(f"  {task_type} {input.size} -> {output.size}")
 
             input_objects = candidate_objects_for_matching(input, output)
