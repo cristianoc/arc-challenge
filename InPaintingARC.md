@@ -1,6 +1,6 @@
 # InPaintingARC: A Vertical Subset of ARC-AGI
 
-**InPaintingARC** is a specialized variant of the [ARC (Abstraction and Reasoning Corpus) challenge](https://github.com/fchollet/ARC). It focuses on a narrower variety of puzzles while maintaining the complexity of individual tasks found in the broader ARC-AGI domain. InPaintingARC emphasizes deep understanding of spatial patterns, transformations, and frame invariants, making it an ideal platform for exploring advanced reasoning techniques such as [bi-abductive inference](https://fbinfer.com/docs/separation-logic-and-bi-abduction/) and the application of the [frame rule](https://link.springer.com/chapter/10.1007/978-3-031-27792-8_11).
+**InPaintingARC** is a specialized variant of the [ARC (Abstraction and Reasoning Corpus) challenge](https://github.com/fchollet/ARC). It focuses on a narrower variety of puzzles while maintaining the complexity of individual tasks found in the broader ARC-AGI domain. InPaintingARC emphasizes deep understanding of spatial patterns, transformations, and frame invariants, making it an ideal platform for exploring advanced reasoning techniques such as [bi-abductive inference](https://fbinfer.com/docs/separation-logic-and-bi-abduction/) and the application of the [frame rule](https://en.wikipedia.org/wiki/Separation_logic).
 
 
 
