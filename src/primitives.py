@@ -9,7 +9,7 @@ def check_primitive_on_examples(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[Object]]:
+) -> Optional[Match[Object, Object]]:
     logger.debug(f"{'  ' * nesting_level}Checking primitive {prim.__name__}")
     for i, example in enumerate(examples):
         logger.debug(f"{'  ' * nesting_level}  Example {i+1}/{len(examples)}")
@@ -23,12 +23,12 @@ def check_primitive_on_examples(
     return (state, lambda i: prim(i, task_name, nesting_level))
 
 
-def primitive_to_xform(primitive: Primitive) -> Xform[Object]:
+def primitive_to_xform(primitive: Primitive) -> Xform[Object, Object]:
     def xform(
         examples: List[Example],
         task_name: str,
         nesting_level: int,
-    ) -> Optional[Match]:
+    ) -> Optional[Match[Object, Object]]:
         result = check_primitive_on_examples(
             primitive, examples, task_name, nesting_level
         )
@@ -55,7 +55,7 @@ primitives: List[Primitive] = [
 
 def xform_identity(
     examples: List[Example], task_name: str, nesting_level: int
-) -> Optional[Match]:
+) -> Optional[Match[Object, Object]]:
     def identity(input: Object, task_name: str, nesting_level: int):
         return input
 
@@ -65,7 +65,7 @@ def xform_identity(
 # TODO: This is currently not used but it illustrates how to compose primitives
 def xform_two_primitives_in_sequence(
     examples: List[Example], task_name: str, nesting_level: int
-) -> Optional[Match]:
+) -> Optional[Match[Object, Object]]:
     # try to apply two primitives in sequence, and return the first pair that works
     for p1 in primitives:
         for p2 in primitives:

@@ -35,7 +35,7 @@ def fractal_expansion(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[Object]]:
+) -> Optional[Match[Object, Object]]:
 
     def map_function_numpy_inplace(
         output_grid: np.ndarray,
@@ -93,7 +93,7 @@ def stretch_height(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[Object]]:
+) -> Optional[Match[Object, Object]]:
     # TODO: implement the inference of the boolean function
     for i, (input, output) in enumerate(examples):
         if output.height != 2 or output.width != input.width:

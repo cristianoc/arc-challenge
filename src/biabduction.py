@@ -48,7 +48,7 @@ def filter_complex_xforms(task: Task, task_name: str):
     return True
 
 
-gridxforms: List[XformEntry[Object]] = [
+gridxforms: List[XformEntry[Object, Object]] = [
     XformEntry(match_subgrids_in_lattice, 3),
     XformEntry(match_colored_objects, 3),
     XformEntry(xform_identity, 1),
@@ -66,7 +66,7 @@ gridxforms: List[XformEntry[Object]] = [
 
 
 # brute force search xforms to be used when all else fails
-desperatexforms: List[XformEntry[Object]] = [] + (
+desperatexforms: List[XformEntry[Object, Object]] = [] + (
     [XformEntry(frame_split_and_mirror_xform, 100)] if Config.find_frame_rule else []
 )
 

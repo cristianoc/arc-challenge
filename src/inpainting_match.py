@@ -215,7 +215,7 @@ def inpainting_xform_no_mask(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[Object]]:
+) -> Optional[Match[Object, Object]]:
     return inpainting_xform(
         examples, task_name, nesting_level, mask=None, apply_mask_to_input=False
     )
@@ -225,7 +225,7 @@ def inpainting_xform_with_mask(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[Object]]:
+) -> Optional[Match[Object, Object]]:
     mask = mask_from_all_outputs(examples)
     if mask is not None:
         if Config.display_verbose:
@@ -241,7 +241,7 @@ def inpainting_xform(
     nesting_level: int,
     mask: Optional[Object],
     apply_mask_to_input: bool,
-) -> Optional[Match[Object]]:
+) -> Optional[Match[Object, Object]]:
 
     def apply_mask_to_filled_grid(filled_grid, input, mask, color_only_in_input):
         if mask is not None:
