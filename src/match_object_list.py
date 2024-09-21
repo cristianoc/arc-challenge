@@ -8,7 +8,7 @@ from logger import logger
 from map_function_match import expansion_xforms, out_objects_are_a_subset
 from objects import Object
 
-map_xforms: List[XformEntry[Object]] = [XformEntry(stretch_height, 1)]
+map_xforms: List[XformEntry[Object, Object]] = [XformEntry(stretch_height, 1)]
 
 
 def check_list_of_objects_subset(
@@ -54,7 +54,7 @@ def match_object_list(
     examples: List[Example[GridAndObjects]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[GridAndObjects]]:
+) -> Optional[Match[GridAndObjects, GridAndObjects]]:
     logger.info(
         f"{'  ' * nesting_level}match_list_of_objects examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
     )
@@ -63,7 +63,7 @@ def match_object_list(
         input_output_objects_examples = map_first_input_to_output_grid(examples)
 
         # now pattern match recursively
-        match: Optional[Match[Object]] = find_xform_for_examples(
+        match: Optional[Match[Object, Object]] = find_xform_for_examples(
             expansion_xforms,
             input_output_objects_examples,
             task_name,

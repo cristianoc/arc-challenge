@@ -28,7 +28,7 @@ def find_canvas_objects(
 
 def equal_modulo_rigid_transformation(
     examples: List[Example], task_name: str, nesting_level: int
-) -> Optional[Match]:
+) -> Optional[Match[Object, Object]]:
     for x_reflection in XReflection:
         for rotation in ClockwiseRotation:
             rigid_transformation = RigidTransformation(rotation, x_reflection)
@@ -186,7 +186,7 @@ def canvas_grid_xform(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[Object]]:
+) -> Optional[Match[Object, Object]]:
     # every example has a canvas
     canvas_objects = find_canvas_objects(
         inputs=[input for input, _ in examples],

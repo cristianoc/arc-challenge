@@ -6,7 +6,7 @@ from bi_types import GridAndObjects, Match, XformEntry
 from load_data import Example
 from match_object_list import match_object_list
 
-object_list_xforms: List[XformEntry[GridAndObjects]] = [
+object_list_xforms: List[XformEntry[GridAndObjects, GridAndObjects]] = [
     XformEntry(match_object_list, 4),
 ]
 
@@ -15,7 +15,7 @@ def match_object_list_to_object_by_painting(
     get_objects: Callable[[Object], List[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[Object]]:
+) -> Optional[Match[Object, Object]]:
     """
     Attempts to transform a list of examples by sequentially painting objects on top of each other.
 
@@ -29,7 +29,7 @@ def match_object_list_to_object_by_painting(
         Optional[Match[Object]]: A tuple containing the transformation name and a solver function if a match is found, otherwise None.
     """
     for list_xform in object_list_xforms:
-        match: Optional[Match[GridAndObjects]] = list_xform.xform(
+        match: Optional[Match[GridAndObjects, GridAndObjects]] = list_xform.xform(
             examples, task_name, nesting_level + 1
         )
         if match is not None:
@@ -67,3 +67,4 @@ def match_object_list_to_object_by_painting(
                 f"{'  ' * nesting_level}Xform {list_xform.xform.__name__} is not applicable"
             )
     return None
+

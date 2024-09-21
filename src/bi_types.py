@@ -7,17 +7,19 @@ from objects import Object
 GridAndObjects = Tuple[Object, List[Object]]
 
 
-T = TypeVar("T", bound=Union[Object, GridAndObjects])
+T1 = TypeVar("T1", bound=Union[Object, GridAndObjects])
+T2 = TypeVar("T2", bound=Union[Object, GridAndObjects])
+
 State = str
 
 Primitive = Callable[[Object, str, int], Object]
-Match = Tuple[State, Callable[[T], Optional[T]]]
-Xform = Callable[[List[Example[T]], str, int], Optional[Match[T]]]
+Match = Tuple[State, Callable[[T1], Optional[T2]]]
+Xform = Callable[[List[Example[T1]], str, int], Optional[Match[T1, T2]]]
 
 
 @dataclass
-class XformEntry(Generic[T]):
-    xform: Xform[T]
+class XformEntry(Generic[T1, T2]):
+    xform: Xform[T1, T2]
     difficulty: int
 
 

@@ -7,12 +7,12 @@ from objects import Object, display
 
 
 def find_xform_for_examples(
-    xforms: List[XformEntry[Object]],
+    xforms: List[XformEntry[Object, Object]],
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
     xform_name: List[str] = [],
-) -> Optional[Match[Object]]:
+) -> Optional[Match[Object, Object]]:
     logger.info(
         f"\n{'  ' * nesting_level}find_xform_for_examples examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
     )
@@ -48,12 +48,12 @@ def find_xform_for_examples(
 
 
 def find_xform(
-    xforms: List[XformEntry[Object]],
+    xforms: List[XformEntry[Object, Object]],
     examples: List[Example[Object]],
     tests: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[Object]]:
+) -> Optional[Match[Object, Object]]:
     logger.info(
         f"\n{'  ' * nesting_level}find_xform examples:{len(examples)} tests:{len(tests)} task_name:{task_name} nesting_level:{nesting_level}"
     )

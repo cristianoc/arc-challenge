@@ -15,7 +15,7 @@ def match_subgrids_in_lattice(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[Object]]:
+) -> Optional[Match[Object, Object]]:
     """
     Matches subgrids within lattice structures with the output.
     Some rule neds to be determined to determine which subgrid matches the output.
