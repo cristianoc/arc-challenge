@@ -55,8 +55,8 @@ gridxforms: List[XformEntry[Object, Object]] = [
     XformEntry(equal_modulo_rigid_transformation, 2),
     XformEntry(primitive_to_xform(translate_down_1), 2),
     XformEntry(canvas_grid_xform, 2),
-    XformEntry(inpainting_xform_no_mask, 2),
     XformEntry(match_rectangular_objects_in_grid, 3),
+    XformEntry(inpainting_xform_no_mask, 2),
 ] + (
     [
         XformEntry(inpainting_xform_with_mask, 2),
