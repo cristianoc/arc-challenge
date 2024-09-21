@@ -21,11 +21,23 @@ def match_subgrids_in_lattice(
         f"{'  ' * nesting_level}match_subgrids_in_lattice examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
     )
 
+    def get_objects(input: Object) -> List[Object]:
+        input_subgrids = extract_lattice_subgrids(input)
+        if input_subgrids is None:
+            return []
+        flattened_subgrids = [
+            Object(obj._data)  # reset origin to (0,0)
+            for sublist in input_subgrids
+            for obj in sublist
+        ]
+        return flattened_subgrids
+
     examples2 = []
     for input_obj, output_obj in examples:
-        input_subgrids = extract_lattice_subgrids(input_obj)
-        if input_subgrids is None:
+        flattened_subgrids = get_objects(input_obj)
+        if flattened_subgrids is None:
             return None
-        flattened_subgrids = [obj for sublist in input_subgrids for obj in sublist]
         examples2.append((flattened_subgrids, output_obj))
-    return match_object_list_with_decision_rule(examples2, task_name, nesting_level + 1)
+    return match_object_list_with_decision_rule(
+        examples2, task_name, nesting_level + 1, minimal=True, get_objects=get_objects
+    )

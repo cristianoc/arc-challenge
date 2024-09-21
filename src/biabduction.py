@@ -16,6 +16,7 @@ from matched_objects import handle_matched_objects
 from objects import Object, display_multiple
 from primitives import primitive_to_xform, translate_down_1, xform_identity
 from split_mirrot_match import frame_split_and_mirror_xform
+from match_objects_in_grid import match_rectangular_objects_in_grid
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -56,6 +57,7 @@ gridxforms: List[XformEntry[Object, Object]] = [
     XformEntry(primitive_to_xform(translate_down_1), 2),
     XformEntry(canvas_grid_xform, 2),
     XformEntry(inpainting_xform_no_mask, 2),
+    XformEntry(match_rectangular_objects_in_grid, 3),
 ] + (
     [
         XformEntry(inpainting_xform_with_mask, 2),
