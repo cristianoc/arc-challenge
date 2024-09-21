@@ -12,7 +12,6 @@ from load_data import Task, Tasks, evaluation_data, training_data
 from logger import logger
 from match_colored_objects import match_colored_objects
 from match_subgrids_in_lattice import match_subgrids_in_lattice
-from matched_objects import handle_matched_objects
 from objects import Object, display_multiple
 from primitives import primitive_to_xform, translate_down_1, xform_identity
 from split_mirrot_match import frame_split_and_mirror_xform
@@ -74,8 +73,6 @@ desperatexforms: List[XformEntry[Object, Object]] = [] + (
 
 
 num_difficulties_xform = max(xform.difficulty for xform in gridxforms + desperatexforms)
-num_difficulties_matching = 3
-num_difficulties_total = num_difficulties_xform + num_difficulties_matching
 
 
 def process_tasks(tasks: Tasks, set: str):
@@ -120,14 +117,6 @@ def process_tasks(tasks: Tasks, set: str):
                 continue
 
         current_difficulty += num_difficulties_xform
-
-        if Config.find_matched_objects:
-            should_continue = handle_matched_objects(
-                examples, task_name, task_type, set, current_difficulty
-            )
-            if should_continue:
-                continue
-        current_difficulty += num_difficulties_matching
 
         if Config.display_not_found:
             Config.display_this_task = True

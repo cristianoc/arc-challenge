@@ -141,64 +141,6 @@ def detect_common_features(
     return common_decision_rule, features_used
 
 
-def find_matched_objects(
-    examples: List[Example], task_type: str
-) -> Optional[List[ObjectMatch]]:
-    """
-    Identifies and returns a list of matched input objects that correspond to the output objects
-    in the given examples. For each example, it detects candidate objects in the input grid
-    and matches them with the output grid based on size and data. If all examples have a match,
-    the function returns the list of matched objects; otherwise, it returns None.
-
-    Args:
-        examples: A list of examples, each containing an input and output grid.
-        task_type: A string indicating the type of task (e.g., 'train' or 'test').
-
-    Returns:
-        A list of ObjectMatch instances if matches are found for all examples, otherwise None.
-    """
-
-    def get_objects(input: Object) -> List[Object]:
-        num_colors_input = len(input.get_colors(allow_black=True))
-        return find_rectangular_objects(input, allow_multicolor=num_colors_input > 1)
-
-    def candidate_objects_for_matching(input: Object, output: Object) -> List[Object]:
-        """
-        Detects objects in the input grid that are candidates for matching the output grid.
-        """
-        if output.has_frame():
-            # If the output is a frame, detect objects in the input as frames
-            logger.debug("  Output is a frame")
-        return get_objects(input)
-
-    def find_matching_input_object(
-        input_objects: List[Object], output: Object
-    ) -> Optional[int]:
-        for i, io in enumerate(input_objects):
-            if io.size == output.size and np.array_equal(io._data, output._data):
-                logger.debug(f"  Input object matching output: {io}")
-                return i
-        return None
-
-    def get_matched_objects(examples: List[Example]) -> Optional[List[ObjectMatch]]:
-        matched_objects: List[ObjectMatch] = []
-
-        for input, output in examples:
-            logger.info(f"  {task_type} {input.size} -> {output.size}")
-            logger.info(f"  {task_type} {input.size} -> {output.size}")
-
-            input_objects = candidate_objects_for_matching(input, output)
-            matched_object_index = find_matching_input_object(input_objects, output)
-
-            if matched_object_index is not None:
-                matched_objects.append(ObjectMatch(input_objects, matched_object_index))
-
-        return matched_objects if len(matched_objects) == len(examples) else None
-
-    matched_objects = get_matched_objects(examples)
-    return matched_objects
-
-
 def minimize_common_features(
     common_decision_rule: DecisionRule, matched_objects: List[ObjectMatch]
 ):
@@ -238,32 +180,3 @@ def minimize_common_features(
             minimized_rule = temp_rule
 
     return minimized_rule
-
-
-def handle_matched_objects(
-    examples, task_name, task_type, set, current_difficulty
-) -> bool:
-    should_continue = False
-
-    # Check if the input objects can be matched to the output objects
-    logger.debug(f"Checking common features for {task_name} {set}")
-    matched_objects = find_matched_objects(examples, task_type)
-    if matched_objects:
-        # If the input objects can be matched to the output objects, try to detect common features
-        # to determine the correct object to pick
-        logger.debug(
-            f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}"
-        )
-        common_decision_rule, features_used = detect_common_features(
-            matched_objects, current_difficulty, minimal=False
-        )
-        if common_decision_rule:
-            logger.info(
-                f"Common decision rule ({features_used}): {common_decision_rule}"
-            )
-            # TODO: update the number if this code is resurrected
-            #  num_correct += 1
-            should_continue = True
-        else:
-            logger.warning(f"Could not find common decision rule for {task_name} {set}")
-    return should_continue
