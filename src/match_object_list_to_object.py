@@ -1,10 +1,16 @@
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Tuple
 
-from logger import logger
-from objects import Object, display_multiple, display
-from bi_types import GridAndObjects, Match, XformEntry
+from bi_types import Config, GridAndObjects, Match, XformEntry
 from load_data import Example
+from logger import logger
 from match_object_list import match_object_list
+from matched_objects import (
+    ObjectMatch,
+    check_grid_satisfies_rule,
+    detect_common_features,
+)
+from objects import Object, display, display_multiple
+from visual_cortex import extract_lattice_subgrids
 
 object_list_xforms: List[XformEntry[GridAndObjects, GridAndObjects]] = [
     XformEntry(match_object_list, 4),
@@ -87,6 +93,59 @@ def match_colored_objects_to_object_by_painting(
     return match_object_list_to_object_by_painting(
         examples, get_colored_objects, task_name, nesting_level
     )
+
+def match_object_list_with_decision_rule(
+    examples: List[Tuple[List[Object], Object]],
+    task_name: str,
+    nesting_level: int,
+) -> Optional[Match[Object, Object]]:
+    logger.info(
+        f"{'  ' * nesting_level}match_object_list_with_decision_rule examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
+    )
+
+    object_matches: List[ObjectMatch] = []
+    for input_objs, output_obj in examples:
+        try:
+            index = input_objs.index(output_obj)
+            logger.info(
+                f"{'  ' * nesting_level}match_object_list_with_decision_rule found a match at index {index}"
+            )
+            object_matches.append(
+                ObjectMatch(input_objects=input_objs, matched_index=index)
+            )
+        except ValueError:
+            logger.info(
+                f"{'  ' * nesting_level}match_object_list_with_decision_rule no match"
+            )
+    common_decision_rule, features_used = detect_common_features(object_matches, 3, minimal=True)
+    if common_decision_rule is None:
+        logger.info(
+            f"{'  ' * nesting_level}match_object_list_with_decision_rule common_decision_rule is None"
+        )
+        return None
+    logger.info(
+        f"{'  ' * nesting_level}match_object_list_with_decision_rule common_decision_rule:{common_decision_rule}"
+    )
+
+    state = f"Select_sub({common_decision_rule})"
+
+    def solve(input_g: Object) -> Optional[Object]:
+        input_subgrids = extract_lattice_subgrids(input_g)
+        if input_subgrids is None:
+            return None
+        flattened_subgrids = [obj for sublist in input_subgrids for obj in sublist]
+        # need to find the subgrid that satisfies the common_decision_rule
+        for i, subgrid in enumerate(flattened_subgrids):
+            if check_grid_satisfies_rule(subgrid, flattened_subgrids, common_decision_rule):
+                if Config.display_verbose:
+                    display(input_g, subgrid, title=f"subgrid {i}")
+                return subgrid
+        logger.info(
+            f"{'  ' * nesting_level}match_object_list_with_decision_rule no subgrid satisfies the rule"
+        )
+        return None
+
+    return (state, solve)
 
 
 object_list_to_object_xforms: List[XformEntry[GridAndObjects, Object]] = [
