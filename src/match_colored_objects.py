@@ -1,8 +1,13 @@
 from typing import Callable, List, Optional
 
-from bi_types import Example, GridAndObjects, Match
+from bi_types import Example, GridAndObjects, Match, XformEntry
+from find_xform import find_xform_for_examples
 from logger import logger
-from match_object_list_to_object import match_object_list_to_object_by_painting
+from match_object_list_to_object import (
+    get_colored_objects,
+    match_object_list_to_object_by_painting,
+    object_list_to_object_xforms,
+)
 from objects import Object, display_multiple
 
 
@@ -21,7 +26,6 @@ def check_matching_colored_objects_count_and_color(examples: List[Example]) -> b
         if different_color:
             return False
     return True
-
 
 
 def match_colored_objects(
@@ -43,17 +47,8 @@ def match_colored_objects(
     # so we can turn those lists into and ObjectListExample
     object_list_examples: List[Example[GridAndObjects]] = []
 
-    def get_background_color(input: Object) -> int:
-        background_color = 0  # TODO: determine background color
-        return background_color
-
-    def get_objects(input: Object) -> List[Object]:
-        background_color = get_background_color(input)
-        input_objects = input.detect_colored_objects(background_color)
-        return input_objects
-
     def get_grid_and_objects(input: Object) -> GridAndObjects:
-        input_objects = get_objects(input)
+        input_objects = get_colored_objects(input)
         return (input, input_objects)
 
     input_grid_and_objects: GridAndObjects
@@ -84,4 +79,10 @@ def match_colored_objects(
         )
         object_list_examples.append(object_list_example)
 
-    return match_object_list_to_object_by_painting(object_list_examples, get_objects, task_name, nesting_level)
+    for xform in object_list_to_object_xforms:
+        match = xform.xform(object_list_examples, task_name, nesting_level+1)
+        if match is None:
+            continue
+        return match
+
+    return None

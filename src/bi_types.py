@@ -14,7 +14,7 @@ State = str
 
 Primitive = Callable[[Object, str, int], Object]
 Match = Tuple[State, Callable[[T1], Optional[T2]]]
-Xform = Callable[[List[Example[T1]], str, int], Optional[Match[T1, T2]]]
+Xform = Callable[[List[Example[T1]], str, int], Optional[Match[T2, T2]]]
 
 
 @dataclass
