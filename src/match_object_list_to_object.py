@@ -68,3 +68,27 @@ def match_object_list_to_object_by_painting(
             )
     return None
 
+def get_background_color(input: Object) -> int:
+    background_color = 0  # TODO: determine background color
+    return background_color
+
+
+def get_colored_objects(input: Object) -> List[Object]:
+    background_color = get_background_color(input)
+    input_objects = input.detect_colored_objects(background_color)
+    return input_objects
+
+
+def match_colored_objects_to_object_by_painting(
+    examples: List[Example[GridAndObjects]],
+    task_name: str,
+    nesting_level: int,
+) -> Optional[Match[Object, Object]]:
+    return match_object_list_to_object_by_painting(
+        examples, get_colored_objects, task_name, nesting_level
+    )
+
+
+object_list_to_object_xforms: List[XformEntry[GridAndObjects, Object]] = [
+    XformEntry(match_colored_objects_to_object_by_painting, 4),
+]
