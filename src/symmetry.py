@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from math import lcm
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -10,6 +10,7 @@ from cardinality_predicates import (
     find_cardinality_predicates,
 )
 from grid_types import Symmetry
+from logger import logger
 from objects import Object, display
 
 # To avoid circular imports
@@ -294,108 +295,276 @@ def find_periodic_symmetry_predicates(
     return PeriodicGridSymmetry(px, py, pd, pa)
 
 
+@dataclass(frozen=True)
+class SymmetryResult:
+    detected: bool
+    offset: Tuple[int, int]
+    score: float
+    mask: Optional["Object"]  # Assuming Object represents a grid/mask
+
+
 def find_non_periodic_symmetry_predicates(
-    grid: Object, unknown: int
+    grid: Object,
+    unknown: int,
+    min_mask_weight: float = 0.5,  # Threshold for considering a symmetry significant
 ) -> NonPeriodicGridSymmetry:
     """
     Find the non-periodic symmetries of the grid, considering offsets.
+    Handles both complete and partial symmetries by determining optimal offsets.
     """
     width, height = grid.size
     max_distance = max(width, height) // 2
 
-    def check_symmetry_with_offset(symmetry: Symmetry):
-        offset = find_matching_subgrid_offset(
-            grid, grid.flip(symmetry), max_distance, unknown
+    # Initialize the result dictionary
+    symmetry_results: Dict[Symmetry, SymmetryResult] = {}
+
+    for symmetry in Symmetry:
+        best_offset = (0, 0)
+        best_score = 0.0
+        best_mask = None
+
+        # Iterate over all possible offsets within the max_distance
+        for dx in range(-max_distance, max_distance + 1):
+            for dy in range(-max_distance, max_distance + 1):
+                # Compute the score for the current symmetry with the given offset
+                match_count, total_pairs = compute_symmetry_score(
+                    grid, symmetry, (dx, dy), unknown
+                )
+                score = match_count / total_pairs if total_pairs > 0 else 0.0
+
+                # Update the best offset if the current score is higher
+                if score > best_score:
+                    best_score = score
+                    best_offset = (dx, dy)
+
+        # Determine if the best score exceeds the threshold for partial symmetry
+        if best_score >= min_mask_weight:
+            # Generate the mask based on the best offset
+            mask = compute_symmetry_mask(grid, symmetry, best_offset, unknown)
+            detected = True
+        else:
+            mask = None
+            detected = False
+            best_offset = (0, 0)  # Reset offset if symmetry is not significant
+
+        # Store the result for the current symmetry
+        symmetry_results[symmetry] = SymmetryResult(
+            detected=detected, offset=best_offset, score=best_score, mask=mask
         )
-        return offset is not None, offset if offset else (0, 0)
 
-    def check_symmetry_with_mask(
-        grid: Object,
-        symmetry: Symmetry,
-        offset: Tuple[int, int],
-        mask: Optional[Object],
-    ) -> bool:
-        all_match = True
-        for x in range(width):
-            for y in range(height):
-                xx = x - offset[0]
-                yy = y - offset[1]
-                if symmetry == Symmetry.HORIZONTAL:
-                    xx2 = width - 1 - xx
-                    yy2 = yy
-                elif symmetry == Symmetry.VERTICAL:
-                    xx2 = xx
-                    yy2 = height - 1 - yy
-                elif symmetry == Symmetry.DIAGONAL:
-                    xx2 = yy
-                    yy2 = xx
-                elif symmetry == Symmetry.ANTI_DIAGONAL:
-                    xx2 = height - 1 - yy
-                    yy2 = width - 1 - xx
-                else:
-                    assert False, "Unknown symmetry"
-                x2 = xx2 + offset[0]
-                y2 = yy2 + offset[1]
-                if 0 <= x2 < width and 0 <= y2 < height and grid[x, y] == grid[x2, y2]:
-                    if mask is not None:
-                        mask[x, y] = 1
-                else:
-                    if mask is None:
-                        return False
-                    all_match = False
-                    mask[x, y] = 0
-        return all_match
+        # Initialize combined offset
+        combined_offset = (0, 0)
 
-    hx, hx_offset = check_symmetry_with_offset(Symmetry.HORIZONTAL)
-    vy, vy_offset = check_symmetry_with_offset(Symmetry.VERTICAL)
-    dg, dg_offset = check_symmetry_with_offset(Symmetry.DIAGONAL)
-    ag, ag_offset = check_symmetry_with_offset(Symmetry.ANTI_DIAGONAL)
+        # Flags for symmetries
+        rx = (
+            symmetry_results[Symmetry.HORIZONTAL]
+            if Symmetry.HORIZONTAL in symmetry_results
+            else None
+        )
+        ry = (
+            symmetry_results[Symmetry.VERTICAL]
+            if Symmetry.VERTICAL in symmetry_results
+            else None
+        )
+        ra = (
+            symmetry_results[Symmetry.ANTI_DIAGONAL]
+            if Symmetry.ANTI_DIAGONAL in symmetry_results
+            else None
+        )
+        hx_detected = rx.detected if rx is not None else False
+        vy_detected = ry.detected if ry is not None else False
+        ag_detected = ra.detected if ra is not None else False
 
-    # combine the offsets
-    offset = (0, 0)
-    if hx:
-        # for horizontal symmetry, only the x-offset is relevant
-        offset = (hx_offset[0], offset[1])
-    if vy:
-        # for vertical symmetry, only the y-offset is relevant
-        offset = (offset[0], vy_offset[1])
-    # diagonal symmetry has offset dy-dx, so for square grids the offset is (0, 0)
-    # will assume that dx==dy and assume there's nothing to check
-    if ag and (hx or vy):
-        if ag_offset != offset:
-            # anti-diagonal symmetry is not invariant wrt translations
-            # so we set all symmetries to False as this is a contradiction
-            hx = False
-            vy = False
-            dg = False
-            ag = False
-            offset = (0, 0)
+        # Retrieve individual offsets
+        hx_offset = (
+            symmetry_results[Symmetry.HORIZONTAL].offset if hx_detected else (0, 0)
+        )
+        vy_offset = (
+            symmetry_results[Symmetry.VERTICAL].offset if vy_detected else (0, 0)
+        )
+        ag_offset = (
+            symmetry_results[Symmetry.ANTI_DIAGONAL].offset if ag_detected else (0, 0)
+        )
 
-    some_symmetry_is_true = hx or vy or dg or ag
-    MIN_MASK_WEIGHT = 0.5
+        # Combine horizontal and vertical offsets
+        if hx_detected:
+            combined_offset = (
+                hx_offset[0],
+                combined_offset[1],
+            )  # Only x-offset from horizontal symmetry
 
-    def compute_symmetry_mask(symmetry: Symmetry):
-        mask = Object.empty(grid.size)
-        check_symmetry_with_mask(grid, symmetry, offset, mask)
-        mask_weight = mask.num_cells(None) / mask.area
-        return mask if mask_weight > MIN_MASK_WEIGHT else None
+        if vy_detected:
+            combined_offset = (
+                combined_offset[0],
+                vy_offset[1],
+            )  # Only y-offset from vertical symmetry
 
+    # Handle anti-diagonal symmetry conflicts
+    if ag_detected and (hx_detected or vy_detected):
+        # For diagonal symmetry in square grids, assume dx == dy
+        # Check if anti-diagonal offset matches the combined offset
+        if ag_offset != combined_offset:
+            # Contradiction detected; invalidate all symmetries
+            symmetry_results = {}
+            combined_offset = (0, 0)  # Reset combined offset
+
+    offset = combined_offset
+
+    hx = False
+    vy = False
+    dg = False
+    ag = False
     hxm = None
-    if hx is False and some_symmetry_is_true:
-        hxm = compute_symmetry_mask(Symmetry.HORIZONTAL)
     vym = None
-    if vy is False and some_symmetry_is_true:
-        vym = compute_symmetry_mask(Symmetry.VERTICAL)
     dgm = None
-    if dg is False and some_symmetry_is_true:
-        dgm = compute_symmetry_mask(Symmetry.DIAGONAL)
     agm = None
-    if ag is False and some_symmetry_is_true:
-        agm = compute_symmetry_mask(Symmetry.ANTI_DIAGONAL)
+    for symmetry, result in symmetry_results.items():
+        if symmetry == Symmetry.HORIZONTAL:
+            hx = True
+        elif symmetry == Symmetry.VERTICAL:
+            vy = True
+        elif symmetry == Symmetry.DIAGONAL:
+            dg = True
+        elif symmetry == Symmetry.ANTI_DIAGONAL:
+            ag = True
+        else:
+            raise ValueError(f"Unknown symmetry type: {symmetry}")
+        if result.score < 1:
+            if symmetry == Symmetry.HORIZONTAL:
+                hxm = result.mask
+            elif symmetry == Symmetry.VERTICAL:
+                vym = result.mask
+            elif symmetry == Symmetry.DIAGONAL:
+                dgm = result.mask
+            elif symmetry == Symmetry.ANTI_DIAGONAL:
+                agm = result.mask
 
     return NonPeriodicGridSymmetry(
-        hx, vy, dg, ag, offset, dgm=dgm, agm=agm, hxm=hxm, vym=vym
+        hx=hx,
+        vy=vy,
+        dg=dg,
+        ag=ag,
+        offset=offset,
+        hxm=hxm,
+        vym=vym,
+        dgm=dgm,
+        agm=agm,
     )
+
+
+def compute_symmetry_score(
+    grid: "Object", symmetry: Symmetry, offset: Tuple[int, int], unknown: int
+) -> Tuple[int, int]:
+    """
+    Computes the number of matching cell pairs and the total number of relevant pairs
+    for a given symmetry and offset.
+
+    Returns:
+        A tuple of (match_count, total_pairs)
+    """
+    width, height = grid.size
+    dx, dy = offset
+    match_count = 0
+    total_pairs = 0
+
+    for x in range(width):
+        for y in range(height):
+            # Compute the transformed coordinates based on the symmetry
+            x_trans, y_trans = apply_symmetry(x, y, symmetry, width, height)
+
+            # Apply the offset
+            x_trans += dx
+            y_trans += dy
+
+            # Check if the transformed coordinates are within bounds
+            if 0 <= x_trans < width and 0 <= y_trans < height:
+                cell_original = grid[x, y]
+                cell_transformed = grid[x_trans, y_trans]
+                if (
+                    cell_original == cell_transformed
+                    or cell_original == unknown
+                    or cell_transformed == unknown
+                ):
+                    match_count += 1
+                total_pairs += 1
+            else:
+                # If the transformed cell is out of bounds, consider it as non-matching
+                total_pairs += 1
+
+    return match_count, total_pairs
+
+
+def apply_symmetry(
+    x: int, y: int, symmetry: Symmetry, width: int, height: int
+) -> Tuple[int, int]:
+    """
+    Applies the specified symmetry transformation to the given coordinates.
+
+    Returns:
+        Transformed (x, y) coordinates.
+    """
+    if symmetry == Symmetry.HORIZONTAL:
+        return (width - 1 - x, y)
+    elif symmetry == Symmetry.VERTICAL:
+        return (x, height - 1 - y)
+    elif symmetry == Symmetry.DIAGONAL:
+        return (y, x)
+    elif symmetry == Symmetry.ANTI_DIAGONAL:
+        return (height - 1 - y, width - 1 - x)
+    else:
+        raise ValueError(f"Unknown symmetry type: {symmetry}")
+
+
+def compute_symmetry_mask(
+    grid: "Object", symmetry: Symmetry, offset: Tuple[int, int], unknown: int
+) -> Optional["Object"]:
+    """
+    Generates a mask indicating where the symmetry holds based on the optimal offset.
+
+    Returns:
+        A mask object where matching cells are marked (e.g., with 1) and non-matching cells are unmarked (e.g., with 0).
+        Returns None if no mask is applicable.
+    """
+    width, height = grid.size
+    dx, dy = offset
+    mask = grid.empty(
+        size=grid.size
+    )  # Assuming grid.empty() creates an empty mask with the same size
+
+    match_count = 0
+    total_pairs = 0
+
+    for x in range(width):
+        for y in range(height):
+            # Compute the transformed coordinates based on the symmetry
+            x_trans, y_trans = apply_symmetry(x, y, symmetry, width, height)
+
+            # Apply the offset
+            x_trans += dx
+            y_trans += dy
+
+            # Check if the transformed coordinates are within bounds
+            if 0 <= x_trans < width and 0 <= y_trans < height:
+                cell_original = grid[x, y]
+                cell_transformed = grid[x_trans, y_trans]
+                if (
+                    cell_original == cell_transformed
+                    or cell_original == unknown
+                    or cell_transformed == unknown
+                ):
+                    mask[x, y] = 1  # Mark as matching
+                    match_count += 1
+                else:
+                    mask[x, y] = 0  # Mark as non-matching
+                total_pairs += 1
+            else:
+                mask[x, y] = 0  # Out of bounds is non-matching
+                total_pairs += 1
+
+    # Optionally, additional processing can be done on the mask
+    return (
+        mask if match_count / total_pairs >= 0.5 else None
+    )  # Reconfirming the threshold
 
 
 def find_source_value(
@@ -461,14 +630,12 @@ def find_source_value(
     # Check non-periodic symmetries with offset
     dx, dy = non_periodic_symmetry.offset
 
-    x_dest_sym = x - dx
-    y_dest_sym = y - dy
-
-    def fill_from_symmetry(x_src, y_src):
+    def fill_from_symmetry(x_src, y_src, m):
         if (
             0 <= x_src < width
             and 0 <= y_src < height
             and filled_grid[x_src, y_src] != unknown
+            and (m is None or m[x_src, y_src] == 1)
             and (mask is None or mask[x_src, y_src] == 0)
         ):
             return True
@@ -488,24 +655,18 @@ def find_source_value(
         # (x,y) -> (x-dx, y-dy) -> ((w-dx)-1-x+dx, y-dy) ->
         # -> ((w-dx)-1-x+dx+dx, y-dy+dy) = (w-1-x+dx, y)
         x_src, y_src = width - 1 - x + dx, y
-        if hxm is not None and hxm[x_src, y_src] == 0:
-            return unknown
-        if fill_from_symmetry(x_src, y_src):
+        if fill_from_symmetry(x_src, y_src, hxm):
             return filled_grid[x_src, y_src]
 
     if vy:
         x_src, y_src = x, height - 1 - y + dy
-        if vym is not None and vym[x_src, y_src] == 0:
-            return unknown
-        if fill_from_symmetry(x_src, y_src):
+        if fill_from_symmetry(x_src, y_src, vym):
             return filled_grid[x_src, y_src]
 
-    if dg or dgm is not None:
+    if dg:
         # (x,y) -> (x-dx, y-dy) -> (y-dy, x-dx) -> (y-dy+dx, x-dx+dy)
         x_src, y_src = y - dy + dx, x - dx + dy
-        if dgm is not None and dgm[x_src, y_src] == 0:
-            return unknown
-        if fill_from_symmetry(x_src, y_src):
+        if fill_from_symmetry(x_src, y_src, dgm):
             return filled_grid[x_src, y_src]
 
     if ag:
@@ -513,9 +674,7 @@ def find_source_value(
         # -> (h-dy-1-y+dy+dx, w-dx-1-x+dx+dy) == (h-1-y+dx, w-1-x+dy)
         x_src = height - 1 - y + dx
         y_src = width - 1 - x + dy
-        if agm is not None and agm[x_src, y_src] == 0:
-            return unknown
-        if fill_from_symmetry(x_src, y_src):
+        if fill_from_symmetry(x_src, y_src, agm):
             return filled_grid[x_src, y_src]
 
     return unknown

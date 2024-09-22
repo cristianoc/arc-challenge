@@ -8,10 +8,10 @@ from cardinality_predicates import (
     find_cardinality_predicates,
     predicates_intersection,
 )
-from grid_normalization import ClockwiseRotation, RigidTransformation, XReflection
 from load_data import Example
 from logger import logger
-from objects import Object, display, display_multiple
+from objects import Object, display
+from predict_size import get_largest_block_object
 from symmetry import (
     NonPeriodicGridSymmetry,
     PeriodicGridSymmetry,
@@ -20,7 +20,6 @@ from symmetry import (
     find_periodic_symmetry_predicates,
 )
 from visual_cortex import regularity_score
-from predict_size import get_largest_block_object
 
 
 def is_inpainting_puzzle(examples: List[Example[Object]]) -> bool:
@@ -92,7 +91,7 @@ def mask_from_all_outputs(examples: List[Example[Object]]) -> Optional[Object]:
         color = check_inpainting_conditions(input, output)
         if color is None:
             return None
-        if mask.size != output.size:
+        if mask.size != output.size or input.size != output.size:
             return None
         update_mask(first_output, output, mask)
     return mask
@@ -120,6 +119,7 @@ def compute_shared_symmetries(
     examples: List[Example[Object]],
     mask: Optional[Object],
     color_only_in_input: int,
+    output_is_largest_block_object: bool,
 ) -> Optional[
     Tuple[
         NonPeriodicGridSymmetry,
@@ -134,9 +134,14 @@ def compute_shared_symmetries(
 
     for i, (input, output) in enumerate(examples):
         if Config.find_non_periodic_symmetry:
-            non_periodic_symmetry_output = find_non_periodic_symmetry_predicates(
-                output, color_only_in_input
-            )
+            if output_is_largest_block_object:
+                non_periodic_symmetry_output = find_non_periodic_symmetry_predicates(
+                    input, color_only_in_input
+                )
+            else:
+                non_periodic_symmetry_output = find_non_periodic_symmetry_predicates(
+                    output, color_only_in_input
+                )
         else:
             non_periodic_symmetry_output = NonPeriodicGridSymmetry()
         if non_periodic_shared is None:
@@ -238,6 +243,7 @@ def inpainting_xform_with_mask(
         examples, task_name, nesting_level, mask=mask, apply_mask_to_input=False
     )
 
+
 def extract_largest_block(input: Object, filled_grid: Object) -> Object:
     largest_block_object = get_largest_block_object(input)
     assert largest_block_object is not None
@@ -246,7 +252,9 @@ def extract_largest_block(input: Object, filled_grid: Object) -> Object:
     data = filled_grid._data
 
     # Extract the subgrid from output corresponding to the largest block object
-    largest_block_object_data = data[origin[1]:origin[1]+height, origin[0]:origin[0]+width]
+    largest_block_object_data = data[
+        origin[1] : origin[1] + height, origin[0] : origin[0] + width
+    ]
     return Object(largest_block_object_data)
 
 
@@ -275,7 +283,13 @@ def inpainting_xform(
     if color is None:
         return None
 
-    shared_symmetries = compute_shared_symmetries(examples, mask, color)
+    output_is_largest_block_object = any(
+        input.size != output.size for input, output in examples
+    ) if mask is None else False
+
+    shared_symmetries = compute_shared_symmetries(
+        examples, mask, color, output_is_largest_block_object
+    )
     if shared_symmetries is None:
         return None
     (
@@ -289,10 +303,7 @@ def inpainting_xform(
         f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared} cardinality_shared:{cardinality_shared}"
     )
 
-    output_is_largest_block_object = False
     for i, (input, output) in enumerate(examples):
-        if input.size != output.size:
-            output_is_largest_block_object = True
         filled_grid = fill_grid(
             input,
             mask,
@@ -308,7 +319,6 @@ def inpainting_xform(
 
         if output_is_largest_block_object:
             candidate_output = extract_largest_block(input, filled_grid)
-            display(output, candidate_output, title=f"output | candidate_output")
             is_correct = candidate_output == output
         else:
             is_correct = check_equality_modulo_mask(filled_grid, output, mask)
@@ -375,6 +385,34 @@ def inpainting_xform(
             periodic_symmetry=periodic_symmetry_input,
             unknown=color_only_in_input,
         )
+        if Config.find_non_periodic_symmetry:
+            non_periodic_symmetry_input = find_non_periodic_symmetry_predicates(
+                input, color_only_in_input
+            )
+        else:
+            non_periodic_symmetry_input = NonPeriodicGridSymmetry()
+
+        logger.info(
+            f"Test NonShared {non_periodic_symmetry_input} {periodic_symmetry_input}"
+        )
+
+        input_filled = fill_grid(
+            input,
+            mask,
+            periodic_symmetry=periodic_symmetry_input,
+            non_periodic_symmetry=non_periodic_symmetry_input,
+            unknown=color_only_in_input,
+        )
+
+        if Config.display_verbose:
+            display(
+                input,
+                input_filled,
+                title=f"Test: NonShared",
+                left_title=f"input",
+                right_title=f"filled",
+            )
+
         if mask is not None:
             input_filled.add_object_in_place(
                 input.apply_mask(mask, background_color=color_only_in_input),

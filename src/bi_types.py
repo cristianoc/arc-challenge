@@ -37,7 +37,7 @@ class Config:
     # task_name = "f9d67f8b.json" # maybe a mistake in the task
 
     # task_name = "72ca375d.json"
-    task_name = "0934a4d8.json"
+    # task_name = "0934a4d8.json"
 
     task_fractal = "8f2ea7aa.json"  # fractal expansion
     task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
@@ -75,7 +75,7 @@ class Config:
     max_size = 9
     max_colors = 4
 
-    only_complex_examples = False
+    only_complex_examples = True
     min_size = 23
     min_colors = 9
 
