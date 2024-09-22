@@ -71,17 +71,22 @@ def output_size_is_size_of_object_inside_largest_frame(
         return (width_without_frame, height_without_frame)
     return (0, 0)
 
-
-def output_size_is_size_of_largest_block_object(
-    grids: ExampleObjects, grid: Object, task_name: str
-) -> Optional[Size]:
+def get_largest_block_object(grid: Object) -> Optional[Object]:
     objects = grid.detect_objects(allow_black=True)
     # exclude full grid size
     objects = [obj for obj in objects if obj.size != grid.size and obj.is_block()]
     if not objects:
         return None
     largest_object = max(objects, key=lambda obj: obj.area)
-    return largest_object.size
+    return largest_object
+
+def output_size_is_size_of_largest_block_object(
+    grids: ExampleObjects, grid: Object, task_name: str
+) -> Optional[Size]:
+    largest_block_object = get_largest_block_object(grid)
+    if largest_block_object:
+        return largest_block_object.size
+    return None 
 
 
 def output_size_is_size_of_largest_nonblack_block_object(

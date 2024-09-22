@@ -20,6 +20,7 @@ from symmetry import (
     find_periodic_symmetry_predicates,
 )
 from visual_cortex import regularity_score
+from predict_size import get_largest_block_object
 
 
 def is_inpainting_puzzle(examples: List[Example[Object]]) -> bool:
@@ -31,9 +32,13 @@ def is_inpainting_puzzle(examples: List[Example[Object]]) -> bool:
 
 
 def check_inpainting_conditions(input: Object, output: Object) -> Optional[int]:
-    # Check if input and output are the same size
     if input.size != output.size:
-        return None
+        largest_block_object = get_largest_block_object(input)
+        if largest_block_object is None:
+            return None
+        if largest_block_object.size != output.size:
+            return None
+        return largest_block_object.main_color()
 
     # check if input has one more color than output
     if len(input.get_colors(allow_black=True)) - 1 != len(
@@ -58,7 +63,6 @@ def check_inpainting_conditions(input: Object, output: Object) -> Optional[int]:
     # check if output has high regularity score
     if regularity_score(output) >= Config.inpainting_regularity_score_threshold:
         return None
-    # Config.display_this_task = True
 
     return color
 
@@ -97,7 +101,7 @@ def mask_from_all_outputs(examples: List[Example[Object]]) -> Optional[Object]:
 # check that the color only in input is the same for all examples
 
 
-def check_color_only_in_input(examples: List[Example[Object]]) -> Optional[int]:
+def get_inpainting_color(examples: List[Example[Object]]) -> Optional[int]:
     color_only_in_input = None
     for input, output in examples:
         color = check_inpainting_conditions(input, output)
@@ -234,6 +238,17 @@ def inpainting_xform_with_mask(
         examples, task_name, nesting_level, mask=mask, apply_mask_to_input=False
     )
 
+def extract_largest_block(input: Object, filled_grid: Object) -> Object:
+    largest_block_object = get_largest_block_object(input)
+    assert largest_block_object is not None
+    origin = largest_block_object.origin
+    width, height = largest_block_object.size
+    data = filled_grid._data
+
+    # Extract the subgrid from output corresponding to the largest block object
+    largest_block_object_data = data[origin[1]:origin[1]+height, origin[0]:origin[0]+width]
+    return Object(largest_block_object_data)
+
 
 def inpainting_xform(
     examples: List[Example[Object]],
@@ -256,7 +271,7 @@ def inpainting_xform(
             )
         return filled_grid
 
-    color = check_color_only_in_input(examples)
+    color = get_inpainting_color(examples)
     if color is None:
         return None
 
@@ -274,7 +289,10 @@ def inpainting_xform(
         f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared} cardinality_shared:{cardinality_shared}"
     )
 
+    output_is_largest_block_object = False
     for i, (input, output) in enumerate(examples):
+        if input.size != output.size:
+            output_is_largest_block_object = True
         filled_grid = fill_grid(
             input,
             mask,
@@ -288,7 +306,12 @@ def inpainting_xform(
             filled_grid, input, mask, color_only_in_input
         )
 
-        is_correct = check_equality_modulo_mask(filled_grid, output, mask)
+        if output_is_largest_block_object:
+            candidate_output = extract_largest_block(input, filled_grid)
+            display(output, candidate_output, title=f"output | candidate_output")
+            is_correct = candidate_output == output
+        else:
+            is_correct = check_equality_modulo_mask(filled_grid, output, mask)
         logger.info(
             f"#{i} Shared {non_periodic_shared} {periodic_shared} {cardinality_shared} is_correct: {is_correct}"
         )
@@ -315,7 +338,7 @@ def inpainting_xform(
         state = f"symmetry({non_periodic_shared}, {periodic_shared})"
 
         def solve_shared(input: Object) -> Object:
-            filled_grid = fill_grid(
+            input_filled = fill_grid(
                 input,
                 mask,
                 periodic_shared,
@@ -323,15 +346,19 @@ def inpainting_xform(
                 cardinality_shared,
                 color_only_in_input,
             )
-            filled_grid = apply_mask_to_filled_grid(
-                filled_grid, input, mask, color_only_in_input
+            input_filled = apply_mask_to_filled_grid(
+                input_filled, input, mask, color_only_in_input
             )
             logger.info(
                 f"Test Shared {non_periodic_shared} {periodic_shared} {cardinality_shared}"
             )
             if Config.display_verbose:
-                display(input, filled_grid, title=f"Test Shared")
-            return filled_grid
+                display(input, input_filled, title=f"Test Shared")
+
+            if output_is_largest_block_object:
+                return extract_largest_block(input, input_filled)
+            else:
+                return input_filled
 
         return (state, solve_shared)
 
@@ -342,25 +369,28 @@ def inpainting_xform(
             )
         else:
             periodic_symmetry_input = PeriodicGridSymmetry()
-        filled_grid = fill_grid(
+        input_filled = fill_grid(
             input,
             mask,
             periodic_symmetry=periodic_symmetry_input,
             unknown=color_only_in_input,
         )
         if mask is not None:
-            filled_grid.add_object_in_place(
+            input_filled.add_object_in_place(
                 input.apply_mask(mask, background_color=color_only_in_input),
                 background_color=color_only_in_input,
             )
         # check if there are leftover unknown colors
-        data = filled_grid._data
+        data = input_filled._data
         if np.any(data == color_only_in_input):
             logger.info(f"Test: Leftover unknown color: {color_only_in_input}")
             if Config.display_verbose:
-                display(input, filled_grid, title=f"Test: Leftover covered cells")
+                display(input, input_filled, title=f"Test: Leftover covered cells")
             return None
-        return filled_grid
+        if output_is_largest_block_object:
+            return extract_largest_block(input, input_filled)
+        else:
+            return input_filled
 
     # Config.display_this_task = True
     state = "find_symmetry_for_each_input"
