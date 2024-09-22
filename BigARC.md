@@ -10,10 +10,10 @@ BigARC tasks consist of grids with a large number of cells and a wide variety of
 
 The solution approach for BigARC is still under development. It will likely involve advanced techniques for managing large grids and multiple colors, building on methods used in other ARC challenges.
 
-### Example
+### Example 1
 
 Here’s an example of a BigARC task with a 23x23 grid and 10 colors:
-![bigarc-example](images/bigarc-example.png)
+![bigarc-example1](images/bigarc-example1.png)
 
 The solution is to identify the subgrid with only one color. We will now break this down into composable reasoning steps.
 
@@ -56,7 +56,12 @@ To solve the example:
 - **Level 1**: Apply the Split rule and move to the lists-to-grid space.
 - **Level 2**: Apply the Select rule using the `single color` predicate to generate the embedding.
 
-## BigARC Evaluation
 
-TODO
+### Example 2
 
+Here’s an example of a BigARC task with a 23x23 grid and 10 colors:
+![bigarc-example2](images/bigarc-example2.png)
+
+The example takes aspects from 2 subproblems:
+1. The pattern from [InPaintingARC](InPaintingARC.md)
+2. The size of the output from [SizeARC](SizeARC.md)
