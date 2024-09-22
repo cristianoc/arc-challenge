@@ -59,12 +59,11 @@ To solve the example:
 
 ### Example 2
 
-Here’s an example of a BigARC task with a 23x23 grid and 10 colors:
+Here’s another example of a BigARC task with a 23x23 grid and 10 colors:
 ![bigarc-example2](images/bigarc-example2.png)
 
-The example takes aspects from 2 subproblems:
+This example combines aspects from two subproblems:
 1. The pattern from [InPaintingARC](InPaintingARC.md)
 2. The size of the output from [SizeARC](SizeARC.md)
 
-The pattern relies on Symmetry Masks, which means symmetries are satisfied only by a subset of the input (the mask).
-The solution from InPaintingARC is not sufficient as it relies on at least one symmetry to hold without mask (to e.g. find the center of symmetry). While here some extension is required.
+The pattern relies on Symmetry Masks, which means symmetries are satisfied only by a subset of the input (the mask). The solution from InPaintingARC is not sufficient as it relies on at least one symmetry to hold without a mask (e.g., to find the center of symmetry). Here, some extension is required.
