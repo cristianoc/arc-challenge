@@ -464,34 +464,56 @@ def compute_symmetry_score(
     """
     width, height = grid.size
     dx, dy = offset
-    match_count = 0
-    total_pairs = 0
 
-    for x in range(width):
-        for y in range(height):
-            # Compute the transformed coordinates based on the symmetry
-            x_trans, y_trans = apply_symmetry(x, y, symmetry, width, height)
+    # Get the NumPy array data
+    grid_data = grid._data
 
-            # Apply the offset
-            x_trans += dx
-            y_trans += dy
+    # Create coordinate grids
+    x_coords, y_coords = np.meshgrid(np.arange(width), np.arange(height), indexing="ij")
 
-            # Check if the transformed coordinates are within bounds
-            if 0 <= x_trans < width and 0 <= y_trans < height:
-                cell_original = grid[x, y]
-                cell_transformed = grid[x_trans, y_trans]
-                if (
-                    cell_original == cell_transformed
-                    or cell_original == unknown
-                    or cell_transformed == unknown
-                ):
-                    match_count += 1
-                total_pairs += 1
-            else:
-                # If the transformed cell is out of bounds, consider it as non-matching
-                total_pairs += 1
+    # Apply symmetry transformation
+    x_trans, y_trans = apply_symmetry_vectorized(
+        x_coords, y_coords, symmetry, width, height
+    )
+
+    # Apply offsets
+    x_trans += dx
+    y_trans += dy
+
+    # Check bounds
+    valid_mask = (
+        (x_trans >= 0) & (x_trans < width) & (y_trans >= 0) & (y_trans < height)
+    )
+
+    # Prepare original and transformed cell values
+    # Note: grid_data[y, x] corresponds to grid[x, y]
+    cell_original = grid_data[x_coords[valid_mask], y_coords[valid_mask]]
+    cell_transformed = grid_data[x_trans[valid_mask], y_trans[valid_mask]]
+
+    # Create unknown masks
+    unknown_mask = (cell_original == unknown) | (cell_transformed == unknown)
+
+    # Compute match count
+    matches = (cell_original == cell_transformed) | unknown_mask
+    match_count = np.sum(matches)
+    total_pairs = matches.size
 
     return match_count, total_pairs
+
+
+def apply_symmetry_vectorized(
+    x: np.ndarray, y: np.ndarray, symmetry: Symmetry, width: int, height: int
+) -> Tuple[np.ndarray, np.ndarray]:
+    if symmetry == Symmetry.HORIZONTAL:
+        return width - 1 - x, y
+    elif symmetry == Symmetry.VERTICAL:
+        return x, height - 1 - y
+    elif symmetry == Symmetry.DIAGONAL:
+        return y, x
+    elif symmetry == Symmetry.ANTI_DIAGONAL:
+        return height - 1 - y, width - 1 - x
+    else:
+        raise ValueError(f"Unknown symmetry type: {symmetry}")
 
 
 def apply_symmetry(
