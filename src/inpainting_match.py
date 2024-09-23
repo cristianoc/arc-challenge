@@ -432,6 +432,7 @@ def inpainting_xform(
         f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared} cardinality_shared:{cardinality_shared}"
     )
 
+    use_shared_symmetries_in_test = True
     for i, (input, output) in enumerate(examples):
         filled_grid = fill_grid(
             input,
@@ -472,6 +473,7 @@ def inpainting_xform(
             logger.info(f"#{i} Found correct solution using shared symmetries")
             pass
         else:
+            use_shared_symmetries_in_test = False
             if num_correct == len(examples):
                 # Since the per-example symmetry is correct, we'll try to find the symmetry again in the test input
                 logger.info(f"#{i} Shared symmetries are not correct, but each symmetry is correct")
@@ -481,7 +483,7 @@ def inpainting_xform(
                 logger.info(f"#{i} Shared symmetries are not correct")
                 return None
 
-    else:
+    if use_shared_symmetries_in_test:
         state = f"symmetry({non_periodic_shared}, {periodic_shared})"
 
         def solve_shared(input: Object) -> Object:
@@ -514,64 +516,65 @@ def inpainting_xform(
 
         return (state, solve_shared)
 
-    def solve_find_symmetry(input: Object) -> Optional[Object]:
-        if Config.find_periodic_symmetry:
-            periodic_symmetry_input = find_periodic_symmetry_predicates(
-                input, color_only_in_input, mask
-            )
-        else:
-            periodic_symmetry_input = PeriodicGridSymmetry()
-        input_filled = fill_grid(
-            input,
-            mask,
-            periodic_symmetry=periodic_symmetry_input,
-            unknown=color_only_in_input,
-        )
-        if Config.find_non_periodic_symmetry:
-            non_periodic_symmetry_input = find_non_periodic_symmetry_predicates(
-                input, color_only_in_input
-            )
-        else:
-            non_periodic_symmetry_input = NonPeriodicGridSymmetry()
-
-        logger.info(
-            f"Test NonShared {non_periodic_symmetry_input} {periodic_symmetry_input}"
-        )
-
-        input_filled = fill_grid(
-            input,
-            mask,
-            periodic_symmetry=periodic_symmetry_input,
-            non_periodic_symmetry=non_periodic_symmetry_input,
-            unknown=color_only_in_input,
-        )
-
-        if Config.display_verbose:
-            display(
+    else:
+        def solve_find_symmetry(input: Object) -> Optional[Object]:
+            if Config.find_periodic_symmetry:
+                periodic_symmetry_input = find_periodic_symmetry_predicates(
+                    input, color_only_in_input, mask
+                )
+            else:
+                periodic_symmetry_input = PeriodicGridSymmetry()
+            input_filled = fill_grid(
                 input,
-                input_filled,
-                title=f"Test: NonShared",
-                left_title=f"input",
-                right_title=f"filled",
+                mask,
+                periodic_symmetry=periodic_symmetry_input,
+                unknown=color_only_in_input,
+            )
+            if Config.find_non_periodic_symmetry:
+                non_periodic_symmetry_input = find_non_periodic_symmetry_predicates(
+                    input, color_only_in_input
+                )
+            else:
+                non_periodic_symmetry_input = NonPeriodicGridSymmetry()
+
+            logger.info(
+                f"Test NonShared {non_periodic_symmetry_input} {periodic_symmetry_input}"
             )
 
-        if mask is not None:
-            input_filled.add_object_in_place(
-                input.apply_mask(mask, background_color=color_only_in_input),
-                background_color=color_only_in_input,
+            input_filled = fill_grid(
+                input,
+                mask,
+                periodic_symmetry=periodic_symmetry_input,
+                non_periodic_symmetry=non_periodic_symmetry_input,
+                unknown=color_only_in_input,
             )
-        # check if there are leftover unknown colors
-        data = input_filled._data
-        if np.any(data == color_only_in_input):
-            logger.info(f"Test: Leftover unknown color: {color_only_in_input}")
+
             if Config.display_verbose:
-                display(input, input_filled, title=f"Test: Leftover covered cells")
-            return None
-        if output_is_largest_block_object:
-            return extract_largest_block(input, input_filled)
-        else:
-            return input_filled
+                display(
+                    input,
+                    input_filled,
+                    title=f"Test: NonShared",
+                    left_title=f"input",
+                    right_title=f"filled",
+                )
 
-    # Config.display_this_task = True
-    state = "find_symmetry_for_each_input"
-    return (state, solve_find_symmetry)
+            if mask is not None:
+                input_filled.add_object_in_place(
+                    input.apply_mask(mask, background_color=color_only_in_input),
+                    background_color=color_only_in_input,
+                )
+            # check if there are leftover unknown colors
+            data = input_filled._data
+            if np.any(data == color_only_in_input):
+                logger.info(f"Test: Leftover unknown color: {color_only_in_input}")
+                if Config.display_verbose:
+                    display(input, input_filled, title=f"Test: Leftover covered cells")
+                return None
+            if output_is_largest_block_object:
+                return extract_largest_block(input, input_filled)
+            else:
+                return input_filled
+
+        # Config.display_this_task = True
+        state = "find_symmetry_for_each_input"
+        return (state, solve_find_symmetry)
