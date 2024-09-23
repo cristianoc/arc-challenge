@@ -5,17 +5,18 @@ from canvas_grid_match import canvas_grid_xform, equal_modulo_rigid_transformati
 from find_xform import find_xform
 from inpainting_match import (
     inpainting_xform_no_mask,
+    inpainting_xform_output_is_block,
     inpainting_xform_with_mask,
     is_inpainting_puzzle,
 )
 from load_data import Task, Tasks, evaluation_data, training_data
 from logger import logger
 from match_colored_objects import match_colored_objects
+from match_objects_in_grid import match_rectangular_objects_in_grid
 from match_subgrids_in_lattice import match_subgrids_in_lattice
 from objects import Object, display_multiple
 from primitives import primitive_to_xform, translate_down_1, xform_identity
 from split_mirrot_match import frame_split_and_mirror_xform
-from match_objects_in_grid import match_rectangular_objects_in_grid
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -57,6 +58,7 @@ gridxforms: List[XformEntry[Object, Object]] = [
     XformEntry(canvas_grid_xform, 2),
     XformEntry(match_rectangular_objects_in_grid, 3),
     XformEntry(inpainting_xform_no_mask, 2),
+    XformEntry(inpainting_xform_output_is_block, 2),
 ] + (
     [
         XformEntry(inpainting_xform_with_mask, 2),
@@ -95,7 +97,7 @@ def process_tasks(tasks: Tasks, set: str):
             and filter_complex_xforms(task, task_name) == False
         ):
             continue
-        if Config.only_inpainting_puzzles and not is_inpainting_puzzle(task.train):
+        if Config.only_inpainting_puzzles and not is_inpainting_puzzle(task.train, output_is_block=False):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
