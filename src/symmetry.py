@@ -313,7 +313,8 @@ def find_non_periodic_symmetry_predicates(
     Handles both complete and partial symmetries by determining optimal offsets.
     """
     width, height = grid.size
-    max_distance = max(width, height) // 2
+    max_distance = max(width, height) // 4
+   
 
     # Initialize the result dictionary
     symmetry_results: Dict[Symmetry, SymmetryResult] = {}
@@ -472,23 +473,27 @@ def compute_symmetry_score(
     x_coords, y_coords = np.meshgrid(np.arange(width), np.arange(height), indexing="ij")
 
     # Apply symmetry transformation
-    x_trans, y_trans = apply_symmetry_vectorized(
+    x_trans_, y_trans_ = apply_symmetry_vectorized(
         x_coords, y_coords, symmetry, width, height
     )
 
     # Apply offsets
-    x_trans += dx
-    y_trans += dy
+    x_trans = x_trans_ + dx
+    y_trans = y_trans_ + dy
 
     # Check bounds
     valid_mask = (
         (x_trans >= 0) & (x_trans < width) & (y_trans >= 0) & (y_trans < height)
     )
+ 
+    cell_original = grid_data[y_coords[valid_mask], x_coords[valid_mask]]
 
-    # Prepare original and transformed cell values
-    # Note: grid_data[y, x] corresponds to grid[x, y]
-    cell_original = grid_data[x_coords[valid_mask], y_coords[valid_mask]]
-    cell_transformed = grid_data[x_trans[valid_mask], y_trans[valid_mask]]
+    # Ensure transformed indices are within bounds
+    x_trans_valid = x_trans[valid_mask]
+    y_trans_valid = y_trans[valid_mask]
+
+    # Now it's safe to index
+    cell_transformed = grid_data[y_trans_valid, x_trans_valid]
 
     # Create unknown masks
     unknown_mask = (cell_original == unknown) | (cell_transformed == unknown)
