@@ -54,6 +54,7 @@ def frame_split_and_mirror_xform(
         nesting_level + 1,
         mask_tr,
         apply_mask_to_input=True,
+        output_is_block=False,
     )
     match_bl = inpainting_xform(
         examples,
@@ -61,6 +62,7 @@ def frame_split_and_mirror_xform(
         nesting_level + 1,
         mask_bl,
         apply_mask_to_input=True,
+        output_is_block=False,
     )
 
     if match_tr is None or match_bl is None:
