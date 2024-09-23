@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from bi_types import Config, Match, XformEntry
+import config
+from bi_types import Match, XformEntry
 from load_data import Example
 from logger import logger
 from objects import Object, display
@@ -18,7 +19,7 @@ def find_xform_for_examples(
     )
 
     for xform in xforms:
-        if Config.difficulty < xform.difficulty:
+        if config.difficulty < xform.difficulty:
             continue
         func = xform.xform
         logger.debug(f"{'  ' * nesting_level}Checking xform {func.__name__}")
@@ -79,7 +80,7 @@ def find_xform(
             return None
         if result_on_test != test_output:
             logger.info(f"Xform {xform_name} state:{state} failed for test input {i}")
-            if Config.display_verbose:
+            if config.display_verbose:
                 width, height = test_output.size
                 for x in range(width):
                     for y in range(height):

@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from bi_types import Config, XformEntry
+import config
+from bi_types import XformEntry
 from canvas_grid_match import canvas_grid_xform, equal_modulo_rigid_transformation
 from find_xform import find_xform
 from inpainting_match import (
@@ -25,11 +26,11 @@ def filter_simple_xforms(task: Task, task_name: str):
         input = example[0]
         output = example[1]
         if (
-            input.width > Config.max_size
-            or input.height > Config.max_size
+            input.width > config.max_size
+            or input.height > config.max_size
             or input.size != output.size
             or input.get_colors(allow_black=True) != output.get_colors(allow_black=True)
-            or len(input.get_colors(allow_black=True)) > Config.max_colors
+            or len(input.get_colors(allow_black=True)) > config.max_colors
         ):
             return False
     return True
@@ -41,9 +42,9 @@ def filter_complex_xforms(task: Task, task_name: str):
         input = example[0]
         output = example[1]
         if (
-            input.width < Config.min_size
-            or input.height < Config.min_size
-            or len(input.get_colors(allow_black=True)) < Config.min_colors
+            input.width < config.min_size
+            or input.height < config.min_size
+            or len(input.get_colors(allow_black=True)) < config.min_colors
         ):
             return False
     return True
@@ -63,14 +64,14 @@ gridxforms: List[XformEntry[Object, Object]] = [
     [
         XformEntry(inpainting_xform_with_mask, 2),
     ]
-    if Config.find_frame_rule
+    if config.find_frame_rule
     else []
 )
 
 
 # brute force search xforms to be used when all else fails
 desperatexforms: List[XformEntry[Object, Object]] = [] + (
-    [XformEntry(frame_split_and_mirror_xform, 100)] if Config.find_frame_rule else []
+    [XformEntry(frame_split_and_mirror_xform, 100)] if config.find_frame_rule else []
 )
 
 
@@ -81,23 +82,23 @@ def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
     for task_name, task in tasks.items():
-        Config.display_this_task = False
-        if Config.task_name and task_name != Config.task_name:
+        config.display_this_task = False
+        if config.task_name and task_name != config.task_name:
             continue
-        if task_name in Config.blacklisted_tasks:
+        if task_name in config.blacklisted_tasks:
             continue
         if (
-            Config.only_simple_examples
+            config.only_simple_examples
             and filter_simple_xforms(task, task_name) == False
-            and task_name not in Config.whitelisted_tasks
+            and task_name not in config.whitelisted_tasks
         ):
             continue
         if (
-            Config.only_complex_examples
+            config.only_complex_examples
             and filter_complex_xforms(task, task_name) == False
         ):
             continue
-        if Config.only_inpainting_puzzles and not is_inpainting_puzzle(task.train, output_is_block=False):
+        if config.only_inpainting_puzzles and not is_inpainting_puzzle(task.train, output_is_block=False):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
@@ -107,7 +108,7 @@ def process_tasks(tasks: Tasks, set: str):
 
         current_difficulty = 0
 
-        if Config.find_xform:
+        if config.find_xform:
             correct_xform = find_xform(
                 gridxforms + desperatexforms, examples, tests, task_name, 0
             )
@@ -120,9 +121,9 @@ def process_tasks(tasks: Tasks, set: str):
 
         current_difficulty += num_difficulties_xform
 
-        if Config.display_not_found:
-            Config.display_this_task = True
-        if Config.display_this_task:
+        if config.display_not_found:
+            config.display_this_task = True
+        if config.display_this_task:
             grids = [(example[0], example[1]) for example in examples]
             display_multiple(grids, title=f"{task_name} {set}")
 

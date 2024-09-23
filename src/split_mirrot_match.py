@@ -1,10 +1,11 @@
 from typing import List, Optional, Tuple
 
-from bi_types import Config, Match
+from bi_types import Match
 from inpainting_match import inpainting_xform, mask_from_all_outputs
 from load_data import Example
 from logger import logger
 from objects import Object, display
+import config
 
 
 def frame_split_and_mirror_xform(
@@ -76,7 +77,7 @@ def frame_split_and_mirror_xform(
         output_bl = solve_bl(input)
         if output_tr is None or output_bl is None:
             return None
-        if Config.display_verbose:
+        if config.display_verbose:
             display(
                 output_tr,
                 output_bl,
@@ -85,7 +86,7 @@ def frame_split_and_mirror_xform(
                 right_title="bl",
             )
         combined = combine_grids(output_tr, output_bl)
-        if Config.display_verbose:
+        if config.display_verbose:
             display(combined, title="Combined")
         return combined
 

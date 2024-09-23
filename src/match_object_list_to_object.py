@@ -1,6 +1,7 @@
 from typing import Callable, List, Optional, Tuple
 
-from bi_types import Config, GridAndObjects, Match, XformEntry
+import config
+from bi_types import GridAndObjects, Match, XformEntry
 from load_data import Example
 from logger import logger
 from match_object_list import match_object_list
@@ -132,12 +133,12 @@ def match_object_list_with_decision_rule(
 
     def solve(input_g: Object) -> Optional[Object]:
         input_subgrids = get_objects(input_g)
-        if Config.display_verbose:
+        if config.display_verbose:
             display_multiple(input_subgrids, title=f"input_subgrids")
         # need to find the subgrid that satisfies the common_decision_rule
         for i, subgrid in enumerate(input_subgrids):
             if check_grid_satisfies_rule(subgrid, input_subgrids, common_decision_rule):
-                if Config.display_verbose:
+                if config.display_verbose:
                     display(input_g, subgrid, title=f"subgrid {i}")
                 return subgrid
         logger.info(

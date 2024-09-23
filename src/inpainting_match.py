@@ -2,7 +2,8 @@ from typing import TYPE_CHECKING, List, Optional, Tuple
 
 import numpy as np
 
-from bi_types import Config, Match
+import config
+from bi_types import Match
 from cardinality_predicates import (
     CardinalityPredicate,
     find_cardinality_predicates,
@@ -73,7 +74,7 @@ def check_inpainting_conditions(
                 return None
 
     # Check if output has high regularity score
-    if regularity_score(output) >= Config.inpainting_regularity_score_threshold:
+    if regularity_score(output) >= config.inpainting_regularity_score_threshold:
         return None
 
     return color
@@ -214,7 +215,7 @@ def compute_shared_symmetries(
     cardinality_shared: Optional[List[CardinalityPredicate]] = None
 
     for i, (input, output) in enumerate(examples):
-        if Config.find_non_periodic_symmetry:
+        if config.find_non_periodic_symmetry:
             if output_is_largest_block_object:
                 non_periodic_symmetry_output = find_non_periodic_symmetry_predicates(
                     input, color_only_in_input
@@ -232,7 +233,7 @@ def compute_shared_symmetries(
                 non_periodic_symmetry_output
             )
 
-        if Config.find_cardinality_predicates:
+        if config.find_cardinality_predicates:
             cardinality_shared_output = find_cardinality_predicates(output)
         else:
             cardinality_shared_output = []
@@ -243,7 +244,7 @@ def compute_shared_symmetries(
                 cardinality_shared, cardinality_shared_output
             )
 
-        if Config.find_periodic_symmetry:
+        if config.find_periodic_symmetry:
             periodic_symmetry_output = find_periodic_symmetry_predicates(
                 output, color_only_in_input, mask
             )
@@ -359,7 +360,7 @@ def inpainting_xform_with_mask(
 ) -> Optional[Match[Object, Object]]:
     mask = mask_from_all_outputs(examples)
     if mask is not None:
-        if Config.display_verbose:
+        if config.display_verbose:
             display(mask, title=f"Mask")
     return inpainting_xform(
         examples,
@@ -455,7 +456,7 @@ def inpainting_xform(
         logger.info(
             f"#{i} Shared {non_periodic_shared} {periodic_shared} {cardinality_shared} is_correct: {is_correct}"
         )
-        if Config.display_verbose and non_periodic_shared.dgm is not None:
+        if config.display_verbose and non_periodic_shared.dgm is not None:
             display(
                 output,
                 non_periodic_shared.dgm,
@@ -465,7 +466,7 @@ def inpainting_xform(
             )
 
         if not is_correct:
-            if Config.display_verbose:
+            if config.display_verbose:
                 display(input, filled_grid, title=f"{is_correct} Shared Symm")
                 if mask is not None:
                     display(mask, title=f"{is_correct} Mask")
@@ -508,7 +509,7 @@ def inpainting_xform(
             logger.info(
                 f"Test Shared {non_periodic_shared} {periodic_shared} {cardinality_shared}"
             )
-            if Config.display_verbose:
+            if config.display_verbose:
                 display(input, input_filled, title=f"Test Shared")
 
             if output_is_largest_block_object:
@@ -521,7 +522,7 @@ def inpainting_xform(
     else:
 
         def solve_find_symmetry(input: Object) -> Optional[Object]:
-            if Config.find_periodic_symmetry:
+            if config.find_periodic_symmetry:
                 periodic_symmetry_input = find_periodic_symmetry_predicates(
                     input, color_only_in_input, mask
                 )
@@ -533,7 +534,7 @@ def inpainting_xform(
                 periodic_symmetry=periodic_symmetry_input,
                 unknown=color_only_in_input,
             )
-            if Config.find_non_periodic_symmetry:
+            if config.find_non_periodic_symmetry:
                 non_periodic_symmetry_input = find_non_periodic_symmetry_predicates(
                     input, color_only_in_input
                 )
@@ -552,7 +553,7 @@ def inpainting_xform(
                 unknown=color_only_in_input,
             )
 
-            if Config.display_verbose:
+            if config.display_verbose:
                 display(
                     input,
                     input_filled,
@@ -570,7 +571,7 @@ def inpainting_xform(
             data = input_filled._data
             if np.any(data == color_only_in_input):
                 logger.info(f"Test: Leftover unknown color: {color_only_in_input}")
-                if Config.display_verbose:
+                if config.display_verbose:
                     display(input, input_filled, title=f"Test: Leftover covered cells")
                 return None
             if output_is_largest_block_object:
