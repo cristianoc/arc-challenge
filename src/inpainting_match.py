@@ -37,6 +37,8 @@ def check_inpainting_conditions(input: Object, output: Object) -> Optional[int]:
             return None
         if largest_block_object.size != output.size:
             return None
+        if largest_block_object.width < 2 or largest_block_object.height < 2:
+            return None
         return largest_block_object.main_color()
 
     # check if input has one more color than output
