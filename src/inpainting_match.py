@@ -22,7 +22,9 @@ from symmetry import (
 from visual_cortex import regularity_score
 
 
-def is_inpainting_puzzle(examples: List[Example[Object]], output_is_block: bool) -> bool:
+def is_inpainting_puzzle(
+    examples: List[Example[Object]], output_is_block: bool
+) -> bool:
     # check the inpainting conditions on all examples
     for input, output in examples:
         if check_inpainting_conditions(input, output, output_is_block) is None:
@@ -30,7 +32,9 @@ def is_inpainting_puzzle(examples: List[Example[Object]], output_is_block: bool)
     return True
 
 
-def check_inpainting_conditions(input: Object, output: Object, output_is_block: bool) -> Optional[int]:
+def check_inpainting_conditions(
+    input: Object, output: Object, output_is_block: bool
+) -> Optional[int]:
     if input.size != output.size:
         if output_is_block:
             largest_block_object = get_largest_block_object(input)
@@ -108,7 +112,9 @@ def mask_from_all_outputs(examples: List[Example[Object]]) -> Optional[Object]:
 # check that the color only in input is the same for all examples
 
 
-def get_inpainting_color(examples: List[Example[Object]], output_is_block: bool) -> Optional[int]:
+def get_inpainting_color(
+    examples: List[Example[Object]], output_is_block: bool
+) -> Optional[int]:
     color_only_in_input = None
     for input, output in examples:
         color = check_inpainting_conditions(input, output, output_is_block)
@@ -123,19 +129,86 @@ def get_inpainting_color(examples: List[Example[Object]], output_is_block: bool)
     return color_only_in_input
 
 
+SharedSymmetries = Tuple[
+    NonPeriodicGridSymmetry,
+    PeriodicGridSymmetry,
+    List[CardinalityPredicate],
+    int,
+]
+
+
+def apply_mask_to_filled_grid(
+    examples: List[Example[Object]],
+    filled_grid,
+    input,
+    mask,
+    color_only_in_input,
+    apply_mask_to_input: bool,
+):
+    """
+    Apply the mask to the filled grid, using either the input or the first output as the source.
+    """
+    if mask is not None:
+        if apply_mask_to_input:
+            source = input
+        else:
+            first_output = examples[0][1]
+            source = first_output
+        filled_grid.add_object_in_place(
+            source.apply_mask(mask, background_color=color_only_in_input),
+            background_color=color_only_in_input,
+        )
+    return filled_grid
+
+
+def check_correctness(
+    examples: List[Example[Object]],
+    input: Object,
+    output: Object,
+    shared_symmetries: SharedSymmetries,
+    mask: Optional[Object],
+    output_is_largest_block_object: bool,
+    apply_mask_to_input: bool,
+) -> bool:
+    """
+    Check if the filled grid matches the output, considering the shared symmetries and mask.
+    """
+    (
+        non_periodic_shared,
+        periodic_shared,
+        cardinality_shared,
+        color_only_in_input,
+    ) = shared_symmetries
+    filled_grid = fill_grid(
+        input,
+        mask,
+        periodic_shared,
+        non_periodic_shared,
+        cardinality_shared,
+        color_only_in_input,
+    )
+    filled_grid = apply_mask_to_filled_grid(
+        examples, filled_grid, input, mask, color_only_in_input, apply_mask_to_input
+    )
+
+    if output_is_largest_block_object:
+        candidate_output = extract_largest_block(input, filled_grid)
+        return candidate_output == output
+    else:
+        return check_equality_modulo_mask(filled_grid, output, mask)
+
+
 def compute_shared_symmetries(
     examples: List[Example[Object]],
     mask: Optional[Object],
     color_only_in_input: int,
     output_is_largest_block_object: bool,
-) -> Optional[
-    Tuple[
-        NonPeriodicGridSymmetry,
-        PeriodicGridSymmetry,
-        List[CardinalityPredicate],
-        int,
-    ]
-]:
+    apply_mask_to_input: bool,
+) -> Optional[Tuple[SharedSymmetries, int]]:
+    """
+    Compute the shared symmetries across all examples and return the number of correct examples.
+    """
+    num_correct = 0
     non_periodic_shared = None
     periodic_shared = None
     cardinality_shared: Optional[List[CardinalityPredicate]] = None
@@ -181,8 +254,26 @@ def compute_shared_symmetries(
         else:
             periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
 
+        output_symmetries = (
+            non_periodic_symmetry_output,
+            periodic_symmetry_output,
+            cardinality_shared_output,
+            color_only_in_input,
+        )
+        is_correct = check_correctness(
+            examples,
+            input,
+            output,
+            output_symmetries,
+            mask,
+            output_is_largest_block_object,
+            apply_mask_to_input,
+        )
+        if is_correct:
+            num_correct += 1
+
         logger.info(
-            f"#{i} From Output {non_periodic_symmetry_output} {periodic_symmetry_output} {cardinality_shared}"
+            f"#{i} From Output {non_periodic_symmetry_output} {periodic_symmetry_output} {cardinality_shared} is_correct: {is_correct}"
         )
 
     if (
@@ -194,10 +285,13 @@ def compute_shared_symmetries(
         return None
 
     return (
-        non_periodic_shared,
-        periodic_shared,
-        cardinality_shared,
-        color_only_in_input,
+        (
+            non_periodic_shared,
+            periodic_shared,
+            cardinality_shared,
+            color_only_in_input,
+        ),
+        num_correct,
     )
 
 
@@ -234,7 +328,12 @@ def inpainting_xform_no_mask(
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
     return inpainting_xform(
-        examples, task_name, nesting_level, mask=None, apply_mask_to_input=False, output_is_block=False
+        examples,
+        task_name,
+        nesting_level,
+        mask=None,
+        apply_mask_to_input=False,
+        output_is_block=False,
     )
 
 
@@ -263,7 +362,12 @@ def inpainting_xform_with_mask(
         if Config.display_verbose:
             display(mask, title=f"Mask")
     return inpainting_xform(
-        examples, task_name, nesting_level, mask=mask, apply_mask_to_input=False, output_is_block=False
+        examples,
+        task_name,
+        nesting_level,
+        mask=mask,
+        apply_mask_to_input=False,
+        output_is_block=False,
     )
 
 
@@ -289,20 +393,14 @@ def inpainting_xform(
     apply_mask_to_input: bool,
     output_is_block: bool,  # whether  block.size == output.size or input.size == output.size
 ) -> Optional[Match[Object, Object]]:
+    """
+    The new logic determines whether the symmetries found in the examples are sufficient to have a go at the test or whether one should give up on an in-painting solution.
 
-    def apply_mask_to_filled_grid(filled_grid, input, mask, color_only_in_input):
-        if mask is not None:
-            if apply_mask_to_input:
-                source = input
-            else:
-                first_output = examples[0][1]
-                source = first_output
-            filled_grid.add_object_in_place(
-                source.apply_mask(mask, background_color=color_only_in_input),
-                background_color=color_only_in_input,
-            )
-        return filled_grid
+    Often the shared symmetry is correct, in which case we'll try the shared symmetry in the test input.
+    This is important on e.g. the puzzle, where the symmetry is only learned after looking at all the examples.
 
+    But if the symmetry in all the test examples, and the shared one, are incorrect, we give up.
+    """
     if mask is not None and output_is_block:
         assert False, "mask and output_is_block are not compatible"
     color = get_inpainting_color(examples, output_is_block)
@@ -310,14 +408,16 @@ def inpainting_xform(
         return None
 
     if output_is_block:
-        output_is_largest_block_object = any(
-            input.size != output.size for input, output in examples
-        ) if mask is None else False
+        output_is_largest_block_object = (
+            any(input.size != output.size for input, output in examples)
+            if mask is None
+            else False
+        )
     else:
         output_is_largest_block_object = False
 
     shared_symmetries = compute_shared_symmetries(
-        examples, mask, color, output_is_largest_block_object
+        examples, mask, color, output_is_largest_block_object, apply_mask_to_input
     )
     if shared_symmetries is None:
         return None
@@ -326,7 +426,7 @@ def inpainting_xform(
         periodic_shared,
         cardinality_shared,
         color_only_in_input,
-    ) = shared_symmetries
+    ), num_correct = shared_symmetries
 
     logger.info(
         f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared} cardinality_shared:{cardinality_shared}"
@@ -343,7 +443,7 @@ def inpainting_xform(
         )
 
         filled_grid = apply_mask_to_filled_grid(
-            filled_grid, input, mask, color_only_in_input
+            examples, filled_grid, input, mask, color_only_in_input, apply_mask_to_input
         )
 
         if output_is_largest_block_object:
@@ -372,7 +472,15 @@ def inpainting_xform(
             logger.info(f"#{i} Found correct solution using shared symmetries")
             pass
         else:
-            break
+            if num_correct == len(examples):
+                # Since the per-example symmetry is correct, we'll try to find the symmetry again in the test input
+                logger.info(f"#{i} Shared symmetries are not correct, but each symmetry is correct")
+                break
+            else:
+                # Symmetry neither correct at the per-example level nor the shared level: give up
+                logger.info(f"#{i} Shared symmetries are not correct")
+                return None
+
     else:
         state = f"symmetry({non_periodic_shared}, {periodic_shared})"
 
@@ -386,7 +494,12 @@ def inpainting_xform(
                 color_only_in_input,
             )
             input_filled = apply_mask_to_filled_grid(
-                input_filled, input, mask, color_only_in_input
+                examples,
+                input_filled,
+                input,
+                mask,
+                color_only_in_input,
+                apply_mask_to_input,
             )
             logger.info(
                 f"Test Shared {non_periodic_shared} {periodic_shared} {cardinality_shared}"
