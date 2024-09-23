@@ -22,24 +22,30 @@ from symmetry import (
 from visual_cortex import regularity_score
 
 
-def is_inpainting_puzzle(examples: List[Example[Object]]) -> bool:
+def is_inpainting_puzzle(examples: List[Example[Object]], output_is_block: bool) -> bool:
     # check the inpainting conditions on all examples
     for input, output in examples:
-        if check_inpainting_conditions(input, output) is None:
+        if check_inpainting_conditions(input, output, output_is_block) is None:
             return False
     return True
 
 
-def check_inpainting_conditions(input: Object, output: Object) -> Optional[int]:
+def check_inpainting_conditions(input: Object, output: Object, output_is_block: bool) -> Optional[int]:
     if input.size != output.size:
-        largest_block_object = get_largest_block_object(input)
-        if largest_block_object is None:
+        if output_is_block:
+            largest_block_object = get_largest_block_object(input)
+            if largest_block_object is None:
+                return None
+            if largest_block_object.size != output.size:
+                return None
+            if largest_block_object.width < 2 or largest_block_object.height < 2:
+                return None
+            return largest_block_object.main_color()
+        else:
             return None
-        if largest_block_object.size != output.size:
+    else:
+        if output_is_block:
             return None
-        if largest_block_object.width < 2 or largest_block_object.height < 2:
-            return None
-        return largest_block_object.main_color()
 
     # check if input has one more color than output
     if len(input.get_colors(allow_black=True)) - 1 != len(
@@ -90,7 +96,7 @@ def mask_from_all_outputs(examples: List[Example[Object]]) -> Optional[Object]:
 
     # Update the mask with each example
     for input, output in examples:
-        color = check_inpainting_conditions(input, output)
+        color = check_inpainting_conditions(input, output, output_is_block=False)
         if color is None:
             return None
         if mask.size != output.size or input.size != output.size:
@@ -102,10 +108,10 @@ def mask_from_all_outputs(examples: List[Example[Object]]) -> Optional[Object]:
 # check that the color only in input is the same for all examples
 
 
-def get_inpainting_color(examples: List[Example[Object]]) -> Optional[int]:
+def get_inpainting_color(examples: List[Example[Object]], output_is_block: bool) -> Optional[int]:
     color_only_in_input = None
     for input, output in examples:
-        color = check_inpainting_conditions(input, output)
+        color = check_inpainting_conditions(input, output, output_is_block)
         if color is None:
             return None
         if color_only_in_input is None:
@@ -228,7 +234,22 @@ def inpainting_xform_no_mask(
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
     return inpainting_xform(
-        examples, task_name, nesting_level, mask=None, apply_mask_to_input=False
+        examples, task_name, nesting_level, mask=None, apply_mask_to_input=False, output_is_block=False
+    )
+
+
+def inpainting_xform_output_is_block(
+    examples: List[Example[Object]],
+    task_name: str,
+    nesting_level: int,
+) -> Optional[Match[Object, Object]]:
+    return inpainting_xform(
+        examples,
+        task_name,
+        nesting_level,
+        mask=None,
+        apply_mask_to_input=False,
+        output_is_block=True,
     )
 
 
@@ -242,7 +263,7 @@ def inpainting_xform_with_mask(
         if Config.display_verbose:
             display(mask, title=f"Mask")
     return inpainting_xform(
-        examples, task_name, nesting_level, mask=mask, apply_mask_to_input=False
+        examples, task_name, nesting_level, mask=mask, apply_mask_to_input=False, output_is_block=False
     )
 
 
@@ -266,6 +287,7 @@ def inpainting_xform(
     nesting_level: int,
     mask: Optional[Object],
     apply_mask_to_input: bool,
+    output_is_block: bool,  # whether  block.size == output.size or input.size == output.size
 ) -> Optional[Match[Object, Object]]:
 
     def apply_mask_to_filled_grid(filled_grid, input, mask, color_only_in_input):
@@ -281,13 +303,18 @@ def inpainting_xform(
             )
         return filled_grid
 
-    color = get_inpainting_color(examples)
+    if mask is not None and output_is_block:
+        assert False, "mask and output_is_block are not compatible"
+    color = get_inpainting_color(examples, output_is_block)
     if color is None:
         return None
 
-    output_is_largest_block_object = any(
-        input.size != output.size for input, output in examples
-    ) if mask is None else False
+    if output_is_block:
+        output_is_largest_block_object = any(
+            input.size != output.size for input, output in examples
+        ) if mask is None else False
+    else:
+        output_is_largest_block_object = False
 
     shared_symmetries = compute_shared_symmetries(
         examples, mask, color, output_is_largest_block_object
