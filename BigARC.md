@@ -80,3 +80,14 @@ After introducing Symmetry masks, the number of expressible patterns has increas
 
 3. **Rule Abandonment**: In this scenario, neither the individual patterns nor their intersection is correct. This is considered an unlikely case, and when it occurs, the rule is abandoned entirely.
 
+This is a discrete description of the three cases, but one can also consider a more continuous description where a likelyhood score is assigned to each case.
+Rule abandonment would translated to: there is low likelyhood that this rule applies.
+Shared pattern would translated to: there is a high likelyhood that this rule applies, and depends on the likelihood of each individual pattern.
+Pattern relearn would translated to: each pattern has some likelyhood of applying, and the final solution is some combination of the likelyhood of all patterns.
+In this continuous description, the three cases are not mutually exclusive, and a likelyhood score can be assigned to each case.
+
+The discrete case can be recovered from the continuout case in the following way:
+- There are only a few predicates, and not likelyhood is associated to them. In other words, considering the set of all predicates, their likelyhood is either 0 or 1.
+- Shared pattern always wins, as long as one can find predicates.
+- Pattern relearn is the second choice when the first one fails.
+- Rule abandonment is the last choice when suitable predicates cannot be found.
