@@ -70,24 +70,39 @@ The pattern relies on Symmetry Masks, which means symmetries are satisfied only 
 
 ---
 
-### Three Distinctions for Managing Patterns
+### Three Approaches for Pattern Management
 
-After introducing Symmetry masks, the number of expressible patterns has increased. As a consequence, some of the previously found solutions were not being found anymore. This required a finer distinction between three specific cases that help address these new challenges.
+The introduction of Symmetry masks has expanded the range of expressible patterns, necessitating a more nuanced approach to pattern recognition and application. We can distinguish three main strategies:
 
-1. **Shared Pattern**: In this case, the correct pattern is learned only after reviewing all the examples. The shared pattern is formed by combining insights from each example, and this unified solution is applied to the test input. This is crucial for puzzles like Sudoku, where looking at all examples together is necessary to identify the correct pattern.
+1. **Shared Pattern**: 
+   - Concept: The correct pattern emerges from analyzing all examples collectively.
+   - Process: Combine insights from each example to form a unified solution.
+   - Application: Apply this shared pattern to the test input.
+   - Example: In puzzles like Sudoku, examining all examples together is crucial to identify the correct pattern.
 
-2. **Pattern Relearn**: Here, each individual pattern is correct for its example, but the shared pattern is not. This implies that patterns differ across examples. When faced with a test input, the pattern must be inferred again from scratch based solely on that input, reinforcing the strategy of relearning the pattern each time.
+2. **Pattern Relearn**: 
+   - Concept: Individual patterns are correct for their respective examples, but no shared pattern exists.
+   - Implication: Patterns vary across examples.
+   - Approach: For each new input, including the test input, infer the pattern from scratch.
+   - Strategy: Emphasizes adaptability and context-specific pattern recognition.
 
-3. **Rule Abandonment**: In this scenario, neither the individual patterns nor their intersection is correct. This is considered an unlikely case, and when it occurs, the rule is abandoned entirely.
+3. **Rule Abandonment**: 
+   - Concept: Neither individual patterns nor their combination yields a correct solution.
+   - Occurrence: Considered rare.
+   - Action: Discard the current rule entirely and seek alternative approaches.
 
-This is a discrete description of the three cases, but one can also consider a more continuous description where a likelyhood score is assigned to each case.
-Rule abandonment would translated to: there is low likelyhood that this rule applies.
-Shared pattern would translated to: there is a high likelyhood that this rule applies, and depends on the likelihood of each individual pattern.
-Pattern relearn would translated to: each pattern has some likelyhood of applying, and the final solution is some combination of the likelyhood of all patterns.
-In this continuous description, the three cases are not mutually exclusive, and a likelyhood score can be assigned to each case.
+While these strategies are distinct, they can be viewed as part of a continuous spectrum rather than mutually exclusive categories. In a more nuanced approach, we can assign likelihood scores to each strategy:
 
-The discrete case can be recovered from the continuout case in the following way:
-- There are only a few predicates, and not likelyhood is associated to them. In other words, considering the set of all predicates, their likelyhood is either 0 or 1.
-- Shared pattern always wins, as long as one can find predicates.
-- Pattern relearn is the second choice when the first one fails.
-- Rule abandonment is the last choice when suitable predicates cannot be found.
+- Rule Abandonment: Low likelihood of rule applicability.
+- Shared Pattern: High likelihood of rule applicability, influenced by the likelihood of individual patterns.
+- Pattern Relearn: Each pattern has a certain likelihood of applying, with the final solution being a combination of these likelihoods.
+
+In this continuous model, multiple strategies can coexist with varying degrees of relevance.
+
+To transition from the continuous model back to the discrete approach:
+
+1. Consider only a limited set of predicates, each with a binary likelihood (0 or 1).
+2. Prioritize strategies in this order:
+   a. Shared Pattern (if predicates are found)
+   b. Pattern Relearn (if Shared Pattern fails)
+   c. Rule Abandonment (as a last resort when suitable predicates are not identified)
