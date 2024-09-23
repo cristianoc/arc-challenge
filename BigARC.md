@@ -66,16 +66,17 @@ This example combines aspects from two subproblems:
 1. The pattern from [InPaintingARC](InPaintingARC.md)
 2. The size of the output from [SizeARC](SizeARC.md)
 
-The pattern relies on Symmetry Masks, which means symmetries are satisfied only by a subset of the input (the mask). The solution from InPaintingARC is not sufficient as it relies on at least one symmetry to hold without a mask (e.g., to find the center of symmetry). Here, some extension is required where the symmetry masks as well as the center of symmetry are determined at the same time.
+The pattern relies on Symmetry Masks, which means symmetries are satisfied only by a subset of the input (the mask). The solution from InPaintingARC is not sufficient as it relies on at least one symmetry to hold without a mask (e.g., to find the center of symmetry). Here, some extension is required to simultaneously determine both the symmetry masks and the center of symmetry.
 
 ---
 
 ### Three Distinctions for Managing Patterns
 
-After introducing Symmetry masks, the number of expressible patterns has increased. As a consequence, some of the previously found solutions were not being found anymore. This required a finer distinction between three specific cases, which help address these new challenges.
+After introducing Symmetry masks, the number of expressible patterns has increased. As a consequence, some of the previously found solutions were not being found anymore. This required a finer distinction between three specific cases that help address these new challenges.
 
 1. **Shared Pattern**: In this case, the correct pattern is learned only after reviewing all the examples. The shared pattern is formed by combining insights from each example, and this unified solution is applied to the test input. This is crucial for puzzles like Sudoku, where looking at all examples together is necessary to identify the correct pattern.
 
 2. **Pattern Relearn**: Here, each individual pattern is correct for its example, but the shared pattern is not. This implies that patterns differ across examples. When faced with a test input, the pattern must be inferred again from scratch based solely on that input, reinforcing the strategy of relearning the pattern each time.
 
 3. **Rule Abandonment**: In this scenario, neither the individual patterns nor their intersection is correct. This is considered an unlikely case, and when it occurs, the rule is abandoned entirely.
+
