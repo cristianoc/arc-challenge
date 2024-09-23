@@ -25,7 +25,7 @@ from visual_cortex import regularity_score
 def is_inpainting_puzzle(
     examples: List[Example[Object]], output_is_block: bool
 ) -> bool:
-    # check the inpainting conditions on all examples
+    # Check if all examples satisfy inpainting conditions. Returns False if any example does not.
     for input, output in examples:
         if check_inpainting_conditions(input, output, output_is_block) is None:
             return False
@@ -35,6 +35,7 @@ def is_inpainting_puzzle(
 def check_inpainting_conditions(
     input: Object, output: Object, output_is_block: bool
 ) -> Optional[int]:
+    # Validate input-output size, color match, and overall similarity with allowed discrepancies.
     if input.size != output.size:
         if output_is_block:
             largest_block_object = get_largest_block_object(input)
@@ -51,7 +52,7 @@ def check_inpainting_conditions(
         if output_is_block:
             return None
 
-    # check if input has one more color than output
+    # Check if input has one more color than output
     if len(input.get_colors(allow_black=True)) - 1 != len(
         output.get_colors(allow_black=True)
     ):
@@ -63,7 +64,7 @@ def check_inpainting_conditions(
         return None
     color = colors_only_in_input.pop()
 
-    # check if input and output are the same except for the color
+    # Check if input and output are the same except for the color
     for x in range(input.width):
         for y in range(input.height):
             if input[x, y] == color:
@@ -71,7 +72,7 @@ def check_inpainting_conditions(
             if input[x, y] != output[x, y]:
                 return None
 
-    # check if output has high regularity score
+    # Check if output has high regularity score
     if regularity_score(output) >= Config.inpainting_regularity_score_threshold:
         return None
 
@@ -80,7 +81,7 @@ def check_inpainting_conditions(
 
 def update_mask(input: Object, output: Object, mask: Object) -> None:
     """
-    Update the mask grid with 0s where the current object and the other object differ.
+    Update the mask grid in-place with 0s where input and output objects differ.
     """
     for x in range(output.width):
         for y in range(output.height):
@@ -91,6 +92,7 @@ def update_mask(input: Object, output: Object, mask: Object) -> None:
 def mask_from_all_outputs(examples: List[Example[Object]]) -> Optional[Object]:
     """
     Find the mask for a set of examples where all examples have the same size.
+    Returns None if any example doesn't satisfy inpainting conditions or has mismatched sizes.
     """
     if not examples:
         return None
@@ -107,9 +109,6 @@ def mask_from_all_outputs(examples: List[Example[Object]]) -> Optional[Object]:
             return None
         update_mask(first_output, output, mask)
     return mask
-
-
-# check that the color only in input is the same for all examples
 
 
 def get_inpainting_color(
@@ -146,7 +145,8 @@ def apply_mask_to_filled_grid(
     apply_mask_to_input: bool,
 ):
     """
-    Apply the mask to the filled grid, using either the input or the first output as the source.
+    Apply the mask to the filled grid, using input or the first output as the source.
+    If mask is not None, mask out areas where input and output differ.
     """
     if mask is not None:
         if apply_mask_to_input:
@@ -171,7 +171,7 @@ def check_correctness(
     apply_mask_to_input: bool,
 ) -> bool:
     """
-    Check if the filled grid matches the output, considering the shared symmetries and mask.
+    Validate whether the filled grid, after applying shared symmetries and mask, matches the output.
     """
     (
         non_periodic_shared,
@@ -206,7 +206,7 @@ def compute_shared_symmetries(
     apply_mask_to_input: bool,
 ) -> Optional[Tuple[SharedSymmetries, int]]:
     """
-    Compute the shared symmetries across all examples and return the number of correct examples.
+    Compute shared symmetries (non-periodic, periodic, cardinality) across all examples and count how many examples match.
     """
     num_correct = 0
     non_periodic_shared = None
@@ -391,7 +391,7 @@ def inpainting_xform(
     nesting_level: int,
     mask: Optional[Object],
     apply_mask_to_input: bool,
-    output_is_block: bool,  # whether  block.size == output.size or input.size == output.size
+    output_is_block: bool,  # whether block.size == output.size or input.size == output.size
 ) -> Optional[Match[Object, Object]]:
     """
     The new logic determines whether the symmetries found in the examples are sufficient to have a go at the test or whether one should give up on an in-painting solution.
@@ -476,7 +476,9 @@ def inpainting_xform(
             use_shared_symmetries_in_test = False
             if num_correct == len(examples):
                 # Since the per-example symmetry is correct, we'll try to find the symmetry again in the test input
-                logger.info(f"#{i} Shared symmetries are not correct, but each symmetry is correct")
+                logger.info(
+                    f"#{i} Shared symmetries are not correct, but each symmetry is correct"
+                )
                 break
             else:
                 # Symmetry neither correct at the per-example level nor the shared level: give up
@@ -517,6 +519,7 @@ def inpainting_xform(
         return (state, solve_shared)
 
     else:
+
         def solve_find_symmetry(input: Object) -> Optional[Object]:
             if Config.find_periodic_symmetry:
                 periodic_symmetry_input = find_periodic_symmetry_predicates(
