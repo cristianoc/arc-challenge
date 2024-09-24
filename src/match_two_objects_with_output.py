@@ -16,7 +16,7 @@ def match_two_objects_with_output(
         f"{'  ' * nesting_level}match_two_objects_with_output examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
     )
     for input, output in examples:
-        background_color = 0  # TODO
+        background_color = input.main_color(allow_black=True)
         objects = input.detect_objects(
             diagonals=True, background_color=background_color, multicolor=True
         )
@@ -24,19 +24,21 @@ def match_two_objects_with_output(
             return None
         largest_object = max(objects, key=lambda o: o.area)
         other_objects = [o for o in objects if o != largest_object]
-        if len(other_objects) != 1:
+        if len(other_objects) < 1:
             return None
-        other_object = other_objects[0]
 
         if largest_object.size == input.size:
             return None
-        if output.size != largest_object.size and output.size != other_object.size:
+        if all(output.size != o.size for o in objects):
             return None
 
-        config.display_this_task = True
-        
+        if len(objects) <= 2:
+            return None
+
         # display_multiple(
         #     [largest_object, other_object, output], title=f"objects:{len(objects)}"
         # )
+
+    config.display_this_task = True
 
     return None
