@@ -84,15 +84,6 @@ def get_colored_objects(input: Object) -> List[Object]:
     return input_objects
 
 
-def match_colored_objects_to_object_by_painting(
-    examples: Examples[GridAndObjects, List[Object]],
-    task_name: str,
-    nesting_level: int,
-):
-    return match_object_list_to_object_by_painting(
-        examples, get_colored_objects, task_name, nesting_level
-    )
-
 
 def match_object_list_with_decision_rule(
     examples: List[Tuple[List[Object], Object]],
