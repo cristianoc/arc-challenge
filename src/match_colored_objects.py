@@ -6,12 +6,14 @@ from logger import logger
 from match_object_list_to_object import (
     get_colored_objects,
     match_object_list_to_object_by_painting,
-    object_list_to_object_xforms,
+    match_colored_objects_to_object_by_painting,
 )
 from objects import Object, display_multiple
 
 
-def check_matching_colored_objects_count_and_color(examples: Examples[Object, Object]) -> bool:
+def check_matching_colored_objects_count_and_color(
+    examples: Examples[Object, Object]
+) -> bool:
     for input, output in examples:
         input_objects = input.detect_colored_objects(background_color=0)
         output_objects = output.detect_colored_objects(background_color=0)
@@ -45,7 +47,7 @@ def match_colored_objects(
 
     # each example has the same number of input and output objects
     # so we can turn those lists into and ObjectListExample
-    object_list_examples: Examples[GridAndObjects, GridAndObjects] = []
+    object_list_examples: Examples[GridAndObjects, List[Object]] = []
 
     def get_grid_and_objects(input: Object) -> GridAndObjects:
         input_objects = get_colored_objects(input)
@@ -73,16 +75,21 @@ def match_colored_objects(
                 title=f"Colored Objects [Exam]",
             )
 
-        object_list_example: Example[GridAndObjects, GridAndObjects] = (
+        object_list_example = (
             input_grid_and_objects,
-            output_grid_and_objects,
+            output_grid_and_objects[1],
         )
         object_list_examples.append(object_list_example)
 
-    for xform in object_list_to_object_xforms:
-        match = xform.xform(object_list_examples, task_name, nesting_level+1)
-        if match is None:
-            continue
-        return match
+    match = match_colored_objects_to_object_by_painting(
+        object_list_examples, task_name, nesting_level + 1
+    )
+    if match is None:
+        return None
+    state, solve = match
 
-    return None
+    def solve2(input: Object) -> Optional[Object]:
+        return solve(input)
+
+    state2 = f"match_colored_objects:{state}"
+    return (state2, solve2)

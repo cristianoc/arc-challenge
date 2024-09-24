@@ -11,12 +11,12 @@ from matched_objects import (
 )
 from objects import Object, display, display_multiple
 
-object_list_xforms: List[XformEntry[GridAndObjects, GridAndObjects]] = [
+object_list_xforms: List[XformEntry[GridAndObjects, List[Object]]] = [
     XformEntry(match_object_list, 4),
 ]
 
 def match_object_list_to_object_by_painting(
-    examples: Examples[GridAndObjects, GridAndObjects],
+    examples: Examples[GridAndObjects, List[Object]],
     get_objects: Callable[[Object], List[Object]],
     task_name: str,
     nesting_level: int,
@@ -34,7 +34,7 @@ def match_object_list_to_object_by_painting(
         Optional[Match[Object]]: A tuple containing the transformation name and a solver function if a match is found, otherwise None.
     """
     for list_xform in object_list_xforms:
-        match: Optional[Match[GridAndObjects, GridAndObjects]] = list_xform.xform(
+        match: Optional[Match[GridAndObjects, List[Object]]] = list_xform.xform(
             examples, task_name, nesting_level + 1
         )
         if match is not None:
@@ -46,7 +46,7 @@ def match_object_list_to_object_by_painting(
                 result = apply_state_list_xform(grid_and_objects)
                 if result is None:
                     return None
-                s, output_objects = result
+                output_objects = result
                 output_grid = None
                 if False:
                     display_multiple(
@@ -85,13 +85,14 @@ def get_colored_objects(input: Object) -> List[Object]:
 
 
 def match_colored_objects_to_object_by_painting(
-    examples: Examples[GridAndObjects, GridAndObjects],
+    examples: Examples[GridAndObjects, List[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[Object, Object]]:
+):
     return match_object_list_to_object_by_painting(
         examples, get_colored_objects, task_name, nesting_level
     )
+
 
 def match_object_list_with_decision_rule(
     examples: List[Tuple[List[Object], Object]],
@@ -146,8 +147,3 @@ def match_object_list_with_decision_rule(
         return None
 
     return (state, solve)
-
-
-object_list_to_object_xforms: List[XformEntry[GridAndObjects, Object]] = [
-    XformEntry(match_colored_objects_to_object_by_painting, 4),
-]

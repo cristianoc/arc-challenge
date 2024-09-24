@@ -7,11 +7,13 @@ from logger import logger
 from objects import Object, display, display_multiple
 
 
-def check_fractal_expansion_sizes(examples: Examples[GridAndObjects, GridAndObjects]):
+def check_fractal_expansion_sizes(
+    examples: Examples[GridAndObjects, List[Object]],
+) -> bool:
     """
     Check if every input is NxN and the output's size is N^2xN^2
     """
-    for (input_grid, input_objects), (output_grid, output_objects) in examples:
+    for (input_grid, input_objects), output_objects in examples:
         if len(input_objects) == 0 or len(output_objects) == 0:
             return False
     for input_obj, output_obj in zip(input_objects, output_objects):
@@ -127,5 +129,3 @@ def stretch_height(
 
     match = (state, solve)
     return match
-
-
