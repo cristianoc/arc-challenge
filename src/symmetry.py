@@ -3,6 +3,7 @@ from math import lcm
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 import numpy as np
+import tensorflow as tf
 
 from cardinality_predicates import (
     CardinalityPredicate,
@@ -303,6 +304,8 @@ class SymmetryResult:
     mask: Optional["Object"]  # Assuming Object represents a grid/mask
 
 
+repeat_count = 1000
+
 def find_non_periodic_symmetry_predicates(
     grid: Object,
     unknown: int,
@@ -319,29 +322,29 @@ def find_non_periodic_symmetry_predicates(
     # Initialize the result dictionary
     symmetry_results: Dict[Symmetry, SymmetryResult] = {}
 
+    grid_data = tf.convert_to_tensor(grid._data)
+
     for symmetry in Symmetry:
-        best_offset = (0, 0)
-        best_score = 0.0
-        best_mask = None
+        dx_range = tf.range(-max_distance, max_distance + 1)
+        dy_range = tf.range(-max_distance, max_distance + 1)
+        dx, dy = tf.meshgrid(dx_range, dy_range, indexing='ij')
+        offsets = tf.stack([tf.reshape(dx, [-1]), tf.reshape(dy, [-1])], axis=1)
 
-        # Iterate over all possible offsets within the max_distance
-        for dx in range(-max_distance, max_distance + 1):
-            for dy in range(-max_distance, max_distance + 1):
-                # Compute the score for the current symmetry with the given offset
-                match_count, total_pairs = compute_symmetry_score(
-                    grid, symmetry, (dx, dy), unknown
-                )
-                score = match_count / total_pairs if total_pairs > 0 else 0.0
+        # Compute the score for all offsets in parallel
+        match_counts, total_pairs = compute_symmetry_score(grid, symmetry, offsets, unknown)
 
-                # Update the best offset if the current score is higher
-                if score > best_score:
-                    best_score = score
-                    best_offset = (dx, dy)
+        scores = tf.where(total_pairs > 0, match_counts / total_pairs, 0.0)
+
+        # Find the best score and corresponding offset
+        best_index = tf.argmax(scores)
+        best_score = scores[best_index].numpy()
+        best_offset = (offsets[best_index, 0].numpy(), offsets[best_index, 1].numpy())
 
         # Determine if the best score exceeds the threshold for partial symmetry
         if best_score >= min_mask_weight:
             # Generate the mask based on the best offset
-            mask = compute_symmetry_mask(grid, symmetry, best_offset, unknown)
+            for _ in range(repeat_count):
+                mask = compute_symmetry_mask(grid_data, symmetry, best_offset, unknown)
             detected = True
         else:
             mask = None
@@ -432,13 +435,17 @@ def find_non_periodic_symmetry_predicates(
             raise ValueError(f"Unknown symmetry type: {symmetry}")
         if result.score < 1:
             if symmetry == Symmetry.HORIZONTAL:
-                hxm = result.mask
+                # convert tensor to numpy array and then to Object
+                hxm = Object(result.mask.numpy())
             elif symmetry == Symmetry.VERTICAL:
-                vym = result.mask
+                # convert tensor to numpy array and then to Object
+                vym = Object(result.mask.numpy())
             elif symmetry == Symmetry.DIAGONAL:
-                dgm = result.mask
+                # convert tensor to numpy array and then to Object
+                dgm = Object(result.mask.numpy())
             elif symmetry == Symmetry.ANTI_DIAGONAL:
-                agm = result.mask
+                # convert tensor to numpy array and then to Object
+                agm = Object(result.mask.numpy())
 
     return NonPeriodicGridSymmetry(
         hx=hx,
@@ -454,61 +461,83 @@ def find_non_periodic_symmetry_predicates(
 
 
 def compute_symmetry_score(
-    grid: "Object", symmetry: Symmetry, offset: Tuple[int, int], unknown: int
-) -> Tuple[int, int]:
+    grid: "Object", symmetry: Symmetry, offsets: tf.Tensor, unknown: int
+) -> Tuple[tf.Tensor, tf.Tensor]:
     """
     Computes the number of matching cell pairs and the total number of relevant pairs
-    for a given symmetry and offset.
+    for a given symmetry and a batch of offsets.
 
     Returns:
-        A tuple of (match_count, total_pairs)
+        A tuple of (match_counts, total_pairs) for each offset
     """
     width, height = grid.size
-    dx, dy = offset
+    grid_data = tf.convert_to_tensor(grid._data)
+    
+    batch_size = tf.shape(offsets)[0]
 
-    # Get the NumPy array data
-    grid_data = grid._data
-
-    # Create coordinate grids
-    x_coords, y_coords = np.meshgrid(np.arange(width), np.arange(height), indexing="ij")
+    # Create coordinate grids matching the shape of grid_data
+    x_coords, y_coords = tf.meshgrid(tf.range(width), tf.range(height), indexing="xy")
+    x_coords = tf.cast(x_coords, tf.int32)  # Shape: [height, width]
+    y_coords = tf.cast(y_coords, tf.int32)  # Shape: [height, width]
 
     # Apply symmetry transformation
     x_trans_, y_trans_ = apply_symmetry_vectorized(
         x_coords, y_coords, symmetry, width, height
     )
+    x_trans_ = tf.cast(x_trans_, tf.int32)
+    y_trans_ = tf.cast(y_trans_, tf.int32)
+
+    # Expand dims to add batch dimension
+    x_trans_ = tf.expand_dims(x_trans_, axis=0)  # Shape: [1, height, width]
+    y_trans_ = tf.expand_dims(y_trans_, axis=0)  # Shape: [1, height, width]
 
     # Apply offsets
-    x_trans = x_trans_ + dx
-    y_trans = y_trans_ + dy
+    offsets_x = offsets[:, tf.newaxis, tf.newaxis, 0]  # Shape: [batch_size, 1, 1]
+    offsets_y = offsets[:, tf.newaxis, tf.newaxis, 1]  # Shape: [batch_size, 1, 1]
+
+    x_trans = x_trans_ + offsets_x  # Shape: [batch_size, height, width]
+    y_trans = y_trans_ + offsets_y  # Shape: [batch_size, height, width]
 
     # Check bounds
     valid_mask = (
         (x_trans >= 0) & (x_trans < width) & (y_trans >= 0) & (y_trans < height)
-    )
- 
-    cell_original = grid_data[y_coords[valid_mask], x_coords[valid_mask]]
+    )  # Shape: [batch_size, height, width]
 
-    # Ensure transformed indices are within bounds
-    x_trans_valid = x_trans[valid_mask]
-    y_trans_valid = y_trans[valid_mask]
+    # Get indices where valid_mask is True
+    batch_indices = tf.where(valid_mask)  # Shape: [num_valid, 3]
 
-    # Now it's safe to index
-    cell_transformed = grid_data[y_trans_valid, x_trans_valid]
+    # Extract corresponding x_trans and y_trans values
+    x_trans_valid = tf.gather_nd(x_trans, batch_indices)  # Shape: [num_valid]
+    y_trans_valid = tf.gather_nd(y_trans, batch_indices)  # Shape: [num_valid]
+
+    # Get original cell values
+    y_idx = batch_indices[:, 1]
+    x_idx = batch_indices[:, 2]
+    cell_original = tf.gather_nd(grid_data, tf.stack([y_idx, x_idx], axis=-1))  # Shape: [num_valid]
+
+    # Get transformed cell values
+    cell_transformed = tf.gather_nd(grid_data, tf.stack([y_trans_valid, x_trans_valid], axis=-1))  # Shape: [num_valid]
 
     # Create unknown masks
     unknown_mask = (cell_original == unknown) | (cell_transformed == unknown)
 
     # Compute match count
     matches = (cell_original == cell_transformed) | unknown_mask
-    match_count = np.sum(matches)
-    total_pairs = matches.size
 
-    return match_count, total_pairs
+    # Get batch indices
+    batch_idx = batch_indices[:, 0]
+
+    # Compute per-batch match counts
+    matches_int = tf.cast(matches, tf.int32)
+    match_counts = tf.math.unsorted_segment_sum(matches_int, batch_idx, num_segments=batch_size)
+    total_pairs = tf.math.unsorted_segment_sum(tf.ones_like(matches_int, dtype=tf.int32), batch_idx, num_segments=batch_size)
+
+    return match_counts, total_pairs
 
 
 def apply_symmetry_vectorized(
-    x: np.ndarray, y: np.ndarray, symmetry: Symmetry, width: int, height: int
-) -> Tuple[np.ndarray, np.ndarray]:
+    x: tf.Tensor, y: tf.Tensor, symmetry: Symmetry, width: int, height: int
+) -> Tuple[tf.Tensor, tf.Tensor]:
     if symmetry == Symmetry.HORIZONTAL:
         return width - 1 - x, y
     elif symmetry == Symmetry.VERTICAL:
@@ -543,55 +572,55 @@ def apply_symmetry(
 
 
 def compute_symmetry_mask(
-    grid: "Object", symmetry: Symmetry, offset: Tuple[int, int], unknown: int
-) -> Optional["Object"]:
+    grid_data: tf.Tensor, symmetry: Symmetry, offset: Tuple[int, int], unknown: int
+) -> Optional[tf.Tensor]:
     """
     Generates a mask indicating where the symmetry holds based on the optimal offset.
 
     Returns:
-        A mask object where matching cells are marked (e.g., with 1) and non-matching cells are unmarked (e.g., with 0).
+        A mask tensor where matching cells are marked (e.g., with 1) and non-matching cells are unmarked (e.g., with 0).
         Returns None if no mask is applicable.
     """
-    width, height = grid.size
+    width, height = grid_data.shape
     dx, dy = offset
-    mask = grid.empty(
-        size=grid.size
-    )  # Assuming grid.empty() creates an empty mask with the same size
 
-    match_count = 0
-    total_pairs = 0
+    # Create coordinate grids
+    x_coords, y_coords = tf.meshgrid(tf.range(width), tf.range(height), indexing="ij")
 
-    for x in range(width):
-        for y in range(height):
-            # Compute the transformed coordinates based on the symmetry
-            x_trans, y_trans = apply_symmetry(x, y, symmetry, width, height)
+    # Apply symmetry transformation
+    x_trans_, y_trans_ = apply_symmetry_vectorized(x_coords, y_coords, symmetry, width, height)
 
-            # Apply the offset
-            x_trans += dx
-            y_trans += dy
+    # Apply offsets
+    x_trans = x_trans_ + dx
+    y_trans = y_trans_ + dy
 
-            # Check if the transformed coordinates are within bounds
-            if 0 <= x_trans < width and 0 <= y_trans < height:
-                cell_original = grid[x, y]
-                cell_transformed = grid[x_trans, y_trans]
-                if (
-                    cell_original == cell_transformed
-                    or cell_original == unknown
-                    or cell_transformed == unknown
-                ):
-                    mask[x, y] = 1  # Mark as matching
-                    match_count += 1
-                else:
-                    mask[x, y] = 0  # Mark as non-matching
-                total_pairs += 1
-            else:
-                mask[x, y] = 0  # Out of bounds is non-matching
-                total_pairs += 1
+    # Check bounds
+    valid_mask = (x_trans >= 0) & (x_trans < width) & (y_trans >= 0) & (y_trans < height)
+
+    # Filter valid indices
+    x_valid = tf.boolean_mask(x_coords, valid_mask)
+    y_valid = tf.boolean_mask(y_coords, valid_mask)
+    x_trans_valid = tf.boolean_mask(x_trans, valid_mask)
+    y_trans_valid = tf.boolean_mask(y_trans, valid_mask)
+
+    # Gather original and transformed cells
+    cell_original = tf.gather_nd(grid_data, tf.stack([y_valid, x_valid], axis=-1))
+    cell_transformed = tf.gather_nd(grid_data, tf.stack([y_trans_valid, x_trans_valid], axis=-1))
+
+    # Create unknown masks
+    unknown_mask = (cell_original == unknown) | (cell_transformed == unknown)
+
+    # Compute matches
+    matches = (cell_original == cell_transformed) | unknown_mask
+
+    # Create the mask tensor
+    mask_tensor = tf.scatter_nd(tf.stack([y_valid, x_valid], axis=-1), tf.cast(matches, tf.int32), [height, width])
 
     # Optionally, additional processing can be done on the mask
-    return (
-        mask if match_count / total_pairs >= 0.5 else None
-    )  # Reconfirming the threshold
+    match_count = tf.reduce_sum(tf.cast(matches, tf.int32)).numpy()
+    total_pairs = tf.size(matches).numpy()
+
+    return mask_tensor if match_count / total_pairs >= 0.5 else None  # Reconfirming the threshold
 
 
 def find_source_value(

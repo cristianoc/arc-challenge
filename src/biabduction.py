@@ -21,6 +21,13 @@ from primitives import primitive_to_xform, translate_down_1, xform_identity
 from split_mirrot_match import frame_split_and_mirror_xform
 
 
+import tensorflow as tf
+# turn off gpu
+#tf.config.set_visible_devices([], "GPU")
+print("Available GPUs:", tf.config.list_physical_devices("GPU"))
+
+
+
 def filter_simple_xforms(task: Task, task_name: str):
     examples = task.train
     for example in examples:
