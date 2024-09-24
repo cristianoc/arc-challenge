@@ -17,6 +17,9 @@ task_name: str | None = None
 
 # task_name = "1e97544e.json"
 
+# task_name = "6ecd11f4.json"
+
+
 task_fractal = "8f2ea7aa.json"  # fractal expansion
 task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
 
@@ -54,7 +57,7 @@ max_size = 9
 max_colors = 4
 
 only_complex_examples = False
-min_size = 23
+min_size = 21
 min_colors = 9
 
 find_xform = True
