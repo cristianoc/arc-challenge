@@ -6,7 +6,6 @@ from logger import logger
 from match_object_list_to_object import (
     get_colored_objects,
     match_object_list_to_object_by_painting,
-    match_colored_objects_to_object_by_painting,
 )
 from objects import Object, display_multiple
 
@@ -81,8 +80,8 @@ def match_colored_objects(
         )
         object_list_examples.append(object_list_example)
 
-    match = match_colored_objects_to_object_by_painting(
-        object_list_examples, task_name, nesting_level + 1
+    match = match_object_list_to_object_by_painting(
+        object_list_examples, get_colored_objects, task_name, nesting_level + 1
     )
     if match is None:
         return None
