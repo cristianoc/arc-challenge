@@ -2,8 +2,12 @@ from typing import List, Optional
 
 import config
 from bi_types import Examples, XformEntry
+from canvas_grid_match import canvas_grid_xform, equal_modulo_rigid_transformation
 from find_xform import find_xform
 from inpainting_match import (
+    inpainting_xform_no_mask,
+    inpainting_xform_output_is_block,
+    inpainting_xform_with_mask,
     is_inpainting_puzzle,
 )
 from load_data import Task, Tasks, evaluation_data, training_data
@@ -15,8 +19,6 @@ from match_subgrids_in_lattice import match_subgrids_in_lattice
 from objects import Object, display_multiple
 from primitives import primitive_to_xform, translate_down_1, xform_identity
 from split_mirrot_match import frame_split_and_mirror_xform
-from canvas_grid_match import equal_modulo_rigid_transformation, canvas_grid_xform
-from inpainting_match import inpainting_xform_no_mask, inpainting_xform_output_is_block, inpainting_xform_with_mask
 
 
 def filter_simple_xforms(task: Task, task_name: str):

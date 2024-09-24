@@ -4,7 +4,7 @@ import numpy as np
 
 from bi_types import Examples
 from grid_types import BLACK, GREY
-from load_data import Task, Tasks, training_data, evaluation_data
+from load_data import Task, Tasks, evaluation_data, training_data
 from logger import logger
 from objects import Object, display_multiple
 from predict_size import (

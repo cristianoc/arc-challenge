@@ -1,10 +1,10 @@
 import json
 import os
 from typing import Any, Dict, Generic, List, Tuple, TypeVar
-from bi_types import Examples
 
 import numpy as np
 
+from bi_types import Examples
 from objects import Object
 
 

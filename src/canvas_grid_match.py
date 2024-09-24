@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-from bi_types import Match, Examples
+from bi_types import Examples, Match
 from grid_types import ClockwiseRotation, RigidTransformation, XReflection
 from logger import logger
 from objects import Object, display, display_multiple

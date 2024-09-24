@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List, Optional, Tuple
 import numpy as np
 
 import config
-from bi_types import Match, Examples
+from bi_types import Examples, Match
 from cardinality_predicates import (
     CardinalityPredicate,
     find_cardinality_predicates,
