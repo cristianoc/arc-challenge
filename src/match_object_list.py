@@ -11,7 +11,7 @@ map_xforms: List[XformEntry[Object, Object]] = [XformEntry(stretch_height, 1)]
 
 
 def check_list_of_objects_subset(
-    examples: Examples[GridAndObjects, GridAndObjects],
+    examples: Examples[GridAndObjects, List[Object]],
 ) -> Optional[List[Tuple[int, int]]]:
     """
     Check if the output objects are a subset of the input objects based on their colors.
@@ -19,7 +19,7 @@ def check_list_of_objects_subset(
     The same list must apply to all examples.
     """
     input_to_output_indices_list = []
-    for (_, input_objects), (_, output_objects) in examples:
+    for (_, input_objects), output_objects in examples:
         if len(input_objects) < 2:
             return None
         input_to_output_indices = out_objects_are_a_subset(
@@ -40,20 +40,20 @@ def check_list_of_objects_subset(
 
 
 def map_first_input_to_output_grid(
-    examples: Examples[GridAndObjects, GridAndObjects],
+    examples: Examples[GridAndObjects, List[Object]],
 ) -> Examples[Object, Object]:
     input_output_objects_examples: Examples[Object, Object] = []
-    for (input_grid, input_objects), (output_grid, output_objects) in examples:
-        input_output_objects_examples.append((input_objects[0], output_grid))
+    for (input_grid, input_objects), output_objects in examples:
+        input_output_objects_examples.append((input_objects[0], output_objects[0]))
 
     return input_output_objects_examples
 
 
 def match_object_list(
-    examples: Examples[GridAndObjects, GridAndObjects],
+    examples: Examples[GridAndObjects, List[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[GridAndObjects, GridAndObjects]]:
+) -> Optional[Match[GridAndObjects, List[Object]]]:
     logger.info(
         f"{'  ' * nesting_level}match_list_of_objects examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
     )
@@ -73,13 +73,13 @@ def match_object_list(
 
             def solve_grid_and_objects(
                 grid_and_objects: GridAndObjects,
-            ) -> Optional[GridAndObjects]:
+            ) -> Optional[List[Object]]:
                 grid, objects = grid_and_objects
                 solved_objects_ = [solve(obj) for obj in objects]
                 solved_objects = [obj for obj in solved_objects_ if obj is not None]
                 if len(solved_objects) != len(objects):
                     return None
-                return (grid, solved_objects)
+                return solved_objects
 
             return state, solve_grid_and_objects
 
@@ -93,7 +93,7 @@ def match_object_list(
         new_examples_train: List[Examples[Object, Object]] = [
             [] for _ in input_to_output_indices
         ]
-        for (_, e_inputs), (_, e_outputs) in examples:
+        for (_, e_inputs), e_outputs in examples:
             for i, (input_index, output_index) in enumerate(input_to_output_indices):
                 new_examples_train[i].append(
                     (e_inputs[input_index], e_outputs[output_index])
@@ -124,7 +124,7 @@ def match_object_list(
 
         def solve_grid_and_objects(
             grid_and_objects: GridAndObjects,
-        ) -> Optional[GridAndObjects]:
+        ) -> Optional[List[Object]]:
             input_grid, input_objects = grid_and_objects
             outputs = []
             assert input_to_output_indices is not None
@@ -134,7 +134,7 @@ def match_object_list(
                 if output is None:
                     return None
                 outputs.append(output)
-            return (input_grid, outputs)
+            return outputs
 
         return new_state, solve_grid_and_objects
 

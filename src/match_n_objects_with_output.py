@@ -1,10 +1,43 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
-from bi_types import Examples, Match, Object
+from bi_types import Examples, Match, Object, Xform, XformEntry
 from logger import logger
 from objects import display_multiple, display
-from visual_cortex import find_rectangular_objects
 import config
+
+
+def match_smallest_object(
+    examples: Examples[List[Object], int], task_name: str, nesting_level: int
+) -> Optional[Match[List[Object], int]]:
+    def get_smallest_index(inputs: List[Object]) -> int:
+        smallest_index, _ = min(
+            [(i, o) for i, o in enumerate(inputs)],
+            key=lambda x: x[1].size,
+        )
+        return smallest_index
+
+    for inputs, index in examples:
+        smallest_index = get_smallest_index(inputs)
+        if smallest_index != index:
+            return None
+
+    state = "match_smallest_object"
+
+    def solve(inputs: List[Object]) -> Optional[int]:
+        return get_smallest_index(inputs)
+
+    match : Match[List[Object], int] = (state, solve)
+    return match
+
+q :Xform[List[Object], int] = match_smallest_object
+
+# Xform = Callable[[Examples[T1, T2], str, int], Optional[Match[T2, T2]]]
+
+
+# xform to select the index of the object that matches the output
+# select_object_xforms: List[XformEntry[List[Object], int]] = [
+#     XformEntry(match_smallest_object, 3)
+# ]
 
 
 def match_n_objects_with_output(
@@ -32,7 +65,9 @@ def match_n_objects_with_output(
             return None
         output_index = output_indices[0]
 
-        logger.info(f"{'  ' * nesting_level} num objects:{n} output index:{output_index}")
+        logger.info(
+            f"{'  ' * nesting_level} num objects:{n} output index:{output_index}"
+        )
     config.display_this_task = True
 
     return None

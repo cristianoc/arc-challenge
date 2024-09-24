@@ -15,6 +15,8 @@ from match_subgrids_in_lattice import match_subgrids_in_lattice
 from objects import Object, display_multiple
 from primitives import primitive_to_xform, translate_down_1, xform_identity
 from split_mirrot_match import frame_split_and_mirror_xform
+from canvas_grid_match import equal_modulo_rigid_transformation, canvas_grid_xform
+from inpainting_match import inpainting_xform_no_mask, inpainting_xform_output_is_block, inpainting_xform_with_mask
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -49,25 +51,25 @@ def filter_complex_xforms(task: Task, task_name: str):
 
 gridxforms: List[XformEntry[Object, Object]] = (
     [
-        # XformEntry(match_subgrids_in_lattice, 3),
-        # XformEntry(match_colored_objects, 3),
-        # XformEntry(xform_identity, 1),
-        # XformEntry(equal_modulo_rigid_transformation, 2),
-        # XformEntry(primitive_to_xform(translate_down_1), 2),
-        # XformEntry(canvas_grid_xform, 2),
-        # XformEntry(match_rectangular_objects_in_grid, 3),
-        # XformEntry(inpainting_xform_no_mask, 2),
-        # XformEntry(inpainting_xform_output_is_block, 2),
+        XformEntry(match_subgrids_in_lattice, 3),
+        XformEntry(match_colored_objects, 3),
+        XformEntry(xform_identity, 1),
+        XformEntry(equal_modulo_rigid_transformation, 2),
+        XformEntry(primitive_to_xform(translate_down_1), 2),
+        XformEntry(canvas_grid_xform, 2),
+        XformEntry(match_rectangular_objects_in_grid, 3),
+        XformEntry(inpainting_xform_no_mask, 2),
+        XformEntry(inpainting_xform_output_is_block, 2),
         XformEntry(match_n_objects_with_output, 3),
     ]
-    # + []
-    # + (
-    #     [
-    #         XformEntry(inpainting_xform_with_mask, 2),
-    #     ]
-    #     if config.find_frame_rule
-    #     else []
-    # )
+    + []
+    + (
+        [
+            XformEntry(inpainting_xform_with_mask, 2),
+        ]
+        if config.find_frame_rule
+        else []
+    )
 )
 
 
