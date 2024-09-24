@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Callable, Generic, List, Optional, Tuple, TypeVar, Union
 
-from load_data import Example
 from objects import Object
 
 GridAndObjects = Tuple[Object, List[Object]]
@@ -12,9 +11,11 @@ T2 = TypeVar("T2", bound=Union[Object, GridAndObjects])
 
 State = str
 
+Example = Tuple[T1, T2]  # (input, output)
+Examples = List[Example[T1, T2]]
 Primitive = Callable[[Object, str, int], Object]
 Match = Tuple[State, Callable[[T1], Optional[T2]]]
-Xform = Callable[[List[Example[T1]], str, int], Optional[Match[T2, T2]]]
+Xform = Callable[[Examples[T1, T1], str, int], Optional[Match[T2, T2]]]
 
 
 @dataclass

@@ -1,15 +1,14 @@
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
-from bi_types import Match
+from bi_types import Examples, Match
 from inpainting_match import inpainting_xform, mask_from_all_outputs
-from load_data import Example
 from logger import logger
 from objects import Object, display
 import config
 
 
 def frame_split_and_mirror_xform(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:

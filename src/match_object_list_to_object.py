@@ -1,8 +1,7 @@
 from typing import Callable, List, Optional, Tuple
 
 import config
-from bi_types import GridAndObjects, Match, XformEntry
-from load_data import Example
+from bi_types import Examples, GridAndObjects, Match, XformEntry
 from logger import logger
 from match_object_list import match_object_list
 from matched_objects import (
@@ -17,7 +16,7 @@ object_list_xforms: List[XformEntry[GridAndObjects, GridAndObjects]] = [
 ]
 
 def match_object_list_to_object_by_painting(
-    examples: List[Example[GridAndObjects]],
+    examples: Examples[GridAndObjects, GridAndObjects],
     get_objects: Callable[[Object], List[Object]],
     task_name: str,
     nesting_level: int,
@@ -86,7 +85,7 @@ def get_colored_objects(input: Object) -> List[Object]:
 
 
 def match_colored_objects_to_object_by_painting(
-    examples: List[Example[GridAndObjects]],
+    examples: Examples[GridAndObjects, GridAndObjects],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:

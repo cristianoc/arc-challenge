@@ -1,6 +1,6 @@
 from typing import Callable, List, Optional
 
-from bi_types import Example, GridAndObjects, Match, XformEntry
+from bi_types import Example, Examples, GridAndObjects, Match, XformEntry
 from find_xform import find_xform_for_examples
 from logger import logger
 from match_object_list_to_object import (
@@ -11,7 +11,7 @@ from match_object_list_to_object import (
 from objects import Object, display_multiple
 
 
-def check_matching_colored_objects_count_and_color(examples: List[Example]) -> bool:
+def check_matching_colored_objects_count_and_color(examples: Examples[Object, Object]) -> bool:
     for input, output in examples:
         input_objects = input.detect_colored_objects(background_color=0)
         output_objects = output.detect_colored_objects(background_color=0)
@@ -29,7 +29,7 @@ def check_matching_colored_objects_count_and_color(examples: List[Example]) -> b
 
 
 def match_colored_objects(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
@@ -45,7 +45,7 @@ def match_colored_objects(
 
     # each example has the same number of input and output objects
     # so we can turn those lists into and ObjectListExample
-    object_list_examples: List[Example[GridAndObjects]] = []
+    object_list_examples: Examples[GridAndObjects, GridAndObjects] = []
 
     def get_grid_and_objects(input: Object) -> GridAndObjects:
         input_objects = get_colored_objects(input)
@@ -73,7 +73,7 @@ def match_colored_objects(
                 title=f"Colored Objects [Exam]",
             )
 
-        object_list_example: Example[GridAndObjects] = (
+        object_list_example: Example[GridAndObjects, GridAndObjects] = (
             input_grid_and_objects,
             output_grid_and_objects,
         )

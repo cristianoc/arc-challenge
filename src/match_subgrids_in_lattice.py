@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from bi_types import Example, Match
+from bi_types import Examples, Match
 from logger import logger
 from match_object_list_to_object import match_object_list_with_decision_rule
 from objects import Object
@@ -8,7 +8,7 @@ from visual_cortex import extract_lattice_subgrids
 
 
 def match_subgrids_in_lattice(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:

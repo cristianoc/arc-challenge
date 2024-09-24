@@ -1,10 +1,9 @@
 from typing import Callable, List, Optional, Tuple, TypedDict
 
-import numpy as np
-
 import numeric_features
 from color_features import detect_color_features
-from load_data import Example, Task, Tasks, evaluation_data, training_data
+from load_data import Task, Tasks, training_data, evaluation_data
+from bi_types import Examples
 from logger import logger
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from objects import BLACK, GridData, Object, display, display_multiple
@@ -19,6 +18,7 @@ from visual_cortex import (
     find_smallest_frame,
     is_frame_part_of_lattice,
 )
+import numpy as np
 
 Size = Tuple[int, int]
 ExampleObjects = List[Tuple[Object, Object]]
@@ -234,7 +234,7 @@ xforms: List[XformEntry] = [
 
 
 def check_xform_on_examples(
-    xform: SizeXform, examples: List[Example], task_name: str, task_type: str
+    xform: SizeXform, examples: Examples[Object, Object], task_name: str, task_type: str
 ) -> bool:
     grids = [example for example in examples]
     logger.debug(f"Checking xform {xform.__name__} {task_type}")
@@ -250,7 +250,7 @@ def check_xform_on_examples(
 
 
 def find_xform(
-    examples: List[Example], task: Task, task_name: str, task_type: str
+    examples: Examples[Object, Object], task: Task, task_name: str, task_type: str
 ) -> Optional[XformEntry]:
     # check if at least one xform is correct
     correct_xform = None
@@ -379,7 +379,7 @@ def detect_common_features(matched_objects: List[ObjectMatch], initial_difficult
 
 
 def find_matched_objects(
-    examples: List[Example], task_type: str
+    examples: Examples[Object, Object], task_type: str
 ) -> Optional[List[ObjectMatch]]:
     """
     Identifies and returns a list of matched input objects that correspond to the output objects
@@ -414,7 +414,7 @@ def find_matched_objects(
                 return i
         return None
 
-    def get_matched_objects(examples: List[Example]) -> Optional[List[ObjectMatch]]:
+    def get_matched_objects(examples: Examples[Object, Object]) -> Optional[List[ObjectMatch]]:
         matched_objects: List[ObjectMatch] = []
 
         for example in examples:
@@ -435,7 +435,7 @@ def find_matched_objects(
 
 
 def predict_size_using_regularized_regression(
-    examples: List[Example], relative_difficulty: int
+    examples: Examples[Object, Object], relative_difficulty: int
 ):
     """
     Predicts the output size using regularized regression. This function takes a list of input-output
@@ -484,7 +484,7 @@ def process_tasks(tasks: Tasks, set: str):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
-        examples = task.train
+        examples: Examples[Object, Object] = task.train
         task_type = "train"
         if True:
             current_difficulty = 0
@@ -525,7 +525,7 @@ def process_tasks(tasks: Tasks, set: str):
                         )
             current_difficulty += num_difficulties_matching
 
-            def try_regularized_regression(exs: List[Example]):
+            def try_regularized_regression(exs: Examples[Object, Object]):
                 logger.debug(
                     f"Trying to determine dimensions via LP for {task_name} {set}"
                 )
@@ -557,7 +557,7 @@ def process_tasks(tasks: Tasks, set: str):
                     and Config.difficulty >= difficulty_after_regularized_regression
                 ):
                     # try to remove main color and try again
-                    examples2: List[Example] = []
+                    examples2: Examples[Object, Object] = []
                     for example in examples:
                         input_obj = example[0]
                         # change the main color to black

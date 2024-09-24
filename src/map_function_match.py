@@ -1,8 +1,7 @@
 from typing import List, Optional, Tuple
 
-from bi_types import Match, XformEntry
+from bi_types import Example, Examples, Match, XformEntry
 from expansion_match import fractal_expansion
-from load_data import Example
 from logger import logger
 from objects import Object, display, display_multiple
 
@@ -42,7 +41,7 @@ def out_objects_are_a_subset(
 
 
 def stretch_height(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:

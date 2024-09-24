@@ -1,13 +1,9 @@
 from typing import List, Optional
 
 import config
-from bi_types import XformEntry
-from canvas_grid_match import canvas_grid_xform, equal_modulo_rigid_transformation
+from bi_types import Examples, XformEntry
 from find_xform import find_xform
 from inpainting_match import (
-    inpainting_xform_no_mask,
-    inpainting_xform_output_is_block,
-    inpainting_xform_with_mask,
     is_inpainting_puzzle,
 )
 from load_data import Task, Tasks, evaluation_data, training_data
@@ -110,8 +106,8 @@ def process_tasks(tasks: Tasks, set: str):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
-        examples = task.train
-        tests = task.test
+        examples: Examples[Object, Object] = task.train
+        tests: Examples[Object, Object] = task.test
         task_type = "train"
 
         current_difficulty = 0

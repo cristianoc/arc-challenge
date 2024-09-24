@@ -1,24 +1,23 @@
 import json
 import os
 from typing import Any, Dict, Generic, List, Tuple, TypeVar
+from bi_types import Examples
 
 import numpy as np
 
 from objects import Object
 
-T = TypeVar('T')
 
-Example = Tuple[T, T]  # (input, output)
+class Task:
+    train: Examples[Object, Object]
+    test: Examples[Object, Object]
 
-class Task(Generic[T]):
-    train: List[Example[T]]
-    test: List[Example[T]]
-
-    def __init__(self, train: List[Example[T]], test: List[Example[T]]):
+    def __init__(self, train: Examples[Object, Object], test: Examples[Object, Object]):
         self.train = train
         self.test = test
 
-Tasks = Dict[str, Task[Any]]  # xxxx.json -> task
+
+Tasks = Dict[str, Task]  # xxxx.json -> task
 
 
 def load_arc_data(directory: str) -> Tasks:
@@ -27,7 +26,7 @@ def load_arc_data(directory: str) -> Tasks:
         if filename.endswith(".json"):
             with open(os.path.join(directory, filename), "r") as file:
                 obj: Dict[str, Any] = json.load(file)
-                task: Task[Object] = Task(
+                task = Task(
                     train=[
                         (
                             Object(np.array(example["input"])),

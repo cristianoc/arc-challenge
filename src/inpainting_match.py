@@ -3,13 +3,12 @@ from typing import TYPE_CHECKING, List, Optional, Tuple
 import numpy as np
 
 import config
-from bi_types import Match
+from bi_types import Match, Examples
 from cardinality_predicates import (
     CardinalityPredicate,
     find_cardinality_predicates,
     predicates_intersection,
 )
-from load_data import Example
 from logger import logger
 from objects import Object, display
 from predict_size import get_largest_block_object
@@ -24,7 +23,7 @@ from visual_cortex import regularity_score
 
 
 def is_inpainting_puzzle(
-    examples: List[Example[Object]], output_is_block: bool
+    examples: Examples[Object, Object], output_is_block: bool
 ) -> bool:
     # Check if all examples satisfy inpainting conditions. Returns False if any example does not.
     for input, output in examples:
@@ -90,7 +89,7 @@ def update_mask(input: Object, output: Object, mask: Object) -> None:
                 mask[x, y] = 0
 
 
-def mask_from_all_outputs(examples: List[Example[Object]]) -> Optional[Object]:
+def mask_from_all_outputs(examples: Examples[Object, Object]) -> Optional[Object]:
     """
     Find the mask for a set of examples where all examples have the same size.
     Returns None if any example doesn't satisfy inpainting conditions or has mismatched sizes.
@@ -113,7 +112,7 @@ def mask_from_all_outputs(examples: List[Example[Object]]) -> Optional[Object]:
 
 
 def get_inpainting_color(
-    examples: List[Example[Object]], output_is_block: bool
+    examples: Examples[Object, Object], output_is_block: bool
 ) -> Optional[int]:
     color_only_in_input = None
     for input, output in examples:
@@ -138,7 +137,7 @@ SharedSymmetries = Tuple[
 
 
 def apply_mask_to_filled_grid(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     filled_grid,
     input,
     mask,
@@ -163,7 +162,7 @@ def apply_mask_to_filled_grid(
 
 
 def check_correctness(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     input: Object,
     output: Object,
     shared_symmetries: SharedSymmetries,
@@ -200,7 +199,7 @@ def check_correctness(
 
 
 def compute_shared_symmetries(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     mask: Optional[Object],
     color_only_in_input: int,
     output_is_largest_block_object: bool,
@@ -324,7 +323,7 @@ def check_equality_modulo_mask(
 
 
 def inpainting_xform_no_mask(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
@@ -339,7 +338,7 @@ def inpainting_xform_no_mask(
 
 
 def inpainting_xform_output_is_block(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
@@ -354,7 +353,7 @@ def inpainting_xform_output_is_block(
 
 
 def inpainting_xform_with_mask(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
@@ -387,7 +386,7 @@ def extract_largest_block(input: Object, filled_grid: Object) -> Object:
 
 
 def inpainting_xform(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
     mask: Optional[Object],
