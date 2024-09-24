@@ -51,23 +51,27 @@ def filter_complex_xforms(task: Task, task_name: str):
     return True
 
 
-gridxforms: List[XformEntry[Object, Object]] = [
-    XformEntry(match_subgrids_in_lattice, 3),
-    XformEntry(match_colored_objects, 3),
-    XformEntry(xform_identity, 1),
-    XformEntry(equal_modulo_rigid_transformation, 2),
-    XformEntry(primitive_to_xform(translate_down_1), 2),
-    XformEntry(canvas_grid_xform, 2),
-    XformEntry(match_rectangular_objects_in_grid, 3),
-    XformEntry(inpainting_xform_no_mask, 2),
-    XformEntry(inpainting_xform_output_is_block, 2),
-    XformEntry(match_n_objects_with_output, 3),
-] + (
+gridxforms: List[XformEntry[Object, Object]] = (
     [
-        XformEntry(inpainting_xform_with_mask, 2),
+        # XformEntry(match_subgrids_in_lattice, 3),
+        # XformEntry(match_colored_objects, 3),
+        # XformEntry(xform_identity, 1),
+        # XformEntry(equal_modulo_rigid_transformation, 2),
+        # XformEntry(primitive_to_xform(translate_down_1), 2),
+        # XformEntry(canvas_grid_xform, 2),
+        # XformEntry(match_rectangular_objects_in_grid, 3),
+        # XformEntry(inpainting_xform_no_mask, 2),
+        # XformEntry(inpainting_xform_output_is_block, 2),
+        XformEntry(match_n_objects_with_output, 3),
     ]
-    if config.find_frame_rule
-    else []
+    # + []
+    # + (
+    #     [
+    #         XformEntry(inpainting_xform_with_mask, 2),
+    #     ]
+    #     if config.find_frame_rule
+    #     else []
+    # )
 )
 
 
@@ -100,7 +104,9 @@ def process_tasks(tasks: Tasks, set: str):
             and filter_complex_xforms(task, task_name) == False
         ):
             continue
-        if config.only_inpainting_puzzles and not is_inpainting_puzzle(task.train, output_is_block=False):
+        if config.only_inpainting_puzzles and not is_inpainting_puzzle(
+            task.train, output_is_block=False
+        ):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
