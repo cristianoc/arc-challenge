@@ -55,7 +55,7 @@ def match_object_list(
     nesting_level: int,
 ) -> Optional[Match[GridAndObjects, List[Object]]]:
     logger.info(
-        f"{'  ' * nesting_level}match_list_of_objects examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
+        f"{'  ' * nesting_level}match_object_list examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
     )
 
     if check_fractal_expansion_sizes(examples):
