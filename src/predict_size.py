@@ -1,9 +1,11 @@
 from typing import Callable, List, Optional, Tuple, TypedDict
 
+import numpy as np
+
 import numeric_features
-from color_features import detect_color_features
-from load_data import Task, Tasks, training_data, evaluation_data
 from bi_types import Examples
+from color_features import detect_color_features
+from load_data import Task, Tasks, evaluation_data, training_data
 from logger import logger
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from objects import BLACK, GridData, Object, display, display_multiple
@@ -18,7 +20,6 @@ from visual_cortex import (
     find_smallest_frame,
     is_frame_part_of_lattice,
 )
-import numpy as np
 
 Size = Tuple[int, int]
 ExampleObjects = List[Tuple[Object, Object]]

@@ -1,9 +1,9 @@
 from typing import List, Optional, Tuple
 
+import config
 from bi_types import Examples, Match, Object, Xform, XformEntry
 from logger import logger
-from objects import display_multiple, display
-import config
+from objects import display, display_multiple
 
 
 def match_smallest_object(

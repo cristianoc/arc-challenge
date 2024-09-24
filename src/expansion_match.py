@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import numpy as np
 
-from bi_types import GridAndObjects, Match, Examples
+from bi_types import Examples, GridAndObjects, Match
 from logger import logger
 from objects import Object, display, display_multiple
 

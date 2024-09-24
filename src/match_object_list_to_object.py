@@ -15,6 +15,7 @@ object_list_xforms: List[XformEntry[GridAndObjects, List[Object]]] = [
     XformEntry(match_object_list, 4),
 ]
 
+
 def match_object_list_to_object_by_painting(
     examples: Examples[GridAndObjects, List[Object]],
     get_objects: Callable[[Object], List[Object]],
@@ -73,6 +74,7 @@ def match_object_list_to_object_by_painting(
             )
     return None
 
+
 def get_background_color(input: Object) -> int:
     background_color = 0  # TODO: determine background color
     return background_color
@@ -82,7 +84,6 @@ def get_colored_objects(input: Object) -> List[Object]:
     background_color = get_background_color(input)
     input_objects = input.detect_colored_objects(background_color)
     return input_objects
-
 
 
 def match_object_list_with_decision_rule(
@@ -110,7 +111,9 @@ def match_object_list_with_decision_rule(
             logger.info(
                 f"{'  ' * nesting_level}match_object_list_with_decision_rule no match"
             )
-    common_decision_rule, features_used = detect_common_features(object_matches, 3, minimal)
+    common_decision_rule, features_used = detect_common_features(
+        object_matches, 3, minimal
+    )
     if common_decision_rule is None:
         logger.info(
             f"{'  ' * nesting_level}match_object_list_with_decision_rule common_decision_rule is None"

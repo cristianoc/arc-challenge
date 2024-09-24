@@ -1,4 +1,5 @@
 from typing import List, NamedTuple, Optional
+
 from bi_types import Examples
 from color_features import detect_color_features
 from logger import logger

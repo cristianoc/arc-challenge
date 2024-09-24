@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 import config
-from bi_types import Match, Examples, XformEntry
+from bi_types import Examples, Match, XformEntry
 from logger import logger
 from objects import Object, display
 
