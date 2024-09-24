@@ -7,7 +7,7 @@ from visual_cortex import find_rectangular_objects
 import config
 
 
-def match_two_objects_with_output(
+def match_n_objects_with_output(
     examples: List[Example[Object]],
     task_name: str,
     nesting_level: int,
