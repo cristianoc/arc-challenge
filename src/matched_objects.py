@@ -1,9 +1,6 @@
 from typing import List, NamedTuple, Optional
-
-import numpy as np
-
+from bi_types import Examples
 from color_features import detect_color_features
-from load_data import Example
 from logger import logger
 from objects import Object
 from rule_based_selector import DecisionRule, Features, select_object_minimal

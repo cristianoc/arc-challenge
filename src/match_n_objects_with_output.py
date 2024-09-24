@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from bi_types import Example, Match, Object
+from bi_types import Examples, Match, Object
 from logger import logger
 from objects import display_multiple, display
 from visual_cortex import find_rectangular_objects
@@ -8,7 +8,7 @@ import config
 
 
 def match_n_objects_with_output(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:

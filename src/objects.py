@@ -505,7 +505,9 @@ def display(
 
 
 def display_multiple(
-    grids: Union[List[Object], List[Tuple[Object, Optional[Object]]]],
+    grids: Union[
+        List[Object], List[Tuple[Object, Object]], List[Tuple[Object, Optional[Object]]]
+    ],
     title: Optional[str] = None,
     left_title: Optional[str] = None,
     right_title: Optional[str] = None,

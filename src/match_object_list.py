@@ -1,9 +1,8 @@
 from typing import List, Optional, Tuple
 
-from bi_types import GridAndObjects, Match, XformEntry
+from bi_types import Example, Examples, GridAndObjects, Match, XformEntry
 from expansion_match import check_fractal_expansion_sizes, stretch_height
 from find_xform import find_xform_for_examples
-from load_data import Example
 from logger import logger
 from map_function_match import expansion_xforms, out_objects_are_a_subset
 from objects import Object
@@ -12,7 +11,7 @@ map_xforms: List[XformEntry[Object, Object]] = [XformEntry(stretch_height, 1)]
 
 
 def check_list_of_objects_subset(
-    examples: List[Example[GridAndObjects]],
+    examples: Examples[GridAndObjects, GridAndObjects],
 ) -> Optional[List[Tuple[int, int]]]:
     """
     Check if the output objects are a subset of the input objects based on their colors.
@@ -41,9 +40,9 @@ def check_list_of_objects_subset(
 
 
 def map_first_input_to_output_grid(
-    examples: List[Example[GridAndObjects]],
-) -> List[Example[Object]]:
-    input_output_objects_examples: List[Example[Object]] = []
+    examples: Examples[GridAndObjects, GridAndObjects],
+) -> Examples[Object, Object]:
+    input_output_objects_examples: Examples[Object, Object] = []
     for (input_grid, input_objects), (output_grid, output_objects) in examples:
         input_output_objects_examples.append((input_objects[0], output_grid))
 
@@ -51,7 +50,7 @@ def map_first_input_to_output_grid(
 
 
 def match_object_list(
-    examples: List[Example[GridAndObjects]],
+    examples: Examples[GridAndObjects, GridAndObjects],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[GridAndObjects, GridAndObjects]]:
@@ -91,7 +90,7 @@ def match_object_list(
             f"{'  ' * nesting_level}Found input_to_output_indices: {input_to_output_indices}"
         )
 
-        new_examples_train: List[List[Example[Object]]] = [
+        new_examples_train: List[Examples[Object, Object]] = [
             [] for _ in input_to_output_indices
         ]
         for (_, e_inputs), (_, e_outputs) in examples:

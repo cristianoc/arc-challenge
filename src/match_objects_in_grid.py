@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from bi_types import Example, Match
+from bi_types import Examples, Match
 from logger import logger
 from match_object_list_to_object import match_object_list_with_decision_rule
 from objects import Object, display_multiple
@@ -26,7 +26,7 @@ def candidate_objects_for_matching(input: Object, output: Object) -> List[Object
 
 
 def match_rectangular_objects_in_grid(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:

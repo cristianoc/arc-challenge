@@ -1,12 +1,12 @@
 from typing import Callable, List, Optional
 
-from bi_types import Example, Match, Object, Primitive, Xform
+from bi_types import Examples, Match, Object, Primitive, Xform
 from logger import logger
 
 
 def check_primitive_on_examples(
     prim: Callable[[Object, str, int], Object],
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
@@ -25,7 +25,7 @@ def check_primitive_on_examples(
 
 def primitive_to_xform(primitive: Primitive) -> Xform[Object, Object]:
     def xform(
-        examples: List[Example],
+        examples: Examples[Object, Object],
         task_name: str,
         nesting_level: int,
     ) -> Optional[Match[Object, Object]]:
@@ -54,7 +54,7 @@ primitives: List[Primitive] = [
 
 
 def xform_identity(
-    examples: List[Example], task_name: str, nesting_level: int
+    examples: Examples[Object, Object], task_name: str, nesting_level: int
 ) -> Optional[Match[Object, Object]]:
     def identity(input: Object, task_name: str, nesting_level: int):
         return input
@@ -64,7 +64,7 @@ def xform_identity(
 
 # TODO: This is currently not used but it illustrates how to compose primitives
 def xform_two_primitives_in_sequence(
-    examples: List[Example], task_name: str, nesting_level: int
+    examples: Examples[Object, Object], task_name: str, nesting_level: int
 ) -> Optional[Match[Object, Object]]:
     # try to apply two primitives in sequence, and return the first pair that works
     for p1 in primitives:

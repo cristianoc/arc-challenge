@@ -1,15 +1,14 @@
 from typing import List, Optional
 
 import config
-from bi_types import Match, XformEntry
-from load_data import Example
+from bi_types import Match, Examples, XformEntry
 from logger import logger
 from objects import Object, display
 
 
 def find_xform_for_examples(
     xforms: List[XformEntry[Object, Object]],
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
     xform_name: List[str] = [],
@@ -50,8 +49,8 @@ def find_xform_for_examples(
 
 def find_xform(
     xforms: List[XformEntry[Object, Object]],
-    examples: List[Example[Object]],
-    tests: List[Example[Object]],
+    examples: Examples[Object, Object],
+    tests: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:

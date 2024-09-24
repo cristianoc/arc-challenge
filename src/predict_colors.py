@@ -2,8 +2,9 @@ from typing import Callable, List, Optional, Set, Tuple, TypedDict
 
 import numpy as np
 
-from grid_types import BLACK, GREY, GridData
-from load_data import Example, Task, Tasks, evaluation_data, training_data
+from bi_types import Examples
+from grid_types import BLACK, GREY
+from load_data import Task, Tasks, training_data, evaluation_data
 from logger import logger
 from objects import Object, display_multiple
 from predict_size import (
@@ -181,7 +182,7 @@ xforms: List[ColorXformEntry] = [
 
 
 def check_xform_on_examples(
-    xform: ColorXform, examples: List[Example], task_name: str, task_type: str
+    xform: ColorXform, examples: Examples[Object, Object], task_name: str, task_type: str
 ) -> bool:
     logger.debug(f"Checking xform {xform.__name__} {task_type}")
     for i, example in enumerate(examples):
@@ -202,7 +203,7 @@ def check_xform_on_examples(
 
 
 def find_xform(
-    examples: List[Example], task: Task, task_name: str, task_type: str
+    examples: Examples[Object, Object], task: Task, task_name: str, task_type: str
 ) -> Optional[ColorXformEntry]:
     # check if at least one xform is correct
     correct_xform = None
@@ -216,7 +217,7 @@ def find_xform(
             logger.info(
                 f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type}"
             )
-            test_examples: List[Example] = task.test
+            test_examples: Examples[Object, Object] = task.test
             for i, test_example in enumerate(test_examples):
                 if not check_xform_on_examples(
                     correct_xform["function"], [test_example], task_name, "test"
@@ -243,7 +244,7 @@ def process_tasks(tasks: Tasks, set: str):
             continue
         logger.info(f"\n***Task: {task_name} {set}***")
 
-        examples = task.train
+        examples: Examples[Object, Object] = task.train
         task_type = "train"
 
         current_difficulty = 0

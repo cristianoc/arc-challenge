@@ -2,13 +2,12 @@ from typing import List, Optional
 
 import numpy as np
 
-from bi_types import GridAndObjects, Match, XformEntry
-from load_data import Example
+from bi_types import GridAndObjects, Match, Examples
 from logger import logger
 from objects import Object, display, display_multiple
 
 
-def check_fractal_expansion_sizes(examples: List[Example[GridAndObjects]]):
+def check_fractal_expansion_sizes(examples: Examples[GridAndObjects, GridAndObjects]):
     """
     Check if every input is NxN and the output's size is N^2xN^2
     """
@@ -32,7 +31,7 @@ def check_fractal_expansion_sizes(examples: List[Example[GridAndObjects]]):
 
 
 def fractal_expansion(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
@@ -90,7 +89,7 @@ def fractal_expansion(
 
 
 def stretch_height(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:

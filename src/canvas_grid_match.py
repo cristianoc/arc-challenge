@@ -1,8 +1,7 @@
 from typing import List, Optional, Tuple
 
-from bi_types import Match
+from bi_types import Match, Examples
 from grid_types import ClockwiseRotation, RigidTransformation, XReflection
-from load_data import Example
 from logger import logger
 from objects import Object, display, display_multiple
 
@@ -27,7 +26,7 @@ def find_canvas_objects(
 
 
 def equal_modulo_rigid_transformation(
-    examples: List[Example], task_name: str, nesting_level: int
+    examples: Examples[Object, Object], task_name: str, nesting_level: int
 ) -> Optional[Match[Object, Object]]:
     for x_reflection in XReflection:
         for rotation in ClockwiseRotation:
@@ -183,7 +182,7 @@ def solve_puzzle(
 
 
 def canvas_grid_xform(
-    examples: List[Example[Object]],
+    examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
