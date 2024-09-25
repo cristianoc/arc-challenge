@@ -187,25 +187,25 @@ combine_two_objects_xforms: List[XformEntry[Tuple[Object, Object], Object]] = [
 ]
 
 
-def match3_object_is_output(
-    examples: Examples[Tuple[Object, Object, Object], Object],
+def match3plus_object_is_output(
+    examples: Examples[Tuple[Object, ...], Object],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[Tuple[Object, Object, Object], Object]]:
+) -> Optional[Match[Tuple[Object, ...], Object]]:
     for input, output in examples:
         if input[0] != output:
             return None
 
-    def solver(inputs: Tuple[Object, Object, Object]) -> Optional[Object]:
+    def solver(inputs: Tuple[Object, ...]) -> Optional[Object]:
         return inputs[0]
 
-    return ("match3_object_is_output", solver)
+    return ("match3plus_object_is_output", solver)
 
 
-combine_three_objects_xforms: List[
-    XformEntry[Tuple[Object, Object, Object], Object]
+combine_threeplus_objects_xforms: List[
+    XformEntry[Tuple[Object, ...], Object]
 ] = [
-    XformEntry(match3_object_is_output, 3),
+    XformEntry(match3plus_object_is_output, 3),
 ]
 
 
@@ -277,12 +277,12 @@ def match_n_objects_with_output(
             return None
 
     two_object_examples: Examples[Tuple[Object, Object], Object] = []
-    three_object_examples: Examples[Tuple[Object, Object, Object], Object] = []
+    threeplus_object_examples: Examples[Tuple[Object, ...], Object] = []
 
     if num_other_objects == 1:
         two_object_examples = [(x, e[1]) for x, e in zip(two_object_list, examples)]
-    elif num_other_objects == 2:
-        three_object_examples = [(x, e[1]) for x, e in zip(three_object_list, examples)]
+    elif num_other_objects >= 2:
+        threeplus_object_examples = [(x, e[1]) for x, e in zip(three_object_list, examples)]
     else:
         return None
 
@@ -316,8 +316,8 @@ def match_n_objects_with_output(
         return (state, solver2)
     elif num_other_objects == 2:
         found_xform3 = None
-        for xform3 in combine_three_objects_xforms:
-            match3 = xform3.xform(three_object_examples, task_name, nesting_level)
+        for xform3 in combine_threeplus_objects_xforms:
+            match3 = xform3.xform(threeplus_object_examples, task_name, nesting_level)
             if match3 is None:
                 continue
             found_xform3 = match3
@@ -336,11 +336,9 @@ def match_n_objects_with_output(
                 return None
             main_object = objects[index]
             other_objects = [o for o in objects if o != main_object]
-            if len(other_objects) != 2:
+            if len(other_objects) < 2:
                 return None
-            other_object1 = other_objects[0]
-            other_object2 = other_objects[1]
-            output = match3_solver((main_object, other_object1, other_object2))
+            output = match3_solver((main_object, *other_objects))
             return output
         state = f"match_n_objects_with_output({match3_state},{select_state})"
         return (state, solver3)

@@ -6,8 +6,8 @@ from objects import Object
 GridAndObjects = Tuple[Object, List[Object]]
 
 
-T1 = TypeVar("T1", bound=Union[Object, GridAndObjects, List[Object], int, Tuple[Object, Object], Tuple[Object, Object, Object]])
-T2 = TypeVar("T2", bound=Union[Object, GridAndObjects, List[Object], int, Tuple[Object, Object], Tuple[Object, Object, Object]])
+T1 = TypeVar("T1", bound=Union[Object, GridAndObjects, List[Object], int, Tuple[Object, Object], Tuple[Object, ...]])
+T2 = TypeVar("T2", bound=Union[Object, GridAndObjects, List[Object], int, Tuple[Object, Object], Tuple[Object, ...]])
 
 State = str
 
