@@ -66,7 +66,7 @@ class InpaintingTransform:
             return False
 
         self.shared_symmetries, num_correct = shared_symmetries_result
-        if self.check_shared_symmetries(num_correct) == False:
+        if not self.check_shared_symmetries(num_correct):
             self.shared_symmetries = None
 
         if self.shared_symmetries is not None:
@@ -81,31 +81,37 @@ class InpaintingTransform:
 
         return True
 
-    def solve(self, input: Object) -> Optional[Object]:
+    def solve(self, input_obj: Object) -> Optional[Object]:
         """Second phase: Apply the determined strategy to solve."""
         if self.shared_symmetries is not None:
-            return self.solve_shared(input)
+            return self.solve_shared(input_obj)
         else:
-            return self.solve_find_symmetry(input)
+            return self.solve_find_symmetry(input_obj)
 
     def get_inpainting_color(self) -> Optional[int]:
+        """Determine the color used only in inputs."""
         color_only_in_input = None
-        for input, output in self.examples:
-            color = check_inpainting_conditions(input, output, self.output_is_block)
+        for input_obj, output_obj in self.examples:
+            color = check_inpainting_conditions(
+                input_obj, output_obj, self.output_is_block
+            )
             if color is None:
                 return None
             if color_only_in_input is None:
                 color_only_in_input = color
-            else:
-                if color != color_only_in_input:
-                    logger.info(f"Color mismatch: {color} != {color_only_in_input}")
-                    return None
+            elif color != color_only_in_input:
+                logger.info(f"Color mismatch: {color} != {color_only_in_input}")
+                return None
         return color_only_in_input
 
     def determine_output_is_largest_block_object(self) -> bool:
+        """Determine if the output is the largest block object."""
         if self.output_is_block:
             return (
-                any(input.size != output.size for input, output in self.examples)
+                any(
+                    input_obj.size != output_obj.size
+                    for input_obj, output_obj in self.examples
+                )
                 if self.mask is None
                 else False
             )
@@ -126,7 +132,8 @@ class InpaintingTransform:
         ]
     ]:
         """
-        Compute shared symmetries (non-periodic, periodic, cardinality) across all examples and count how many examples match.
+        Compute shared symmetries (non-periodic, periodic, cardinality) across all examples
+        and count how many examples match.
         """
         assert self.color is not None
 
@@ -135,46 +142,50 @@ class InpaintingTransform:
         periodic_shared = None
         cardinality_shared: Optional[List[CardinalityPredicate]] = None
 
-        for i, (input, output) in enumerate(self.examples):
+        for i, (input_obj, output_obj) in enumerate(self.examples):
+            # Non-periodic symmetry
             if config.find_non_periodic_symmetry:
                 if self.output_is_largest_block_object:
                     non_periodic_symmetry_output = (
-                        find_non_periodic_symmetry_predicates(input, self.color)
+                        find_non_periodic_symmetry_predicates(input_obj, self.color)
                     )
                 else:
                     non_periodic_symmetry_output = (
-                        find_non_periodic_symmetry_predicates(output, self.color)
+                        find_non_periodic_symmetry_predicates(output_obj, self.color)
                     )
             else:
                 non_periodic_symmetry_output = NonPeriodicGridSymmetry()
-            if non_periodic_shared is None:
-                non_periodic_shared = non_periodic_symmetry_output
-            else:
-                non_periodic_shared = non_periodic_shared.intersection(
-                    non_periodic_symmetry_output
-                )
+            non_periodic_shared = (
+                non_periodic_symmetry_output
+                if non_periodic_shared is None
+                else non_periodic_shared.intersection(non_periodic_symmetry_output)
+            )
 
+            # Cardinality predicates
             if config.find_cardinality_predicates:
-                cardinality_shared_output = find_cardinality_predicates(output)
+                cardinality_shared_output = find_cardinality_predicates(output_obj)
             else:
                 cardinality_shared_output = []
-            if cardinality_shared is None:
-                cardinality_shared = cardinality_shared_output
-            else:
-                cardinality_shared = predicates_intersection(
+            cardinality_shared = (
+                cardinality_shared_output
+                if cardinality_shared is None
+                else predicates_intersection(
                     cardinality_shared, cardinality_shared_output
                 )
+            )
 
+            # Periodic symmetry
             if config.find_periodic_symmetry:
                 periodic_symmetry_output = find_periodic_symmetry_predicates(
-                    output, self.color, self.mask
+                    output_obj, self.color, self.mask
                 )
             else:
                 periodic_symmetry_output = PeriodicGridSymmetry()
-            if periodic_shared is None:
-                periodic_shared = periodic_symmetry_output
-            else:
-                periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
+            periodic_shared = (
+                periodic_symmetry_output
+                if periodic_shared is None
+                else periodic_shared.intersection(periodic_symmetry_output)
+            )
 
             output_symmetries = (
                 non_periodic_symmetry_output,
@@ -184,8 +195,8 @@ class InpaintingTransform:
             )
             is_correct = check_correctness(
                 self.examples,
-                input,
-                output,
+                input_obj,
+                output_obj,
                 output_symmetries,
                 self.mask,
                 self.output_is_largest_block_object,
@@ -217,13 +228,14 @@ class InpaintingTransform:
         )
 
     def check_shared_symmetries(self, num_correct: int) -> bool:
+        """Check if shared symmetries lead to correct outputs."""
         assert self.shared_symmetries is not None
         assert self.color is not None
 
         use_shared_symmetries_in_test = True
-        for i, (input, output) in enumerate(self.examples):
+        for i, (input_obj, output_obj) in enumerate(self.examples):
             filled_grid = fill_grid(
-                input,
+                input_obj,
                 self.mask,
                 periodic_symmetry=self.shared_symmetries[1],
                 non_periodic_symmetry=self.shared_symmetries[0],
@@ -234,23 +246,25 @@ class InpaintingTransform:
             filled_grid = apply_mask_to_filled_grid(
                 self.examples,
                 filled_grid,
-                input,
+                input_obj,
                 self.mask,
                 self.color,
                 self.apply_mask_to_input,
             )
 
             if self.output_is_largest_block_object:
-                candidate_output = extract_largest_block(input, filled_grid)
-                is_correct = candidate_output == output
+                candidate_output = extract_largest_block(input_obj, filled_grid)
+                is_correct = candidate_output == output_obj
             else:
-                is_correct = check_equality_modulo_mask(filled_grid, output, self.mask)
+                is_correct = check_equality_modulo_mask(
+                    filled_grid, output_obj, self.mask
+                )
             logger.info(
                 f"#{i} Shared {self.shared_symmetries[0]} {self.shared_symmetries[1]} {self.shared_symmetries[2]} is_correct: {is_correct}"
             )
             if config.display_verbose and self.shared_symmetries[0].dgm is not None:
                 display(
-                    output,
+                    output_obj,
                     self.shared_symmetries[0].dgm,
                     title=f"Shared Diagonal Symmetry",
                     left_title=f"output",
@@ -259,33 +273,28 @@ class InpaintingTransform:
 
             if not is_correct:
                 if config.display_verbose:
-                    display(input, filled_grid, title=f"{is_correct} Shared Symm")
+                    display(input_obj, filled_grid, title=f"{is_correct} Shared Symm")
                     if self.mask is not None:
                         display(self.mask, title=f"{is_correct} Mask")
-            if is_correct:
-                logger.info(f"#{i} Found correct solution using shared symmetries")
-                pass
-            else:
-                use_shared_symmetries_in_test = False
                 if num_correct == len(self.examples):
-                    # Since the per-example symmetry is correct, we'll try to find the symmetry again in the test input
                     logger.info(
                         f"#{i} Shared symmetries are not correct, but each symmetry is correct"
                     )
+                    use_shared_symmetries_in_test = False
                     break
                 else:
-                    # Symmetry neither correct at the per-example level nor the shared level: give up
                     logger.info(f"#{i} Shared symmetries are not correct")
                     return False
 
         return use_shared_symmetries_in_test
 
-    def solve_shared(self, input: Object) -> Optional[Object]:
+    def solve_shared(self, input_obj: Object) -> Optional[Object]:
+        """Solve using shared symmetries."""
         assert self.shared_symmetries is not None
         assert self.color is not None
 
         input_filled = fill_grid(
-            input,
+            input_obj,
             self.mask,
             periodic_symmetry=self.shared_symmetries[1],
             non_periodic_symmetry=self.shared_symmetries[0],
@@ -295,7 +304,7 @@ class InpaintingTransform:
         input_filled = apply_mask_to_filled_grid(
             self.examples,
             input_filled,
-            input,
+            input_obj,
             self.mask,
             self.color,
             self.apply_mask_to_input,
@@ -304,31 +313,32 @@ class InpaintingTransform:
             f"Test Shared {self.shared_symmetries[0]} {self.shared_symmetries[1]} {self.shared_symmetries[2]}"
         )
         if config.display_verbose:
-            display(input, input_filled, title=f"Test Shared")
+            display(input_obj, input_filled, title=f"Test Shared")
 
         if self.output_is_largest_block_object:
-            return extract_largest_block(input, input_filled)
+            return extract_largest_block(input_obj, input_filled)
         else:
             return input_filled
 
-    def solve_find_symmetry(self, input: Object) -> Optional[Object]:
+    def solve_find_symmetry(self, input_obj: Object) -> Optional[Object]:
+        """Solve by finding symmetry for each input."""
         assert self.color is not None
 
         if config.find_periodic_symmetry:
             periodic_symmetry_input = find_periodic_symmetry_predicates(
-                input, self.color, self.mask
+                input_obj, self.color, self.mask
             )
         else:
             periodic_symmetry_input = PeriodicGridSymmetry()
         input_filled = fill_grid(
-            input,
+            input_obj,
             self.mask,
             periodic_symmetry=periodic_symmetry_input,
             unknown=self.color,
         )
         if config.find_non_periodic_symmetry:
             non_periodic_symmetry_input = find_non_periodic_symmetry_predicates(
-                input, self.color
+                input_obj, self.color
             )
         else:
             non_periodic_symmetry_input = NonPeriodicGridSymmetry()
@@ -338,7 +348,7 @@ class InpaintingTransform:
         )
 
         input_filled = fill_grid(
-            input,
+            input_obj,
             self.mask,
             periodic_symmetry=periodic_symmetry_input,
             non_periodic_symmetry=non_periodic_symmetry_input,
@@ -347,7 +357,7 @@ class InpaintingTransform:
 
         if config.display_verbose:
             display(
-                input,
+                input_obj,
                 input_filled,
                 title=f"Test: NonShared",
                 left_title=f"input",
@@ -356,18 +366,18 @@ class InpaintingTransform:
 
         if self.mask is not None:
             input_filled.add_object_in_place(
-                input.apply_mask(self.mask, background_color=self.color),
+                input_obj.apply_mask(self.mask, background_color=self.color),
                 background_color=self.color,
             )
-        # check if there are leftover unknown colors
+        # Check if there are leftover unknown colors
         data = input_filled._data
         if np.any(data == self.color):
             logger.info(f"Test: Leftover unknown color: {self.color}")
             if config.display_verbose:
-                display(input, input_filled, title=f"Test: Leftover covered cells")
+                display(input_obj, input_filled, title=f"Test: Leftover covered cells")
             return None
         if self.output_is_largest_block_object:
-            return extract_largest_block(input, input_filled)
+            return extract_largest_block(input_obj, input_filled)
         else:
             return input_filled
 
@@ -383,17 +393,20 @@ def is_inpainting_puzzle(
 
 
 def check_inpainting_conditions(
-    input: Object, output: Object, output_is_block: bool
+    input_obj: Object, output_obj: Object, output_is_block: bool
 ) -> Optional[int]:
-    # Validate input-output size, color match, and overall similarity with allowed discrepancies.
-    if input.size != output.size:
+    """
+    Validate input-output size, color match, and overall similarity with allowed discrepancies.
+    """
+    if input_obj.size != output_obj.size:
         if output_is_block:
-            largest_block_object = get_largest_block_object(input)
-            if largest_block_object is None:
-                return None
-            if largest_block_object.size != output.size:
-                return None
-            if largest_block_object.width < 2 or largest_block_object.height < 2:
+            largest_block_object = get_largest_block_object(input_obj)
+            if (
+                largest_block_object is None
+                or largest_block_object.size != output_obj.size
+                or largest_block_object.width < 2
+                or largest_block_object.height < 2
+            ):
                 return None
             return largest_block_object.main_color()
         else:
@@ -403,39 +416,37 @@ def check_inpainting_conditions(
             return None
 
     # Check if input has one more color than output
-    if len(input.get_colors(allow_black=True)) - 1 != len(
-        output.get_colors(allow_black=True)
-    ):
+    input_colors = input_obj.get_colors(allow_black=True)
+    output_colors = output_obj.get_colors(allow_black=True)
+    if len(input_colors) - 1 != len(output_colors):
         return None
-    colors_only_in_input = set(input.get_colors(allow_black=True)) - set(
-        output.get_colors(allow_black=True)
-    )
+    colors_only_in_input = set(input_colors) - set(output_colors)
     if len(colors_only_in_input) != 1:
         return None
     color = colors_only_in_input.pop()
 
     # Check if input and output are the same except for the color
-    for x in range(input.width):
-        for y in range(input.height):
-            if input[x, y] == color:
+    for x in range(input_obj.width):
+        for y in range(input_obj.height):
+            if input_obj[x, y] == color:
                 continue
-            if input[x, y] != output[x, y]:
+            if input_obj[x, y] != output_obj[x, y]:
                 return None
 
     # Check if output has high regularity score
-    if regularity_score(output) >= config.inpainting_regularity_score_threshold:
+    if regularity_score(output_obj) >= config.inpainting_regularity_score_threshold:
         return None
 
     return color
 
 
-def update_mask(input: Object, output: Object, mask: Object) -> None:
+def update_mask(input_obj: Object, output_obj: Object, mask: Object) -> None:
     """
     Update the mask grid in-place with 0s where input and output objects differ.
     """
-    for x in range(output.width):
-        for y in range(output.height):
-            if input[x, y] != output[x, y]:
+    for x in range(output_obj.width):
+        for y in range(output_obj.height):
+            if input_obj[x, y] != output_obj[x, y]:
                 mask[x, y] = 0
 
 
@@ -451,34 +462,32 @@ def mask_from_all_outputs(examples: Examples[Object, Object]) -> Optional[Object
     mask = Object.empty(first_output.size, background_color=1)
 
     # Update the mask with each example
-    for input, output in examples:
-        color = check_inpainting_conditions(input, output, output_is_block=False)
+    for input_obj, output_obj in examples:
+        color = check_inpainting_conditions(
+            input_obj, output_obj, output_is_block=False
+        )
         if color is None:
             return None
-        if mask.size != output.size or input.size != output.size:
+        if mask.size != output_obj.size or input_obj.size != output_obj.size:
             return None
-        update_mask(first_output, output, mask)
+        update_mask(first_output, output_obj, mask)
     return mask
 
 
 def apply_mask_to_filled_grid(
     examples: Examples[Object, Object],
     filled_grid: Object,
-    input: Object,
+    input_obj: Object,
     mask: Optional[Object],
     color_only_in_input: int,
     apply_mask_to_input: bool,
-):
+) -> Object:
     """
     Apply the mask to the filled grid, using input or the first output as the source.
     If mask is not None, mask out areas where input and output differ.
     """
     if mask is not None:
-        if apply_mask_to_input:
-            source = input
-        else:
-            first_output = examples[0][1]
-            source = first_output
+        source = input_obj if apply_mask_to_input else examples[0][1]
         filled_grid.add_object_in_place(
             source.apply_mask(mask, background_color=color_only_in_input),
             background_color=color_only_in_input,
@@ -488,8 +497,8 @@ def apply_mask_to_filled_grid(
 
 def check_correctness(
     examples: Examples[Object, Object],
-    input: Object,
-    output: Object,
+    input_obj: Object,
+    output_obj: Object,
     shared_symmetries: Tuple[
         NonPeriodicGridSymmetry, PeriodicGridSymmetry, List[CardinalityPredicate], int
     ],
@@ -507,7 +516,7 @@ def check_correctness(
         color_only_in_input,
     ) = shared_symmetries
     filled_grid = fill_grid(
-        input,
+        input_obj,
         mask,
         periodic_shared,
         non_periodic_shared,
@@ -515,19 +524,25 @@ def check_correctness(
         color_only_in_input,
     )
     filled_grid = apply_mask_to_filled_grid(
-        examples, filled_grid, input, mask, color_only_in_input, apply_mask_to_input
+        examples,
+        filled_grid,
+        input_obj,
+        mask,
+        color_only_in_input,
+        apply_mask_to_input,
     )
 
     if output_is_largest_block_object:
-        candidate_output = extract_largest_block(input, filled_grid)
-        return candidate_output == output
+        candidate_output = extract_largest_block(input_obj, filled_grid)
+        return candidate_output == output_obj
     else:
-        return check_equality_modulo_mask(filled_grid, output, mask)
+        return check_equality_modulo_mask(filled_grid, output_obj, mask)
 
 
 def check_equality_modulo_mask(
     grid1: Object, grid2: Object, mask: Optional[Object]
 ) -> bool:
+    """Check if two grids are equal, ignoring differences where mask is applied."""
     for x in range(grid1.width):
         for y in range(grid1.height):
             if grid1[x, y] != grid2[x, y] and (mask is None or mask[x, y] == 0):
@@ -535,11 +550,48 @@ def check_equality_modulo_mask(
     return True
 
 
+def extract_largest_block(input_obj: Object, filled_grid: Object) -> Object:
+    """Extract the largest block object from the filled grid."""
+    largest_block_object = get_largest_block_object(input_obj)
+    assert largest_block_object is not None
+    origin = largest_block_object.origin
+    width, height = largest_block_object.size
+    data = filled_grid._data
+
+    # Extract the subgrid corresponding to the largest block object
+    largest_block_data = data[
+        origin[1] : origin[1] + height, origin[0] : origin[0] + width
+    ]
+    return Object(largest_block_data)
+
+
+def inpainting_xform(
+    examples: Examples[Object, Object],
+    task_name: str,
+    nesting_level: int,
+    mask: Optional[Object],
+    apply_mask_to_input: bool,
+    output_is_block: bool,
+) -> Optional[Match[Object, Object]]:
+    """Main inpainting transform function."""
+    transform = InpaintingTransform(
+        examples, task_name, nesting_level, mask, apply_mask_to_input, output_is_block
+    )
+
+    # First phase: Analyze
+    if not transform.analyze():
+        return None  # Strategy determination failed
+
+    # Second phase: Return the state and solve function
+    return (transform.state, transform.solve)
+
+
 def inpainting_xform_no_mask(
     examples: Examples[Object, Object],
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
+    """Inpainting transform without mask."""
     return inpainting_xform(
         examples,
         task_name,
@@ -555,6 +607,7 @@ def inpainting_xform_output_is_block(
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
+    """Inpainting transform where output is the largest block."""
     return inpainting_xform(
         examples,
         task_name,
@@ -570,10 +623,10 @@ def inpainting_xform_with_mask(
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
+    """Inpainting transform with mask."""
     mask = mask_from_all_outputs(examples)
-    if mask is not None:
-        if config.display_verbose:
-            display(mask, title=f"Mask")
+    if mask is not None and config.display_verbose:
+        display(mask, title=f"Mask")
     return inpainting_xform(
         examples,
         task_name,
@@ -582,37 +635,3 @@ def inpainting_xform_with_mask(
         apply_mask_to_input=False,
         output_is_block=False,
     )
-
-
-def extract_largest_block(input: Object, filled_grid: Object) -> Object:
-    largest_block_object = get_largest_block_object(input)
-    assert largest_block_object is not None
-    origin = largest_block_object.origin
-    width, height = largest_block_object.size
-    data = filled_grid._data
-
-    # Extract the subgrid from output corresponding to the largest block object
-    largest_block_object_data = data[
-        origin[1] : origin[1] + height, origin[0] : origin[0] + width
-    ]
-    return Object(largest_block_object_data)
-
-
-def inpainting_xform(
-    examples: Examples[Object, Object],
-    task_name: str,
-    nesting_level: int,
-    mask: Optional[Object],
-    apply_mask_to_input: bool,
-    output_is_block: bool,
-) -> Optional[Match[Object, Object]]:
-    transform = InpaintingTransform(
-        examples, task_name, nesting_level, mask, apply_mask_to_input, output_is_block
-    )
-
-    # First phase: Analyze
-    if not transform.analyze():
-        return None  # Strategy determination failed
-
-    # Second phase: Return the state and solve function
-    return (transform.state, transform.solve)
