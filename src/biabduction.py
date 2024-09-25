@@ -169,10 +169,17 @@ def bi_abduction():
     log_evaluation_results("evaluation", correct_ev, incorrect_ev)
 
     # Write summary of results to JSON file
+    import json
+
+    results = {
+        "training_data": perc_correct_tr,
+        "evaluation_data": perc_correct_ev,
+        "training_correct": correct_tr,
+        "evaluation_correct": correct_ev
+    }
+
     with open("simple.json", "w") as f:
-        f.write(
-            f'{{"training_data":{perc_correct_tr},"evaluation_data":{perc_correct_ev}}}'
-        )
+        json.dump(results, f, indent=4)
 
 
 if __name__ == "__main__":
