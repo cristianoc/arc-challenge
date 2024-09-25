@@ -85,8 +85,8 @@ num_difficulties_xform = max(xform.difficulty for xform in gridxforms + desperat
 
 
 def process_tasks(tasks: Tasks, set: str):
-    num_correct = 0
-    num_incorrect = 0
+    correct = []
+    incorrect = []
     for task_name, task in tasks.items():
         config.display_this_task = False
         if config.task_name and task_name != config.task_name:
@@ -121,7 +121,7 @@ def process_tasks(tasks: Tasks, set: str):
                 gridxforms + desperatexforms, examples, tests, task_name, 0
             )
             if correct_xform is not None:
-                num_correct += 1
+                correct.append(task_name)
                 if False:
                     grids = [(example[0], example[1]) for example in examples]
                     display_multiple(grids, title=f"{task_name} {set}")
@@ -139,34 +139,34 @@ def process_tasks(tasks: Tasks, set: str):
         logger.warning(
             f"Could not find correct transformation for {task_name} {set} examples"
         )
-        num_incorrect += 1
+        incorrect.append(task_name)
 
-    return num_correct, num_incorrect
+    return correct, incorrect
 
 
-def compute_perc_correct(num_correct: int, num_incorrect: int) -> Optional[float]:
-    if num_correct + num_incorrect > 0:
-        return int(1000 * num_correct / (num_correct + num_incorrect)) / 10
+def compute_perc_correct(correct: List[str], incorrect: List[str]) -> Optional[float]:
+    if len(correct) + len(incorrect) > 0:
+        return int(1000 * len(correct) / (len(correct) + len(incorrect))) / 10
     return None
 
 
 def bi_abduction():
-    num_correct_tr, num_incorrect_tr = process_tasks(training_data, "training_data")
-    num_correct_ev, num_incorrect_ev = process_tasks(evaluation_data, "evaluation_data")
-    perc_correct_tr = compute_perc_correct(num_correct_tr, num_incorrect_tr)
-    perc_correct_ev = compute_perc_correct(num_correct_ev, num_incorrect_ev)
+    correct_tr, incorrect_tr = process_tasks(training_data, "training_data")
+    correct_ev, incorrect_ev = process_tasks(evaluation_data, "evaluation_data")
+    perc_correct_tr = compute_perc_correct(correct_tr, incorrect_tr)
+    perc_correct_ev = compute_perc_correct(correct_ev, incorrect_ev)
 
-    def log_evaluation_results(set: str, num_correct: int, num_incorrect: int):
-        perc_correct = compute_perc_correct(num_correct, num_incorrect)
+    def log_evaluation_results(set: str, correct: List[str], incorrect: List[str]):
+        perc_correct = compute_perc_correct(correct, incorrect)
         if perc_correct is not None:
             logger.error(
                 f"{set.capitalize()} data: "
-                f"Correct: {num_correct}, Incorrect: {num_incorrect}, Score: {perc_correct}%"
+                f"Correct: {len(correct)}, Incorrect: {len(incorrect)}, Score: {perc_correct}%"
             )
 
     logger.error("\n***Summary***")
-    log_evaluation_results("training", num_correct_tr, num_incorrect_tr)
-    log_evaluation_results("evaluation", num_correct_ev, num_incorrect_ev)
+    log_evaluation_results("training", correct_tr, incorrect_tr)
+    log_evaluation_results("evaluation", correct_ev, incorrect_ev)
 
     # Write summary of results to JSON file
     with open("simple.json", "w") as f:
