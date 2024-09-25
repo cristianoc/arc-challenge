@@ -1,11 +1,11 @@
 from typing import List, Optional, Tuple
 
 from bi_types import Example, Examples, GridAndObjects, Match, XformEntry
-from expansion_match import check_fractal_expansion_sizes, stretch_height
+from expansion_match import stretch_height
 from find_xform import find_xform_for_examples
 from logger import logger
 from map_function_match import expansion_xforms, out_objects_are_a_subset
-from objects import Object
+from objects import Object, display_multiple
 
 map_xforms: List[XformEntry[Object, Object]] = [XformEntry(stretch_height, 1)]
 
@@ -47,6 +47,29 @@ def map_first_input_to_output_grid(
         input_output_objects_examples.append((input_objects[0], output_objects[0]))
 
     return input_output_objects_examples
+
+
+def check_fractal_expansion_sizes(
+    examples: Examples[GridAndObjects, List[Object]],
+) -> bool:
+    """
+    Check if every input is NxN and the output's size is N^2xN^2
+    """
+    for (input_grid, input_objects), output_objects in examples:
+        if len(input_objects) != 1 or len(output_objects) != 1:
+            return False
+    output_obj = output_objects[0]
+    input_obj = input_objects[0]
+    # Ensure input is NxN (i.e., square)
+    if input_obj.width != input_obj.height:
+        return False
+    # Ensure output is N^2xN^2
+    if (
+        output_obj.width != input_obj.width**2
+        or output_obj.height != input_obj.height**2
+    ):
+        return False
+    return True
 
 
 def match_object_list(

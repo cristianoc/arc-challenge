@@ -7,31 +7,7 @@ from logger import logger
 from objects import Object, display, display_multiple
 
 
-def check_fractal_expansion_sizes(
-    examples: Examples[GridAndObjects, List[Object]],
-) -> bool:
-    """
-    Check if every input is NxN and the output's size is N^2xN^2
-    """
-    for (input_grid, input_objects), output_objects in examples:
-        if len(input_objects) == 0 or len(output_objects) == 0:
-            return False
-    for input_obj, output_obj in zip(input_objects, output_objects):
-        # Ensure input is NxN (i.e., square)
-        if input_obj.width != input_obj.height:
-            return False
-        # Ensure output is N^2xN^2
-        if (
-            output_obj.width != input_obj.width**2
-            or output_obj.height != input_obj.height**2
-        ):
-            return False
-    return True
-
-
-# TODDO: replace this with inferring a function from (grid, pixel coordinates) to output grid (of the same size)
-
-
+# TODO: replace this with inferring a function from (grid, pixel coordinates) to output grid (of the same size)
 def fractal_expansion(
     examples: Examples[Object, Object],
     task_name: str,
