@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Callable
 
 import config
 from bi_types import Examples, Match, Object, Xform, XformEntry
@@ -6,38 +6,35 @@ from logger import logger
 from objects import display, display_multiple
 
 
-def match_smallest_object(
-    examples: Examples[List[Object], int], task_name: str, nesting_level: int
-) -> Optional[Match[List[Object], int]]:
-    def get_smallest_index(inputs: List[Object]) -> int:
-        smallest_index, _ = min(
-            [(i, o) for i, o in enumerate(inputs)],
-            key=lambda x: x[1].size,
-        )
-        return smallest_index
+def matcher_from_primitive(
+    get_index: Callable[[List[Object]], int]
+) -> Xform[List[Object], int]:
+    def matcher(
+        examples: Examples[List[Object], int], task_name: str, nesting_level: int
+    ) -> Optional[Match[List[Object], int]]:
+        for inputs, index in examples:
+            if index != get_index(inputs):
+                return None
 
-    for inputs, index in examples:
-        smallest_index = get_smallest_index(inputs)
-        if smallest_index != index:
-            return None
+        state = "match_smallest_object"
 
-    state = "match_smallest_object"
+        state = f"matcher_from_primitive({get_index.__name__})"
+        return (state, lambda inputs: get_index(inputs))
 
-    def solve(inputs: List[Object]) -> Optional[int]:
-        return get_smallest_index(inputs)
+    return matcher
 
-    match : Match[List[Object], int] = (state, solve)
-    return match
+def feat_smallest_area(inputs: List[Object]) -> int:
+    smallest_index, _ = min(
+        [(i, o) for i, o in enumerate(inputs)],
+        key=lambda x: x[1].area,
+    )
+    return smallest_index
 
-q :Xform[List[Object], int] = match_smallest_object
+# TODO: use detect_common_features
 
-# Xform = Callable[[Examples[T1, T2], str, int], Optional[Match[T2, T2]]]
-
-
-# xform to select the index of the object that matches the output
-# select_object_xforms: List[XformEntry[List[Object], int]] = [
-#     XformEntry(match_smallest_object, 3)
-# ]
+select_object_xforms: List[XformEntry[List[Object], int]] = [
+    XformEntry(matcher_from_primitive(feat_smallest_area), 3)
+]
 
 
 def match_n_objects_with_output(
@@ -48,6 +45,7 @@ def match_n_objects_with_output(
     logger.info(
         f"{'  ' * nesting_level}match_n_objects_with_output examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
     )
+    objext_and_index_list: List[Tuple[List[Object], int]] = []
     for input, output in examples:
         if input.size == output.size:
             return None
@@ -65,9 +63,12 @@ def match_n_objects_with_output(
             return None
         output_index = output_indices[0]
 
-        logger.info(
-            f"{'  ' * nesting_level} num objects:{n} output index:{output_index}"
-        )
-    config.display_this_task = True
+        objext_and_index_list.append((objects, output_index))
+
+    for xform in select_object_xforms:
+        result = xform.xform(objext_and_index_list, task_name, nesting_level)
+        if result is None:
+            continue
+        config.display_this_task = True
 
     return None
