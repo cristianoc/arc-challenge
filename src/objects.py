@@ -178,6 +178,7 @@ class Object:
         allow_black: bool = False,
         background_color: int = 0,
         multicolor: bool = False,
+        keep_origin: bool = True,
     ) -> List["Object"]:
         def create_object(
             grid: Object, component: ConnectedComponent, background_color: int
@@ -195,7 +196,7 @@ class Object:
             for x, y in component:
                 q = grid[x, y]
                 data[x - min_x, y - min_y] = q
-            return Object(origin=(min_x, min_y), data=data._data)
+            return Object(origin=(min_x, min_y) if keep_origin else (0, 0), data=data._data)
 
         connected_components = find_connected_components(
             grid=self,
@@ -208,6 +209,28 @@ class Object:
             for component in connected_components
         ]
         return detected_objects
+
+    def downscale(self, factor: int) -> "Object":
+        # Check if the object dimensions are divisible by the factor
+        if self.width % factor != 0 or self.height != self.width:
+            raise ValueError("Object dimensions must be divisible by the downscale factor.")
+
+        # Create a new array to hold the downscaled data
+        new_height = self.height // factor
+        new_width = self.width // factor
+        new_data = np.zeros((new_height, new_width), dtype=self._data.dtype)
+
+        # Fill the new array by checking blocks
+        for i in range(new_height):
+            for j in range(new_width):
+                block = self._data[i*factor:(i+1)*factor, j*factor:(j+1)*factor]
+                unique_colors = np.unique(block)
+                if len(unique_colors) == 1:
+                    new_data[i, j] = unique_colors[0]
+                else:
+                    raise ValueError(f"Block at ({i}, {j}) contains multiple colors.")
+
+        return Object(origin=self.origin, data=new_data)
 
     def rot90_clockwise(self, n: int) -> "Object":
         x: np.ndarray = np.rot90(self._data.copy(), -n)
