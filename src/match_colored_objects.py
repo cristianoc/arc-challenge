@@ -1,5 +1,6 @@
-from typing import Callable, List, Optional
+from typing import List, Optional
 
+import config
 from bi_types import Example, Examples, GridAndObjects, Match, XformEntry
 from find_xform import find_xform_for_examples
 from logger import logger
@@ -13,6 +14,10 @@ from objects import Object, display_multiple
 def check_matching_colored_objects_count_and_color(
     examples: Examples[Object, Object]
 ) -> bool:
+    """
+    Check if the number of colored objects in the input and output are the same
+    and if the colors are the same.
+    """
     for input, output in examples:
         input_objects = input.detect_colored_objects(background_color=0)
         output_objects = output.detect_colored_objects(background_color=0)
@@ -27,7 +32,6 @@ def check_matching_colored_objects_count_and_color(
         if different_color:
             return False
     return True
-
 
 def match_colored_objects(
     examples: Examples[Object, Object],
@@ -47,10 +51,6 @@ def match_colored_objects(
     # each example has the same number of input and output objects
     # so we can turn those lists into and ObjectListExample
     object_list_examples: Examples[GridAndObjects, List[Object]] = []
-
-    def get_grid_and_objects(input: Object) -> GridAndObjects:
-        input_objects = get_colored_objects(input)
-        return (input, input_objects)
 
     for input, output in examples:
         input_objects = get_colored_objects(input)
