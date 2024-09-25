@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 
@@ -20,6 +20,356 @@ from symmetry import (
     find_periodic_symmetry_predicates,
 )
 from visual_cortex import regularity_score
+
+
+class InpaintingTransform:
+    def __init__(
+        self,
+        examples: Examples[Object, Object],
+        task_name: str,
+        nesting_level: int,
+        mask: Optional[Object],
+        apply_mask_to_input: bool,
+        output_is_block: bool,
+    ):
+        self.examples = examples
+        self.task_name = task_name
+        self.nesting_level = nesting_level
+        self.mask = mask
+        self.apply_mask_to_input = apply_mask_to_input
+        self.output_is_block = output_is_block
+
+        self.color: Optional[int] = None
+        self.output_is_largest_block_object = False
+        self.shared_symmetries: Optional[
+            Tuple[
+                NonPeriodicGridSymmetry,
+                PeriodicGridSymmetry,
+                List[CardinalityPredicate],
+                int,
+            ]
+        ] = None
+        self.state = ""
+
+    def analyze(self) -> bool:
+        """First phase: Analyze examples and determine strategy."""
+        self.color = self.get_inpainting_color()
+        if self.color is None:
+            return False
+
+        self.output_is_largest_block_object = (
+            self.determine_output_is_largest_block_object()
+        )
+
+        shared_symmetries_result = self.compute_shared_symmetries()
+        if shared_symmetries_result is None:
+            return False
+
+        self.shared_symmetries, num_correct = shared_symmetries_result
+        if self.check_shared_symmetries(num_correct) == False:
+            self.shared_symmetries = None
+
+        if self.shared_symmetries is not None:
+            self.state = (
+                f"symmetry({self.shared_symmetries[0]}, {self.shared_symmetries[1]})"
+            )
+        else:
+            if num_correct == len(self.examples):
+                self.state = "find_symmetry_for_each_input"
+            else:
+                return False
+
+        return True
+
+    def solve(self, input: Object) -> Optional[Object]:
+        """Second phase: Apply the determined strategy to solve."""
+        if self.shared_symmetries is not None:
+            return self.solve_shared(input)
+        else:
+            return self.solve_find_symmetry(input)
+
+    def get_inpainting_color(self) -> Optional[int]:
+        color_only_in_input = None
+        for input, output in self.examples:
+            color = check_inpainting_conditions(input, output, self.output_is_block)
+            if color is None:
+                return None
+            if color_only_in_input is None:
+                color_only_in_input = color
+            else:
+                if color != color_only_in_input:
+                    logger.info(f"Color mismatch: {color} != {color_only_in_input}")
+                    return None
+        return color_only_in_input
+
+    def determine_output_is_largest_block_object(self) -> bool:
+        if self.output_is_block:
+            return (
+                any(input.size != output.size for input, output in self.examples)
+                if self.mask is None
+                else False
+            )
+        else:
+            return False
+
+    def compute_shared_symmetries(
+        self,
+    ) -> Optional[
+        Tuple[
+            Tuple[
+                NonPeriodicGridSymmetry,
+                PeriodicGridSymmetry,
+                List[CardinalityPredicate],
+                int,
+            ],
+            int,
+        ]
+    ]:
+        """
+        Compute shared symmetries (non-periodic, periodic, cardinality) across all examples and count how many examples match.
+        """
+        assert self.color is not None
+
+        num_correct = 0
+        non_periodic_shared = None
+        periodic_shared = None
+        cardinality_shared: Optional[List[CardinalityPredicate]] = None
+
+        for i, (input, output) in enumerate(self.examples):
+            if config.find_non_periodic_symmetry:
+                if self.output_is_largest_block_object:
+                    non_periodic_symmetry_output = (
+                        find_non_periodic_symmetry_predicates(input, self.color)
+                    )
+                else:
+                    non_periodic_symmetry_output = (
+                        find_non_periodic_symmetry_predicates(output, self.color)
+                    )
+            else:
+                non_periodic_symmetry_output = NonPeriodicGridSymmetry()
+            if non_periodic_shared is None:
+                non_periodic_shared = non_periodic_symmetry_output
+            else:
+                non_periodic_shared = non_periodic_shared.intersection(
+                    non_periodic_symmetry_output
+                )
+
+            if config.find_cardinality_predicates:
+                cardinality_shared_output = find_cardinality_predicates(output)
+            else:
+                cardinality_shared_output = []
+            if cardinality_shared is None:
+                cardinality_shared = cardinality_shared_output
+            else:
+                cardinality_shared = predicates_intersection(
+                    cardinality_shared, cardinality_shared_output
+                )
+
+            if config.find_periodic_symmetry:
+                periodic_symmetry_output = find_periodic_symmetry_predicates(
+                    output, self.color, self.mask
+                )
+            else:
+                periodic_symmetry_output = PeriodicGridSymmetry()
+            if periodic_shared is None:
+                periodic_shared = periodic_symmetry_output
+            else:
+                periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
+
+            output_symmetries = (
+                non_periodic_symmetry_output,
+                periodic_symmetry_output,
+                cardinality_shared_output,
+                self.color,
+            )
+            is_correct = check_correctness(
+                self.examples,
+                input,
+                output,
+                output_symmetries,
+                self.mask,
+                self.output_is_largest_block_object,
+                self.apply_mask_to_input,
+            )
+            if is_correct:
+                num_correct += 1
+
+            logger.info(
+                f"#{i} From Output {non_periodic_symmetry_output} {periodic_symmetry_output} {cardinality_shared} is_correct: {is_correct}"
+            )
+
+        if (
+            periodic_shared is None
+            or non_periodic_shared is None
+            or cardinality_shared is None
+            or self.color is None
+        ):
+            return None
+
+        return (
+            (
+                non_periodic_shared,
+                periodic_shared,
+                cardinality_shared,
+                self.color,
+            ),
+            num_correct,
+        )
+
+    def check_shared_symmetries(self, num_correct: int) -> bool:
+        assert self.shared_symmetries is not None
+        assert self.color is not None
+
+        use_shared_symmetries_in_test = True
+        for i, (input, output) in enumerate(self.examples):
+            filled_grid = fill_grid(
+                input,
+                self.mask,
+                periodic_symmetry=self.shared_symmetries[1],
+                non_periodic_symmetry=self.shared_symmetries[0],
+                cardinality_predicates=self.shared_symmetries[2],
+                unknown=self.shared_symmetries[3],
+            )
+
+            filled_grid = apply_mask_to_filled_grid(
+                self.examples,
+                filled_grid,
+                input,
+                self.mask,
+                self.color,
+                self.apply_mask_to_input,
+            )
+
+            if self.output_is_largest_block_object:
+                candidate_output = extract_largest_block(input, filled_grid)
+                is_correct = candidate_output == output
+            else:
+                is_correct = check_equality_modulo_mask(filled_grid, output, self.mask)
+            logger.info(
+                f"#{i} Shared {self.shared_symmetries[0]} {self.shared_symmetries[1]} {self.shared_symmetries[2]} is_correct: {is_correct}"
+            )
+            if config.display_verbose and self.shared_symmetries[0].dgm is not None:
+                display(
+                    output,
+                    self.shared_symmetries[0].dgm,
+                    title=f"Shared Diagonal Symmetry",
+                    left_title=f"output",
+                    right_title=f"diagonal symmetry",
+                )
+
+            if not is_correct:
+                if config.display_verbose:
+                    display(input, filled_grid, title=f"{is_correct} Shared Symm")
+                    if self.mask is not None:
+                        display(self.mask, title=f"{is_correct} Mask")
+            if is_correct:
+                logger.info(f"#{i} Found correct solution using shared symmetries")
+                pass
+            else:
+                use_shared_symmetries_in_test = False
+                if num_correct == len(self.examples):
+                    # Since the per-example symmetry is correct, we'll try to find the symmetry again in the test input
+                    logger.info(
+                        f"#{i} Shared symmetries are not correct, but each symmetry is correct"
+                    )
+                    break
+                else:
+                    # Symmetry neither correct at the per-example level nor the shared level: give up
+                    logger.info(f"#{i} Shared symmetries are not correct")
+                    return False
+
+        return use_shared_symmetries_in_test
+
+    def solve_shared(self, input: Object) -> Optional[Object]:
+        assert self.shared_symmetries is not None
+        assert self.color is not None
+
+        input_filled = fill_grid(
+            input,
+            self.mask,
+            periodic_symmetry=self.shared_symmetries[1],
+            non_periodic_symmetry=self.shared_symmetries[0],
+            cardinality_predicates=self.shared_symmetries[2],
+            unknown=self.shared_symmetries[3],
+        )
+        input_filled = apply_mask_to_filled_grid(
+            self.examples,
+            input_filled,
+            input,
+            self.mask,
+            self.color,
+            self.apply_mask_to_input,
+        )
+        logger.info(
+            f"Test Shared {self.shared_symmetries[0]} {self.shared_symmetries[1]} {self.shared_symmetries[2]}"
+        )
+        if config.display_verbose:
+            display(input, input_filled, title=f"Test Shared")
+
+        if self.output_is_largest_block_object:
+            return extract_largest_block(input, input_filled)
+        else:
+            return input_filled
+
+    def solve_find_symmetry(self, input: Object) -> Optional[Object]:
+        assert self.color is not None
+
+        if config.find_periodic_symmetry:
+            periodic_symmetry_input = find_periodic_symmetry_predicates(
+                input, self.color, self.mask
+            )
+        else:
+            periodic_symmetry_input = PeriodicGridSymmetry()
+        input_filled = fill_grid(
+            input,
+            self.mask,
+            periodic_symmetry=periodic_symmetry_input,
+            unknown=self.color,
+        )
+        if config.find_non_periodic_symmetry:
+            non_periodic_symmetry_input = find_non_periodic_symmetry_predicates(
+                input, self.color
+            )
+        else:
+            non_periodic_symmetry_input = NonPeriodicGridSymmetry()
+
+        logger.info(
+            f"Test NonShared {non_periodic_symmetry_input} {periodic_symmetry_input}"
+        )
+
+        input_filled = fill_grid(
+            input,
+            self.mask,
+            periodic_symmetry=periodic_symmetry_input,
+            non_periodic_symmetry=non_periodic_symmetry_input,
+            unknown=self.color,
+        )
+
+        if config.display_verbose:
+            display(
+                input,
+                input_filled,
+                title=f"Test: NonShared",
+                left_title=f"input",
+                right_title=f"filled",
+            )
+
+        if self.mask is not None:
+            input_filled.add_object_in_place(
+                input.apply_mask(self.mask, background_color=self.color),
+                background_color=self.color,
+            )
+        # check if there are leftover unknown colors
+        data = input_filled._data
+        if np.any(data == self.color):
+            logger.info(f"Test: Leftover unknown color: {self.color}")
+            if config.display_verbose:
+                display(input, input_filled, title=f"Test: Leftover covered cells")
+            return None
+        if self.output_is_largest_block_object:
+            return extract_largest_block(input, input_filled)
+        else:
+            return input_filled
 
 
 def is_inpainting_puzzle(
@@ -111,37 +461,12 @@ def mask_from_all_outputs(examples: Examples[Object, Object]) -> Optional[Object
     return mask
 
 
-def get_inpainting_color(
-    examples: Examples[Object, Object], output_is_block: bool
-) -> Optional[int]:
-    color_only_in_input = None
-    for input, output in examples:
-        color = check_inpainting_conditions(input, output, output_is_block)
-        if color is None:
-            return None
-        if color_only_in_input is None:
-            color_only_in_input = color
-        else:
-            if color != color_only_in_input:
-                logger.info(f"Color mismatch: {color} != {color_only_in_input}")
-                return None
-    return color_only_in_input
-
-
-SharedSymmetries = Tuple[
-    NonPeriodicGridSymmetry,
-    PeriodicGridSymmetry,
-    List[CardinalityPredicate],
-    int,
-]
-
-
 def apply_mask_to_filled_grid(
     examples: Examples[Object, Object],
-    filled_grid,
-    input,
-    mask,
-    color_only_in_input,
+    filled_grid: Object,
+    input: Object,
+    mask: Optional[Object],
+    color_only_in_input: int,
     apply_mask_to_input: bool,
 ):
     """
@@ -165,7 +490,9 @@ def check_correctness(
     examples: Examples[Object, Object],
     input: Object,
     output: Object,
-    shared_symmetries: SharedSymmetries,
+    shared_symmetries: Tuple[
+        NonPeriodicGridSymmetry, PeriodicGridSymmetry, List[CardinalityPredicate], int
+    ],
     mask: Optional[Object],
     output_is_largest_block_object: bool,
     apply_mask_to_input: bool,
@@ -196,120 +523,6 @@ def check_correctness(
         return candidate_output == output
     else:
         return check_equality_modulo_mask(filled_grid, output, mask)
-
-
-def compute_shared_symmetries(
-    examples: Examples[Object, Object],
-    mask: Optional[Object],
-    color_only_in_input: int,
-    output_is_largest_block_object: bool,
-    apply_mask_to_input: bool,
-) -> Optional[Tuple[SharedSymmetries, int]]:
-    """
-    Compute shared symmetries (non-periodic, periodic, cardinality) across all examples and count how many examples match.
-    """
-    num_correct = 0
-    non_periodic_shared = None
-    periodic_shared = None
-    cardinality_shared: Optional[List[CardinalityPredicate]] = None
-
-    for i, (input, output) in enumerate(examples):
-        if config.find_non_periodic_symmetry:
-            if output_is_largest_block_object:
-                non_periodic_symmetry_output = find_non_periodic_symmetry_predicates(
-                    input, color_only_in_input
-                )
-            else:
-                non_periodic_symmetry_output = find_non_periodic_symmetry_predicates(
-                    output, color_only_in_input
-                )
-        else:
-            non_periodic_symmetry_output = NonPeriodicGridSymmetry()
-        if non_periodic_shared is None:
-            non_periodic_shared = non_periodic_symmetry_output
-        else:
-            non_periodic_shared = non_periodic_shared.intersection(
-                non_periodic_symmetry_output
-            )
-
-        if config.find_cardinality_predicates:
-            cardinality_shared_output = find_cardinality_predicates(output)
-        else:
-            cardinality_shared_output = []
-        if cardinality_shared is None:
-            cardinality_shared = cardinality_shared_output
-        else:
-            cardinality_shared = predicates_intersection(
-                cardinality_shared, cardinality_shared_output
-            )
-
-        if config.find_periodic_symmetry:
-            periodic_symmetry_output = find_periodic_symmetry_predicates(
-                output, color_only_in_input, mask
-            )
-        else:
-            periodic_symmetry_output = PeriodicGridSymmetry()
-        if periodic_shared is None:
-            periodic_shared = periodic_symmetry_output
-        else:
-            periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
-
-        output_symmetries = (
-            non_periodic_symmetry_output,
-            periodic_symmetry_output,
-            cardinality_shared_output,
-            color_only_in_input,
-        )
-        is_correct = check_correctness(
-            examples,
-            input,
-            output,
-            output_symmetries,
-            mask,
-            output_is_largest_block_object,
-            apply_mask_to_input,
-        )
-        if is_correct:
-            num_correct += 1
-
-        logger.info(
-            f"#{i} From Output {non_periodic_symmetry_output} {periodic_symmetry_output} {cardinality_shared} is_correct: {is_correct}"
-        )
-
-    if (
-        periodic_shared is None
-        or non_periodic_shared is None
-        or cardinality_shared is None
-        or color_only_in_input is None
-    ):
-        return None
-
-    return (
-        (
-            non_periodic_shared,
-            periodic_shared,
-            cardinality_shared,
-            color_only_in_input,
-        ),
-        num_correct,
-    )
-
-
-def apply_shared(
-    input: Object,
-    mask: Optional[Object],
-    non_periodic_shared: NonPeriodicGridSymmetry,
-    periodic_shared: PeriodicGridSymmetry,
-    color: int,
-) -> Object:
-    filled_grid = fill_grid(
-        input,
-        mask,
-        non_periodic_symmetry=non_periodic_shared,
-        periodic_symmetry=periodic_shared,
-        unknown=color,
-    )
-    return filled_grid
 
 
 def check_equality_modulo_mask(
@@ -391,193 +604,15 @@ def inpainting_xform(
     nesting_level: int,
     mask: Optional[Object],
     apply_mask_to_input: bool,
-    output_is_block: bool,  # whether block.size == output.size or input.size == output.size
+    output_is_block: bool,
 ) -> Optional[Match[Object, Object]]:
-    """
-    The new logic determines whether the symmetries found in the examples are sufficient to have a go at the test or whether one should give up on an in-painting solution.
-
-    Often the shared symmetry is correct, in which case we'll try the shared symmetry in the test input.
-    This is important on e.g. the puzzle, where the symmetry is only learned after looking at all the examples.
-
-    But if the symmetry in all the test examples, and the shared one, are incorrect, we give up.
-    """
-    if mask is not None and output_is_block:
-        assert False, "mask and output_is_block are not compatible"
-    color = get_inpainting_color(examples, output_is_block)
-    if color is None:
-        return None
-
-    if output_is_block:
-        output_is_largest_block_object = (
-            any(input.size != output.size for input, output in examples)
-            if mask is None
-            else False
-        )
-    else:
-        output_is_largest_block_object = False
-
-    shared_symmetries = compute_shared_symmetries(
-        examples, mask, color, output_is_largest_block_object, apply_mask_to_input
-    )
-    if shared_symmetries is None:
-        return None
-    (
-        non_periodic_shared,
-        periodic_shared,
-        cardinality_shared,
-        color_only_in_input,
-    ), num_correct = shared_symmetries
-
-    logger.info(
-        f"inpainting_xform examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level} non_periodic_symmetries:{non_periodic_shared} cardinality_shared:{cardinality_shared}"
+    transform = InpaintingTransform(
+        examples, task_name, nesting_level, mask, apply_mask_to_input, output_is_block
     )
 
-    use_shared_symmetries_in_test = True
-    for i, (input, output) in enumerate(examples):
-        filled_grid = fill_grid(
-            input,
-            mask,
-            periodic_shared,
-            non_periodic_shared,
-            cardinality_shared,
-            color_only_in_input,
-        )
+    # First phase: Analyze
+    if not transform.analyze():
+        return None  # Strategy determination failed
 
-        filled_grid = apply_mask_to_filled_grid(
-            examples, filled_grid, input, mask, color_only_in_input, apply_mask_to_input
-        )
-
-        if output_is_largest_block_object:
-            candidate_output = extract_largest_block(input, filled_grid)
-            is_correct = candidate_output == output
-        else:
-            is_correct = check_equality_modulo_mask(filled_grid, output, mask)
-        logger.info(
-            f"#{i} Shared {non_periodic_shared} {periodic_shared} {cardinality_shared} is_correct: {is_correct}"
-        )
-        if config.display_verbose and non_periodic_shared.dgm is not None:
-            display(
-                output,
-                non_periodic_shared.dgm,
-                title=f"Shared Diagonal Symmetry",
-                left_title=f"output",
-                right_title=f"diagonal symmetry",
-            )
-
-        if not is_correct:
-            if config.display_verbose:
-                display(input, filled_grid, title=f"{is_correct} Shared Symm")
-                if mask is not None:
-                    display(mask, title=f"{is_correct} Mask")
-        if is_correct:
-            logger.info(f"#{i} Found correct solution using shared symmetries")
-            pass
-        else:
-            use_shared_symmetries_in_test = False
-            if num_correct == len(examples):
-                # Since the per-example symmetry is correct, we'll try to find the symmetry again in the test input
-                logger.info(
-                    f"#{i} Shared symmetries are not correct, but each symmetry is correct"
-                )
-                break
-            else:
-                # Symmetry neither correct at the per-example level nor the shared level: give up
-                logger.info(f"#{i} Shared symmetries are not correct")
-                return None
-
-    if use_shared_symmetries_in_test:
-        state = f"symmetry({non_periodic_shared}, {periodic_shared})"
-
-        def solve_shared(input: Object) -> Object:
-            input_filled = fill_grid(
-                input,
-                mask,
-                periodic_shared,
-                non_periodic_shared,
-                cardinality_shared,
-                color_only_in_input,
-            )
-            input_filled = apply_mask_to_filled_grid(
-                examples,
-                input_filled,
-                input,
-                mask,
-                color_only_in_input,
-                apply_mask_to_input,
-            )
-            logger.info(
-                f"Test Shared {non_periodic_shared} {periodic_shared} {cardinality_shared}"
-            )
-            if config.display_verbose:
-                display(input, input_filled, title=f"Test Shared")
-
-            if output_is_largest_block_object:
-                return extract_largest_block(input, input_filled)
-            else:
-                return input_filled
-
-        return (state, solve_shared)
-
-    else:
-
-        def solve_find_symmetry(input: Object) -> Optional[Object]:
-            if config.find_periodic_symmetry:
-                periodic_symmetry_input = find_periodic_symmetry_predicates(
-                    input, color_only_in_input, mask
-                )
-            else:
-                periodic_symmetry_input = PeriodicGridSymmetry()
-            input_filled = fill_grid(
-                input,
-                mask,
-                periodic_symmetry=periodic_symmetry_input,
-                unknown=color_only_in_input,
-            )
-            if config.find_non_periodic_symmetry:
-                non_periodic_symmetry_input = find_non_periodic_symmetry_predicates(
-                    input, color_only_in_input
-                )
-            else:
-                non_periodic_symmetry_input = NonPeriodicGridSymmetry()
-
-            logger.info(
-                f"Test NonShared {non_periodic_symmetry_input} {periodic_symmetry_input}"
-            )
-
-            input_filled = fill_grid(
-                input,
-                mask,
-                periodic_symmetry=periodic_symmetry_input,
-                non_periodic_symmetry=non_periodic_symmetry_input,
-                unknown=color_only_in_input,
-            )
-
-            if config.display_verbose:
-                display(
-                    input,
-                    input_filled,
-                    title=f"Test: NonShared",
-                    left_title=f"input",
-                    right_title=f"filled",
-                )
-
-            if mask is not None:
-                input_filled.add_object_in_place(
-                    input.apply_mask(mask, background_color=color_only_in_input),
-                    background_color=color_only_in_input,
-                )
-            # check if there are leftover unknown colors
-            data = input_filled._data
-            if np.any(data == color_only_in_input):
-                logger.info(f"Test: Leftover unknown color: {color_only_in_input}")
-                if config.display_verbose:
-                    display(input, input_filled, title=f"Test: Leftover covered cells")
-                return None
-            if output_is_largest_block_object:
-                return extract_largest_block(input, input_filled)
-            else:
-                return input_filled
-
-        # Config.display_this_task = True
-        state = "find_symmetry_for_each_input"
-        return (state, solve_find_symmetry)
+    # Second phase: Return the state and solve function
+    return (transform.state, transform.solve)
