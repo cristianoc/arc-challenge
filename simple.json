@@ -1,6 +1,6 @@
 {
-    "training_data": 6.3,
-    "evaluation_data": 5.5,
+    "training_score": 6.3,
+    "evaluation_score": 5.5,
     "training_correct": [
         "25ff71a9.json",
         "ed36ccf7.json",

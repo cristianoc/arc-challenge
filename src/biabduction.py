@@ -172,8 +172,8 @@ def bi_abduction():
     import json
 
     results = {
-        "training_data": perc_correct_tr,
-        "evaluation_data": perc_correct_ev,
+        "training_score": perc_correct_tr,
+        "evaluation_score": perc_correct_ev,
         "training_correct": correct_tr,
         "evaluation_correct": correct_ev
     }
