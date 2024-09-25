@@ -155,11 +155,10 @@ class InpaintingTransform:
                     )
             else:
                 non_periodic_symmetry_output = NonPeriodicGridSymmetry()
-            non_periodic_shared = (
-                non_periodic_symmetry_output
-                if non_periodic_shared is None
-                else non_periodic_shared.intersection(non_periodic_symmetry_output)
-            )
+            if non_periodic_shared is None:
+                non_periodic_shared = non_periodic_symmetry_output
+            else:
+                non_periodic_shared = non_periodic_shared.intersection(non_periodic_symmetry_output)
 
             # Cardinality predicates
             if config.find_cardinality_predicates:
@@ -181,11 +180,10 @@ class InpaintingTransform:
                 )
             else:
                 periodic_symmetry_output = PeriodicGridSymmetry()
-            periodic_shared = (
-                periodic_symmetry_output
-                if periodic_shared is None
-                else periodic_shared.intersection(periodic_symmetry_output)
-            )
+            if periodic_shared is None:
+                periodic_shared = periodic_symmetry_output
+            else:
+                periodic_shared = periodic_shared.intersection(periodic_symmetry_output)
 
             output_symmetries = (
                 non_periodic_symmetry_output,
