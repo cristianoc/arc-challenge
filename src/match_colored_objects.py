@@ -40,7 +40,7 @@ def match_colored_objects(
     )
 
     color_match = check_matching_colored_objects_count_and_color(examples)
-    if color_match is None:
+    if not color_match:
         return None
     # now the colored input
 
