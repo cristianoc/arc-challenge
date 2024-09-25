@@ -52,13 +52,9 @@ def match_colored_objects(
         input_objects = get_colored_objects(input)
         return (input, input_objects)
 
-    input_grid_and_objects: GridAndObjects
-    output_grid_and_objects: GridAndObjects
     for input, output in examples:
-        input_grid_and_objects = get_grid_and_objects(input)
-        output_grid_and_objects = get_grid_and_objects(output)
-        input_objects = input_grid_and_objects[1]
-        output_objects = output_grid_and_objects[1]
+        input_objects = get_colored_objects(input)
+        output_objects = get_colored_objects(output)
 
         if len(input_objects) == 0 or len(output_objects) == 0:
             return None
@@ -75,8 +71,8 @@ def match_colored_objects(
             )
 
         object_list_example = (
-            input_grid_and_objects,
-            output_grid_and_objects[1],
+            (input, input_objects),
+            output_objects,
         )
         object_list_examples.append(object_list_example)
 
