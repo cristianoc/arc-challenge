@@ -2,7 +2,6 @@ from typing import List, Optional, Tuple, Callable
 
 import config
 from bi_types import Examples, Match, Object, Xform, XformEntry
-from inpainting_match import inpainting_xform
 from logger import logger
 from objects import display, display_multiple
 
@@ -101,6 +100,10 @@ def match2_binary_operation(
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Tuple[Object, Object], Object]]:
+    logger.info(
+        f"{'  ' * nesting_level}match2_binary_operation examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
+    )
+
     for (i1, i2), o in examples:
         if i1.size != o.size or i2.size != o.size:
             return None
@@ -131,6 +134,11 @@ def match2_downscale_square_object(
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Tuple[Object, Object], Object]]:
+
+    logger.info(
+        f"{'  ' * nesting_level}match2_downscale_square_object examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
+    )
+
     def get_multiple(input: Tuple[Object, Object]) -> Optional[int]:
         main_object = input[0]
         other_object = input[1]
@@ -158,7 +166,7 @@ def match2_downscale_square_object(
 
     found_xform = None
     for xform in combine_two_objects_xforms:
-        result = xform.xform(downscaled_examples, task_name, nesting_level)
+        result = xform.xform(downscaled_examples, task_name, nesting_level+1)
         if result is None:
             continue
         state_, solver_ = result
@@ -192,6 +200,9 @@ def match3plus_object_is_output(
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Tuple[Object, ...], Object]]:
+    logger.info(
+        f"{'  ' * nesting_level}match3plus_object_is_output examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
+    )
     for input, output in examples:
         if input[0] != output:
             return None
@@ -214,6 +225,7 @@ def match_n_objects_with_output(
     task_name: str,
     nesting_level: int,
 ) -> Optional[Match[Object, Object]]:
+
     logger.info(
         f"{'  ' * nesting_level}match_n_objects_with_output examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
     )
@@ -249,9 +261,11 @@ def match_n_objects_with_output(
         objects, output_index = objects_and_index
         objext_and_index_list.append((objects, output_index))
 
+    config.display_this_task = True
+
     found_select_xform = None
     for xform in select_object_xforms:
-        result = xform.xform(objext_and_index_list, task_name, nesting_level)
+        result = xform.xform(objext_and_index_list, task_name, nesting_level+1)
         if result is None:
             continue
         found_select_xform = result
@@ -289,7 +303,7 @@ def match_n_objects_with_output(
     if num_other_objects == 1:
         found_xform2 = None
         for xform2 in combine_two_objects_xforms:
-            match2 = xform2.xform(two_object_examples, task_name, nesting_level)
+            match2 = xform2.xform(two_object_examples, task_name, nesting_level+1)
             if match2 is None:
                 continue
             found_xform2 = match2
@@ -317,7 +331,7 @@ def match_n_objects_with_output(
     elif num_other_objects == 2:
         found_xform3 = None
         for xform3 in combine_threeplus_objects_xforms:
-            match3 = xform3.xform(threeplus_object_examples, task_name, nesting_level)
+            match3 = xform3.xform(threeplus_object_examples, task_name, nesting_level+1)
             if match3 is None:
                 continue
             found_xform3 = match3
