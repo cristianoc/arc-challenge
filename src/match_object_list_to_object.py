@@ -39,15 +39,14 @@ def match_object_list_to_object_by_painting(
             examples, task_name, nesting_level + 1
         )
         if match is not None:
-            state_list_xform, apply_state_list_xform = match
+            list_state, list_solve = match
 
             def solve(input: Object) -> Optional[Object]:
                 input_objects = get_objects(input)
                 grid_and_objects: GridAndObjects = (input, input_objects)
-                result = apply_state_list_xform(grid_and_objects)
-                if result is None:
+                output_objects = list_solve(grid_and_objects)
+                if output_objects is None:
                     return None
-                output_objects = result
                 output_grid = None
                 if False:
                     display_multiple(
@@ -65,7 +64,7 @@ def match_object_list_to_object_by_painting(
                 return output_grid
 
             return (
-                f"{list_xform.xform.__name__}({state_list_xform})",
+                f"{list_xform.xform.__name__}({list_state})",
                 solve,
             )
         else:
