@@ -7,7 +7,6 @@ from objects import Object
 from rule_based_selector import DecisionRule, Features, select_object_minimal
 from shape_features import detect_shape_features
 from symmetry_features import detect_symmetry_features
-from visual_cortex import find_rectangular_objects
 
 
 class ObjectMatch(NamedTuple):
