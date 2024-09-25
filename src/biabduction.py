@@ -62,7 +62,7 @@ gridxforms: List[XformEntry[Object, Object]] = (
         XformEntry(match_rectangular_objects_in_grid, 3),
         XformEntry(inpainting_xform_no_mask, 2),
         XformEntry(inpainting_xform_output_is_block, 2),
-        # XformEntry(match_n_objects_with_output, 3),
+        XformEntry(match_n_objects_with_output, 3),
     ]
     + []
     + (
