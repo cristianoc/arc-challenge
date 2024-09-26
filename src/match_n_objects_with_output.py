@@ -192,7 +192,7 @@ combine_two_objects_xforms: List[XformEntry[Tuple[Object, Object], Object]] = [
     XformEntry(match2_object_is_output, 2),
     XformEntry(match2_downscale_square_object, 2),
     XformEntry(match2_binary_operation, 3),
-    # TODO: new rule needed for 6b9890af.json
+    # TODO: new rule needed for 6b9890af.json, 9aec4887.json
 ]
 
 
@@ -216,7 +216,7 @@ def match3plus_object_is_output(
 
 combine_threeplus_objects_xforms: List[XformEntry[Tuple[Object, ...], Object]] = [
     XformEntry(match3plus_object_is_output, 3),
-    # TODO: new rule needed for 8e1813be.json, 97a05b5b.json
+    # TODO: new rule needed for 8e1813be.json, 97a05b5b.json, 93b4f4b3.json, 7d18a6fb.json, 414297c0.json, e9b4f6fc.json, 5833af48.json
 ]
 
 
@@ -235,7 +235,7 @@ def match_n_objects_with_output(
         objects = input.detect_objects(
             diagonals=True,
             background_color=background_color,
-            multicolor=True,
+            multicolor=True, # TODO: consider multicolor=False first, and True only if it fails
             keep_origin=False,
         )
         n = len(objects)
@@ -261,7 +261,8 @@ def match_n_objects_with_output(
         objects, output_index = objects_and_index
         objext_and_index_list.append((objects, output_index))
 
-    config.display_this_task = True
+    # uncomment to audit missing match-n-objects examples
+    # config.display_this_task = True
 
     found_select_xform = None
     for xform in select_object_xforms:
@@ -311,7 +312,6 @@ def match_n_objects_with_output(
             break
         if found_xform2 is None:
             logger.info(f"{'  ' * nesting_level}found_xform2 is None")
-            config.display_this_task = True
             return None
         match2_state, match2_solver = found_xform2
         def solver2(input: Object) -> Optional[Object]:
@@ -340,7 +340,6 @@ def match_n_objects_with_output(
             break
         if found_xform3plus is None:
             logger.info(f"{'  ' * nesting_level}found_xform3plus is None")
-            config.display_this_task = True
             return None
         match3_state, match3_solver = found_xform3plus
         logger.info(f"{'  ' * nesting_level}match3_state:{match3_state}")
