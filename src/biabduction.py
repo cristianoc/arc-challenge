@@ -14,7 +14,7 @@ from load_data import Task, Tasks, evaluation_data, training_data
 from logger import logger
 from match_colored_objects import match_colored_objects
 from match_n_objects_with_output import match_n_objects_with_output
-from match_objects_in_grid import match_rectangular_objects_in_grid
+from match_objects_in_grid import match_rectangular_objects_in_grid_multicolor, match_rectangular_objects_in_grid_non_multicolor
 from match_subgrids_in_lattice import match_subgrids_in_lattice
 from objects import Object, display_multiple
 from primitives import primitive_to_xform, translate_down_1, xform_identity
@@ -59,7 +59,8 @@ gridxforms: List[XformEntry[Object, Object]] = (
         XformEntry(equal_modulo_rigid_transformation, 2),
         XformEntry(primitive_to_xform(translate_down_1), 2),
         XformEntry(canvas_grid_xform, 2),
-        XformEntry(match_rectangular_objects_in_grid, 3),
+        XformEntry(match_rectangular_objects_in_grid_non_multicolor, 3),
+        XformEntry(match_rectangular_objects_in_grid_multicolor, 3),
         XformEntry(inpainting_xform_no_mask, 2),
         XformEntry(inpainting_xform_output_is_block, 2),
         XformEntry(match_n_objects_with_output, 3),

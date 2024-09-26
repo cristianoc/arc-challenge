@@ -1,5 +1,5 @@
 {
-    "training_score": 6.8,
+    "training_score": 7.3,
     "evaluation_score": 5.5,
     "training_correct": [
         "25ff71a9.json",
@@ -15,6 +15,7 @@
         "484b58aa.json",
         "c3f564a4.json",
         "dc0a314f.json",
+        "1f85a75f.json",
         "3c9b0459.json",
         "72ca375d.json",
         "0b148d64.json",
@@ -23,6 +24,7 @@
         "9ecd008a.json",
         "b8825c91.json",
         "e50d258f.json",
+        "48d8fb45.json",
         "05269061.json",
         "0dfd9992.json",
         "9dfd6313.json",
