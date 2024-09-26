@@ -106,3 +106,20 @@ To transition from the continuous model back to the discrete approach:
    a. Shared Pattern (if predicates are found)
    b. Pattern Relearn (if Shared Pattern fails)
    c. Rule Abandonment (as a last resort when suitable predicates are not identified)
+
+
+## Example 3
+
+![bigarc-example3](images/bigarc-example3.png)
+
+This example is an excellent test of compositional reasoning steps across multiple levels.
+Handling this example requires:
+1. Creating a new meta-rule for combining two objects into one.
+2. Generalizing the object extration rule of the vision module to allow bounding box overlap (third example).
+3. Using selection as above to pick the smaller object. This size-based selection was already used in [SizeARC](SizeARC.md).
+4. Introduce a downscale rule (opposite of upscale rule from another task) to reduce the "other" object's size. This requires a predicate similar to the n-periodic symmetry from [InPaintingARC](InPaintingARC.md), where this time `n` to be determined is the multiple of the smaller object's size.
+5. Introduce a binary operation between grids of the same size to merge them into one. This specifc instance requires left masking, but the general case requires learning a binary operation. Since the size of the output varie, this binary operation needs to be shared across all examples. If it were the same, then a diffent rule would need to be used.
+
+
+
+
