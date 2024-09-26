@@ -22,6 +22,9 @@ task_name: str | None = None
 # task_name = "6ecd11f4.json"
 # task_name = "be94b721.json"
 
+# task_name = "8e1813be.json"
+# task_name = "1f85a75f.json"
+
 task_fractal = "8f2ea7aa.json"  # fractal expansion
 task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
 

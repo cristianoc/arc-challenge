@@ -192,6 +192,7 @@ combine_two_objects_xforms: List[XformEntry[Tuple[Object, Object], Object]] = [
     XformEntry(match2_object_is_output, 2),
     XformEntry(match2_downscale_square_object, 2),
     XformEntry(match2_binary_operation, 3),
+    # TODO: new rule needed for 6b9890af.json
 ]
 
 
@@ -213,10 +214,9 @@ def match3plus_object_is_output(
     return ("match3plus_object_is_output", solver)
 
 
-combine_threeplus_objects_xforms: List[
-    XformEntry[Tuple[Object, ...], Object]
-] = [
+combine_threeplus_objects_xforms: List[XformEntry[Tuple[Object, ...], Object]] = [
     XformEntry(match3plus_object_is_output, 3),
+    # TODO: new rule needed for 8e1813be.json, 97a05b5b.json
 ]
 
 
@@ -254,7 +254,7 @@ def match_n_objects_with_output(
 
     for input, output in examples:
         if input.size == output.size:
-            return None
+            return None # TODO: add a new top rule for this case
         objects_and_index = get_objects_and_index(input, output)
         if objects_and_index is None:
             return None
@@ -273,19 +273,20 @@ def match_n_objects_with_output(
     if found_select_xform is None:
         return None
     select_state, select_solver = found_select_xform
+    logger.info(f"{'  ' * nesting_level}select_state:{select_state}")
 
     num_other_objects = len(objext_and_index_list[0][0]) - 1
     two_object_list: List[Tuple[Object, Object]] = []
-    three_object_list: List[Tuple[Object, Object, Object]] = []
+    threeplus_object_list: List[Tuple[Object, ...]] = []
     for objects, output_index in objext_and_index_list:
         other_objects = [o for i, o in enumerate(objects) if i != output_index]
-        if len(other_objects) != num_other_objects:
+        if num_other_objects == 1 and len(other_objects) != num_other_objects:
             return None
         if num_other_objects == 1:
             two_object_list.append((objects[output_index], other_objects[0]))
-        elif num_other_objects == 2:
-            three_object_list.append(
-                (objects[output_index], other_objects[0], other_objects[1])
+        elif num_other_objects >= 2:
+            threeplus_object_list.append(
+                (objects[output_index], *other_objects)
             )
         else:
             return None
@@ -296,7 +297,7 @@ def match_n_objects_with_output(
     if num_other_objects == 1:
         two_object_examples = [(x, e[1]) for x, e in zip(two_object_list, examples)]
     elif num_other_objects >= 2:
-        threeplus_object_examples = [(x, e[1]) for x, e in zip(three_object_list, examples)]
+        threeplus_object_examples = [(x, e[1]) for x, e in zip(threeplus_object_list, examples)]
     else:
         return None
 
@@ -309,6 +310,7 @@ def match_n_objects_with_output(
             found_xform2 = match2
             break
         if found_xform2 is None:
+            logger.info(f"{'  ' * nesting_level}found_xform2 is None")
             config.display_this_task = True
             return None
         match2_state, match2_solver = found_xform2
@@ -328,18 +330,20 @@ def match_n_objects_with_output(
             return output
         state = f"match_n_objects_with_output({match2_state},{select_state})"
         return (state, solver2)
-    elif num_other_objects == 2:
-        found_xform3 = None
+    elif num_other_objects >= 2:
+        found_xform3plus = None
         for xform3 in combine_threeplus_objects_xforms:
             match3 = xform3.xform(threeplus_object_examples, task_name, nesting_level+1)
             if match3 is None:
                 continue
-            found_xform3 = match3
+            found_xform3plus = match3
             break
-        if found_xform3 is None:
+        if found_xform3plus is None:
+            logger.info(f"{'  ' * nesting_level}found_xform3plus is None")
             config.display_this_task = True
             return None
-        match3_state, match3_solver = found_xform3
+        match3_state, match3_solver = found_xform3plus
+        logger.info(f"{'  ' * nesting_level}match3_state:{match3_state}")
 
         def solver3(input: Object) -> Optional[Object]:
             objects = get_objects(input)
