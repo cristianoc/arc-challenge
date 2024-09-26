@@ -119,6 +119,22 @@ This example is an excellent test of compositional reasoning steps across multip
 4. Introducing a downscale rule (inverse of the upscale rule from another task) to reduce the "other" object's size. This requires a predicate similar to the n-periodic symmetry from [InPaintingARC](InPaintingARC.md), where `n` to be determined is the multiple of the smaller object's size.
 5. Introducing a binary operation between grids of the same size to merge them into one. This specific instance requires left masking, but the general case requires learning a binary operation. Since the size of the output varies, this binary operation needs to be shared across all examples (it's a map operation). If it were the same, then a different rule could be used to express more nuanced patterns.
 
+### Nested Testing and Transformation Specification
 
+Interestingly, Example 3 requires three levels of testing, as demonstrated by the solver's output. This output not only shows the nested testing structure but also provides a specification of the transformation with the same nested structure as the search strategy.
+
+The output describes a hierarchical approach to solving the puzzle:
+
+1. At the top level (level 1), it processes multiple objects from the input, relating them to the output.
+2. At the second level (level 2), it applies a downscaling operation to reduce the size of objects.
+3. At the third level (level 3), it performs a binary operation to combine grids.
+   (There's an implicit fourth level where the specific masking operation is chosen.)
+
+The specification of the final transformation combines these elements in a nested structure:
+- The outermost operation processes multiple objects from the input.
+- Nested within that, it applies a downscaling operation, reducing object sizes by a factor of 4.
+- Further nested, it applies a binary operation to combine grids.
+  - The binary operation uses right-side masking (chosen at an implicit deeper level).
+- Finally, it selects objects based on the smallest area criterion.
 
 
