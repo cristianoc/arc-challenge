@@ -117,24 +117,25 @@ This example is an excellent test of compositional reasoning steps across multip
 2. Generalizing the object extraction rule of the vision module to allow bounding box overlap (third example).
 3. Using selection as above to pick the smaller object. This size-based selection was already used in [SizeARC](SizeARC.md).
 4. Introducing a downscale rule (inverse of the upscale rule from another task) to reduce the "other" object's size. This requires a predicate similar to the n-periodic symmetry from [InPaintingARC](InPaintingARC.md), where `n` to be determined is the multiple of the smaller object's size.
-5. Introducing a binary operation between grids of the same size to merge them into one. This specific instance requires left masking, but the general case requires learning a binary operation. Since the size of the output varies, this binary operation needs to be shared across all examples (it's a map operation). If it were the same, then a different rule could be used to express more nuanced patterns.
+5. Introducing a binary operation between grids of the same size to merge them into one. This specific instance requires right masking, but the general case requires learning a binary operation. Since the size of the output varies, this binary operation needs to be shared across all examples (it's a map operation). If it were the same, then a different rule could be used to express more nuanced patterns.
 
 ### Nested Testing and Transformation Specification
 
-Interestingly, Example 3 requires three levels of testing, as demonstrated by the solver's output. This output not only shows the nested testing structure but also provides a specification of the transformation with the same nested structure as the search strategy.
+Example 3 demonstrates a complex, multi-level approach to solving the puzzle. The solver's output reveals a nested matching structure that mirrors the specification of the transformation. This hierarchical approach can be broken down as follows:
 
-The output describes a hierarchical approach to solving the puzzle:
+1. Level 1 (Outermost): Process multiple objects from the input, relating them to the output.
+2. Level 2: Apply a downscaling operation to reduce the size of objects.
+3. Level 3: Perform a binary operation to combine grids.
+4. Level 4 (Implicit): Choose the specific masking operation.
 
-1. At the top level (level 1), it processes multiple objects from the input, relating them to the output.
-2. At the second level (level 2), it applies a downscaling operation to reduce the size of objects.
-3. At the third level (level 3), it performs a binary operation to combine grids.
-   (There's an implicit fourth level where the specific masking operation is chosen.)
+The final transformation specification combines these elements in a nested structure:
 
-The specification of the final transformation combines these elements in a nested structure:
-- The outermost operation processes multiple objects from the input.
-- Nested within that, it applies a downscaling operation, reducing object sizes by a factor of 4.
-- Further nested, it applies a binary operation to combine grids.
-  - The binary operation uses right-side masking (chosen at an implicit deeper level).
-- Finally, it selects objects based on the smallest area criterion.
+- Outermost operation: Process multiple objects from the input.
+  - Nested operation: Apply a downscaling operation, reducing object sizes by a factor of 4.
+    - Further nested: Apply a binary operation to combine grids.
+      - Deepest level: Use right-side masking (chosen at the implicit fourth level).
+- Final step: Select objects based on the smallest area criterion.
+
+This nested structure in both the testing and transformation specification highlights the complexity of the puzzle and the sophisticated reasoning required to solve it.
 
 
