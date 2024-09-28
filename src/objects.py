@@ -196,7 +196,9 @@ class Object:
             for x, y in component:
                 q = grid[x, y]
                 data[x - min_x, y - min_y] = q
-            return Object(origin=(min_x, min_y) if keep_origin else (0, 0), data=data._data)
+            return Object(
+                origin=(min_x, min_y) if keep_origin else (0, 0), data=data._data
+            )
 
         connected_components = find_connected_components(
             grid=self,
@@ -213,7 +215,9 @@ class Object:
     def downscale(self, factor: int) -> "Object":
         # Check if the object dimensions are divisible by the factor
         if self.width % factor != 0 or self.height != self.width:
-            raise ValueError("Object dimensions must be divisible by the downscale factor.")
+            raise ValueError(
+                "Object dimensions must be divisible by the downscale factor."
+            )
 
         # Create a new array to hold the downscaled data
         new_height = self.height // factor
@@ -223,7 +227,9 @@ class Object:
         # Fill the new array by checking blocks
         for i in range(new_height):
             for j in range(new_width):
-                block = self._data[i*factor:(i+1)*factor, j*factor:(j+1)*factor]
+                block = self._data[
+                    i * factor : (i + 1) * factor, j * factor : (j + 1) * factor
+                ]
                 unique_colors = np.unique(block)
                 if len(unique_colors) == 1:
                     new_data[i, j] = unique_colors[0]
@@ -515,6 +521,17 @@ class Object:
         if self.is_symmetric(Symmetry.ANTI_DIAGONAL):
             symmetries.append(Symmetry.ANTI_DIAGONAL)
         return symmetries
+
+    def crop(self, top: int, left: int, bottom: int, right: int) -> "Object":
+        """
+        Crop the object to the specified boundaries.
+        """
+
+        # Crop the data using NumPy slicing
+        cropped_data = self._data[top : bottom + 1, left : right + 1]
+
+        # Create and return a new Object with the cropped data
+        return Object(data=cropped_data, origin=(top, left))
 
 
 def display(
