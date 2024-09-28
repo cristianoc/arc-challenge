@@ -3,7 +3,7 @@ from typing import Optional
 from logger import logger
 from match_n_objects_with_output import Examples, Match
 from objects import Object, display, display_multiple
-from visual_cortex import find_largest_frame2, find_largest_frame, find_rectangular_objects
+from visual_cortex import find_largest_frame_vertorized, find_largest_frame, find_rectangular_objects
 import config
 
 
@@ -18,7 +18,7 @@ def match_split_with_frame(
     )
 
     for input, output in examples:
-        frame = find_largest_frame2(output, None)
+        frame = find_largest_frame_vertorized(output, None)
         if frame is None:
             return None
     return None
@@ -26,7 +26,7 @@ def match_split_with_frame(
     for input, output in examples:
 
         print(f"output: {output}")
-        frame = find_largest_frame2(output, None)
+        frame = find_largest_frame_vertorized(output, None)
         if frame is None:
             return None
         g = output.crop(*frame)
