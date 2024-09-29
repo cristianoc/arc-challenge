@@ -101,6 +101,7 @@ def match_split_with_frame(
         # when n=2, it's in addition two points before and after, and so on.
         # So one could look at the outputs and the inputs, and see that the frames have the same origin and size,
         # and the output frame is complete while the input frame has n=2
+        # Also, the input frame is multicolored.
         if frame is None:
             return None
         output = Object.empty(input.size)

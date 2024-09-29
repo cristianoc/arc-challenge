@@ -42,6 +42,9 @@ def is_frame(
     if not np.all(grid._data[top : bottom + 1, right] == color):
         return False
     # TODO: should the frame not contain any cells of its own color? Or mostly none?
+    # Perhaps a frame does not have any cells of that color inside (frame of orign +1,+1 and size -2,-2) or outside (frame of origin -1,-1 and size +2,+2).
+    # In case of multicolored frames, one needs the notion of background color, so it won't have
+    # any non-background color inside or outside.
     if grid[left+1, top+1] == color:
         return False
     return True
