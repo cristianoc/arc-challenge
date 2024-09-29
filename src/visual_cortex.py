@@ -45,7 +45,7 @@ def is_frame(
     # Perhaps a frame does not have any cells of that color inside (frame of orign +1,+1 and size -2,-2) or outside (frame of origin -1,-1 and size +2,+2).
     # In case of multicolored frames, one needs the notion of background color, so it won't have
     # any non-background color inside or outside.
-    if grid[left+1, top+1] == color:
+    if grid[left + 1, top + 1] == color:
         return False
     return True
 
