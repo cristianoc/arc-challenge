@@ -139,3 +139,16 @@ The final transformation specification combines these elements in a nested struc
 This nested structure in both the testing and transformation specification highlights the complexity of the puzzle and the sophisticated reasoning required to solve it.
 
 
+## Example 4
+
+This is another test of compositional reasoning. There are several ways to approach this puzzle. The one we're going for has the property of reducing it to much simpler problems at the next level.
+
+![bigarc-example4](images/bigarc-example4.png)
+
+
+The rule is an instance of the parallel map rule. A simple example is:
+
+![parallel-map-rule](images/parallel-map-rule.png)
+
+This rule encodes several puzzles into one.
+In the full example, the frame can be used to split the grid into 9 subgrids. Each example has thus 9 subgrids, and since the number is always the same, one can solve 9 puzzles in parallel recursively.
