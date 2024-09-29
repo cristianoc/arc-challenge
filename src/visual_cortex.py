@@ -42,8 +42,8 @@ def is_frame(
     if not np.all(grid._data[top : bottom + 1, right] == color):
         return False
     # TODO: should the frame not contain any cells of its own color? Or mostly none?
-    # if grid[left+1, top+1] == color:
-    #     return False
+    if grid[left+1, top+1] == color:
+        return False
     return True
 
 
@@ -81,72 +81,6 @@ def find_largest_frame(
                         if area > max_area:
                             max_area = area
                             max_frame = (top, left, bottom, right)
-
-    return max_frame
-
-
-def calculate_area_vectorised(grid_shape: Tuple[int, int]) -> np.ndarray:
-    """Calculate areas for all possible rectangles in the grid."""
-    height, width = grid_shape
-    areas = np.zeros((height, width, height, width), dtype=int)
-    for top in range(height):
-        for left in range(width):
-            for bottom in range(top + 1, height):
-                for right in range(left + 1, width):
-                    areas[top, left, bottom, right] = (bottom - top + 1) * (
-                        right - left + 1
-                    )
-    return areas
-
-
-# TODO: check this for correctness and further optimizations
-def find_largest_frame_vertorized(
-    grid: Object_t, color: Optional[int], allow_black: bool = False
-) -> Optional[Frame]:
-    grid_data = grid._data
-    max_area = 0
-    max_frame = None
-
-    height, width = grid_data.shape
-    if color == 0:
-        allow_black = True
-
-    # Iterate over top and left
-    for top in range(height):
-        for left in range(width):
-            top_left_corner_color = grid_data[top, left]
-
-            if (top_left_corner_color != 0 or allow_black) and (
-                top_left_corner_color == color or color is None
-            ):
-                # Vectorize checking for multiple `right` values at once
-                for bottom in range(top + 1, height):
-                    # Get the top and bottom rows for all possible right coordinates at once
-                    top_row = grid_data[top, left:] == top_left_corner_color
-                    bottom_row = grid_data[bottom, left:] == top_left_corner_color
-                    # Get the left and right columns for all possible right coordinates at once
-                    left_col = (
-                        grid_data[top : bottom + 1, left] == top_left_corner_color
-                    )
-                    right_col = grid_data[
-                        top : bottom + 1, left:
-                    ].T  # Check all possible right sides
-
-                    # Find where both top and bottom rows are equal to the color
-                    valid_rights = np.logical_and(top_row, bottom_row)
-
-                    # Find the maximum valid rectangle width based on the `valid_rights` array
-                    for right_offset, valid in enumerate(valid_rights):
-                        if valid:
-                            right = left + right_offset
-                            # Check the left and right columns for the current right coordinate
-                            if np.all(
-                                right_col[: right_offset + 1] == top_left_corner_color
-                            ):
-                                area = (bottom - top + 1) * (right - left + 1)
-                                if area > max_area:
-                                    max_area = area
-                                    max_frame = (top, left, bottom, right)
 
     return max_frame
 

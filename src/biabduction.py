@@ -1,25 +1,13 @@
 from typing import List, Optional
 
 import config
-from bi_types import Examples, XformEntry
-from canvas_grid_match import canvas_grid_xform, equal_modulo_rigid_transformation
+import xforms
+from bi_types import Examples
 from find_xform import find_xform
-from inpainting_match import (
-    inpainting_xform_no_mask,
-    inpainting_xform_output_is_block,
-    inpainting_xform_with_mask,
-    is_inpainting_puzzle,
-)
+from inpainting_match import is_inpainting_puzzle
 from load_data import Task, Tasks, evaluation_data, training_data
 from logger import logger
-from match_colored_objects import match_colored_objects
-from match_n_objects_with_output import match_n_objects_with_output
-from match_objects_in_grid import match_rectangular_objects_in_grid
-from match_split_with_frame import match_split_with_frame
-from match_subgrids_in_lattice import match_subgrids_in_lattice
 from objects import Object, display_multiple
-from primitives import primitive_to_xform, translate_down_1, xform_identity
-from split_mirrot_match import frame_split_and_mirror_xform
 
 
 def filter_simple_xforms(task: Task, task_name: str):
@@ -50,40 +38,6 @@ def filter_complex_xforms(task: Task, task_name: str):
         ):
             return False
     return True
-
-
-gridxforms: List[XformEntry[Object, Object]] = (
-    [
-        XformEntry(match_subgrids_in_lattice, 3),
-        XformEntry(match_colored_objects, 3),
-        XformEntry(xform_identity, 1),
-        XformEntry(equal_modulo_rigid_transformation, 2),
-        XformEntry(primitive_to_xform(translate_down_1), 2),
-        XformEntry(canvas_grid_xform, 2),
-        XformEntry(match_rectangular_objects_in_grid, 3),
-        XformEntry(inpainting_xform_no_mask, 2),
-        XformEntry(inpainting_xform_output_is_block, 2),
-        XformEntry(match_n_objects_with_output, 3),
-        XformEntry(match_split_with_frame, 3),
-    ]
-    + []
-    + (
-        [
-            XformEntry(inpainting_xform_with_mask, 2),
-        ]
-        if config.find_frame_rule
-        else []
-    )
-)
-
-
-# brute force search xforms to be used when all else fails
-desperatexforms: List[XformEntry[Object, Object]] = [] + (
-    [XformEntry(frame_split_and_mirror_xform, 100)] if config.find_frame_rule else []
-)
-
-
-num_difficulties_xform = max(xform.difficulty for xform in gridxforms + desperatexforms)
 
 
 def process_tasks(tasks: Tasks, set: str):
@@ -120,7 +74,7 @@ def process_tasks(tasks: Tasks, set: str):
 
         if config.find_xform:
             correct_xform = find_xform(
-                gridxforms + desperatexforms, examples, tests, task_name, 0
+                xforms.gridxforms + xforms.desperatexforms, examples, tests, task_name, 0
             )
             if correct_xform is not None:
                 correct.append(task_name)
@@ -128,8 +82,6 @@ def process_tasks(tasks: Tasks, set: str):
                     grids = [(example[0], example[1]) for example in examples]
                     display_multiple(grids, title=f"{task_name} {set}")
                 continue
-
-        current_difficulty += num_difficulties_xform
 
         if config.display_not_found:
             config.display_this_task = True
@@ -153,6 +105,7 @@ def compute_perc_correct(correct: List[str], incorrect: List[str]) -> Optional[f
 
 
 def bi_abduction():
+    xforms.init()
     correct_tr, incorrect_tr = process_tasks(training_data, "training_data")
     correct_ev, incorrect_ev = process_tasks(evaluation_data, "evaluation_data")
     perc_correct_tr = compute_perc_correct(correct_tr, incorrect_tr)

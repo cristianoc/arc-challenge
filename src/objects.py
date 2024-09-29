@@ -531,7 +531,7 @@ class Object:
         cropped_data = self._data[top : bottom + 1, left : right + 1]
 
         # Create and return a new Object with the cropped data
-        return Object(data=cropped_data, origin=(top, left))
+        return Object(data=cropped_data, origin=(left, top))
 
 
 def display(
