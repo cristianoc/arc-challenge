@@ -25,7 +25,7 @@ task_name: str | None = None
 # task_name = "8e1813be.json"
 # task_name = "1f85a75f.json"
 
-# task_name = "256b0a75.json"
+task_name = "256b0a75.json"
 
 task_fractal = "8f2ea7aa.json"  # fractal expansion
 task_puzzle = "97a05b5b.json"  # puzzle-like, longest in DSL (59 lines)
@@ -55,7 +55,7 @@ blacklisted_tasks.extend(non_inpainting_tasks)
 whitelisted_tasks: List[str] = []
 whitelisted_tasks.append(task_puzzle)
 
-display_not_found = False
+display_not_found = True
 display_verbose = False
 only_inpainting_puzzles = False
 
