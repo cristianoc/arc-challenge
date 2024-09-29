@@ -95,6 +95,12 @@ def match_split_with_frame(
     def solver(input: Object) -> Optional[Object]:
         frame = None
         # TODO: need to find the frame in the input
+        # One could consider a frama mask determined by an integer n
+        # when n=0, it's just the 4 points at the corners
+        # when n=1, it's in addition one point before and after (as in the example)
+        # when n=2, it's in addition two points before and after, and so on.
+        # So one could look at the outputs and the inputs, and see that the frames have the same origin and size,
+        # and the output frame is complete while the input frame has n=2
         if frame is None:
             return None
         output = Object.empty(input.size)
