@@ -50,10 +50,14 @@ def match_split_with_frame(
         [[] for _ in range(3)] for _ in range(3)
     ]
 
+    def get_frame(grid: Object) -> Optional[Frame]:
+        # TODO: extend here is hardcoded
+        return find_largest_frame(grid, color=None, check_precise=True, corner_extent=2)
+
     for input, output in examples:
         if input.size != output.size:
             return None
-        frame = find_largest_frame(input, color=None, check_precise=True, corner_extent=1)
+        frame = get_frame(input)
         if frame is None:
             return None
 
@@ -85,19 +89,10 @@ def match_split_with_frame(
             if match is not None:
                 matches[i][j] = match
             else:
-                pass
-                # return None
+                return None
 
     def solver(input: Object) -> Optional[Object]:
-        frame = None
-        # TODO: need to find the frame in the input
-        # One could consider a frama mask determined by an integer n
-        # when n=0, it's just the 4 points at the corners
-        # when n=1, it's in addition one point before and after (as in the example)
-        # when n=2, it's in addition two points before and after, and so on.
-        # So one could look at the outputs and the inputs, and see that the frames have the same origin and size,
-        # and the output frame is complete while the input frame has n=2
-        # Also, the input frame is multicolored.
+        frame = get_frame(input)
         if frame is None:
             return None
         output = Object.empty(input.size)
@@ -112,5 +107,11 @@ def match_split_with_frame(
                 output.add_object_in_place(out_subgrid)
         return output
 
-    state = f"match_split_with_frame"
+    state = ""
+    for i in range(3):
+        for j in range(3):
+            state_, solver_ = matches[i][j]
+            state += f"({i},{j}):{state_} "
+
+    state = f"match_split_with_frame({state})"
     return state, solver
