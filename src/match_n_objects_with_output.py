@@ -112,7 +112,7 @@ def match2_binary_operation(
     if all_outputs_have_same_size: # TODO
         logger.info("TODO: can have a different binary operation for each cell")
     background_color = 0 # Todo: find a way to send it in from the outside
-    binop = None
+    binop_ = None
     for xform in binary_operations:
         found = True
         for (i1, i2), o in examples:
@@ -120,10 +120,11 @@ def match2_binary_operation(
                 found = False
                 break
         if found:
-            binop = xform
+            binop_ = xform
             break
-    if binop is None:
+    if binop_ is None:
         return None
+    binop = binop_
     def solver(inputs: Tuple[Object, Object]) -> Optional[Object]:
         return binop(inputs, background_color)
     return (f"match2_binary_operation({binop.__name__})", solver)

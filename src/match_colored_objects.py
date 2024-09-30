@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 import config
-from bi_types import Example, Examples, GridAndObjects, Match, XformEntry
+from bi_types import Example, Examples, Match, XformEntry
 from find_xform import find_xform_for_examples
 from logger import logger
 from match_object_list_to_object import (
@@ -50,7 +50,7 @@ def match_colored_objects(
 
     # each example has the same number of input and output objects
     # so we can turn those lists into and ObjectListExample
-    object_list_examples: Examples[GridAndObjects, List[Object]] = []
+    object_list_examples: Examples[List[Object], List[Object]] = []
 
     for input, output in examples:
         input_objects = get_colored_objects(input)
@@ -71,7 +71,7 @@ def match_colored_objects(
             )
 
         object_list_example = (
-            (input, input_objects),
+            input_objects,
             output_objects,
         )
         object_list_examples.append(object_list_example)
