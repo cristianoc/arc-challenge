@@ -29,7 +29,7 @@ def calculate_area(top: int, left: int, bottom: int, right: int) -> int:
     return (bottom - top + 1) * (right - left + 1)
 
 
-def is_frame(
+def frame_is_color(
     grid: Object_t, top: int, left: int, bottom: int, right: int, color: int
 ) -> bool:
     """Check if the rectangle defined by (top, left) to (bottom, right) forms a frame."""
@@ -45,13 +45,78 @@ def is_frame(
     # Perhaps a frame does not have any cells of that color inside (frame of orign +1,+1 and size -2,-2) or outside (frame of origin -1,-1 and size +2,+2).
     # In case of multicolored frames, one needs the notion of background color, so it won't have
     # any non-background color inside or outside.
-    if grid[left + 1, top + 1] == color:
+    # if grid[left + 1, top + 1] == color:
+    #     return False
+    return True
+
+
+def frame_is_not_color(
+    grid: Object_t, top: int, left: int, bottom: int, right: int, color: int
+) -> bool:
+    if left < 0 or top < 0 or right >= grid.width or bottom >= grid.height:
+        return True
+    if np.any(grid._data[top, left : right + 1] == color):
+        return False
+    if np.any(grid._data[bottom, left : right + 1] == color):
+        return False
+    if np.any(grid._data[top : bottom + 1, left] == color):
+        return False
+    if np.any(grid._data[top : bottom + 1, right] == color):
+        return False
+    return True
+
+
+def is_frame(
+    grid: Object_t,
+    top: int,
+    left: int,
+    bottom: int,
+    right: int,
+    color: Optional[int],
+    background: int,
+    check_precise: bool,
+) -> bool:
+    """Check if the rectangle defined by (top, left) to (bottom, right) forms a frame."""
+    if color is not None:
+        frame_color_ok = frame_is_color(grid, top, left, bottom, right, color)
+    else:
+        frame_color_ok = frame_is_not_color(grid, top, left, bottom, right, background)
+    if not frame_color_ok:
+        return False
+
+    if not check_precise:
+        return True
+    # check that the inside is not color
+    if color is not None:
+        inside_color_ok = frame_is_not_color(
+            grid, top + 1, left + 1, bottom - 1, right - 1, color
+        )
+    else:
+        inside_color_ok = frame_is_color(
+            grid, top + 1, left + 1, bottom - 1, right - 1, background
+        )
+    if not inside_color_ok:
+        return False
+    # check that the outside is not color
+    if color is not None:
+        outside_color_ok = frame_is_not_color(
+            grid, top - 1, left - 1, bottom + 1, right + 1, color
+        )
+    else:
+        outside_color_ok = frame_is_color(
+            grid, top - 1, left - 1, bottom + 1, right + 1, background
+        )
+    if not outside_color_ok:
         return False
     return True
 
 
 def find_largest_frame(
-    grid: Object_t, color: Optional[int], allow_black: bool = False
+    grid: Object_t,
+    color: Optional[int],
+    background: int = 0,
+    check_precise: bool = False,
+    invert_min_max: bool = False,
 ) -> Optional[Frame]:
     """
     Find the largest frame in the grid that has all border cells matching the specified color.
@@ -61,13 +126,11 @@ def find_largest_frame(
     max_frame = None
 
     width, height = grid.size
-    if color == 0:
-        allow_black = True
 
     for top in range(height):
         for left in range(width):
             top_left_corner_color = grid[left, top]
-            if not allow_black and top_left_corner_color == 0:
+            if color is None and top_left_corner_color == 0:
                 continue
             if color is not None and top_left_corner_color != color:
                 continue
@@ -76,12 +139,21 @@ def find_largest_frame(
                 if (height - top) * (width - left) <= max_area:
                     break
                 for right in range(left + 1, width):
-                    bottom_right_corner_color = grid[right, bottom]
-                    if color is not None and bottom_right_corner_color != color:
-                        continue
-                    if is_frame(grid, top, left, bottom, right, top_left_corner_color):
+                    frame_color = top_left_corner_color
+                    if is_frame(
+                        grid,
+                        top,
+                        left,
+                        bottom,
+                        right,
+                        frame_color,
+                        background,
+                        check_precise,
+                    ):
                         area = calculate_area(top, left, bottom, right)
-                        if area > max_area:
+                        if ((not invert_min_max) and area > max_area) or (
+                            invert_min_max and area < max_area
+                        ):
                             max_area = area
                             max_frame = (top, left, bottom, right)
 
@@ -91,40 +163,12 @@ def find_largest_frame(
 def find_smallest_frame(
     grid: Object_t,
     color: Optional[int],
-    min_size: Optional[Tuple[int, int]] = None,
-    allow_black: bool = False,
+    background: int = 0,
+    check_precise: bool = False,
 ) -> Optional[Frame]:
-    """
-    Find the smallest frame in the grid that has all border cells matching the specified color.
-    If the color is None, the function will find the smallest frame with any color.
-    """
-    min_area = float("inf")
-    min_frame = None
-
-    width, height = grid.size
-
-    for top in range(height):
-        for left in range(width):
-            top_left_corner_color = grid[left, top]
-            if not allow_black and top_left_corner_color == 0:
-                continue
-            if color is not None and top_left_corner_color != color:
-                continue
-            for bottom in range(top + 1, height):
-                # Early termination if the potential min area is greater than the current min_area
-                if (height - top) * (width - left) >= min_area:
-                    break
-                for right in range(left + 1, width):
-                    bottom_right_corner_color = grid[right, bottom]
-                    if color is not None and bottom_right_corner_color != color:
-                        continue
-                    if is_frame(grid, top, left, bottom, right, top_left_corner_color):
-                        area = calculate_area(top, left, bottom, right)
-                        if area < min_area:
-                            min_area = area
-                            min_frame = (top, left, bottom, right)
-
-    return min_frame
+    return find_largest_frame(
+        grid, color, background, check_precise, invert_min_max=True
+    )
 
 
 def is_frame_part_of_lattice(grid: Object_t, frame: Frame, foreground: int) -> bool:

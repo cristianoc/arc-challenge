@@ -55,7 +55,7 @@ blacklisted_tasks.extend(non_inpainting_tasks)
 whitelisted_tasks: List[str] = []
 whitelisted_tasks.append(task_puzzle)
 
-display_not_found = True
+display_not_found = False
 display_verbose = False
 only_inpainting_puzzles = False
 
