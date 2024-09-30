@@ -53,7 +53,7 @@ def match_split_with_frame(
     for input, output in examples:
         if input.size != output.size:
             return None
-        frame = find_largest_frame(output, color=None, check_precise=True)
+        frame = find_largest_frame(input, color=None, check_precise=True, corner_extent=1)
         if frame is None:
             return None
 
@@ -64,14 +64,12 @@ def match_split_with_frame(
                 out_subgrid = extract_subgrid(output, frame, i, j)
                 if in_subgrid.width == 0 or in_subgrid.height == 0:
                     return None
-                # display(in_subgrid, out_subgrid, title=f"Subgrid ({i}, {j})")
                 subtasks[i][j].append(
                     (
                         in_subgrid,
                         out_subgrid,
                     )
                 )
-                # display(subgrid, title=f"Subgrid ({i}, {j})")
 
     matches = np.empty((3, 3), dtype=object)
 

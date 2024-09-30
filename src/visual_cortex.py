@@ -30,39 +30,124 @@ def calculate_area(top: int, left: int, bottom: int, right: int) -> int:
 
 
 def frame_is_color(
-    grid: Object_t, top: int, left: int, bottom: int, right: int, color: int
+    grid: Object_t,
+    top: int,
+    left: int,
+    bottom: int,
+    right: int,
+    color: int,
+    corner_extent: int,
 ) -> bool:
-    """Check if the rectangle defined by (top, left) to (bottom, right) forms a frame."""
-    if not np.all(grid._data[top, left : right + 1] == color):
+    """
+    Check if the cells around the corners of a rectangle defined by
+    (top, left) to (bottom, right) are of the specified color.
+
+    Args:
+        grid (Object_t): The grid to check.
+        top (int): The top boundary of the rectangle.
+        left (int): The left boundary of the rectangle.
+        bottom (int): The bottom boundary of the rectangle.
+        right (int): The right boundary of the rectangle.
+        color (int): The color to check for.
+        corner_extent (int): The extent of cells around each corner to check.
+            - corner_extent=1 checks the 4 corner cells.
+            - corner_extent=2 checks the 3 cells around each corner, including
+              one on each edge adjacent to the corner.
+
+    Returns:
+        bool: True if the specified corner cells match the given color,
+              False otherwise.
+    """
+
+    """Check if the specified cells of the rectangle defined by (top, left) to (bottom, right) are of the given color."""
+    if left < 0 or top < 0 or right >= grid.width or bottom >= grid.height:
+        return True
+
+    width = right - left + 1
+    height = bottom - top + 1
+
+    if corner_extent == 0:
+        offset = max(width, height)  # Check all cells if not specified
+    else:
+        offset = corner_extent
+
+    # Extract the frame edges
+    top_edge = grid._data[top, left : right + 1]
+    bottom_edge = grid._data[bottom, left : right + 1]
+    left_edge = grid._data[top : bottom + 1, left]
+    right_edge = grid._data[top : bottom + 1, right]
+
+    if not np.all(bottom_edge[:offset] == color):
         return False
-    if not np.all(grid._data[bottom, left : right + 1] == color):
+    if not np.all(top_edge[:offset] == color):
         return False
-    if not np.all(grid._data[top : bottom + 1, left] == color):
+    if not np.all(left_edge[:offset] == color):
         return False
-    if not np.all(grid._data[top : bottom + 1, right] == color):
+    if not np.all(right_edge[:offset] == color):
         return False
-    # TODO: should the frame not contain any cells of its own color? Or mostly none?
-    # Perhaps a frame does not have any cells of that color inside (frame of orign +1,+1 and size -2,-2) or outside (frame of origin -1,-1 and size +2,+2).
-    # In case of multicolored frames, one needs the notion of background color, so it won't have
-    # any non-background color inside or outside.
-    # if grid[left + 1, top + 1] == color:
-    #     return False
+
+    if corner_extent == 0:
+        return True  # no need to check the negative offset
+
+    if not np.all(bottom_edge[-offset:] == color):
+        return False
+    if not np.all(top_edge[-offset:] == color):
+        return False
+    if not np.all(left_edge[-offset:] == color):
+        return False
+    if not np.all(right_edge[-offset:] == color):
+        return False
+
     return True
 
 
 def frame_is_not_color(
-    grid: Object_t, top: int, left: int, bottom: int, right: int, color: int
+    grid: Object_t,
+    top: int,
+    left: int,
+    bottom: int,
+    right: int,
+    color: int,
+    corner_extent: int,
 ) -> bool:
     if left < 0 or top < 0 or right >= grid.width or bottom >= grid.height:
         return True
-    if np.any(grid._data[top, left : right + 1] == color):
+
+    width = right - left + 1
+    height = bottom - top + 1
+
+    if corner_extent == 0:
+        offset = max(width, height)  # Check all cells if not specified
+    else:
+        offset = corner_extent
+
+    # Extract the frame edges
+    top_edge = grid._data[top, left : right + 1]
+    bottom_edge = grid._data[bottom, left : right + 1]
+    left_edge = grid._data[top : bottom + 1, left]
+    right_edge = grid._data[top : bottom + 1, right]
+
+    if not np.all(bottom_edge[:offset] != color):
         return False
-    if np.any(grid._data[bottom, left : right + 1] == color):
+    if not np.all(top_edge[:offset] != color):
         return False
-    if np.any(grid._data[top : bottom + 1, left] == color):
+    if not np.all(left_edge[:offset] != color):
         return False
-    if np.any(grid._data[top : bottom + 1, right] == color):
+    if not np.all(right_edge[:offset] != color):
         return False
+
+    if corner_extent == 0:
+        return True  # no need to check the negative offset
+
+    if not np.all(bottom_edge[-offset:] != color):
+        return False
+    if not np.all(top_edge[-offset:] != color):
+        return False
+    if not np.all(left_edge[-offset:] != color):
+        return False
+    if not np.all(right_edge[-offset:] != color):
+        return False
+
     return True
 
 
@@ -75,12 +160,17 @@ def is_frame(
     color: Optional[int],
     background: int,
     check_precise: bool,
+    corner_extent: int,
 ) -> bool:
     """Check if the rectangle defined by (top, left) to (bottom, right) forms a frame."""
     if color is not None:
-        frame_color_ok = frame_is_color(grid, top, left, bottom, right, color)
+        frame_color_ok = frame_is_color(
+            grid, top, left, bottom, right, color, corner_extent
+        )
     else:
-        frame_color_ok = frame_is_not_color(grid, top, left, bottom, right, background)
+        frame_color_ok = frame_is_not_color(
+            grid, top, left, bottom, right, background, corner_extent
+        )
     if not frame_color_ok:
         return False
 
@@ -89,22 +179,22 @@ def is_frame(
     # check that the inside is not color
     if color is not None:
         inside_color_ok = frame_is_not_color(
-            grid, top + 1, left + 1, bottom - 1, right - 1, color
+            grid, top + 1, left + 1, bottom - 1, right - 1, color, corner_extent
         )
     else:
         inside_color_ok = frame_is_color(
-            grid, top + 1, left + 1, bottom - 1, right - 1, background
+            grid, top + 1, left + 1, bottom - 1, right - 1, background, corner_extent
         )
     if not inside_color_ok:
         return False
     # check that the outside is not color
     if color is not None:
         outside_color_ok = frame_is_not_color(
-            grid, top - 1, left - 1, bottom + 1, right + 1, color
+            grid, top - 1, left - 1, bottom + 1, right + 1, color, corner_extent
         )
     else:
         outside_color_ok = frame_is_color(
-            grid, top - 1, left - 1, bottom + 1, right + 1, background
+            grid, top - 1, left - 1, bottom + 1, right + 1, background, corner_extent
         )
     if not outside_color_ok:
         return False
@@ -117,6 +207,7 @@ def find_largest_frame(
     background: int = 0,
     check_precise: bool = False,
     invert_min_max: bool = False,
+    corner_extent: int = 0,
 ) -> Optional[Frame]:
     """
     Find the largest frame in the grid that has all border cells matching the specified color.
@@ -139,7 +230,7 @@ def find_largest_frame(
                 if (height - top) * (width - left) <= max_area:
                     break
                 for right in range(left + 1, width):
-                    frame_color = top_left_corner_color
+                    frame_color = None if color is None else top_left_corner_color
                     if is_frame(
                         grid,
                         top,
@@ -149,6 +240,7 @@ def find_largest_frame(
                         frame_color,
                         background,
                         check_precise,
+                        corner_extent,
                     ):
                         area = calculate_area(top, left, bottom, right)
                         if ((not invert_min_max) and area > max_area) or (
@@ -165,9 +257,15 @@ def find_smallest_frame(
     color: Optional[int],
     background: int = 0,
     check_precise: bool = False,
+    corner_extent: int = 0,
 ) -> Optional[Frame]:
     return find_largest_frame(
-        grid, color, background, check_precise, invert_min_max=True
+        grid,
+        color,
+        background,
+        check_precise,
+        invert_min_max=True,
+        corner_extent=corner_extent,
     )
 
 
@@ -724,3 +822,32 @@ def test_several_rectangular_objects_of_different_color():
         logger.info(f"Detected rectangular object: {obj}")
     object_dims = [(obj.origin, obj.size) for obj in objects]
     assert object_dims == [((1, 1), (3, 4)), ((2, 4), (2, 3))]
+
+
+def test_find_largest_frame():
+    from objects import Object
+
+    grid = Object(
+        np.array(
+            [
+                [0, 0, 0, 0, 0, 0],
+                [0, 1, 1, 0, 1, 1],
+                [0, 1, 0, 0, 0, 1],
+                [0, 0, 0, 0, 0, 0],
+                [0, 2, 0, 0, 0, 1],
+                [0, 2, 2, 0, 1, 1],
+            ]
+        )
+    )
+
+    frame = find_largest_frame(grid, color=None, corner_extent=1)
+    assert frame == (1, 1, 5, 5)
+
+    frame = find_largest_frame(grid, color=None, corner_extent=0)
+    assert frame == None
+
+    frame = find_largest_frame(grid, color=None, corner_extent=2)
+    assert frame == (1, 1, 5, 5)
+
+    frame = find_largest_frame(grid, color=None, corner_extent=3)
+    assert frame == None
