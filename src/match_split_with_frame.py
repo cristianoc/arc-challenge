@@ -9,6 +9,7 @@ from objects import Object, display, display_multiple
 from visual_cortex import find_largest_frame, Frame
 import numpy as np
 
+
 def extract_subgrid(grid: Object, frame: Frame, i: int, j: int) -> Object:
     width = grid.width
     height = grid.height
@@ -52,12 +53,11 @@ def match_split_with_frame(
     for input, output in examples:
         if input.size != output.size:
             return None
-        frame = find_largest_frame(output, None)
+        frame = find_largest_frame(output, color=None, check_precise=True)
         if frame is None:
             return None
 
         # split the grid into 3x3 subgrids with the frame in the center
-        all_subgrids: List[Object] = []
         for i in range(3):
             for j in range(3):
                 in_subgrid = extract_subgrid(input, frame, i, j)
@@ -73,9 +73,6 @@ def match_split_with_frame(
                 )
                 # display(subgrid, title=f"Subgrid ({i}, {j})")
 
-        if config.display_verbose:
-            display_multiple(all_subgrids, title="all_subgrids")
-
     matches = np.empty((3, 3), dtype=object)
 
     for i in range(3):
@@ -90,7 +87,8 @@ def match_split_with_frame(
             if match is not None:
                 matches[i][j] = match
             else:
-                return None
+                pass
+                # return None
 
     def solver(input: Object) -> Optional[Object]:
         frame = None

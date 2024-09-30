@@ -58,7 +58,7 @@ def output_size_is_size_of_largest_nonblack_object(
 def output_size_is_size_of_object_inside_largest_frame(
     grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Size]:
-    largest_frame = find_largest_frame(grid, None)
+    largest_frame = find_largest_frame(grid, color=None)
     if largest_frame:
         (top, left, bottom, right) = largest_frame
         width = right - left + 1
@@ -118,7 +118,7 @@ def output_size_is_size_of_max_area_object_with_flexible_contours(
     if not objects:
         return None
     max_area_object = max(objects, key=lambda obj: obj.area)
-    max_area_frame = find_largest_frame(max_area_object, None)
+    max_area_frame = find_largest_frame(max_area_object, color=None)
     if max_area_frame:
         # handle case where the largest object has a few extra cells around it
         # so we need to consider the frame inside
@@ -133,7 +133,7 @@ def output_size_is_size_of_repeating_subgrid_forming_a_lattice(
     grids: ExampleObjects, grid: Object, task_name: str
 ) -> Optional[Size]:
     def find_lattice(grid: Object) -> Optional[Frame]:
-        largest_frame = find_largest_frame(grid, None)
+        largest_frame = find_largest_frame(grid, color=None)
         logger.debug(f"largest_frame:{largest_frame}")
         if largest_frame is None:
             return None
@@ -147,7 +147,7 @@ def output_size_is_size_of_repeating_subgrid_forming_a_lattice(
         # find minimal frame inside and see if it forms a lattice
         is_lattice = is_frame_part_of_lattice(grid, largest_frame, foreground)
         logger.debug(f"is_lattice:{is_lattice} foreground:{foreground}")
-        smallest_frame = find_smallest_frame(grid, foreground, min_size=(3, 3))
+        smallest_frame = find_smallest_frame(grid, color=foreground)
         if smallest_frame is None:
             return None
         is_lattice = is_frame_part_of_lattice(grid, smallest_frame, foreground)
