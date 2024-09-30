@@ -1,7 +1,7 @@
 from typing import Callable, List, Optional, Tuple
 
 import config
-from bi_types import Examples, GridAndObjects, Match, XformEntry
+from bi_types import Examples, Match, XformEntry
 from logger import logger
 from match_object_list import match_object_list
 from matched_objects import (
@@ -11,13 +11,13 @@ from matched_objects import (
 )
 from objects import Object, display, display_multiple
 
-object_list_xforms: List[XformEntry[GridAndObjects, List[Object]]] = [
+object_list_xforms: List[XformEntry[List[Object], List[Object]]] = [
     XformEntry(match_object_list, 4),
 ]
 
 
 def match_object_list_to_object_by_painting(
-    examples: Examples[GridAndObjects, List[Object]],
+    examples: Examples[List[Object], List[Object]],
     get_objects: Callable[[Object], List[Object]],
     task_name: str,
     nesting_level: int,
@@ -26,7 +26,7 @@ def match_object_list_to_object_by_painting(
     Attempts to transform a list of examples by sequentially painting objects on top of each other.
 
     Args:
-        examples (List[Example[GridAndObjects]]): A list of examples to be transformed.
+        examples (List[Example[List[Object]]]): A list of examples to be transformed.
         get_objects (Callable[[Object], List[Object]]): A callable that extracts a list of objects from an Object.
         task_name (str): The name of the task for logging and identification.
         nesting_level (int): The current level of nesting for logging purposes.
@@ -35,7 +35,7 @@ def match_object_list_to_object_by_painting(
         Optional[Match[Object]]: A tuple containing the transformation name and a solver function if a match is found, otherwise None.
     """
     for list_xform in object_list_xforms:
-        match: Optional[Match[GridAndObjects, List[Object]]] = list_xform.xform(
+        match: Optional[Match[List[Object], List[Object]]] = list_xform.xform(
             examples, task_name, nesting_level + 1
         )
         if match is not None:
@@ -43,8 +43,7 @@ def match_object_list_to_object_by_painting(
 
             def solve(input: Object) -> Optional[Object]:
                 input_objects = get_objects(input)
-                grid_and_objects: GridAndObjects = (input, input_objects)
-                output_objects = list_solve(grid_and_objects)
+                output_objects = list_solve(input_objects)
                 if output_objects is None:
                     return None
                 output_grid = None

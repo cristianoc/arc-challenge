@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-from bi_types import Example, Examples, GridAndObjects, Match, XformEntry
+from bi_types import Example, Examples, Match, XformEntry
 from expansion_match import stretch_height
 from find_xform import find_xform_for_examples
 from logger import logger
@@ -11,7 +11,7 @@ map_xforms: List[XformEntry[Object, Object]] = [XformEntry(stretch_height, 1)]
 
 
 def check_list_of_objects_subset(
-    examples: Examples[GridAndObjects, List[Object]],
+    examples: Examples[List[Object], List[Object]],
 ) -> Optional[List[Tuple[int, int]]]:
     """
     Check if the output objects are a subset of the input objects based on their colors.
@@ -19,7 +19,7 @@ def check_list_of_objects_subset(
     The same list must apply to all examples.
     """
     input_to_output_indices_list = []
-    for (_, input_objects), output_objects in examples:
+    for input_objects, output_objects in examples:
         if len(input_objects) < 2:
             return None
         input_to_output_indices = out_objects_are_a_subset(
@@ -40,22 +40,22 @@ def check_list_of_objects_subset(
 
 
 def map_first_input_to_output_grid(
-    examples: Examples[GridAndObjects, List[Object]],
+    examples: Examples[List[Object], List[Object]],
 ) -> Examples[Object, Object]:
     input_output_objects_examples: Examples[Object, Object] = []
-    for (input_grid, input_objects), output_objects in examples:
+    for input_objects, output_objects in examples:
         input_output_objects_examples.append((input_objects[0], output_objects[0]))
 
     return input_output_objects_examples
 
 
 def check_fractal_expansion_sizes(
-    examples: Examples[GridAndObjects, List[Object]],
+    examples: Examples[List[Object], List[Object]],
 ) -> bool:
     """
     Check if every input is NxN and the output's size is N^2xN^2
     """
-    for (input_grid, input_objects), output_objects in examples:
+    for input_objects, output_objects in examples:
         if len(input_objects) != 1 or len(output_objects) != 1:
             return False
     output_obj = output_objects[0]
@@ -73,10 +73,10 @@ def check_fractal_expansion_sizes(
 
 
 def match_object_list(
-    examples: Examples[GridAndObjects, List[Object]],
+    examples: Examples[List[Object], List[Object]],
     task_name: str,
     nesting_level: int,
-) -> Optional[Match[GridAndObjects, List[Object]]]:
+) -> Optional[Match[List[Object], List[Object]]]:
     logger.info(
         f"{'  ' * nesting_level}match_object_list examples:{len(examples)} task_name:{task_name} nesting_level:{nesting_level}"
     )
@@ -95,9 +95,8 @@ def match_object_list(
             state, solve = match
 
             def solve_grid_and_objects(
-                grid_and_objects: GridAndObjects,
+                objects: List[Object],
             ) -> Optional[List[Object]]:
-                grid, objects = grid_and_objects
                 solved_objects_ = [solve(obj) for obj in objects]
                 solved_objects = [obj for obj in solved_objects_ if obj is not None]
                 if len(solved_objects) != len(objects):
@@ -116,7 +115,7 @@ def match_object_list(
         new_examples_train: List[Examples[Object, Object]] = [
             [] for _ in input_to_output_indices
         ]
-        for (_, e_inputs), e_outputs in examples:
+        for e_inputs, e_outputs in examples:
             for i, (input_index, output_index) in enumerate(input_to_output_indices):
                 new_examples_train[i].append(
                     (e_inputs[input_index], e_outputs[output_index])
@@ -146,14 +145,13 @@ def match_object_list(
         new_state += "}"
 
         def solve_grid_and_objects(
-            grid_and_objects: GridAndObjects,
+            objects: List[Object],
         ) -> Optional[List[Object]]:
-            input_grid, input_objects = grid_and_objects
             outputs = []
             assert input_to_output_indices is not None
             for i, (input_index, output_index) in enumerate(input_to_output_indices):
                 state, solve = matches[i]
-                output = solve(input_objects[input_index])
+                output = solve(objects[input_index])
                 if output is None:
                     return None
                 outputs.append(output)
