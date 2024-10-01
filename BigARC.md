@@ -152,3 +152,17 @@ The rule is an instance of the parallel map rule. A simple example is:
 
 This rule encodes several puzzles into one.
 In the full example, the frame can be used to split the grid into 9 subgrids. Each example has thus 9 subgrids, and since the number is always the same, one can solve 9 puzzles in parallel recursively.
+
+
+## Example 5
+
+![bigarc-example5](images/bigarc-example5.png)
+
+This example demonstrates a unique visual pattern: the input contains an NxM grid of objects, where (N,M) also defines the size of the output. This puzzle wasn't solved in [SizeARC](SizeARC.md) due to the complexity of size prediction being comparable to solving the ful problem in the first place.
+
+The problem can be broken down into two main steps:
+
+1. **Pattern Detection**: Identify the NxM grid of objects in the input.
+2. **Color Mapping**: Transform the problem into a `List[Object] -> List[Color]` problem.
+
+Once these steps are completed, the solution can be achieved by applying a map rule, which amounts to learning a function `Object -> Color`. In this specific case, the function merely extracts the "color" feature of each object.

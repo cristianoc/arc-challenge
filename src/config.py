@@ -55,7 +55,7 @@ blacklisted_tasks.extend(non_inpainting_tasks)
 whitelisted_tasks: List[str] = []
 whitelisted_tasks.append(task_puzzle)
 
-display_not_found = False
+display_not_found = True
 display_verbose = False
 only_inpainting_puzzles = False
 
@@ -63,9 +63,9 @@ only_simple_examples = False
 max_size = 9
 max_colors = 4
 
-only_complex_examples = False
+only_complex_examples = True
 min_size = 21
-min_colors = 9
+min_colors = 8
 
 find_xform = True
 difficulty = 1000
