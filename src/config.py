@@ -59,7 +59,7 @@ max_size = 9
 max_colors = 4
 
 only_complex_examples = True
-min_size = 19
+min_size = 17
 min_colors = 8
 
 find_xform = True
