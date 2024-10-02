@@ -166,3 +166,10 @@ The problem can be broken down into two main steps:
 2. **Color Mapping**: Transform the problem into a `List[Object] -> List[Color]` problem.
 
 Once these steps are completed, the solution can be achieved by applying a map rule, which amounts to learning a function `Object -> Color`. In this specific case, the function merely extracts the "color" feature of each object.
+
+## Example 6
+
+![bigarc-example6](images/bigarc-example6.png)
+
+This example does not require composiitonal reasoning.
+
