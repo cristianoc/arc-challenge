@@ -171,7 +171,7 @@ Once these steps are completed, the solution can be achieved by applying a map r
 
 ![bigarc-example6](images/bigarc-example6.png)
 
-This example does not require composiitonal reasoning.
+This example does not require compositional reasoning.
 
 ## Example 7
 
@@ -189,7 +189,7 @@ Simimal to example 7.
 # Evaluation
 
 These are the current results, indicating what's been implemented so far.
-There are no coverage limtations, it's more a question of convering the example in a non ad-hoc way.
+There are no coverage limitations, it's more a question of covering the example in a non ad-hoc way.
 
 ```
 Training data: Correct: 4, Incorrect: 2, Score: 66.6%
