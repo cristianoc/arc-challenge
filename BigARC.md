@@ -173,3 +173,53 @@ Once these steps are completed, the solution can be achieved by applying a map r
 
 This example does not require composiitonal reasoning.
 
+## Example 7
+
+![bigarc-example7](images/bigarc-example7.png)
+
+The toplevel tule recognizes that the size of the output is given by the largest frame (as done in [SizeARC](SizeARC.md) already), so the problem is reduced to one of type `Object -> Object`.
+
+## Example 8
+
+![bigarc-example8](images/bigarc-example8.png)
+
+Simimal to example 7.
+
+
+# Evaluation
+
+These are the current results, indicating what's been implemented so far.
+There are no coverage limtations, it's more a question of convering the example in a non ad-hoc way.
+
+```
+Training data: Correct: 4, Incorrect: 2, Score: 66.6%
+Evaluation data: Correct: 8, Incorrect: 3, Score: 72.7%
+```
+
+
+# Summary and Lessons Learned
+
+## What We Set Out to Do
+
+The BigARC challenge was conceived to push the boundaries of ARC-solving techniques by introducing larger and more colorful puzzles. Our primary goals were:
+
+1. To test the scalability of existing ARC solutions on larger grids.
+2. To explore how increased color diversity affects pattern recognition and solution strategies.
+3. To develop new compositional reasoning techniques for handling complex, multi-step puzzles.
+4. To create a framework for solving puzzles that require nested, hierarchical approaches.
+
+## What We Learned
+
+Through the development and analysis of BigARC, we gained several valuable insights:
+
+1. **Compositional Reasoning is Crucial**: Many BigARC puzzles require multi-step, nested solutions. This reinforced the importance of developing modular, composable solving techniques that can be combined in various ways.
+
+2. **Abstraction Levels Matter**: We found that breaking down problems into different levels of abstraction (e.g., grid-level, object-level, color-level) allows for more flexible and powerful solving strategies.
+
+3. **Generalization of Existing Techniques**: Many techniques developed for standard ARC puzzles (like those from InPaintingARC and SizeARC) could be adapted and extended for BigARC, showing the value of building upon existing knowledge.
+
+4. **The Importance of Meta-Rules**: Creating meta-rules for combining objects or applying transformations across multiple examples proved to be a powerful approach for handling complex puzzles.
+
+5. **Visual Processing Challenges**: Larger grids and more colors highlighted the need for more sophisticated visual processing techniques, particularly in areas like object extraction and symmetry detection.
+
+6. **Adaptability is Key**: The variety of puzzle types in BigARC emphasized the need for solving strategies that can adapt to different problem structures, rather than relying on fixed algorithms.
