@@ -103,7 +103,9 @@ class NonPeriodicGridSymmetry:
         return self.__str__()
 
     @staticmethod
-    def mask_intersection(g1: Object, g2: Object) -> Object:
+    def mask_intersection(g1: Object, g2: Object) -> Optional[Object]:
+        if g1.size != g2.size:
+            return None
         mask = g1.empty(g1.size)
         for x in range(g1.width):
             for y in range(g1.height):
