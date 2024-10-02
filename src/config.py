@@ -50,12 +50,7 @@ find_non_periodic_symmetry = True
 find_cardinality_predicates = True
 find_frame_rule = True
 
-blacklisted_tasks: List[str] = []
-blacklisted_tasks.extend(non_inpainting_tasks)
-whitelisted_tasks: List[str] = []
-whitelisted_tasks.append(task_puzzle)
-
-display_not_found = True
+display_not_found = False
 display_verbose = False
 only_inpainting_puzzles = False
 
@@ -63,10 +58,16 @@ only_simple_examples = False
 max_size = 9
 max_colors = 4
 
-only_complex_examples = True
-min_size = 20
+only_complex_examples = False
+min_size = 19
 min_colors = 8
 
 find_xform = True
 difficulty = 1000
 display_this_task = False
+
+blacklisted_tasks: List[str] = []
+if only_inpainting_puzzles:
+    blacklisted_tasks.extend(non_inpainting_tasks)
+whitelisted_tasks: List[str] = []
+# whitelisted_tasks.append(task_puzzle)
