@@ -50,7 +50,7 @@ find_non_periodic_symmetry = True
 find_cardinality_predicates = True
 find_frame_rule = True
 
-display_not_found = True
+display_not_found = False
 display_verbose = False
 only_inpainting_puzzles = False
 
@@ -58,7 +58,7 @@ only_simple_examples = False
 max_size = 9
 max_colors = 4
 
-only_complex_examples = True
+only_complex_examples = False
 min_size = 16
 min_colors = 8
 
