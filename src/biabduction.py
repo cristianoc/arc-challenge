@@ -129,6 +129,8 @@ def bi_abduction():
     results = {
         "training_score": perc_correct_tr,
         "evaluation_score": perc_correct_ev,
+        "training_num": len(correct_tr) + len(incorrect_tr),
+        "evaluation_num": len(correct_ev) + len(incorrect_ev),
         "training_correct": correct_tr,
         "evaluation_correct": correct_ev
     }

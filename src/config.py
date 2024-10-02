@@ -58,7 +58,7 @@ only_simple_examples = False
 max_size = 9
 max_colors = 4
 
-only_complex_examples = False
+only_complex_examples = True
 min_size = 19
 min_colors = 8
 
