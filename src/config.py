@@ -71,3 +71,7 @@ if only_inpainting_puzzles:
     blacklisted_tasks.extend(non_inpainting_tasks)
 whitelisted_tasks: List[str] = []
 # whitelisted_tasks.append(task_puzzle)
+
+find_shape_rule = True
+find_color_rule = True
+find_symmetry_rule = True

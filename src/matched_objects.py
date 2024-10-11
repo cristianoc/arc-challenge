@@ -8,7 +8,7 @@ from rule_based_selector import DecisionRule, Features, select_object_minimal
 from shape_features import detect_shape_features
 from symmetry_features import detect_symmetry_features
 
-
+import config
 class ObjectMatch(NamedTuple):
     """
     A match between an input object and an output object.
@@ -123,15 +123,15 @@ def detect_common_features(
 
     # Try detecting common features in the order of shape, color, and symmetry
 
-    if common_decision_rule is None and difficulty >= 1:
+    if common_decision_rule is None and difficulty >= 1 and config.find_shape_rule:
         common_decision_rule = detect_common_shape_features()
         features_used = "Shape"
 
-    if common_decision_rule is None and difficulty >= 2:
+    if common_decision_rule is None and difficulty >= 2 and config.find_color_rule:
         common_decision_rule = detect_common_color_features()
         features_used = "Color"
 
-    if common_decision_rule is None and difficulty >= 3:
+    if common_decision_rule is None and difficulty >= 3 and config.find_symmetry_rule:
         common_decision_rule = detect_common_symmetry_features()
         features_used = "Symmetry"
 
