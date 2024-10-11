@@ -73,5 +73,8 @@ whitelisted_tasks: List[str] = []
 # whitelisted_tasks.append(task_puzzle)
 
 find_shape_rule = True
+shape_largest_size = True
+shape_smallest_size = True
+shape_max_number_nontrivial_subobjects = True
 find_color_rule = True
 find_symmetry_rule = True

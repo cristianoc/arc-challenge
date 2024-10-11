@@ -1,6 +1,7 @@
 from enum import Enum, auto
 from typing import List
 
+import config
 from logger import logger
 from objects import Object
 from rule_based_selector import Features
@@ -73,11 +74,13 @@ def detect_has_max_number_nontrivial_subobjects(
 
 
 def detect_shape_features(object: Object, all_objects: List[Object]) -> Features:
-    features: Features = {
-        LARGEST_SIZE.name: detect_has_largest_size(object, all_objects),
-        SMALLEST_SIZE.name: detect_has_smallest_size(object, all_objects),
-        MAX_NUMBER_NONTRIVIAL_SUBOBJECTS.name: detect_has_max_number_nontrivial_subobjects(
+    features: Features = {}
+    if config.shape_largest_size:
+        features[LARGEST_SIZE.name] = detect_has_largest_size(object, all_objects)
+    if config.shape_smallest_size:
+        features[SMALLEST_SIZE.name] = detect_has_smallest_size(object, all_objects)
+    if config.shape_max_number_nontrivial_subobjects:
+        features[MAX_NUMBER_NONTRIVIAL_SUBOBJECTS.name] = detect_has_max_number_nontrivial_subobjects(
             object, all_objects
-        ),
-    }
+        )
     return features
