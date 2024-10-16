@@ -549,8 +549,8 @@ def display_multiple(
         List[Object], List[Tuple[Object, Object]], List[Tuple[Object, Optional[Object]]]
     ],
     title: Optional[str] = None,
-    left_title: Optional[str] = None,
-    right_title: Optional[str] = None,
+    left_title_: Optional[str] = None,
+    right_title_: Optional[str] = None,
 ):
     grid_pairs: List[Tuple[Object, Optional[Object]]] = []
     # Normalize input to a list of pairs
@@ -561,13 +561,9 @@ def display_multiple(
 
     num_pairs = len(grid_pairs)
 
-    # Dynamically set the figure size based on the number of grid pairs
-    fig_height = 2 * num_pairs + 1  # Adjust height as needed
-    fig, axes = plt.subplots(
-        num_pairs, 2, figsize=(8, fig_height)
-    )  # Adjust width and height as needed
-
-    print(f"fig: {fig} axes: {axes}")
+    max_fig_height_inch = 10  # Assume a maximum height of 10 inches or adjust as needed
+    fig_height = min(2 * num_pairs + 1, max_fig_height_inch)
+    fig, axes = plt.subplots(num_pairs, 2, figsize=(8, fig_height))
 
     # If there's only one pair, axes won't be a list, so we wrap it in a list
     if num_pairs == 1:
@@ -575,8 +571,8 @@ def display_multiple(
 
     for i, (input, output) in enumerate(grid_pairs):
         ax_input, ax_output = axes[i]
-        left_title = left_title or f"Input {i+1}"
-        right_title = right_title or f"Output {i+1}"
+        left_title = left_title_ or f"Input {i+1}"
+        right_title = right_title_ or f"Output {i+1}"
 
         # Custom rectangle-based plot for input grid with provided color scheme
         for x in range(input.width):

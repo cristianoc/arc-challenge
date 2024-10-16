@@ -581,7 +581,7 @@ def process_tasks(tasks: Tasks, set: str):
                     background_color=obj.main_color(allow_black=True)
                 )
                 display_multiple(examples + tests, title=f"examples {task_name} {set}")
-                if colored_objects:
+                if colored_objects and False:
                     display_multiple(
                         colored_objects,
                         title=f"colored objects",
