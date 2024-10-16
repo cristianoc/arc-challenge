@@ -567,44 +567,42 @@ def display_multiple(
         num_pairs, 2, figsize=(8, fig_height)
     )  # Adjust width and height as needed
 
+    print(f"fig: {fig} axes: {axes}")
+
     # If there's only one pair, axes won't be a list, so we wrap it in a list
     if num_pairs == 1:
-        axes = [axes]  # type: ignore
+        axes = [axes]
 
     for i, (input, output) in enumerate(grid_pairs):
-        input_data = input._data
-        ax_input: Any
-        ax_output: Any
         ax_input, ax_output = axes[i]
+        left_title = left_title or f"Input {i+1}"
+        right_title = right_title or f"Output {i+1}"
 
         # Custom rectangle-based plot for input grid with provided color scheme
-        for row in range(input_data.shape[0]):
-            for col in range(input_data.shape[1]):
-                color = color_scheme[input_data[row, col] % len(color_scheme)]
+        for x in range(input.width):
+            for y in range(input.height):
+                color = color_scheme[input[x, y] % len(color_scheme)]
                 rect = plt.Rectangle(
-                    [col, row], 1, 1, facecolor=color, edgecolor="grey", linewidth=0.5
+                    [x, y], 1, 1, facecolor=color, edgecolor="grey", linewidth=0.5
                 )
                 ax_input.add_patch(rect)
 
         # Set limits, aspect ratio, and grid appearance for the input grid
-        ax_input.set_xlim(0, input_data.shape[1])
-        ax_input.set_ylim(0, input_data.shape[0])
+        ax_input.set_xlim(0, input.width)
+        ax_input.set_ylim(0, input.height)
         ax_input.set_aspect("equal")
         ax_input.invert_yaxis()  # Invert to match `imshow`
-        if left_title:
-            ax_input.set_title(left_title)
-        else:
-            ax_input.set_title(f"Input Grid {i+1}")
+        ax_input.set_title(left_title)
         # ax_input.axis("off")  # Remove this line to show the axes
 
         if output is not None:
             output_data = output._data
             # Custom rectangle-based plot for output grid with provided color scheme
-            for row in range(output_data.shape[0]):
-                for col in range(output_data.shape[1]):
-                    color = color_scheme[output_data[row, col] % len(color_scheme)]
+            for y in range(output_data.shape[0]):
+                for x in range(output_data.shape[1]):
+                    color = color_scheme[output_data[y, x] % len(color_scheme)]
                     rect = plt.Rectangle(
-                        [col, row],
+                        [x, y],
                         1,
                         1,
                         facecolor=color,
@@ -618,16 +616,10 @@ def display_multiple(
             ax_output.set_ylim(0, output_data.shape[0])
             ax_output.set_aspect("equal")
             ax_output.invert_yaxis()  # Invert to match `imshow`
-            if right_title:
-                ax_output.set_title(right_title)
-            else:
-                ax_output.set_title(f"Output Grid {i+1}")
+            ax_output.set_title(right_title)
         else:
             # If output is None, just show a blank plot
-            if right_title:
-                ax_output.set_title(right_title)
-            else:
-                ax_output.set_title(f"Output Grid {i+1} (None)")
+            ax_output.set_title(right_title)
             ax_output.axis("off")  # Hide the axes for a blank plot
 
     if title:

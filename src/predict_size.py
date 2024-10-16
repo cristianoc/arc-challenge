@@ -34,7 +34,7 @@ class Config:
     task_name: str | None = None
     # task_name = "746b3537.json"
     find_xform_color = True
-    display_not_found = False
+    display_not_found = True
 
 
 def output_size_is_input_size(grids: ExampleObjects, grid: Object, task_name: str):
@@ -486,6 +486,7 @@ def process_tasks(tasks: Tasks, set: str):
         logger.info(f"\n***Task: {task_name} {set}***")
 
         examples: Examples[Object, Object] = task.train
+        tests: Examples[Object, Object] = task.test
         task_type = "train"
         if True:
             current_difficulty = 0
@@ -579,7 +580,7 @@ def process_tasks(tasks: Tasks, set: str):
                 colored_objects = obj.detect_colored_objects(
                     background_color=obj.main_color(allow_black=True)
                 )
-                display_multiple(examples, title=f"{task_name} {set}")
+                display_multiple(examples + tests, title=f"examples {task_name} {set}")
                 if colored_objects:
                     display_multiple(
                         colored_objects,
