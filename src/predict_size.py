@@ -34,7 +34,7 @@ class Config:
     task_name: str | None = None
     # task_name = "746b3537.json"
     find_xform_color = True
-    display_not_found = True
+    display_not_found = False
 
 
 def output_size_is_input_size(grids: ExampleObjects, grid: Object, task_name: str):
@@ -204,9 +204,9 @@ class XformEntry(TypedDict):
 
 
 xforms: List[XformEntry] = [
-    {"function": output_size_is_input_size, "difficulty": 1},  # Level 1: Very Simple
+    # {"function": output_size_is_input_size, "difficulty": 1},  # Level 1: Very Simple
     # Level 2: Simple with External Dependency
-    {"function": output_size_is_constant, "difficulty": 2},
+    # {"function": output_size_is_constant, "difficulty": 2},
     {
         "function": output_size_is_size_of_object_inside_largest_frame,
         "difficulty": 4,
@@ -262,7 +262,7 @@ def find_xform(
         logger.debug(f"Checking xform {func.__name__} {task_type}")
         if check_xform_on_examples(func, examples, task_name, task_type):
             correct_xform = xform
-            logger.info(
+            logger.debug(
                 f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type}"
             )
             test_examples = task.test
@@ -421,7 +421,7 @@ def find_matched_objects(
         for example in examples:
             input = example[0]
             output = example[1]
-            logger.info(f"  {task_type} {input.size} -> {output.size}")
+            logger.debug(f"  {task_type} {input.size} -> {output.size}")
 
             input_objects = candidate_objects_for_matching(input, output)
             matched_object_index = find_matching_input_object(input_objects, output)
@@ -480,118 +480,125 @@ num_difficulties_total = (
 def process_tasks(tasks: Tasks, set: str):
     num_correct = 0
     num_incorrect = 0
-    for task_name, task in tasks.items():
-        if Config.task_name and task_name != Config.task_name:
-            continue
-        logger.info(f"\n***Task: {task_name} {set}***")
+    for task_name1, task1 in tasks.items():
+        for task_name2, task2 in tasks.items():
+            if task_name1 == task_name2:
+                continue
+            task_name = f"{task_name1}{task_name2}"
+            logger.debug(f"\n***Task: {task_name} {set}***")
 
-        examples: Examples[Object, Object] = task.train
-        tests: Examples[Object, Object] = task.test
-        task_type = "train"
-        if True:
-            current_difficulty = 0
+            examples_1: Examples[Object, Object] = task1.train
+            examples_2: Examples[Object, Object] = task2.train
+            tests_1: Examples[Object, Object] = task1.test
+            tests_2: Examples[Object, Object] = task2.test
+            examples = examples_1 + examples_2
+            tests = tests_1 + tests_2
+            task = Task(examples, tests)
+            task_type = "train"
+            if True:
+                current_difficulty = 0
 
-            if Config.find_xform:
-                correct_xform = find_xform(examples, task, task_name, task_type)
-                if correct_xform:
-                    logger.info(
-                        f"Xform {correct_xform['function'].__name__} is correct for all examples in {task_type} and test"
-                    )
-                    num_correct += 1
-                    continue
-
-            current_difficulty += num_difficulties_xform
-
-            if Config.find_matched_objects:
-                # Check if the input objects can be matched to the output objects
-                logger.debug(f"Checking common features for {task_name} {set}")
-                matched_objects = find_matched_objects(examples, task_type)
-                if matched_objects:
-                    # If the input objects can be matched to the output objects, try to detect common features
-                    # to determine the correct object to pick
-                    logger.debug(
-                        f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}"
-                    )
-                    common_decision_rule, features_used = detect_common_features(
-                        matched_objects, current_difficulty
-                    )
-                    if common_decision_rule:
-                        logger.info(
-                            f"Common decision rule ({features_used}): {common_decision_rule}"
+                if Config.find_xform:
+                    correct_xform = find_xform(examples, task, task_name, task_type)
+                    if correct_xform:
+                        logger.error(
+                            f"{task_name}:{task_type} {correct_xform['function'].__name__} is correct"
                         )
                         num_correct += 1
                         continue
-                    else:
-                        logger.warning(
-                            f"Could not find common decision rule for {task_name} {set}"
+
+                current_difficulty += num_difficulties_xform
+
+                if Config.find_matched_objects:
+                    # Check if the input objects can be matched to the output objects
+                    logger.debug(f"Checking common features for {task_name} {set}")
+                    matched_objects = find_matched_objects(examples, task_type)
+                    if matched_objects:
+                        # If the input objects can be matched to the output objects, try to detect common features
+                        # to determine the correct object to pick
+                        logger.debug(
+                            f"XXX Matched {len(matched_objects)}/{len(examples)} {task_name} {set}"
                         )
-            current_difficulty += num_difficulties_matching
+                        common_decision_rule, features_used = detect_common_features(
+                            matched_objects, current_difficulty
+                        )
+                        if common_decision_rule:
+                            logger.info(
+                                f"Common decision rule ({features_used}): {common_decision_rule}"
+                            )
+                            num_correct += 1
+                            continue
+                        else:
+                            logger.warning(
+                                f"Could not find common decision rule for {task_name} {set}"
+                            )
+                current_difficulty += num_difficulties_matching
 
-            def try_regularized_regression(exs: Examples[Object, Object]):
-                logger.debug(
-                    f"Trying to determine dimensions via LP for {task_name} {set}"
-                )
-                (
-                    predicted_height,
-                    predicted_width,
-                ) = predict_size_using_regularized_regression(
-                    exs, relative_difficulty=Config.difficulty - current_difficulty
-                )
-                if predicted_height and predicted_width:
-                    logger.info(
-                        f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}"
+                def try_regularized_regression(exs: Examples[Object, Object]):
+                    logger.debug(
+                        f"Trying to determine dimensions via LP for {task_name} {set}"
                     )
-                return predicted_height, predicted_width
+                    (
+                        predicted_height,
+                        predicted_width,
+                    ) = predict_size_using_regularized_regression(
+                        exs, relative_difficulty=Config.difficulty - current_difficulty
+                    )
+                    if predicted_height and predicted_width:
+                        logger.info(
+                            f"Predictions via LP: out.height=={pretty_print_numeric_features(predicted_height)}, out.width=={pretty_print_numeric_features(predicted_width)}"
+                        )
+                    return predicted_height, predicted_width
 
-            difficulty_after_regularized_regression = (
-                current_difficulty + numeric_features.num_difficulties + 1
-            )
-            if (
-                Config.predict_size_using_regularized_regression
-                and Config.difficulty >= current_difficulty
-            ):
-                predicted_height, predicted_width = try_regularized_regression(examples)
-                if predicted_height and predicted_width:
-                    num_correct += 1
-                    continue
+                difficulty_after_regularized_regression = (
+                    current_difficulty + numeric_features.num_difficulties + 1
+                )
                 if (
-                    Config.try_remove_main_color
-                    and Config.difficulty >= difficulty_after_regularized_regression
+                    Config.predict_size_using_regularized_regression
+                    and Config.difficulty >= current_difficulty
                 ):
-                    # try to remove main color and try again
-                    examples2: Examples[Object, Object] = []
-                    for example in examples:
-                        input_obj = example[0]
-                        # change the main color to black
-                        new_input_data = input_obj.change_color(
-                            input_obj.main_color(), BLACK
-                        ).copy()
-                        examples2.append((new_input_data, example[1]))
-                    predicted_height, predicted_width = try_regularized_regression(
-                        examples2
-                    )
+                    predicted_height, predicted_width = try_regularized_regression(examples)
                     if predicted_height and predicted_width:
                         num_correct += 1
                         continue
-            current_difficulty += num_difficulties_regularized_regression
+                    if (
+                        Config.try_remove_main_color
+                        and Config.difficulty >= difficulty_after_regularized_regression
+                    ):
+                        # try to remove main color and try again
+                        examples2: Examples[Object, Object] = []
+                        for example in examples:
+                            input_obj = example[0]
+                            # change the main color to black
+                            new_input_data = input_obj.change_color(
+                                input_obj.main_color(), BLACK
+                            ).copy()
+                            examples2.append((new_input_data, example[1]))
+                        predicted_height, predicted_width = try_regularized_regression(
+                            examples2
+                        )
+                        if predicted_height and predicted_width:
+                            num_correct += 1
+                            continue
+                current_difficulty += num_difficulties_regularized_regression
 
-            if Config.display_not_found:
-                obj = examples[0][0]
-                colored_objects = obj.detect_colored_objects(
-                    background_color=obj.main_color(allow_black=True)
-                )
-                display_multiple(examples + tests, title=f"examples {task_name} {set}")
-                if colored_objects and False:
-                    display_multiple(
-                        colored_objects,
-                        title=f"colored objects",
+                if Config.display_not_found:
+                    obj = examples[0][0]
+                    colored_objects = obj.detect_colored_objects(
+                        background_color=obj.main_color(allow_black=True)
                     )
+                    display_multiple(examples + tests, title=f"examples {task_name} {set}")
+                    if colored_objects and False:
+                        display_multiple(
+                            colored_objects,
+                            title=f"colored objects",
+                        )
 
-            # If no valid dimensions could be determined, give up
-            logger.warning(
-                f"Could not find correct transformation or determine dimensions via Linear Programming for {task_name} {set} examples"
-            )
-            num_incorrect += 1
+                # If no valid dimensions could be determined, give up
+                logger.warning(
+                    f"Could not find correct transformation or determine dimensions via Linear Programming for {task_name} {set} examples"
+                )
+                num_incorrect += 1
 
     return num_correct, num_incorrect
 
