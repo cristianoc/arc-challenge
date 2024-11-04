@@ -2,14 +2,17 @@ import os
 from typing import Callable
 
 import load_data
+from logger import logger
 from objects import Object, display
 
 # Get DISPLAY from environment variable or default to True if not set
 DISPLAY = os.getenv("DISPLAY", "True").lower() in ["true", "1", "yes"]
 
+training_data = dict(load_data.training_data)
 
 def puzzle(name: str, transform: Callable[[Object], Object]) -> None:
-    task = load_data.training_data[name]
+    logger.error(f"keys: {training_data.keys()}")
+    task = training_data[name]
     train_set = task.train
     test_set = task.test
     for i, example in enumerate(train_set):

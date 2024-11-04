@@ -5,7 +5,7 @@ import numpy as np
 import numeric_features
 from bi_types import Examples
 from color_features import detect_color_features
-from load_data import Task, Tasks, evaluation_data, training_data
+from load_data import Task, TasksIterator, evaluation_data, training_data
 from logger import logger
 from numeric_features import detect_numeric_features, pretty_print_numeric_features
 from objects import BLACK, GridData, Object, display, display_multiple
@@ -34,7 +34,7 @@ class Config:
     task_name: str | None = None
     # task_name = "746b3537.json"
     find_xform_color = True
-    display_not_found = True
+    display_not_found = False
 
 
 def output_size_is_input_size(grids: ExampleObjects, grid: Object, task_name: str):
@@ -477,10 +477,10 @@ num_difficulties_total = (
 )
 
 
-def process_tasks(tasks: Tasks, set: str):
+def process_tasks(tasks_iterator: TasksIterator, set: str):
     num_correct = 0
     num_incorrect = 0
-    for task_name, task in tasks.items():
+    for task_name, task in tasks_iterator:
         if Config.task_name and task_name != Config.task_name:
             continue
         logger.info(f"\n***Task: {task_name} {set}***")

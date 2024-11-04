@@ -5,7 +5,7 @@ import xforms
 from bi_types import Examples
 from find_xform import find_xform
 from inpainting_match import is_inpainting_puzzle
-from load_data import Task, Tasks, evaluation_data, training_data
+from load_data import Task, TasksIterator, evaluation_data, training_data
 from logger import logger
 from objects import Object, display_multiple
 
@@ -40,10 +40,10 @@ def filter_complex_xforms(task: Task, task_name: str):
     return True
 
 
-def process_tasks(tasks: Tasks, set: str):
+def process_tasks(tasks_iterator: TasksIterator, set: str):
     correct = []
     incorrect = []
-    for task_name, task in tasks.items():
+    for task_name, task in tasks_iterator:
         config.display_this_task = False
         if config.task_name and task_name != config.task_name:
             continue

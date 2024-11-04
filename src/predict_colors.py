@@ -4,7 +4,7 @@ import numpy as np
 
 from bi_types import Examples
 from grid_types import BLACK, GREY
-from load_data import Task, Tasks, evaluation_data, training_data
+from load_data import Task, TasksIterator, evaluation_data, training_data
 from logger import logger
 from objects import Object, display_multiple
 from predict_size import (
@@ -236,10 +236,10 @@ num_difficulties_xform = max(xform["difficulty"] for xform in xforms)
 num_difficulties_total = num_difficulties_xform + num_difficulties_matching
 
 
-def process_tasks(tasks: Tasks, set: str):
+def process_tasks(tasks_iterator: TasksIterator, set: str):
     num_correct = 0
     num_incorrect = 0
-    for task_name, task in tasks.items():
+    for task_name, task in tasks_iterator:
         if Config.task_name and task_name != Config.task_name:
             continue
         logger.info(f"\n***Task: {task_name} {set}***")

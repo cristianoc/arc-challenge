@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Any, Dict, Generic, List, Tuple, TypeVar
+from typing import Any, Dict, Generic, List, Tuple, TypeVar, Iterator
 
 import numpy as np
 
@@ -17,11 +17,11 @@ class Task:
         self.test = test
 
 
-Tasks = Dict[str, Task]  # xxxx.json -> task
+TasksIterator = Iterator[Tuple[str, Task]]  # filename.json -> task
 
 
-def load_arc_data(directory: str) -> Tasks:
-    tasks: Tasks = {}
+def iter_arc_data(directory: str) -> TasksIterator:
+    """Iterates through ARC tasks in the given directory, yielding (filename, task) pairs."""
     for filename in os.listdir(directory):
         if filename.endswith(".json"):
             with open(os.path.join(directory, filename), "r") as file:
@@ -42,8 +42,7 @@ def load_arc_data(directory: str) -> Tasks:
                         for example in obj["test"]
                     ],
                 )
-                tasks[filename] = task
-    return tasks
+                yield filename, task
 
 
 # Get the directory of the current script
@@ -54,5 +53,5 @@ training_dataset_path = os.path.join(script_dir, "../data/training/")
 evaluation_dataset_path = os.path.join(script_dir, "../data/evaluation/")
 
 # Load training and evaluation datasets
-training_data: Tasks = load_arc_data(training_dataset_path)
-evaluation_data: Tasks = load_arc_data(evaluation_dataset_path)
+training_data: TasksIterator = iter_arc_data(training_dataset_path)
+evaluation_data: TasksIterator = iter_arc_data(evaluation_dataset_path)
