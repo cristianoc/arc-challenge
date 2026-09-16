@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260">
+  <style>
+    .title{font:600 18px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#24292f}
+    .label{font:500 15px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#57606a}
+    .arrow{font:600 30px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#57606a}
+    .cell{stroke:#d0d7de;stroke-width:2}
+  </style>
+  <rect width="900" height="260" rx="16" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="450" y="34" text-anchor="middle" class="title">Minimal witness: component structure matters</text>
+  <text x="115" y="70" text-anchor="middle" class="label">input</text>
+  <text x="450" y="70" text-anchor="middle" class="label">component rule</text>
+  <text x="785" y="70" text-anchor="middle" class="label">per-cell shortcut</text>
+  <!-- input -->
+  <g transform="translate(40,90)">
+    <rect class="cell" x="0" y="0" width="50" height="50" fill="#2f81f7"/><rect class="cell" x="50" y="0" width="50" height="50" fill="#2f81f7"/><rect class="cell" x="100" y="0" width="50" height="50" fill="#2f81f7"/>
+    <rect class="cell" x="0" y="50" width="50" height="50" fill="#2f81f7"/><rect class="cell" x="50" y="50" width="50" height="50" fill="#f0883e"/><rect class="cell" x="100" y="50" width="50" height="50" fill="#f0883e"/>
+  </g>
+  <text x="245" y="150" class="arrow">→</text>
+  <!-- structural -->
+  <g transform="translate(375,90)">
+    <rect class="cell" x="0" y="0" width="50" height="50" fill="#2f81f7"/><rect class="cell" x="50" y="0" width="50" height="50" fill="#2f81f7"/><rect class="cell" x="100" y="0" width="50" height="50" fill="#2f81f7"/>
+    <rect class="cell" x="0" y="50" width="50" height="50" fill="#2f81f7"/><rect class="cell" x="50" y="50" width="50" height="50" fill="#2f81f7"/><rect class="cell" x="100" y="50" width="50" height="50" fill="#2f81f7"/>
+  </g>
+  <text x="580" y="150" class="arrow">≠</text>
+  <!-- local -->
+  <g transform="translate(710,90)">
+    <rect class="cell" x="0" y="0" width="50" height="50" fill="#2f81f7"/><rect class="cell" x="50" y="0" width="50" height="50" fill="#2f81f7"/><rect class="cell" x="100" y="0" width="50" height="50" fill="#2f81f7"/>
+    <rect class="cell" x="0" y="50" width="50" height="50" fill="#2f81f7"/><rect class="cell" x="50" y="50" width="50" height="50" fill="#2f81f7"/><rect class="cell" x="100" y="50" width="50" height="50" fill="#ffffff"/>
+  </g>
+  <circle cx="835" cy="215" r="10" fill="none" stroke="#cf222e" stroke-width="3"/>
+  <path d="M825 205 L845 225 M845 205 L825 225" stroke="#cf222e" stroke-width="3"/>
+  <text x="450" y="235" text-anchor="middle" class="label">Six foreground cells distinguish two explanations that fit every official train and test pair.</text>
+</svg>
