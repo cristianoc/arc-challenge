@@ -75,9 +75,9 @@ We currently make no comparison between different actions or between selectors w
 
 ## Preferred solutions
 
-The preferred solutions are the undominated members of the version space:
+The preferred solutions are the undominated members of the version space. Write `Max` for the set of maximal elements:
 
-$$G(E)=\operatorname{Max}_{\sqsupseteq}V(E).$$
+$$G(E)=\mathrm{Max}_{\sqsupseteq}\,V(E).$$
 
 Equivalently, $h\in G(E)$ exactly when:
 
