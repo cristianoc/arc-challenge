@@ -209,7 +209,7 @@ This task contains large regions of one foreground color disturbed by small comp
 Below is a literal crop from the ARC interface screenshot, not a reconstruction. It is deliberately shown at roughly the scale a human solver sees it: a visually rich example with many cells and several apparent regularities.
 
 <p align="center">
-  <img src="figures/arc_7e0986d6_screenshot_crop.svg" width="650" alt="ARC task 7e0986d6 example 1 input and output, cropped from the actual interface screenshot">
+  <img src="figures/arc_7e0986d6_screenshot_crop.png" width="650" alt="ARC task 7e0986d6 example 1 input and output, cropped from the actual interface screenshot">
 </p>
 
 We compared four executable explanations:
