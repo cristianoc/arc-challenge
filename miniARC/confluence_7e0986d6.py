@@ -189,9 +189,20 @@ def main() -> None:
     # Trajectories should nevertheless differ: if W arrives first, component
     # structure is discovered immediately; if W arrives last, the local schema
     # survives both large ARC demonstrations before being refuted by six cells.
-    first_events = {order: trace for order, _, trace in results}
-    assert "components" in first_events[("W", "A", "B")][1]
-    assert "per-cell" in first_events[("A", "B", "W")][2]
+    traces = {order: trace for order, _, trace in results}
+
+    def state_after(order: tuple[str, ...], label: str) -> str:
+        """Representation recorded just after `label` in that curriculum.
+
+        Selected by prefix, not by position: each step also emits a variable
+        number of indented event lines.
+        """
+        prefix = f"after {label}: "
+        return next(line for line in traces[order] if line.startswith(prefix))
+
+    assert "components" in state_after(("W", "A", "B"), "W")
+    assert "per-cell" in state_after(("A", "B", "W"), "A")
+    assert "components" in state_after(("A", "B", "W"), "W")
 
     print("\nInterpretation:")
     print("  endpoint is order-independent in this learner, but discovery time is not.")

@@ -93,9 +93,11 @@ def moore_closure(generators: set[Concept]) -> frozenset[Concept]:
 
 def pixel_representation() -> Representation:
     """Ground instances are representable, but no cross-size FlipX schema is."""
-    # Singletons plus top.  Intersection closure also introduces empty set.
-    gens = {frozenset({g}) for g in G}
-    return Representation("pixel", moore_closure(gens))
+    # Every set of ground instances is a concept, so each observation is its own
+    # least representable superset and cl(S) = S: the instances stay unrelated.
+    # Singletons alone would not do, since a Moore family is closed only under
+    # intersection, leaving G as the sole superset of a multi-instance set.
+    return Representation("pixel", frozenset(powerset(tuple(G))))
 
 
 def object_representation() -> Representation:
