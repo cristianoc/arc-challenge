@@ -20,9 +20,7 @@ Implementation: [`poset_generalization.py`](poset_generalization.py).
 
 The experiment uses binary 4x4 grids. This is small enough that all
 
-\[
-2^{16}=65,536
-\]
+$$2^{16}=65,536$$
 
 possible inputs can be enumerated exactly.
 
@@ -30,9 +28,7 @@ Foreground cells form maximal 4-connected objects.
 
 A hypothesis has the form
 
-\[
-h = s;a
-\]
+$$h=s;a$$
 
 where `s` is a selector and `a` is an action.
 
@@ -43,11 +39,7 @@ The atomic selectors are:
 - `Leftmost`
 - `Rightmost`
 
-The empty selector, `Object`, selects every foreground object. Selectors may also contain conjunctions of up to two atomic predicates, for example
-
-```
-Largest&Leftmost
-```
+The empty selector, `Object`, selects every foreground object. Selectors may also contain conjunctions of up to two atomic predicates, for example `Largest&Leftmost`.
 
 The initial actions are:
 
@@ -59,11 +51,9 @@ This gives a small, completely enumerable hypothesis language. The point is not 
 
 ## Evidence
 
-For a set of input/output examples \(E\), the version space is simply
+For a set of input/output examples $E$, the version space is simply
 
-\[
-V(E)=\{h\mid h\text{ agrees with every example in }E\}.
-\]
+$$V(E)=\{h \mid h\text{ agrees with every example in }E\}.$$
 
 Evidence has no other role. In particular, examples do not assign scores or modify the generality relation.
 
@@ -71,29 +61,15 @@ Evidence has no other role. In particular, examples do not assign scores or modi
 
 A selector denotes the set of `(grid, object)` pairs that it selects over the complete 4x4 universe.
 
-For selectors \(s_1,s_2\), define
+For selectors $s_1,s_2$, define $s_1 \sqsupseteq s_2$ when every object selected by $s_2$ is also selected by $s_1$:
 
-\[
-s_1 \sqsupseteq s_2
-\]
-
-when every object selected by \(s_2\) is also selected by \(s_1\):
-
-\[
-\llbracket s_2\rrbracket\subseteq\llbracket s_1\rrbracket.
-\]
+$$\llbracket s_2\rrbracket\subseteq\llbracket s_1\rrbracket.$$
 
 Thus `Largest` is more general than `Largest&Leftmost`, because every object satisfying both predicates satisfies `Largest`, while the converse is false.
 
 This relation is computed **extensionally**, by enumerating all 65,536 binary 4x4 grids. It is not inferred from conjunction length or another syntactic score.
 
-For hypotheses with the same action,
-
-\[
-s_1;a \sqsupset s_2;a
-\]
-
-when \(s_1\) is a strict semantic generalization of \(s_2\).
+For hypotheses with the same action, $s_1;a \sqsupset s_2;a$ when $s_1$ is a strict semantic generalization of $s_2$.
 
 We currently make no comparison between different actions or between selectors whose denotations are incomparable.
 
@@ -101,14 +77,12 @@ We currently make no comparison between different actions or between selectors w
 
 The preferred solutions are the undominated members of the version space:
 
-\[
-G(E)=\operatorname{Max}_{\sqsupseteq} V(E).
-\]
+$$G(E)=\operatorname{Max}_{\sqsupseteq}V(E).$$
 
-Equivalently, \(h\in G(E)\) exactly when
+Equivalently, $h\in G(E)$ exactly when:
 
-1. \(h\) explains every example; and
-2. there is no strictly more general hypothesis \(h'\) that also explains every example.
+1. $h$ explains every example; and
+2. there is no strictly more general hypothesis $h'$ that also explains every example.
 
 There may be several such hypotheses. That is intentional.
 
@@ -131,21 +105,13 @@ where arrows point from general to specific.
 
 But `Largest;X` and `Leftmost;X` are incomparable. Therefore
 
-\[
-G(E)=\{Largest;X,Leftmost;X\}.
-\]
+$$G(E)=\{Largest;X,Leftmost;X\}.$$
 
 The theory removes the gratuitous conjunction but does not manufacture a preference between `Largest` and `Leftmost`.
 
 ## Staged experiment
 
-The executable demo constructs an intended rule
-
-\[
-Largest;X.
-\]
-
-It searches the finite grid universe for examples with controlled ambiguity.
+The executable demo constructs an intended rule `Largest;X`. It searches the finite grid universe for examples with controlled ambiguity.
 
 ### Stage 1: genuine ambiguity
 
@@ -159,21 +125,15 @@ Largest&Leftmost;X
 
 The partial order eliminates only the conjunction. The result is
 
-\[
-G(E_1)=\{Largest;X,Leftmost;X\}.
-\]
+$$G(E_1)=\{Largest;X,Leftmost;X\}.$$
 
 This is the desired behavior: the observation has not established whether size or horizontal position is the relevant selector.
 
 ### Stage 2: evidence resolves it
 
-A second example is found in which `Largest;X` remains correct but `Leftmost;X` does not.
+A second example is found in which `Largest;X` remains correct but `Leftmost;X` does not. Then
 
-Then
-
-\[
-V(E_1,E_2)=G(E_1,E_2)=\{Largest;X\}.
-\]
+$$V(E_1,E_2)=G(E_1,E_2)=\{Largest;X\}.$$
 
 The important separation is:
 
@@ -186,17 +146,7 @@ The partial order does not resolve an ambiguity that should instead be resolved 
 
 The first hand-written demo was intended to establish `Largest;X`, but the other objects happened to be horizontally symmetric. Consequently `Object;X` also fit every example.
 
-Since `Object` is genuinely more general than `Largest`, the partial-order rule preferred
-
-```
-Object;X
-```
-
-over
-
-```
-Largest;X.
-```
+Since `Object` is genuinely more general than `Largest`, the partial-order rule preferred `Object;X` over `Largest;X`.
 
 This was not a failure of the ordering rule. It exposed a defect in the examples: they did not demonstrate that only the largest object should be transformed.
 
@@ -224,29 +174,42 @@ Everything else remains incomparable.
 
 This is intentionally weak. The aim is to earn additional ordering relations from examples rather than postulate a general-purpose complexity score.
 
-## Next experiment: discover the second relation
+## Hard ambiguity: where the first relation stops
 
-The next step is to construct an ARC-like case with:
+The next useful case is not one where another example immediately eliminates the spurious hypothesis. Keep several examples in which the largest object also happens to be the leftmost object, while varying the actual objects and their positions. Then both
 
-1. an intended hypothesis \(h_i\);
-2. a spurious hypothesis \(h_s\);
-3. both hypotheses consistent with all training examples;
-4. \(h_i\) and \(h_s\) incomparable under the current semantic-extension order;
-5. a strong human intuition that \(h_i\) is nevertheless the intended generalization.
+```
+Largest;X
+Leftmost;X
+```
 
-That pair is the useful object of study.
+remain consistent and neither dominates the other.
 
-Rather than immediately adding another rule, we should inspect what structural fact supports the preference. If it can be expressed as a robust pairwise relation, it becomes a candidate second generator of the preorder.
+The current theory therefore returns both. This is not yet evidence that a second ordering principle is needed. If the observations preserve the correlation perfectly, the two rules may simply be underdetermined by the puzzle.
 
-The process is therefore incremental:
+This is an important constraint on the next step: **G2 must not merely encode our knowledge of the hidden generator.** We need a case in which the intended ARC interpretation is preferred for a structural reason visible in the problem formulation, not because we secretly know that the examples were generated by `Largest;X`.
 
-\[
-\preceq_1\;\subseteq\;\preceq_2\;\subseteq\;\cdots
-\]
+That means the next extension of MiniARC should be chosen to expose a genuinely ARC-like distinction—for example between a relation expressed in terms of objects and a coincidentally equivalent pixel/coordinate description—while keeping both descriptions enumerable.
 
-where each extension adds only pairwise preferences for which we have an independently defensible reason.
+Only then should we ask whether there is a defensible pairwise relation between them.
 
-The intended research question is not yet "what score measures generalization?" It is:
+## Research method
+
+We build the preference relation incrementally:
+
+$$\preceq_1\;\subseteq\;\preceq_2\;\subseteq\;\cdots$$
+
+Each extension adds only pairwise preferences for which we have an independently defensible reason.
+
+For a proposed new relation:
+
+1. find an intended/spurious pair left incomparable by the current preorder;
+2. state the structural reason one should dominate the other;
+3. formulate that reason as a pairwise operation or relation, not a score;
+4. test it exhaustively in the finite world;
+5. reject or weaken it if it causes clearly spurious hypotheses to dominate intended ones elsewhere.
+
+The intended research question is not "what score measures generalization?" It is:
 
 > **What is the weakest structured preference relation on explanations that accounts for the generalizations intended in ARC?**
 
