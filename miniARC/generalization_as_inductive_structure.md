@@ -186,6 +186,10 @@ This is independent of whether the abstraction also makes search cheaper.
 
 The task contains large regions of one foreground color disturbed by small components of another. The output removes nuisance components, restoring nuisance cells to a nearby large component when appropriate and otherwise returning them to background. The two training examples use different colors, and the test changes them again.
 
+Here is the first official demonstration, **cropped directly from the ARC interface screenshot** rather than redrawn. This is useful context for the much smaller witness below.
+
+![Actual ARC interface crop showing example 1 input and output](figures/arc_7e0986d6_screenshot_crop.jpg)
+
 We compared four executable explanations:
 
 | explanation | train | test | result |
