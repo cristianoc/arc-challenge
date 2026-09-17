@@ -1,8 +1,5 @@
 ### MiniARC
 
-[Generalization and the discovery of inductive structure](inductive_structure.md)
-is a compact, self-contained mathematical account of the work on 16 September 2026.
-
 This directory contains resources for **MiniARC**, a variant of the ARC framework where the challenge is to solve grid transformation puzzles using sequences of operations like flips, rotations, and inversions.
 
 - **`grid_xform_puzzle.py`**: Python script that generates an image visualizing all possible transformations of a grid, organized by complexity level. Each line in the image corresponds to a different level of transformation sequences, starting with the simplest (identity) at the top.
