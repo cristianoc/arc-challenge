@@ -1,0 +1,17 @@
+d9fac9be  func[dihedral:3 colours:15 cyclic:2 rows:11 cols:11] real[dihedral:1 colours:15 rows:11 cols:11] |C|=240 gain=5.91b outs=6  progsD=1 progs=1 fitD=1.00 fitC=1.00 evals=763 sym=0/1(ok 0) equiv=yes det=-  fit-only  :: shiftRight ; topHalf ; cropSmallest
+  accepted: [flipH, swapColours 2 4, swapColours 2 8, swapColours 2 3, swapColours 2 5, swapColours 4 8, swapColours 4 5, swapColours 3 4, swapColours 3 8, swapColours 3 5, swapColours 1 2, swapColours 1 4, swapColours 1 8, swapColours 1 3, swapColours 1 5, swapColours 5 8, swapRows 0 1, swapRows 1 2, swapRows 2 3, swapRows 3 4, swapRows 4 5, swapRows 5 6, swapRows 6 7, swapRows 7 8, swapRows 8 9, swapRows 9 10, swapRows 10 11, swapCols 0 1, swapCols 1 2, swapCols 2 3, swapCols 3 4, swapCols 4 5, swapCols 5 6, swapCols 6 7, swapCols 7 8, swapCols 8 9, swapCols 9 10, swapCols 10 11]
+  rejected by realizability: [flipV, transpose, cycleRows, cycleCols]
+  repaired: [flipH]
+  prediction (wrong):
+1
+
+tasks: 1  test inputs: 1
+generators passing functionality, tasks by family: [(dihedral, 1), (colours, 1), (cyclic, 1), (rows, 1), (cols, 1)]
+generators passing realizability, among the 1 tasks with a fitting program, tasks by family: [(dihedral, 1), (colours, 1), (cyclic, 0), (rows, 1), (cols, 1)]
+tasks where realizability rejected a functional generator: 1; repaired by hill climbing: 1
+closure capped at 20000: 0; median gain: 5.91 bits
+programs consistent with data: 1; fits data: 1; solves all tests: 0; fits data and solves all tests: 0; fits data but wrong on a test: 1
+test inputs determined by symmetry alone: 0/1; of which the symmetry answer is correct: 0
+test inputs where the program is undefined: 0
+equivariance at test input: yes 1, NO 0
+surviving programs disagree at a test input: 0; agree: 0

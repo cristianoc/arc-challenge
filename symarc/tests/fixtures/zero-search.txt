@@ -1,0 +1,19 @@
+0520fde7  func[dihedral:3 colours:3 cols:4] real[n/a] |C|=120 gain=5.32b outs=39  progsD=0 progs=0 fitD=0.00 fitC=0.00 evals=1 sym=0/1(ok 0) equiv=yes det=-  unfit  :: id
+  accepted: [flipH, flipV, transpose, swapColours 1 5, swapColours 1 2, swapColours 2 5, swapCols 2 3, swapCols 3 4, swapCols 4 5, swapCols 5 6]
+  rejected by realizability: []
+  repaired: []
+  prediction (wrong):
+1015101
+0105101
+1015010
+
+tasks: 1  test inputs: 1
+generators passing functionality, tasks by family: [(dihedral, 1), (colours, 1), (cyclic, 0), (rows, 0), (cols, 1)]
+generators passing realizability, among the 0 tasks with a fitting program, tasks by family: [(dihedral, 0), (colours, 0), (cyclic, 0), (rows, 0), (cols, 0)]
+tasks where realizability rejected a functional generator: 0; repaired by hill climbing: 0
+closure capped at 20000: 0; median gain: 5.32 bits
+programs consistent with data: 0; fits data: 0; solves all tests: 0; fits data and solves all tests: 0; fits data but wrong on a test: 0
+test inputs determined by symmetry alone: 0/1; of which the symmetry answer is correct: 0
+test inputs where the program is undefined: 0
+equivariance at test input: yes 1, NO 0
+surviving programs disagree at a test input: 0; agree: 0

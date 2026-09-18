@@ -1,0 +1,6 @@
+name = "SymArc"
+version = "0.1.0"
+defaultTargets = ["SymArc"]
+
+[[lean_lib]]
+name = "SymArc"

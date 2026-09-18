@@ -1,0 +1,109 @@
+# SymArc experiments
+
+One Rust solver and a Lean mathematical model for exploring entropy and
+functional closure under symmetry. Start with [MATH.md](MATH.md) for the
+current definitions, proved statements, and approximation boundaries.
+
+## Build and check
+
+Rust and Cargo are sufficient for the solver; it has no external crate dependencies.
+Lean is needed only to check the mathematics (toolchain pinned in `lean-toolchain`).
+
+```sh
+cargo build --release
+cargo test --release
+python3 tests/check.py
+lake build
+```
+
+`tests/check.py` uses the ARC data in `../data`. It checks seeded hill climbing,
+realizability repair, ablation, cap behavior, the demo, and worker independence.
+Fixtures specify stable behavior; update them deliberately when an accepted
+change is integrated. There is no second solver implementation.
+
+## Run the stable baseline
+
+```sh
+./target/release/symarc --demo
+./target/release/symarc --data ../data/training --task 67a3c6ac --show
+./bench.sh quick
+./bench.sh quick --seed 17 --norealize
+THREADS=12 ./bench.sh full
+```
+
+The harness runs the **complete pipeline** by default and creates a fresh
+output directory containing the command, configuration arguments, source/data
+hashes, toolchain, results, and timing. It holds a lock to serialize harness
+runs. Use `--bench` to time only functionality, closure, and enumeration.
+Run the quick set while iterating; confirm useful changes on the full set.
+See [subsets/README.md](subsets/README.md) for weighting and limitations.
+
+A direct full-pipeline run takes about 7 seconds on the 40-task quick set with
+one worker, or 15 seconds on all 800 tasks with 12 workers on this laptop.
+These are orientation measurements, not a runtime guarantee. Measure the
+configuration you are changing with the harness.
+
+## Develop an experiment
+
+Keep the current solver as the control. Add trial code under
+`experiments/<id>/`, using the `symarc` library rather than copying the solver.
+Experiment packages are independent of the default core build.
+
+Follow [the experiment workflow](experiments/README.md) and register the
+question in [the compact experiment record](experiments/RESULTS.md). Keep
+active work and runnable integration candidates; delete completed experiment
+code once its finding and disposition are recorded. Integration is a separate
+change into the stable core, with tests and any current-math updates.
+
+## Configuration
+
+```text
+--data DIR [--task ID ...]         load a sorted directory, optionally select IDs
+--root DIR --tasks-file FILE      load id/split lines from a task list
+--limit N --threads N --show      truncate tasks, choose workers, print predictions
+--cap N                          final closure cap (20000)
+--capgreedy N                    functionality closure cap (1000)
+--samplecap N                    sample closure cap (300)
+--fit N                          extra sample attempts beyond one-step images (64)
+--enumlen N                      enumeration depth (2); 0 uses hill climbing
+--restarts N --steps N            hill climbing (16 restarts, 200 steps)
+--repair N --maxlen N             repair steps (150), mutation length threshold (3)
+--seed N                         per-task seed (0), independent of worker scheduling
+--norealize                      functionality-only ablation
+--bench                          three deterministic phase timings only
+```
+
+Enumeration depth and hill-climbing length are separate controls. A starting
+program is not truncated by `--maxlen`. Test outputs never affect search.
+Task outputs are printed in input order for any worker count.
+
+## Read the output
+
+```text
+id func[...] real[...] |C|=n[+] gain=bits outs=m progsD=a progs=b fitD=f fitC=f evals=e sym=s/t(ok k) equiv=... det=... STATUS :: program
+```
+
+`func`/`real` count generators by family. `real[n/a]` means no program fit the
+training data. `+` means closure completion was not established; gain is then
+only explored coverage. `outs` counts distinct outputs. `progsD`/`progs` count
+programs before/after realizability. `fitD`/`fitC` are fractions fitted on data
+and the final closure sample. `sym` counts test inputs reached by symmetry;
+`ok` scores those answers. `equiv` checks the chosen program at test inputs;
+`det` checks agreement among defined surviving programs (`-` if fewer than two).
+`SOLVED` scores all test predictions; `fit-only` fits training but misses a test.
+
+## Files
+
+- `src/lib.rs` and modules: stable grids/closure, DSL, search, RNG, tasks and reporting.
+- `src/main.rs`: stable CLI, using that same library.
+- `experiments/`: isolated research code, protocols, and a compact result ledger.
+- `SymArc/Theory.lean`, `SymArc.lean`: mathematical definitions and proofs only.
+- `MATH.md`: the current mathematical account; no chronological theory history.
+- `subsets/`: task lists and estimation/rebuilding tools.
+- `tests/`: behavioral checks and fixtures.
+- `bench.sh`: reproducible serial run harness.
+- `out/`: generated, ignored run artifacts; decisive findings live in the experiment ledger.
+
+The next scientific decision is whether coverage gain helps select useful
+symmetry assumptions. The current solver supplies a fixed-order baseline;
+entropy-ranked selection is not yet implemented.

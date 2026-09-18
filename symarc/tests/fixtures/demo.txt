@@ -1,0 +1,33 @@
+Data: one example
+000
+070
+000
+  ->
+000
+777
+000
+
+candidates: 45; functional: 44 [dihedral:2 colours:36 cyclic:2 rows:2 cols:2]
+rejected by functionality: [transpose]
+|C(D)| = 81  functional = true  outputs = 27  gain = 6.34 bits
+note's group (rows × cols × colours): |C(D)| = 81  outputs = 27  gain = 6.34 bits
+hill climb on 49 closure pairs: fillRows  fitness=1.00  evals=75
+hill climb on the single example: fillRows  fitness=1.00  evals=21
+programs of length ≤ 2 consistent with the closure: 8: [fillRows, flipH ; fillRows, fillRows ; flipH, fillRows ; fillRows, fillRows ; symmetrizeH, fillRows ; fillEnclosed 7, symmetrizeH ; fillRows, fillEnclosed 7 ; fillRows]
+programs of length ≤ 2 consistent with the single example: 30
+test input
+000
+000
+030
+  in closure: true; prediction:
+000
+000
+333
+test input
+0000
+0030
+0000
+  in closure: false; equivariant: yes; prediction:
+0000
+3333
+0000
