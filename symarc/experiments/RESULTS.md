@@ -21,6 +21,14 @@ Result: on ambiguous tasks, mean fitting programs **60.61→3294.35**, mean prog
 Decision: depth 3 is affordable here and supplies a richer uncertainty diagnostic, but gives no additional accuracy headroom in this cohort. This does not establish the depth-3 performance of the pruning policy (not rerun), nor rule out gains among other unfitted tasks. Next bounded question: compare uniform syntax weighting with a normalized length prior and answer uncertainty on the same frozen pools, before more depth/DSL expansion. No entropy policy enters core.
 Code/evidence: retained direct [selected report](evidence/002-depth/selected/report.md), [pilot report](evidence/002-depth/pilot/report.md), manifests, logs, and selection. [Protocol/runner](002-depth/README.md) retained solely to reproduce the frozen pools for the next prior/answer-entropy comparison; retire when that experiment consumes or replaces it. Saved JSONL pools remain in ignored `out/experiments/002-depth/20260918T054850.184033Z-selected/pools/`, with hashes in the retained manifest. An initial sandboxed pilot completed computation but could not collect macOS resource statistics; the successful measured rerun is the retained pilot.
 
+### 003-objects — Are object interpretations expressively and predictively useful?
+Status: active.
+Baseline: `3c4b94a`; core hash `e76a7031af456aeba4348a32b08e32017f44641eb17256e1b01e09a5985a7f5c`; 2026-09-18. Core unchanged.
+Comparison: finite segment/select/act/render object grammar versus core depth 2; pilot 24 hash-selected public training tasks then all 400; 12 workers; 600s process limit. Up to 16 training-fit-selected newly covered tasks receive a core depth-3 audit. No symmetry or search fallback. Primary metric new oracle-correct tasks, with actual selection accuracy reported separately. Reserve the last training pair to compare family prediction probability, entropy, Brier loss, and accuracy; use its answer for a fixed family-selection gate before refitting all pairs. Report segmentation entropy and grid-prior sensitivity; no test labels enter search or gating.
+Result: not run yet.
+Decision: expressivity before selection optimization; retain as a candidate only with verified correct coverage beyond audited depth 3. No automatic core integration.
+Code/evidence: [protocol](003-objects/README.md).
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
