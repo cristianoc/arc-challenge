@@ -124,3 +124,7 @@ compares object and grid languages, including prediction on a reserved training
 example. The [object language](experiments/003-objects/README.md) is retained as
 an integration candidate; the stable solver remains the control. Current
 research findings and dispositions live in the experiment record above.
+
+The [interpretation-selection report](experiments/evidence/004-competition/full/report.md)
+measures whether choosing among surviving interpretations could improve on the
+baseline, before comparing predictive evidence and minimum answer entropy.

@@ -1,0 +1,66 @@
+6d0aefbc full: 1 surviving, competitive false, recoverable false
+d9f24cd1 full: 0 surviving, competitive false, recoverable false
+6d0aefbc two-pair: 1 surviving, competitive false, recoverable false
+d9f24cd1 two-pair: 0 surviving, competitive false, recoverable false
+53b68214 full: 0 surviving, competitive false, recoverable false
+32597951 full: 0 surviving, competitive false, recoverable false
+b0c4d837 full: 0 surviving, competitive false, recoverable false
+1190e5a7 full: 0 surviving, competitive false, recoverable false
+53b68214 two-pair: 0 surviving, competitive false, recoverable false
+28bf18c6 full: 1 surviving, competitive false, recoverable false
+b0c4d837 two-pair: 0 surviving, competitive false, recoverable false
+6f8cd79b full: 0 surviving, competitive false, recoverable false
+6f8cd79b two-pair: 0 surviving, competitive false, recoverable false
+32597951 two-pair: 0 surviving, competitive false, recoverable false
+28bf18c6 two-pair: 1 surviving, competitive false, recoverable false
+a85d4709 full: 0 surviving, competitive false, recoverable false
+a78176bb full: 0 surviving, competitive false, recoverable false
+67385a82 full: 2 surviving, competitive false, recoverable false
+a85d4709 two-pair: 0 surviving, competitive false, recoverable false
+1190e5a7 two-pair: 0 surviving, competitive false, recoverable false
+67385a82 two-pair: 2 surviving, competitive false, recoverable false
+6e19193c full: 0 surviving, competitive false, recoverable false
+6e19193c two-pair: 0 surviving, competitive false, recoverable false
+a78176bb two-pair: 0 surviving, competitive false, recoverable false
+85c4e7cd full: 0 surviving, competitive false, recoverable false
+444801d8 full: 0 surviving, competitive false, recoverable false
+3de23699 full: 0 surviving, competitive false, recoverable false
+810b9b61 full: 0 surviving, competitive false, recoverable false
+810b9b61 two-pair: 0 surviving, competitive false, recoverable false
+3de23699 two-pair: 0 surviving, competitive false, recoverable false
+2dd70a9a full: 0 surviving, competitive false, recoverable false
+85c4e7cd two-pair: 0 surviving, competitive false, recoverable false
+2dd70a9a two-pair: 0 surviving, competitive false, recoverable false
+c444b776 full: 0 surviving, competitive false, recoverable false
+952a094c full: 0 surviving, competitive false, recoverable false
+444801d8 two-pair: 0 surviving, competitive false, recoverable false
+1c786137 full: 0 surviving, competitive false, recoverable false
+5bd6f4ac full: 0 surviving, competitive false, recoverable false
+952a094c two-pair: 0 surviving, competitive false, recoverable false
+b8825c91 full: 1 surviving, competitive false, recoverable false
+0dfd9992 full: 0 surviving, competitive false, recoverable false
+5bd6f4ac two-pair: 0 surviving, competitive false, recoverable false
+1c786137 two-pair: 0 surviving, competitive false, recoverable false
+c444b776 two-pair: 0 surviving, competitive false, recoverable false
+b8825c91 two-pair: 1 surviving, competitive false, recoverable false
+045e512c full: 0 surviving, competitive false, recoverable false
+0dfd9992 two-pair: 0 surviving, competitive false, recoverable false
+045e512c two-pair: 0 surviving, competitive false, recoverable false
+        0.66 real         1.83 user         0.02 sys
+             9764864  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                 875  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                1661  involuntary context switches
+         29297216753  instructions retired
+          5749926043  cycles elapsed
+             9011584  peak memory footprint
