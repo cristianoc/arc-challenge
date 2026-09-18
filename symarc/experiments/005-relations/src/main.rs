@@ -284,6 +284,34 @@ fn main() {
 mod tests {
     use super::*;
     #[test]
+    fn relational_enumerator_recovers_independent_teacher_examples() {
+        for seed in [0, 5] {
+            let c = controlled::make(seed, true);
+            let i = c.informative;
+            let input = Inputs {
+                train: vec![
+                    (c.initial.clone(), controlled::teacher(&c, &c.initial, 0)),
+                    (
+                        c.menu[i].clone(),
+                        controlled::teacher(&c, &c.menu[i], i + 1),
+                    ),
+                ],
+                queries: vec![c.test.clone()],
+            };
+            let pool = relations::infer(&input);
+            let expected = controlled::teacher(&c, &c.test, 5);
+            assert!(!pool.names.is_empty());
+            assert!(pool
+                .names
+                .iter()
+                .zip(&pool.preds)
+                .any(|(name, predictions)| name
+                    .contains("source Largest / reference Smallest / Colour")
+                    && predictions == &vec![Some(expected.clone())]));
+            assert!(score(&pool, &[expected]).oracle);
+        }
+    }
+    #[test]
     fn oracle_requires_one_program_correct_on_all_queries() {
         let a = Grid::of_rows(&[vec![1]]);
         let b = Grid::of_rows(&[vec![2]]);
