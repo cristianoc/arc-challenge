@@ -1,6 +1,9 @@
 # 001-pruning: does aggressive hypothesis pruning improve predictions?
 
-Ledger: [001-pruning](../RESULTS.md#001-pruning--does-aggressive-hypothesis-pruning-improve-predictions).
+The completed implementation was retired. The commands below apply to a
+checkout of experiment revision `f7f4b9b`; the stable solver was not changed.
+
+Ledger: [001-pruning](../../RESULTS.md#001-pruning--does-aggressive-hypothesis-pruning-improve-predictions).
 
 ## Hypothesis and decision
 

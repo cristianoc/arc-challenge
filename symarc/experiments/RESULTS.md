@@ -5,12 +5,13 @@ deleted. This is an experiment ledger, not a code changelog or a theory history.
 Status meanings and code-retention rules are in [README.md](README.md).
 
 ### 001-pruning — Does aggressive hypothesis pruning improve predictions?
-Status: active
-Baseline: `be25423adee3d2214987c677aa3a1762132d5469`; core hash `0633d22fb7d1c9d4699fecf4ff851b59cb97c638bcbd6be17db0176865331146`; 2026-09-18.
-Comparison: no symmetry, fixed order, random order, marginal pruning; public training tasks only; fixed depth-2 program set, no repair/fallback; seeds 0–4; 12 workers; common checking budget.
-Result: not run yet.
-Decision: measure before considering integration; increased pruning alone is not success.
-Code/evidence: [protocol and code](001-pruning/README.md); raw outputs under `out/experiments/001-pruning/`.
+Status: closed — no integration.
+Baseline: `be25423`; core hash `0633d22fb7d1c9d4699fecf4ff851b59cb97c638bcbd6be17db0176865331146`; experiment implementation `f7f4b9b`; 2026-09-18.
+Comparison: 400 public training tasks only; 55 have a depth-2 fitting program, 32/55 already have unanimous defined test answers. Frozen uniform syntax class, no repair/fallback; no symmetry vs fixed/random/marginal-pruning policies; seeds 0–4; 12 workers; 500,000 charged checks per task/policy; closure caps 300 and 1000.
+Result: at **both caps**, no symmetry and fixed order solve 53/400; marginal pruning 51/400 in every seed; random order mean 51/400 (range 50–52). Fixed/pruning reduce mean program entropy by 0.41/0.57 bits and mean answer entropy from 0.68 to ~0.02 bits, but leave 2/4 unanimous wrong tasks. Pruning loses all initially correct programs on 3 tasks versus fixed's 1. No budget exhaustion. At cap 1000 every pruning trial closure completes, so its losses persist without closure sampling. Full five-seed rounds take 10.71s / 13.86s including shared preparation.
+Decision: reject maximum pruning as a standalone selection objective in this setup. It increases certainty while discarding correct explanations. This does not reject entropy as a diagnostic, other priors, or other selection objectives. No evaluation-set run or stable-core change. This compares selection/stopping policies within a common functionality prefilter, not the complete stable solver; it is exploratory evidence on the same 400 tasks across seeds.
+Counterexamples: `1cf80156`: fixed 100→58 programs, correct `cropBBox`; pruning 100→6, unanimously wrong `cropBBox ; dedupCols`. `1f85a75f`: fixed 70→25, correct `cropLargest`; pruning 70→2, unanimously wrong `cropLargest ; recolour 2 0`.
+Code/evidence: completed code deleted; runnable implementation is preserved at `f7f4b9b`. Retained [protocol](evidence/001-pruning/protocol.md), direct [cap-300 report](evidence/001-pruning/cap-300/report.md) and [cap-1000 report](evidence/001-pruning/cap-1000/report.md), with original manifests and logs. The next hypothesis is not registered yet.
 
 ## Entry format
 
