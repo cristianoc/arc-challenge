@@ -44,8 +44,10 @@ The harness defaults to **12 workers** for both quick and full runs. Keep this
 worker count fixed across baseline and treatment runs; change `THREADS` only
 when resource allocation is itself the experiment. Time runs serially.
 
-The committed [baseline results](results/baseline/README.md) contain the current
-reference measurements and exact source revision. `out/` is only scratch space.
+The committed [full run report](results/baseline/full/report.md) and
+[quick run report](results/baseline/quick/report.md) are the solver's direct
+output. [Baseline provenance](results/baseline/README.md) identifies the source
+revision and run manifests. `out/` is only scratch space.
 
 ## Develop an experiment
 

@@ -1,3 +1,62 @@
+# SymArc run report
+
+Selection: task list subsets/quick.txt.
+
+Workers: 12. Seed: 0. Loading + search wall time: 1.85 s (excludes report I/O and compilation).
+
+## Predictive performance
+
+One selected prediction per test input. **Task exact match** requires correct shape and every cell on every test output in a task; **test-grid exact match** scores individual test outputs. Counts and denominators are explicit.
+
+| Metric | Public training tasks | Public evaluation tasks | All selected tasks |
+|---|---:|---:|---:|
+| Tasks | 24 | 16 | 40 |
+| Test grids | 28 | 17 | 45 |
+| **Task exact-match accuracy (primary)** | 12/24 (50.00%) | 7/16 (43.75%) | 19/40 (47.50%) |
+| Test-grid exact-match accuracy | 14/28 (50.00%) | 8/17 (47.06%) | 22/45 (48.89%) |
+| Prediction coverage (test grids) | 28/28 (100.00%) | 17/17 (100.00%) | 45/45 (100.00%) |
+| Fits all within-task training examples | 15/24 (62.50%) | 7/16 (43.75%) | 22/40 (55.00%) |
+| Fits training and solves every test | 12/24 (50.00%) | 7/16 (43.75%) | 19/40 (47.50%) |
+| Task accuracy conditional on training fit | 12/15 (80.00%) | 7/7 (100.00%) | 19/22 (86.36%) |
+
+Split labels describe task datasets, not a model trained across tasks. Each task is fitted independently. Test inputs participate in label-free constraints; test output labels are used only for scoring. Conditional accuracy applies only to the training-fitting subset.
+
+Rates describe the selected tasks. A stratified quick set is not representative without reweighting. Public evaluation data used during development is not an untouched hidden test set.
+
+## Symmetry diagnostics
+
+| Metric | Public training tasks | Public evaluation tasks | All selected tasks |
+|---|---:|---:|---:|
+| Realizability rejected a generator (tasks) | 14/15 (93.33%) | 7/7 (100.00%) | 21/22 (95.45%) |
+| Successful repair (tasks) | 1/15 (6.67%) | 0/7 (0.00%) | 1/22 (4.55%) |
+| Capped final closure (tasks) | 6/24 (25.00%) | 8/16 (50.00%) | 14/40 (35.00%) |
+| Median reported coverage gain (bits) | 8.91 | 11.97 | 10.84 |
+| Test inputs reached by symmetry | 3/28 (10.71%) | 2/17 (11.76%) | 5/45 (11.11%) |
+| Symmetry-answer accuracy on reached inputs | 1/3 (33.33%) | 2/2 (100.00%) | 3/5 (60.00%) |
+| Program undefined at test input | 0 | 0 | 0 |
+| Test-input equivariance: yes / no / unassessed | 28 / 0 / 0 | 16 / 1 / 0 | 44 / 1 / 0 |
+| Survivor agreement: yes / no / unassessed | 10 / 5 / 13 | 3 / 1 / 13 | 13 / 6 / 26 |
+| Tasks retaining dihedral: functional / realizable | 23 / 14 | 16 / 7 | 39 / 21 |
+| Tasks retaining colours: functional / realizable | 24 / 13 | 16 / 7 | 40 / 20 |
+| Tasks retaining cyclic: functional / realizable | 18 / 7 | 14 / 3 | 32 / 10 |
+| Tasks retaining rows: functional / realizable | 20 / 12 | 15 / 5 | 35 / 17 |
+| Tasks retaining cols: functional / realizable | 22 / 13 | 16 / 4 | 38 / 17 |
+
+Rejection and repair denominators are tasks with a fitting program. Capped gains measure explored coverage; they are not exact closure entropies. Realizability uses sampling and may replace programs through repair. Program-count ratios are not automatically hypothesis-entropy reductions.
+
+## Configuration
+
+Enumeration depth: 2. Mutation length threshold: 3. Realizability filter: true.
+
+Closure caps: functionality 1000, sampling 300, final 20000. Extra sample attempts: 64.
+
+Hill climbing: 16 restarts × 200 steps; repair: 150 steps.
+
+This is one run at one seed. Seed variation, cell accuracy, probability calibration, and a causal benefit from symmetry are not measured by this report. For harness runs, run.json records the exact command, revision, hashes, platform, and end-to-end subprocess timing.
+
+## Task details
+
+```text
 0520fde7  func[dihedral:3 colours:3 cols:4] real[dihedral:2 colours:1 cols:4] |C|=20 gain=2.74b outs=7  progsD=36 progs=33 fitD=1.00 fitC=1.00 evals=1038 sym=0/1(ok 0) equiv=yes det=NO  SOLVED  :: splitH and 2
 3428a4f5  func[dihedral:3 colours:3 cyclic:2 rows:11 cols:4] real[dihedral:2 colours:1 cyclic:1 rows:7 cols:4] |C|=1920 gain=8.91b outs=960  progsD=35 progs=32 fitD=1.00 fitC=1.00 evals=2458 sym=0/2(ok 0) equiv=yes,yes det=yes,NO  SOLVED  :: splitV xor 3
 5d2a5c43  func[dihedral:3 colours:3 cyclic:2 rows:4 cols:6] real[dihedral:2 colours:1 cyclic:1 rows:4 cols:5] |C|=14400 gain=11.49b outs=2520  progsD=34 progs=29 fitD=1.00 fitC=1.00 evals=1705 sym=0/2(ok 0) equiv=yes,yes det=NO,yes  SOLVED  :: splitH or 8
@@ -38,14 +97,4 @@ ecdecbb3  func[dihedral:3 colours:3 cyclic:2 cols:1] real[n/a] |C|=19464 gain=12
 09629e4f  func[dihedral:3 colours:21 cyclic:2 rows:10 cols:10] real[n/a] |C|=20000+ gain=12.29b outs=7107  progsD=0 progs=0 fitD=0.00 fitC=0.00 evals=3217 sym=0/1(ok 0) equiv=yes det=-  unfit  :: id
 7d1f7ee8  func[dihedral:3 colours:28 cyclic:2 rows:28 cols:27] real[n/a] |C|=20013+ gain=12.70b outs=14392  progsD=0 progs=0 fitD=0.33 fitC=0.22 evals=3231 sym=0/1(ok 0) equiv=NO det=-  unfit  :: recolourNonzero 1
 845d6e51  func[dihedral:3 colours:28 cyclic:2 rows:17 cols:16] real[n/a] |C|=20002+ gain=12.70b outs=16888  progsD=0 progs=0 fitD=0.00 fitC=0.00 evals=3217 sym=0/1(ok 0) equiv=yes det=-  unfit  :: id
-
-tasks: 40  test inputs: 45
-generators passing functionality, tasks by family: [(dihedral, 39), (colours, 40), (cyclic, 32), (rows, 35), (cols, 38)]
-generators passing realizability, among the 22 tasks with a fitting program, tasks by family: [(dihedral, 21), (colours, 20), (cyclic, 10), (rows, 17), (cols, 17)]
-tasks where realizability rejected a functional generator: 21; repaired by hill climbing: 1
-closure capped at 20000: 14; median gain: 10.84 bits
-programs consistent with data: 22; fits data: 22; solves all tests: 19; fits data and solves all tests: 19; fits data but wrong on a test: 3
-test inputs determined by symmetry alone: 5/45; of which the symmetry answer is correct: 3
-test inputs where the program is undefined: 0
-equivariance at test input: yes 44, NO 1
-surviving programs disagree at a test input: 6; agree: 13
+```

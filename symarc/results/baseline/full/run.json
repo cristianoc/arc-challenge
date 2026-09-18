@@ -1,7 +1,7 @@
 {
-  "git_revision": "3a251a5c5ebde96ab0d77ff08b7e05eef911fe87",
+  "git_revision": "fc9378648906c4ce09e4326cba32320921f06ef1",
   "git_changes": [],
-  "core_sha256": "916858d6fbd4c79963c636582730e761ffe09fa446b110f3c6813c163603fedd",
+  "core_sha256": "0633d22fb7d1c9d4699fecf4ff851b59cb97c638bcbd6be17db0176865331146",
   "command": [
     "./target/release/symarc",
     "--root",
@@ -12,7 +12,7 @@
     "12"
   ],
   "cwd": "/Users/cristianocalcagno/GitHub/arc-challenge/symarc",
-  "utc": "20260918T050224.211277Z",
+  "utc": "20260918T051632.491863Z",
   "repetition": 1,
   "mode": "solver",
   "machine": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
@@ -25,17 +25,17 @@
     "src/grid.rs": "2a6d79d63b62e7612eb83c65e6f9e86b539ef356dbf46704f7f24d1f0aa37f02",
     "src/json.rs": "f9ae45b2a37519ca6ad400470e8477e4fa768b7652381e89834559c88ca864d4",
     "src/lib.rs": "4282cd370be3931b16ffb6726380f8cd6e4e11614cde0579703001dc355748d4",
-    "src/main.rs": "4671c140f148f8da75042e82c9a10cb2fe44a53944f08b4220bb9499d1e5d64d",
+    "src/main.rs": "5320ffcd9f909385aa7420cfdfad55c320e04cfe0f3829e5afe1df17babe3078",
     "src/random.rs": "236575257e6632f3831ffb48aeb8a4b306ee0b2de739486943505bcb33ecfbf1",
-    "src/report.rs": "af875efb18afe4a751872e33e169c65bc94bc1a963cf9977d8d0146c8cf6e101",
+    "src/report.rs": "ffdd1797d6f73189005b226ac10ae0b9f9cd00e4348eb47baf127715e145b374",
     "src/search.rs": "ae573d657598106f97099d190a8de8e988e5cb82e42e972b77b8fd144c15330c",
     "src/task.rs": "e513526ce86e86b2a53d54c02a39db1bb6924853b385c0653dc3b07c45ea8af6",
-    "src/tests.rs": "66389993b769d8b26471ad69234095c03eba819e87bf6e7920f51e2d9178f698",
+    "src/tests.rs": "638cc349f6a5d5cc9d6c4f68704c344fe56a626cffd0e56a99fb8af25fd4f6b9",
     "Cargo.toml": "7716e67009964974fdd17030a46e9385d685bd74741b01ff0ff678fc4317a455",
     "Cargo.lock": "34aa6e769974c1abffff59c3a3029d51da1dbf42701c778876008f786d319e3c",
-    "bench.sh": "3c3b58e8fe960402c09384ed2a725be95852449599dfa0fa8dc3eb518f6cdc9d"
+    "bench.sh": "31ba8db90016f53de62c5abb0042ab0df0df2c9a047617549581ff8de9496296"
   },
-  "binary_sha256": "1b8c2839e04d31e57ed26e3864063142e81cb6b0ad6d3ddfcfc45fc950ac442c",
+  "binary_sha256": "f260352d1ce3f1400eb76c084318d9a0be376ff27dd78ea2d3f90bc99b4cdb19",
   "data_sha256": {
     "../data/evaluation/00576224.json": "7ba34ffeebc522cccfe74ab4d7e06088ef6e057581b242cd8b5a7a01a77ac8eb",
     "../data/training/007bbfb7.json": "11ca5ce82ff2bf9ee978dd9b52c07b060b44ddb98ceee0deaf462bb09599e3a5",
@@ -838,8 +838,8 @@
     "../data/evaluation/ff72ca3e.json": "e232299b4afe98c86282e4c062cc645ae3efe595664bea6b4712428f37e195d9",
     "../data/training/ff805c23.json": "34945499bd28b361d3188b8131bd3b23b0783cef21a90a5170ee4ee4d82acb86"
   },
-  "elapsed_seconds": 15.485505082993768,
+  "results_file": "report.md",
+  "elapsed_seconds": 15.708696291025262,
   "exit_code": 0,
-  "results_file": "full.txt",
-  "results_sha256": "20705b8ad43ec3a4fe3115b238737063abcd6362693634ede94489b18018bcfd"
+  "results_sha256": "9ca988f42b37500cf0fdfd10c1194c9d693c4b0dcb9d43c8bb17537cea7b3653"
 }
