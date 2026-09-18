@@ -51,21 +51,3 @@ python3 experiments/002-depth/run.py selected
 
 Reports are emitted directly by the experiment. Manifests retain source/data/
 binary/output hashes, exact command, wall time, and `/usr/bin/time -l` memory.
-
-
-## Outcome and retained purpose
-
-Completed; disposition and compact findings are in
-[the ledger](../RESULTS.md#002-depth--does-depth-3-create-useful-headroom-for-program-entropy).
-Read the direct [47-task report](../evidence/002-depth/selected/report.md).
-This runner is retained to regenerate the frozen program pools for the next
-prior/answer-entropy experiment; it is not a candidate solver policy.
-Successful pilot and selected runs used implementation `2114781`. The pilot
-passed the prespecified cost gate. The initial sandboxed attempt failed only
-at macOS resource collection and was rerun with resource access.
-
-Frozen pools: `out/experiments/002-depth/20260918T054850.184033Z-selected/pools/`
-(relative to `symarc/`). Each JSONL line contains program length, primitive
-indices in the task's core pool, readable program, and all test predictions.
-Filter `length <= 2` to recover the control. The retained run manifest records
-every pool hash. These files are disposable and reproducible by the runner.

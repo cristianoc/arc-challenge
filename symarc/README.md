@@ -1,7 +1,7 @@
 # SymArc experiments
 
-One Rust solver and a Lean mathematical model for exploring entropy and
-functional closure under symmetry. Start with [MATH.md](MATH.md) for the
+One Rust solver and a Lean mathematical model for exploring abstraction,
+program entropy, and functional closure under symmetry. Start with [MATH.md](MATH.md) for the
 current definitions, proved statements, and approximation boundaries.
 
 ## Build and check
@@ -119,6 +119,8 @@ and the final closure sample. `sym` counts test inputs reached by symmetry;
 - `results/baseline/`: committed current baseline results and provenance.
 - `out/`: generated, ignored run artifacts; decisive findings live in the experiment ledger.
 
-The next scientific decision is whether coverage gain helps select useful
-symmetry assumptions. The current solver supplies a fixed-order baseline;
-entropy-ranked selection is not yet implemented.
+The [object abstraction report](experiments/evidence/003-objects/full/report.md)
+compares object and grid languages, including prediction on a reserved training
+example. The [object language](experiments/003-objects/README.md) is retained as
+an integration candidate; the stable solver remains the control. Current
+research findings and dispositions live in the experiment record above.
