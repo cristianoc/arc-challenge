@@ -33,7 +33,9 @@ THREADS=12 ./bench.sh full
 
 The harness runs the **complete pipeline** by default and creates a fresh
 output directory containing the command, configuration arguments, source/data
-hashes, toolchain, results, and timing. It holds a lock to serialize harness
+hashes, toolchain, and timing. Its `report.md` is the solver's direct Markdown
+output, with predictive metrics first and task details below; `run.json` stores
+provenance and the report hash. It holds a lock to serialize harness
 runs. Use `--bench` to time only functionality, closure, and enumeration.
 Run the quick set while iterating; confirm useful changes on the full set.
 See [subsets/README.md](subsets/README.md) for weighting and limitations.
@@ -80,6 +82,14 @@ program is not truncated by `--maxlen`. Test outputs never affect search.
 Task outputs are printed in input order for any worker count.
 
 ## Read the output
+
+Normal solver stdout is a ready-to-read Markdown report: split-specific task
+and test-grid exact-match accuracy, prediction coverage, training-fit metrics,
+symmetry diagnostics, configuration, and task details. The split labels are
+reporting metadata only. No converter or manually maintained score table is
+needed. `--bench` instead prints phase timings in `bench.txt`.
+
+The per-task detail lines retain the format consumed by the subset tools:
 
 ```text
 id func[...] real[...] |C|=n[+] gain=bits outs=m progsD=a progs=b fitD=f fitC=f evals=e sym=s/t(ok k) equiv=... det=... STATUS :: program

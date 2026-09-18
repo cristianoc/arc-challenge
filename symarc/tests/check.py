@@ -3,6 +3,7 @@
 Run after cargo build --release, from any directory. Uses the repository ARC data.
 """
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -18,15 +19,27 @@ def run(args):
                           capture_output=True, text=True).stdout
 
 
+def task_details(report):
+    return report.split("## Task details\n\n```text\n", 1)[1].removesuffix("```\n")
+
+
+def deterministic_report(report):
+    return re.sub(r"^Workers: .*?$", "RUN TIMING", report, flags=re.MULTILINE)
+
+
 def main():
     for name, args in json.loads((FIXTURES / 'cases.json').read_text()).items():
         actual = run(args)
         expected = (FIXTURES / f'{name}.txt').read_text()
-        assert actual == expected, f'{name}: output differs from expected fixture'
+        observed = actual if name == 'demo' else task_details(actual)
+        assert observed == expected, f'{name}: task behavior differs from expected fixture'
+        if name != 'demo':
+            assert '# SymArc run report' in actual and 'Test-grid exact-match accuracy' in actual
         print(f'{name}: passed')
     args = ['--root', '../data', '--tasks-file', 'subsets/quick.txt', '--show']
     serial = run(args)
-    assert serial == run([*args, '--threads', '4']), 'worker count changed results'
+    assert deterministic_report(serial) == deterministic_report(run([*args, '--threads', '4'])), 'worker count changed results'
+    assert '| **Task exact-match accuracy (primary)** |' in serial
     assert len([s for s in serial.splitlines() if '  func[' in s]) == 40
     sys.path.insert(0, str(ROOT))
     from subsets import estimate

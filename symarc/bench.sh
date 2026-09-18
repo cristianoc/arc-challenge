@@ -70,14 +70,17 @@ try:
                         source_sha256={str(p): digest(p) for p in sources},
                         binary_sha256=digest(Path('target/release/symarc')),
                         data_sha256=inputs)
+        result_name = 'bench.txt' if '--bench' in extra else 'report.md'
+        metadata['results_file'] = result_name
         manifest = dest / 'run.json'
         manifest.write_text(json.dumps(metadata, indent=2) + '\n')
         start = time.monotonic()
-        with (dest / 'results.txt').open('w') as stdout, (dest / 'stderr.txt').open('w') as stderr:
+        with (dest / result_name).open('w') as stdout, (dest / 'stderr.txt').open('w') as stderr:
             p = subprocess.run(argv, stdout=stdout, stderr=stderr)
-        metadata.update(elapsed_seconds=time.monotonic()-start, exit_code=p.returncode)
+        metadata.update(elapsed_seconds=time.monotonic()-start, exit_code=p.returncode,
+                        results_sha256=digest(dest / result_name))
         manifest.write_text(json.dumps(metadata, indent=2) + '\n')
-        print(f'{mode}: {metadata["elapsed_seconds"]:.2f} s; results: {dest.relative_to(root)}', flush=True)
+        print(f'{mode}: {metadata["elapsed_seconds"]:.2f} s; report: {(dest / result_name).relative_to(root)}', flush=True)
         if p.returncode:
             sys.exit(f'solver failed ({p.returncode}); see {dest / "stderr.txt"}')
 finally:

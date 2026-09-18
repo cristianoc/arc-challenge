@@ -124,3 +124,46 @@ fn report_rounds_halfway_fitness_up() {
     assert_eq!(crate::report::number(0.125), "0.13");
     assert_eq!(crate::report::number(1.0), "1.00");
 }
+
+#[test]
+fn report_uses_distinct_task_and_test_grid_denominators() {
+    let x = grid(&[&[1]]);
+    let make_task = |id: &str, outputs: Vec<Grid>| Task {
+        id: id.into(),
+        train: vec![(x.clone(), x.clone())],
+        test: outputs.into_iter().map(|y| (x.clone(), y)).collect(),
+    };
+    let cfg = search::Config {
+        enum_len: 0,
+        restarts: 0,
+        repair_steps: 0,
+        cap: 20,
+        ..Default::default()
+    };
+    let a = search::run_task(&make_task("a", vec![x.clone(), grid(&[&[2]])]), &cfg);
+    let b = search::run_task(&make_task("b", vec![x.clone()]), &cfg);
+    let s = crate::report::summary(
+        &[a, b],
+        &["training".into(), "evaluation".into()],
+        &cfg,
+        "test",
+        12,
+        1.0,
+    );
+    assert!(s.contains(
+        "| **Task exact-match accuracy (primary)** | 0/1 (0.00%) | 1/1 (100.00%) | 1/2 (50.00%) |"
+    ));
+    assert!(s.contains(
+        "| Test-grid exact-match accuracy | 1/2 (50.00%) | 1/1 (100.00%) | 2/3 (66.67%) |"
+    ));
+    assert!(s.contains(
+        "| Prediction coverage (test grids) | 2/2 (100.00%) | 1/1 (100.00%) | 3/3 (100.00%) |"
+    ));
+}
+
+#[test]
+fn empty_report_has_no_division_by_zero_or_invented_accuracy() {
+    let s = crate::report::summary(&[], &[], &search::Config::default(), "empty", 12, 0.0);
+    assert!(s.contains("| **Task exact-match accuracy (primary)** | n/a (0/0) |"));
+    assert!(!s.contains("NaN"));
+}

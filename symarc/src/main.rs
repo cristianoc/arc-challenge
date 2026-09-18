@@ -108,7 +108,7 @@ fn parse_args() -> std::result::Result<Opts, String> {
     }
     Ok(o)
 }
-fn load_tasks(o: &Opts) -> std::result::Result<Vec<Task>, String> {
+fn load_tasks(o: &Opts) -> std::result::Result<(Vec<Task>, Vec<String>), String> {
     let mut paths = vec![];
     if let Some(f) = &o.tasks_file {
         for line in std::fs::read_to_string(f)
@@ -149,12 +149,19 @@ fn load_tasks(o: &Opts) -> std::result::Result<Vec<Task>, String> {
     Ok(paths
         .iter()
         .map(|p| {
-            load(
-                p.to_str().unwrap(),
-                p.file_stem().unwrap().to_str().unwrap(),
+            (
+                load(
+                    p.to_str().unwrap(),
+                    p.file_stem().unwrap().to_str().unwrap(),
+                ),
+                p.parent()
+                    .and_then(|p| p.file_name())
+                    .and_then(|s| s.to_str())
+                    .unwrap_or("")
+                    .to_string(),
             )
         })
-        .collect())
+        .unzip())
 }
 /// Ordered output, task-local random states, and a shared work queue for uneven tasks.
 fn parallel<T: Send>(tasks: &[Task], threads: usize, f: impl Fn(&Task) -> T + Sync) -> Vec<T> {
@@ -190,6 +197,7 @@ fn parallel<T: Send>(tasks: &[Task], threads: usize, f: impl Fn(&Task) -> T + Sy
     out.into_iter().map(|(_, r)| r).collect()
 }
 fn main() {
+    let start = Instant::now();
     let o = parse_args().unwrap_or_else(|e| {
         eprintln!("{e}");
         std::process::exit(2);
@@ -198,21 +206,43 @@ fn main() {
         demo();
         return;
     }
-    let tasks = load_tasks(&o).unwrap_or_else(|e| {
+    let (tasks, splits) = load_tasks(&o).unwrap_or_else(|e| {
         eprintln!("{e}");
         std::process::exit(2);
     });
-    let start = Instant::now();
     if o.bench {
         for s in parallel(&tasks, o.threads, |t| bench(t, &o.cfg)) {
             print!("{s}");
         }
     } else {
         let results = parallel(&tasks, o.threads, |t| search::run_task(t, &o.cfg));
+        let mut selection = o
+            .tasks_file
+            .as_ref()
+            .map(|p| format!("task list {p}"))
+            .unwrap_or_else(|| format!("directory {}", o.data.as_ref().unwrap()));
+        if !o.tasks.is_empty() {
+            selection.push_str(&format!("; task filter {}", o.tasks.join(", ")));
+        }
+        if let Some(limit) = o.limit {
+            selection.push_str(&format!("; limit {limit}"));
+        }
+        print!(
+            "{}",
+            report::summary(
+                &results,
+                &splits,
+                &o.cfg,
+                &selection,
+                o.threads,
+                start.elapsed().as_secs_f64()
+            )
+        );
+        println!("\n## Task details\n\n```text");
         for r in &results {
             print!("{}", report::result(r, o.verbose));
         }
-        print!("{}", report::summary(&results, &o.cfg));
+        println!("```");
     }
     eprintln!(
         "{} tasks, {} thread(s): wall {} ms",

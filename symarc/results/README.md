@@ -1,7 +1,7 @@
 # Retained results
 
 [baseline/](baseline/README.md) contains the current stable solver's reference
-results: a short summary, per-task output, and reproducibility manifests tied
+results: directly emitted Markdown reports and reproducibility manifests tied
 to a source commit. This is the comparison point for new experiments.
 
 - `results/baseline/`: retained baseline evidence, committed with the project.
