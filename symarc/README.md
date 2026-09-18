@@ -38,10 +38,12 @@ runs. Use `--bench` to time only functionality, closure, and enumeration.
 Run the quick set while iterating; confirm useful changes on the full set.
 See [subsets/README.md](subsets/README.md) for weighting and limitations.
 
-A direct full-pipeline run takes about 7 seconds on the 40-task quick set with
-one worker, or 15 seconds on all 800 tasks with 12 workers on this laptop.
-These are orientation measurements, not a runtime guarantee. Measure the
-configuration you are changing with the harness.
+The harness defaults to **12 workers** for both quick and full runs. Keep this
+worker count fixed across baseline and treatment runs; change `THREADS` only
+when resource allocation is itself the experiment. Time runs serially.
+
+The committed [baseline results](results/baseline/README.md) contain the current
+reference measurements and exact source revision. `out/` is only scratch space.
 
 ## Develop an experiment
 
@@ -102,6 +104,7 @@ and the final closure sample. `sym` counts test inputs reached by symmetry;
 - `subsets/`: task lists and estimation/rebuilding tools.
 - `tests/`: behavioral checks and fixtures.
 - `bench.sh`: reproducible serial run harness.
+- `results/baseline/`: committed current baseline results and provenance.
 - `out/`: generated, ignored run artifacts; decisive findings live in the experiment ledger.
 
 The next scientific decision is whether coverage gain helps select useful

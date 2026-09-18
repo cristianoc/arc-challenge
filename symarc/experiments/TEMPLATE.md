@@ -11,7 +11,7 @@ not just the quantity being optimized.
 ## Protocol
 
 - Baseline: core revision/hash.
-- Data and controls: task set, depth, caps, seeds, sampling, repair policy.
+- Data and controls: task set, depth, caps, seeds, sampling, repair policy, workers (normally 12).
 - Budget: wall time/evaluation budget and stopping rule.
 - Checks: invariant or small-case checks needed to trust the measurement.
 - Limitations: approximations and what the comparison cannot establish.

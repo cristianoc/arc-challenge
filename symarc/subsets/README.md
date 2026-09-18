@@ -5,7 +5,7 @@ Two sets:
 * **full**: all 800 public ARC tasks, `full.txt` (400 training + 400
   evaluation). Use `THREADS=12 ./bench.sh full` for a full-pipeline run.
 * **quick**: 40 tasks, `quick.txt`, a stratified sample of the full set.
-  Runs in about 7 seconds with one worker on this laptop.
+  Use `./bench.sh quick` (12 workers by default).
 
 Each line is `id split stratum`. Run with
 

@@ -36,6 +36,10 @@ Scripts may invoke the stable CLI instead. Reuse `symarc::task::load`,
 Do not copy the solver or add trial behavior to the stable CLI. Share a minimal,
 behavior-preserving core API refactor only when necessary, with core checks.
 
+The current reference measurements are in
+[../results/baseline/](../results/baseline/README.md). Cite their source commit
+and hash; the directory tracks the current baseline and may be refreshed.
+
 ## Run and record
 
 1. Create the protocol and register the ID in [RESULTS.md](RESULTS.md) as
@@ -46,7 +50,9 @@ behavior-preserving core API refactor only when necessary, with core checks.
    Use the same core revision for both arms of a comparison. For experimental
    runs, record the command, seed, dataset, caps/depth, source revision/hash,
    outcome, and runtime in the protocol or a run manifest. Match compute
-   budgets and report approximation limits. Keep timing runs serial.
+   budgets and report approximation limits. Use the standard 12 workers for
+   both arms and keep timing runs serial; do not maintain a second single-worker
+   timing series unless worker scaling is the experimental question.
 3. After each meaningful batch, update the ledger's compact result. Keep the
    decisive numbers, configuration, and conclusion there—not only a link to
    disposable logs. Do not log every seed or repeat as a separate experiment.

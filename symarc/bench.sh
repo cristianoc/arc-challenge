@@ -22,7 +22,7 @@ extra = sys.argv[2:]
 if any(a in extra for a in ('--root', '--data', '--tasks-file', '--demo', '--threads')):
     sys.exit('select the task set with quick|full and workers with THREADS=N')
 try:
-    threads = int(os.environ.get('THREADS', '1'))
+    threads = int(os.environ.get('THREADS', '12'))
     reps = int(os.environ.get('REPS', '1'))
     if threads < 1 or reps < 1:
         raise ValueError()
