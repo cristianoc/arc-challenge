@@ -31,6 +31,14 @@ Examples: `88a62173`, extract same-colour 8-connected objects, select the unique
 Decision: candidate criterion met by seven verified gains beyond audited depth 3; retain the object AST for later integration and abstraction experiments. Keep the production solver unchanged. Remaining integration and interpretation limitations are in the protocol. No public evaluation tasks used and no claim of an all-depth expressivity separation.
 Code/evidence: [protocol and candidate code](003-objects/README.md), [illustrated example](evidence/003-objects/object-example.png); direct [full report](evidence/003-objects/full/report.md) and [pilot report](evidence/003-objects/pilot/report.md), original manifests/logs/selections. Frozen pools: ignored `out/experiments/003-objects/20260918T060901.136402Z-full/pools/`, hashes retained in the manifest. The report refinement adds shared-fit diagnostics and suppresses negative-zero display; grammar/search unchanged.
 
+### 004-competition — Can evidence or entropy select among viable interpretations?
+Status: active.
+Baseline: `45afda6`; stable core unchanged. Shared 003 grammar/API, nine families (grid plus eight object interpretations).
+Comparison: full-training and controlled two-pair conditions, 400 public training tasks, 12 workers; fixed order versus predictive evidence versus minimum answer entropy. Same within-family first program for every policy. Report family-choice ceiling and recoverable baseline errors before interpreting performance; <5 recoverable tasks precludes a broad policy claim. All scoring labels are excluded from policy inputs.
+Result: not run yet.
+Decision: test selection only where rival surviving families disagree; no language expansion or automatic integration.
+Code/evidence: [protocol](004-competition/README.md).
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
