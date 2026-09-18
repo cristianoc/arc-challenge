@@ -40,6 +40,14 @@ Interpretation: preregistered minimum of five recoverable errors was not met in 
 Decision: close this bounded selector study without integration. Retain 003 as the object-language candidate. Future selector comparisons must measure attainable improvement first and handle undefined predictions explicitly; simple certainty is not evidence of correctness. Two-pair scores intentionally withhold available training examples and are not full-information production results. No public evaluation tasks used.
 Code/evidence: completed 004 code deleted; reproducible implementation at `af956b0`. Retained [protocol](evidence/004-competition/protocol.md), direct [full report](evidence/004-competition/full/report.md) and [pilot report](evidence/004-competition/pilot/report.md), manifests, logs, selections and compact family/proposal JSONL. Shared object API and common run harness remain with 003; no duplicated solver.
 
+### 005-relations — Relational object expressivity and informative evidence
+Status: active.
+Baseline: `df33dbf`; stable core unchanged; reuse 003 extraction/selectors.
+Comparison: finite source/reference colour-transfer and adjacent move/copy AST versus grid depth 2 + 003 objects on 400 public training tasks; targeted depth-3 audit. Separately, 64 balanced constructed cases with two observationally equivalent initial rules compare informative, uninformative, first, random and expected-information-gain example selection. Label-blind query choice; explicit two-model prior; controlled task is a mechanism check, not ARC generalization evidence.
+Result: not run yet.
+Decision: retain the language only with new correct audited coverage; evaluate entropy as information supplied by another example, not confidence minimization. No automatic core integration.
+Code/evidence: [protocol](005-relations/README.md).
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
