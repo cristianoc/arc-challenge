@@ -1,0 +1,66 @@
+Census done in 2.09s; depth 3 on 47 tasks
+3af2c5a8 ambiguous: 16 -> 257 programs, 0.39s
+9172f3a0 ambiguous: 45 -> 1594 programs, 1.03s
+496994bd ambiguous: 32 -> 846 programs, 1.06s
+d631b094 ambiguous: 58 -> 2620 programs, 1.21s
+3428a4f5 ambiguous: 35 -> 1059 programs, 1.30s
+0520fde7 ambiguous: 36 -> 1124 programs, 0.59s
+99b1bc43 ambiguous: 50 -> 2048 programs, 1.72s
+ed36ccf7 ambiguous: 25 -> 527 programs, 0.70s
+a416b8f3 ambiguous: 72 -> 2040 programs, 2.47s
+6150a2bd ambiguous: 62 -> 2968 programs, 2.48s
+5582e5ca ambiguous: 103 -> 7970 programs, 1.33s
+1cf80156 ambiguous: 100 -> 2648 programs, 3.30s
+67e8384a ambiguous: 70 -> 3781 programs, 3.35s
+f2829549 ambiguous: 50 -> 2096 programs, 1.87s
+ce4f8723 ambiguous: 49 -> 1987 programs, 1.64s
+c59eb873 ambiguous: 71 -> 3867 programs, 2.18s
+3c9b0459 ambiguous: 117 -> 10389 programs, 4.98s
+74dd1130 ambiguous: 107 -> 8694 programs, 3.35s
+f25ffba3 ambiguous: 56 -> 2441 programs, 4.78s
+d9f24cd1 unfitted: 0 -> 0 programs, 0.74s
+53b68214 unfitted: 0 -> 0 programs, 3.74s
+1190e5a7 unfitted: 0 -> 0 programs, 6.14s
+3de23699 unfitted: 0 -> 0 programs, 6.05s
+32597951 unfitted: 0 -> 0 programs, 1.95s
+1e0a9b12 ambiguous: 45 -> 1576 programs, 9.95s
+6f8cd79b unfitted: 0 -> 0 programs, 0.10s
+b0c4d837 unfitted: 0 -> 0 programs, 1.02s
+a85d4709 unfitted: 0 -> 0 programs, 0.71s
+67385a82 unfitted: 0 -> 0 programs, 0.39s
+6e19193c unfitted: 0 -> 0 programs, 1.30s
+2dd70a9a unfitted: 0 -> 0 programs, 1.83s
+a78176bb unfitted: 0 -> 0 programs, 5.82s
+810b9b61 unfitted: 0 -> 0 programs, 1.19s
+85c4e7cd unfitted: 0 -> 0 programs, 12.34s
+be94b721 ambiguous: 121 -> 11042 programs, 15.60s
+ff28f65a unfitted: 0 -> 0 programs, 1.13s
+50846271 unfitted: 0 -> 0 programs, 2.67s
+444801d8 unfitted: 0 -> 0 programs, 13.35s
+c444b776 unfitted: 0 -> 0 programs, 21.03s
+b94a9452 unfitted: 0 -> 0 programs, 8.80s
+1f85a75f ambiguous: 70 -> 3752 programs, 26.02s
+1c786137 unfitted: 0 -> 0 programs, 25.14s
+b8825c91 ambiguous: 4 -> 444 programs, 31.67s
+952a094c unfitted: 0 -> 0 programs, 24.92s
+5bd6f4ac unfitted: 0 -> 0 programs, 24.99s
+045e512c unfitted: 0 -> 0 programs, 27.37s
+0dfd9992 unfitted: 0 -> 0 programs, 37.12s
+       52.02 real       362.63 user         1.99 sys
+           497319936  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               31708  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  21  voluntary context switches
+              172883  involuntary context switches
+       6371353804528  instructions retired
+       1126316623510  cycles elapsed
+           433029888  peak memory footprint

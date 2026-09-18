@@ -1,0 +1,31 @@
+Census done in 2.19s; depth 3 on 12 tasks
+9172f3a0 ambiguous: 45 -> 1594 programs, 1.04s
+d631b094 ambiguous: 58 -> 2620 programs, 1.30s
+a416b8f3 ambiguous: 72 -> 2040 programs, 2.44s
+67e8384a ambiguous: 70 -> 3781 programs, 3.11s
+53b68214 unfitted: 0 -> 0 programs, 3.56s
+3c9b0459 ambiguous: 117 -> 10389 programs, 4.26s
+3de23699 unfitted: 0 -> 0 programs, 5.18s
+1190e5a7 unfitted: 0 -> 0 programs, 5.32s
+85c4e7cd unfitted: 0 -> 0 programs, 9.90s
+c444b776 unfitted: 0 -> 0 programs, 17.30s
+1c786137 unfitted: 0 -> 0 programs, 21.78s
+b8825c91 ambiguous: 4 -> 444 programs, 27.43s
+       29.93 real       122.78 user         0.89 sys
+           274563072  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               17772  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   5  voluntary context switches
+               65268  involuntary context switches
+       2325285012304  instructions retired
+        394692212541  cycles elapsed
+           273973848  peak memory footprint
