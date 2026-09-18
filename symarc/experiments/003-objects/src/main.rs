@@ -327,6 +327,8 @@ fn ratio(n: usize, d: usize) -> String {
 fn num(v: f64) -> String {
     if v.is_nan() {
         "n/a".into()
+    } else if v.abs() < 0.0005 {
+        "0.000".into()
     } else {
         format!("{v:.3}")
     }
@@ -558,6 +560,19 @@ fn main() {
                 .count()
         );
     }
+    let both: Vec<_> = rows
+        .iter()
+        .filter(|r| r.validation.available && r.validation.grid_fit > 0 && r.validation.obj_fit > 0)
+        .collect();
+    let both_obj: Vec<_> = both
+        .iter()
+        .filter(|r| r.validation.obj_p > r.validation.grid_p + 1e-12)
+        .collect();
+    let both_grid = both
+        .iter()
+        .filter(|r| r.validation.grid_p > r.validation.obj_p + 1e-12)
+        .count();
+    println!("\nBoth languages fit the discovery examples on {} tasks. Within these, objects receive higher reserved-answer probability on {}, grid on {}, and {} tie. Among the {} shared-fit tasks preferring objects, object/core test selection is correct on {}/{}. This separates preference between viable families from choosing the only family that fits.\n", both.len(), both_obj.len(), both_grid, both.len()-both_obj.len()-both_grid, both_obj.len(), both_obj.iter().filter(|r|r.obj.correct).count(), both_obj.iter().filter(|r|r.grid.correct).count());
     println!("\n## Depth-3 audit of newly fitting tasks\n\nSelected by training fit and hash order, never test correctness; at most 16 tasks.\n\n| Task | Core d3 fits | Core d3 oracle | Object oracle | Core d3 selected correct | Object selected correct | Audit task seconds |\n|---|---:|---|---|---|---|---:|");
     for (id, s, secs) in &audit {
         let r = rows.iter().find(|r| &r.id == id).unwrap();
