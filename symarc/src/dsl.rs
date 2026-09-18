@@ -503,7 +503,7 @@ pub fn enumerate(pool: &[Prim], s: &[Example], len: usize) -> Vec<Vec<Prim>> {
         found.push(Vec::new());
     }
     let mut layer: Vec<(Vec<Prim>, Vec<Grid>)> = vec![(Vec::new(), inputs)];
-    for _ in 0..len {
+    for depth in 0..len {
         let mut next: Vec<(Vec<Prim>, Vec<Grid>)> = Vec::new();
         for (p, outs) in &layer {
             for &pr in pool {
@@ -524,7 +524,11 @@ pub fn enumerate(pool: &[Prim], s: &[Example], len: usize) -> Vec<Vec<Prim>> {
                     if hits(&outs2) {
                         found.push(q.clone());
                     }
-                    next.push((q, outs2));
+                    // Terminal outputs have no consumers. Keep fitting programs
+                    // above, but do not materialize an unused final frontier.
+                    if depth + 1 < len {
+                        next.push((q, outs2));
+                    }
                 }
             }
         }
