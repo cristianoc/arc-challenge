@@ -128,3 +128,6 @@ research findings and dispositions live in the experiment record above.
 The [interpretation-selection report](experiments/evidence/004-competition/full/report.md)
 measures whether choosing among surviving interpretations could improve on the
 baseline, before comparing predictive evidence and minimum answer entropy.
+The [relational-language and information-gain report](experiments/evidence/005-relations/full/report.md)
+separates real-task coverage from a controlled test of choosing discriminating
+examples; the unsuccessful relational extension was retired.
