@@ -4,9 +4,13 @@ Compact findings and decisions, retained even when code and raw outputs are
 deleted. This is an experiment ledger, not a code changelog or a theory history.
 Status meanings and code-retention rules are in [README.md](README.md).
 
-No scientific experiments have been registered under this structure yet.
-The existing solver is the stable starting point; migration and regression
-checks are validation, not evidence for an experimental hypothesis.
+### 001-pruning — Does aggressive hypothesis pruning improve predictions?
+Status: active
+Baseline: `be25423adee3d2214987c677aa3a1762132d5469`; core hash `0633d22fb7d1c9d4699fecf4ff851b59cb97c638bcbd6be17db0176865331146`; 2026-09-18.
+Comparison: no symmetry, fixed order, random order, marginal pruning; public training tasks only; fixed depth-2 program set, no repair/fallback; seeds 0–4; 12 workers; common checking budget.
+Result: not run yet.
+Decision: measure before considering integration; increased pruning alone is not success.
+Code/evidence: [protocol and code](001-pruning/README.md); raw outputs under `out/experiments/001-pruning/`.
 
 ## Entry format
 

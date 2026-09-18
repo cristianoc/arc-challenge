@@ -1,0 +1,12 @@
+[package]
+name = "symarc-exp-001-pruning"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+symarc = { path = "../.." }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
