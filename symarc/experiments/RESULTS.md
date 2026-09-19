@@ -207,6 +207,14 @@ Checks: eight synthetic controls, 600 exhaustive synthetic comparisons; independ
 Decision: no integration. Operation identification and guard identification remain distinct; counting distinct operations alone cannot justify the desired preference. Keep 019's measured composition independent of this unsuccessful heuristic. Core and accepted mathematics unchanged.
 Code/evidence: [protocol and exact implementation](020-shared-operation-evidence/README.md), [findings](evidence/020-shared-operation-evidence/README.md), compact results and exhaustive audit; full controls in the companion archive.
 
+### 021-default-exceptions — Can a shared default preserve distinct applicability contexts?
+Status: active — protocol and source hashes frozen before controlled/corpus runs.
+Baseline: `11466555`; protocol `b9227afb`. Same 018 features/operations/search/selection; only observed-key action tables use all defaults minimizing exception-context count. Unseen keys and undefined survivors abstain. Explicit symmetric operation prior; no default-copy shortcut.
+Comparison: original two controlled endpoint teachers plus four literal-output variants (84 queries); separately all ARC1 400+400 tasks, unchanged 019 stable predictions and no-fit fallback rule. Reused public data, not untouched holdout. Twelve workers, no tuning after outcomes; base replay and default/projection/score audits required.
+Result: not run yet. Twelve synthetic controls including 300 exhaustive tiny-program comparisons pass.
+Decision: no automatic integration; report fixed-model ambiguity reduction separately from selected-model regressions. Stable core and accepted math unchanged.
+Code/evidence: [frozen protocol](021-default-exceptions/README.md).
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
