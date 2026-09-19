@@ -228,6 +228,14 @@ Checks: eight new tests, 12 existing 021 and 15 existing 018 controls; independe
 Decision: evidence must vary the distinctions under investigation; operation preference alone did not supply scope evidence. Keep the measured ARC1 compositions separate. Query-input applicability as a way to break the remaining cost tie is a possible future policy, not part of these results. Stable core and accepted math unchanged.
 Code/evidence: [protocol and driver](022-demonstration-design/README.md), [findings](evidence/022-demonstration-design/README.md), compact outcomes and audit certificates; full compressed predictions, source dependencies and replay in the investigation archive. Base/default prediction SHA-256 `75a251c9c28f75985d3862581f0ca8889beb7be09ef539203c91a6e82f8e4931` / `86e9d198f5e8f6b9ac1bed42b5fa14b4681f152ff6bf71d76c8f3c14d41019e2`.
 
+### 023-query-applicability — Can query-input applicability resolve selection ties?
+Status: active — protocol and source hashes frozen; scientific runs not yet started.
+Baseline: `784f282d`; protocol `0f721f6a`. Fixed 018 base and 021 default learners; all ARC1 400+400 tasks and the 24 controlled specifications from 022. Reused public/development data, not an untouched holdout.
+Comparison: unchanged ranking, completeness within best-evidence ties, completeness before evidence, and consensus among best-evidence complete candidates. Same feature pools, operations and costs. Query inputs only; predictions frozen before scoring. Outer folds rebuild search/ranking and use only withheld inputs for applicability; duplicate inputs grouped. No-fit composition with saved stable predictions remains frozen.
+Boundary: non-consensus applicability policies preserve complete baseline answers by construction; new predictions may be wrong. Joint versus per-query selection is a declared diagnostic. Six controlled teachers are not independent ARC tasks.
+Checks: 15 new synthetic controls plus all 15 018 and 12 021 checks passed before the planned run. Twelve workers per serial batch; full reassembly and independent selection/action-set audit required. No core or accepted-math changes.
+Code/evidence: [frozen protocol and source hashes](023-query-applicability/README.md). Results not run yet.
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
