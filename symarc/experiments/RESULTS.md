@@ -67,6 +67,16 @@ Known-witness result: `7b5033c1` has **20 histogram fits and 20 path fits**, two
 Decision: close under the preregistered no-new-coverage rule; no core/math changes. Preserving path order repairs a representational loss, but adding the correct representation does not choose it. This is neither automatic anti-unification nor an MDL evaluation. Before another grammar sweep, establish multiple applicable witnesses in the intended study corpus; separately investigate evidence distinguishing observationally equivalent wrong/right programs.
 Code/evidence: completed runner removed; runnable at `cd7e58b`. Retained [protocol](evidence/007-path-order/protocol.md), [finding and reproduction notes](evidence/007-path-order/README.md), direct [full report](evidence/007-path-order/full/report.md), [known-witness report](evidence/007-path-order/development/report.md), pilot, manifests, per-task scores and decisive program pools.
 
+### 008-repair-constraints — Can symmetry contracts distinguish known repair pairs?
+Status: closed — fixed-pair diagnostic completed; no integration.
+Baseline: `fd1d166`; registered runnable implementation `b7c96c9`; 006's ten retrospective original/repaired pairs and inherited symmetry contracts; 2026-09-19. Stable core/003 unchanged.
+Comparison: all permitted single colour swaps plus three task-specific geometry contracts on 25 training examples only. Fixed candidates, retain all constraint survivors, abstain on ties. Test pairs hash-checked then removed before workers execute. Twelve processes; 1.93s functional diagnostic, no timing comparison. Controls pass, no errors/timeouts.
+Result: both candidates pass all 25 identity pairs. Across **854 colour + 7 geometry probes**, **7/10 pairs distinguish repair-only; 3/10 retain both**. Five originals fail colour checks, two further originals fail geometry. All repairs survive. Including identity: 886 probes/family, 671 distinct labelled pairs, 215 nonidentity operations acting identically. The unresolved originals are `7b5033c1` (histogram vs path), `8f215267` (local vs global counts), `97d7923e` (position guards vs rank). This is retrospective discrimination in fixed pairs, not 70% blind repair accuracy.
+Interpretation: explicit symmetry contracts expose some incidental commitments but can preserve structural mistakes. Equivariant programs agreeing on training data also agree on its full symmetry orbits; finite probe survival alone does not establish global equivariance. Rejection does not infer every component of the repair. Proposed structural interventions for the three survivors are not yet executed; partial/unresolved 006 tasks remain outside the measurement. Neither anti-unification nor MDL was evaluated.
+Decision: close with evidence. Next question: validate structural counterexamples that change sequence, aggregation scope or rank while controlling admissibility, and identify which semantic assumptions justify their expected outputs. No core or accepted-math changes.
+Code/evidence: completed code removed; runnable at `b7c96c9`. Retained [protocol](evidence/008-repair-constraints/protocol.md), [interpretation and unresolved cases](evidence/008-repair-constraints/README.md), [direct report](evidence/008-repair-constraints/report.md), per-case counterexamples and manifest.
+
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
@@ -81,12 +91,3 @@ Result: decisive numbers, runtime, uncertainty/limitations; or "not run yet"
 Decision: conclusion and integration criterion met/missed; next step if retained
 Code/evidence: path while retained, or "deleted"; integration revision if applicable
 ```
-
-
-### 008-repair-constraints — Can symmetry contracts distinguish known repair pairs?
-Status: active — registered before diagnostic execution.
-Baseline: `fd1d166`; 006's ten fixed original/repaired pairs and inherited symmetry contracts; 2026-09-19.
-Comparison: all permitted single colour swaps plus three task-specific geometry contracts, on 25 training examples only; fixed candidates, retain all constraint survivors, abstain on ties. Twelve processes, 5s per call / 600s whole-run limit. Test pairs removed before execution.
-Result: not run yet.
-Decision: diagnostic only; no integration or blind discovery claim. Contracts and repairs are retrospective assumptions. Close with discriminated and unresolved cases, preserving witnesses and runnable history.
-Code/evidence: [protocol](008-repair-constraints/README.md).
