@@ -22,7 +22,7 @@ try:
     dest=ROOT/'out/experiments/007-path-order'/(datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')+'-'+mode)
     dest.mkdir(parents=True)
     binary=HERE/'target/release/symarc-exp-007-path-order'
-    command=['/usr/bin/time','-f','peak_rss_kib=%M','-o',str(dest/'resources.txt'),str(binary),mode,str(dest)]
+    command=[sys.executable,str(HERE/'measure.py'),str(dest/'resources.txt'),str(binary),mode,str(dest)]
     if mode=='development': command.append(str(Path(sys.argv[2]).resolve()))
     def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
     sources=sorted((ROOT/'src').glob('*.rs'))+[ROOT/'Cargo.toml',ROOT/'Cargo.lock']
