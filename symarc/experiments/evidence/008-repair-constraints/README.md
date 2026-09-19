@@ -135,22 +135,38 @@ as successes or failures of this selector.
 
 ## Precise interpretation
 
-Let D be the supplied labelled pairs and C an explicitly assumed collection of
-input/output transformation pairs (T_in, T_out). Define
+Let $D$ be the supplied labelled pairs and $C$ an explicitly assumed collection
+of input/output transformation pairs $(T_{\mathrm{in}}, T_{\mathrm{out}})$. Define
 
-    D_C = D ∪ {(T_in(x), T_out(y)) : (x,y) ∈ D, T ∈ C}
-    V_C = {P : for every (x,y) ∈ D_C, P(x) is defined and equals y}.
+$$
+D_C = D \cup \left\{
+\bigl(T_{\mathrm{in}}(x), T_{\mathrm{out}}(y)\bigr)
+\;\middle|\;
+(x,y) \in D,\ (T_{\mathrm{in}},T_{\mathrm{out}}) \in C
+\right\}.
+$$
 
-The experiment computes membership in V_C for two fixed candidates per task.
+$$
+V_C = \left\{
+P \;\middle|\;
+\forall (x,y) \in D_C,\quad P(x)\downarrow\ \land\ P(x)=y
+\right\}.
+$$
+
+Here $P(x)\downarrow$ means that $P$ terminates with a defined output on $x$.
+The experiment computes membership in $V_C$ for two fixed candidates per task.
 The ordinary training version space contains both. Additional contracts shrink
 that space, sometimes to one of these two, sometimes leaving both. Shrinking it
 is useful only insofar as the contracts are valid for the intended task. The
-labels in D_C encode those assumptions; they do not add an independent oracle.
+labels in $D_C$ encode those assumptions; they do not add an independent oracle.
 
-For a full group action G, if two programs are equivariant on the relevant
-orbits and agree on D, they agree on G·D: for each g and training input x,
+For a full group action $G$, if two programs are equivariant on the relevant
+orbits and agree on $D$, they agree on $G\cdot D$: for each $g\in G$ and training
+input $x$,
 
-    P(g·x) = g·P(x) = g·Q(x) = Q(g·x).
+$$
+P(g\cdot x) = g\cdot P(x) = g\cdot Q(x) = Q(g\cdot x).
+$$
 
 Thus orbit augmentation cannot distinguish them. It can expose a violation of
 the proposed invariance, but cannot reveal a distinction that stays outside
