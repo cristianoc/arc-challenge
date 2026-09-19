@@ -1,0 +1,1248 @@
+{
+  "0934a4d8": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "135a2760": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "136b0064": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "13e47133": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "142ca369": {
+    "train": [
+      false,
+      false,
+      false
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "16b78196": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "16de56c4": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "1818057f": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "195c6913": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true,
+      true
+    ]
+  },
+  "1ae2feb7": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false,
+      false
+    ]
+  },
+  "20270e3b": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "20a9e565": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "21897d95": {
+    "train": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "221dfab4": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "247ef758": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true,
+      true
+    ]
+  },
+  "269e22fb": {
+    "train": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true,
+      true
+    ]
+  },
+  "271d71e2": {
+    "train": [
+      false,
+      false,
+      false
+    ],
+    "test": [
+      false
+    ]
+  },
+  "28a6681f": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "291dc1e1": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "2b83f449": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "2ba387bc": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "2c181942": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "2d0172a1": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "31f7f899": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "332f06d7": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "35ab12c3": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "36a08778": {
+    "train": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true,
+      true
+    ]
+  },
+  "38007db0": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true,
+      true
+    ]
+  },
+  "3a25b0d8": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "3dc255db": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "3e6067c3": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true,
+      true
+    ]
+  },
+  "409aa875": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "446ef5d2": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "45a5af55": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "4a21e3da": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "4c3d4a41": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "4c416de3": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "4c7dc4dd": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "4e34c42c": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "53fb4810": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "5545f144": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "581f7754": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "58490d8a": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "58f5dbd5": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "5961cc34": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "5dbc8537": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "62593bfd": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "64efde09": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "65b59efc": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "67e490f4": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "6e453dd6": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "6e4f6532": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "6ffbe589": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "71e489b6": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "7491f3cf": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      "ValueError: Unhandled panel configuration for task 7491f3cf"
+    ]
+  },
+  "7666fa5d": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "78332cb0": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "7b0280bc": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "7b3084d4": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "7b5033c1": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "7b80bb43": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "7c66cb00": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "7ed72f31": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true,
+      false
+    ]
+  },
+  "800d221b": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "80a900e0": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "8698868d": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "88bcf3b4": {
+    "train": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "88e364bc": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "89565ca0": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "898e7135": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "8b7bacbf": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "8b9c3697": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "8e5c0c38": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false,
+      true
+    ]
+  },
+  "8f215267": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "8f3a5a89": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "9385bd28": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "97d7923e": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "981571dc": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "9aaea919": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "9bbf930d": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "a251c730": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "a25697e4": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "a32d8b75": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "a395ee82": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "a47bf94d": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "a6f40cea": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "aa4ec2a5": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "abc82100": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "b0039139": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true,
+      true
+    ]
+  },
+  "b10624e5": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "b5ca7ac4": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "b6f77b65": {
+    "train": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "b99e7126": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "b9e38dc0": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "bf45cf4b": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "c4d067a0": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "c7f57c3e": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "cb2d8a2c": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "cbebaa4b": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true,
+      false
+    ]
+  },
+  "d35bdbdc": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false,
+      false
+    ]
+  },
+  "d59b0160": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "d8e07eb2": {
+    "train": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true,
+      true
+    ]
+  },
+  "da515329": {
+    "train": [
+      false,
+      false,
+      false
+    ],
+    "test": [
+      false
+    ]
+  },
+  "db0c5428": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "db695cfb": {
+    "train": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "dbff022c": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "dd6b8c4b": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "de809cff": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "dfadab01": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "e12f9a14": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "e3721c99": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "e376de54": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "e8686506": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true
+    ]
+  },
+  "e87109e9": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "edb79dae": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "eee78d87": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "f560132c": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "f931b4a8": {
+    "train": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false,
+      false
+    ]
+  },
+  "faa9f03d": {
+    "train": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  },
+  "fc7cae8d": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      false
+    ]
+  }
+}

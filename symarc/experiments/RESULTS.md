@@ -50,6 +50,14 @@ Interpretation: these controlled outcomes are expected by construction, not new 
 Decision: retire the unsuccessful relational extension and completed mechanism-check code. Keep 003 as the language candidate. A next language extension should first be grounded in a small training-task expressivity audit with explicit intended object programs, rather than another speculative operator sweep. No public evaluation data or production changes.
 Code/evidence: runnable sources preserved at `727728c`; live 005 directory removed. Retained [protocol](evidence/005-relations/protocol.md), direct [full report](evidence/005-relations/full/report.md) and [pilot report](evidence/005-relations/pilot/report.md), manifests, logs, selections and one [controlled-case artifact](evidence/005-relations/full/controlled-cases.jsonl) (pilot identical). Raw empty fit pools remain reproducible and ignored.
 
+### 006-repair-audit — What mechanisms repair training-perfect ARC programs?
+Status: active — retrospective witness catalogue complete; prospective mechanism selection pending.
+Baseline: external solver corpus `cristianoc/arc-agi-2-abstraction-dataset@ddf6a3e`; official ARC-AGI-2 data `f3283f7`; 2026-09-19. SymArc branch baseline `6e93e52`, core hash `e76a7031af456aeba4348a32b08e32017f44641eb17256e1b01e09a5985a7f5c` (inherited unchanged from 005; no SymArc execution or comparison here).
+Comparison: census of 120 external Python solvers; twelve selected failure analyses, ten executable repairs. This initial audit preceded registration and inspected public evaluation test outputs. It is retrospective development evidence, not a preregistered or blind synthesis evaluation. Serial functional checks, no timing claim; the 12-worker SymArc benchmark policy is not being compared.
+Result: originals fit all training pairs on 116/120 tasks; 27/120 pass every test, 38/167 test grids correct. Ten selected repairs preserve 25/25 training pairs and improve their supplied tests from 0/14 to 14/14. All 390 colour-permutation and 13 reflection/transpose checks pass. Mechanisms include role binding, relative coordinates, input legends, global aggregation, rank, path traversal, templates and instruction interpretation. No result shows raw AST anti-unification alone discovers a successful solver. Partial `0934a4d8` symmetry repair gets 19/27 cells; eight have no observed in-grid orbit witness. `5dbc8537` assembly diagnosis remains unverified.
+Decision: use explicit witnesses to ground the next bounded expressivity/discovery study, following 005. No language or policy integration; these hand repairs do not establish gains over SymArc or automatic discovery. Select and preregister a mechanism and data policy before further scientific runs. Keep code while this selection is active; close or advance the entry once resolved. Do not use these inspected test answers as an untouched holdout.
+Code/evidence: [protocol](006-repair-audit/README.md), [case catalogue](006-repair-audit/repair_patterns.md), Python witnesses and verification runner; [retained evidence](evidence/006-repair-audit/README.md). External inputs are revision-pinned and hash-checked in an ignored cache, not vendored as a duplicate solver. Accepted math and stable core unchanged.
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
@@ -64,3 +72,4 @@ Result: decisive numbers, runtime, uncertainty/limitations; or "not run yet"
 Decision: conclusion and integration criterion met/missed; next step if retained
 Code/evidence: path while retained, or "deleted"; integration revision if applicable
 ```
+
