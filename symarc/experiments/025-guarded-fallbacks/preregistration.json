@@ -1,0 +1,11 @@
+{
+  "baseline": "cf09c2e633ff76f2389140a3540301e522d0e332",
+  "protocol": "42c75add8a850103f530e9d14c677d69ae7750bd",
+  "source_hashes": {
+    "run.py": "1a021fbb2470db24ae93dc1b0a3e9cc5f44a660728dc99f404b2395e6433e208",
+    "test_run.py": "bcc1c7e911937228b44eb3f2b47814df2ae96eadcf518cce4e0cd74df646fce3"
+  },
+  "synthetic_tests_passed": 12,
+  "fit_reference_cases": 1800,
+  "concrete_program_control_trials": 200
+}
