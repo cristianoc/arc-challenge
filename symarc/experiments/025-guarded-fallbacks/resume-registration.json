@@ -1,0 +1,16 @@
+{
+  "resume_baseline": "2421c4bf785744ae39b0248f80046bc32b06c9a0",
+  "scientific_baseline": "cf09c2e633ff76f2389140a3540301e522d0e332",
+  "unchanged_protocol_commit": "42c75add8a850103f530e9d14c677d69ae7750bd",
+  "note": "The interrupted turn published a protocol and hashes but not its Python sources or outcomes. Those unpublished files are unavailable in the resumed environment. This implementation was reconstructed from the unchanged protocol, tested, and frozen before any resumed corpus prediction. The original preregistration.json is retained as history; the hashes here identify the implementation actually run. No claim is made that the old source hashes were reproduced or that any unrecorded interrupted result was recovered.",
+  "source_hashes": {
+    "run.py": "98f6834e054c44e20f0da154d582e3405db7864080c771b6f73097d74d8b0ba7",
+    "test_run.py": "994bebbb3557763127605f62acf7a02226beaef154ac9f6fbb030d2736de1e59"
+  },
+  "new_synthetic_tests_passed": 12,
+  "independent_fit_comparisons": 1800,
+  "concrete_program_enumeration_trials": 200,
+  "inherited_synthetic_tests_passed": 58,
+  "corpus_predictions_or_scores_run_yet": false,
+  "design_change": false
+}

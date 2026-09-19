@@ -1,0 +1,24 @@
+{
+  "utc": "2026-09-19T01:08:26.202860+00:00",
+  "command": [
+    "publish/symarc/experiments/006-repair-audit/run.py",
+    "--baseline"
+  ],
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "elapsed_seconds": 2.423832938000487,
+  "timing_interpretation": "reproduction duration only; not a benchmark comparison",
+  "method": "Retrospective witnesses; official test answers inspected during development",
+  "corpus_sha256": "f86fb3adae1c5fb773959142a18939a6ad91a9085da99307c143030e4d9497eb",
+  "source_sha256": {
+    "fetch_inputs.py": "c726f411639b05e983d0d4e0725f541212b583c334c1d7783857b3390fdad605",
+    "repair_probe.py": "9459abbac29a8b10b237a8003419c5cd9e52ac66a2119930cd675a44f2f96ae2",
+    "run.py": "b5d348c1a95c72afafbc4438b1da6af158ce2934753ba0706ca363f224fc43b9",
+    "verify_repairs.py": "437bbd83ef91463457bd5aa4264b7deeda3216f5e3486a568e50643654cc5275"
+  },
+  "inputs_manifest_sha256": "9fdbe9a96490c1c5625a09983d429754ad84e9e84b6b2fd8b4a10be971dff83d",
+  "artifacts_sha256": {
+    "repair_results.json": "15c57fe4a0f7ef0c8e4eb55732468fc05e655200cf8089ef2f470fcd35e29305",
+    "baseline.json": "05befee4600ca1d1ab16aaf55037c9279bf76e593e80cddb30a2d4dda7d111ac"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "baseline": "83df79f78f059fe18b356d51a4e0354367966f72",
+  "protocol": "8e6f89f7a05287373deea827d3cd537851c61bf4",
+  "execution_commit": "a5b3cccf79b0ad9c2d88550769030b3fcc08b438",
+  "actions_run_id": 35427286878,
+  "artifact_id": 10579147646,
+  "tasks_per_split": 400,
+  "correct_tasks": {
+    "stable": {"training":57,"evaluation":23},
+    "018_exact": {"training":21,"evaluation":4},
+    "018_order": {"training":24,"evaluation":4},
+    "018_guarded_exact": {"training":24,"evaluation":5},
+    "018_guarded_order": {"training":27,"evaluation":5},
+    "018_union": {"training":27,"evaluation":5},
+    "complete_override": {"training":78,"evaluation":27},
+    "strict_override": {"training":63,"evaluation":25},
+    "nofit_fallback": {"training":78,"evaluation":27},
+    "correct_either_oracle": {"training":78,"evaluation":27}
+  },
+  "grid_counts": {"training":416,"evaluation":419},
+  "correct_grids": {
+    "stable": {"training":62,"evaluation":27},
+    "018_union": {"training":29,"evaluation":5},
+    "nofit_fallback": {"training":83,"evaluation":31}
+  },
+  "relational_complete_wrong_tasks": {"training":["6e82a1ae"],"evaluation":[]},
+  "nofit_fallback_gains": {
+    "training":["0d3d703e","2281f1f4","25d8a9c8","29c11459","3618c87e","3bd67248","4347f46a","67385a82","6f8cd79b","7f4411dc","810b9b61","91714a58","aedd82e4","bb43febb","c0f76784","ce9e57f2","d037b0a7","d511f180","e8593010","ea32f347","ea786f4a"],
+    "evaluation":["7e02026e","84f2aca1","aa18de87","e0fb7511"]
+  },
+  "nofit_fallback_losses": {"training":[],"evaluation":[]},
+  "nondevelopment": {
+    "denominators":{"training":398,"evaluation":399},
+    "stable":{"training":56,"evaluation":23},
+    "018_union":{"training":25,"evaluation":5},
+    "nofit_fallback":{"training":76,"evaluation":27}
+  },
+  "overlap": {
+    "arc1_training_same_arc2_labelled_content":391,
+    "arc1_evaluation_same_arc2_labelled_content":381,
+    "all_25_gains_already_present_in_arc2_training":true,
+    "untouched_holdout":false
+  },
+  "checks": {
+    "stable_rust_tests":11,
+    "stable_cli_regressions_passed":true,
+    "018_synthetic_tests":15,
+    "independent_policy_task_score_checks":8000,
+    "historical_stable_task_fit_and_grid_scores_matched":800,
+    "permuted_arc2_prediction_and_outer_replays":772,
+    "complete_local_relational_rerun_identical":true
+  },
+  "relational_predictions_sha256":"e47927459066e61bc19b1b1d3e6d2678d62a26aebf4da7f5bc9cc359c8f1ed18",
+  "stable_core_changed":false
+}

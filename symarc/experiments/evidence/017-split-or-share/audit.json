@@ -1,0 +1,39 @@
+{
+  "certificate_size_histogram": {
+    "2": 9262,
+    "3": 303,
+    "4": 14,
+    "5": 32
+  },
+  "checks": {
+    "baseline_candidate_models": 378,
+    "baseline_outer_folds": 2352,
+    "baseline_pools": 761,
+    "baseline_task_eligibility": 1120,
+    "candidate_query_grids": 3059,
+    "exhaustive_candidate_pools": 32,
+    "exhaustive_subsets": 30032,
+    "full_vocabulary_certificates": 2072,
+    "internal_fold_predictions": 9251,
+    "necessity_certificates": 7539,
+    "outer_fold_predictions": 11760,
+    "policy_task_scores": 5600
+  },
+  "exhaustive_sample": [
+    "training/63613498",
+    "training/e179c5f4",
+    "training/e8593010",
+    "training/bd4472b8",
+    "training/3345333e",
+    "training/62b74c02",
+    "training/d8c310e9",
+    "training/868de0fa",
+    "training/7f4411dc",
+    "training/ba9d41b8",
+    "training/97c75046",
+    "training/025d127b"
+  ],
+  "limitations": "Outer predictions are independently reconstructed, but the outer model selector is not independently reimplemented. Synthetic label-isolation checks and source review cover that boundary.",
+  "prediction_hash_verified": true,
+  "seconds": 11.752219528000069
+}

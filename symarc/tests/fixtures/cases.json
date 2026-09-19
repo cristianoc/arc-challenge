@@ -1,0 +1,70 @@
+{
+  "repair": [
+    "--data",
+    "../data/training",
+    "--task",
+    "d9fac9be",
+    "--show"
+  ],
+  "climb": [
+    "--data",
+    "../data/training",
+    "--task",
+    "c59eb873",
+    "--enumlen",
+    "0",
+    "--show"
+  ],
+  "ablation": [
+    "--data",
+    "../data/training",
+    "--task",
+    "0520fde7",
+    "--norealize",
+    "--show"
+  ],
+  "seed": [
+    "--data",
+    "../data/training",
+    "--task",
+    "72ca375d",
+    "--seed",
+    "17",
+    "--show"
+  ],
+  "caps": [
+    "--data",
+    "../data/training",
+    "--task",
+    "0520fde7",
+    "--cap",
+    "7",
+    "--capgreedy",
+    "5",
+    "--samplecap",
+    "3",
+    "--fit",
+    "4",
+    "--seed",
+    "42",
+    "--show"
+  ],
+  "zero-search": [
+    "--data",
+    "../data/training",
+    "--task",
+    "0520fde7",
+    "--enumlen",
+    "0",
+    "--restarts",
+    "0",
+    "--fit",
+    "0",
+    "--repair",
+    "0",
+    "--show"
+  ],
+  "demo": [
+    "--demo"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "retrospective": true,
+  "structural_hypothesis": "fill strict interior of unique maximum-area all-zero rectangle; copy elsewhere",
+  "fill_colour_inferred_from_training": 8,
+  "source_sha256": "3cfcc30c08268f7ca52c83f23a0c1de674ffd8df147312fd334ab51445345127",
+  "examples": [
+    {"split":"train","index":0,"rectangle":[3,6,5,8],"area":16,"unique":true,"exact":true},
+    {"split":"train","index":1,"rectangle":[4,9,4,8],"area":30,"unique":true,"exact":true},
+    {"split":"train","index":2,"rectangle":[10,13,7,12],"area":24,"unique":true,"exact":true},
+    {"split":"test","index":0,"rectangle":[12,16,10,15],"area":30,"unique":true,"exact":true}
+  ]
+}

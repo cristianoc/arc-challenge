@@ -1,0 +1,29 @@
+{
+  "protocol_commit":"4146e1427a620a07ecc33148860a8b5b2acb3754",
+  "runner_sha256":"8c906f78d58cd69a761301d98cd650f9b4406f9dfbf9d386c7a36636ea3d3321",
+  "predictions_sha256":"7c08ff0e61c6b935a283f7fbff9f78baa6c7ee43b0bafbac8308e48d2cc85892",
+  "teachers":2,
+  "constructed_query_grids":28,
+  "arc_query_scores_produced":false,
+  "selected_baseline":{"correct":14,"complete_wrong":2,"incomplete":12},
+  "selected_sharing":{"correct":14,"complete_wrong":2,"incomplete":12},
+  "available_fixed_endpoint_candidate":{"correct":28,"complete_wrong":0,"incomplete":0},
+  "selected_features_both_teachers":[4,24],
+  "fixed_endpoint_features":[24,27,28],
+  "selected_internal_fraction":[134,77],
+  "fixed_endpoint_internal_fraction":[634,385],
+  "fixed_endpoint_one_demo_optimal_palettes":5,
+  "fixed_endpoint_one_demo_minimum_operations":4,
+  "checks":{
+    "synthetic_tests":8,
+    "synthetic_exhaustive_comparisons":600,
+    "palettes_independently_verified":1070,
+    "candidate_subsets_checked":178284,
+    "narrowed_action_set_constraints":2278,
+    "tables_narrowed":412,
+    "baseline_matches_018_controlled_predictions":true,
+    "repeat_scientific_outputs_identical":true
+  },
+  "decision":"closed; retain as an exact sharing/guard-selection regression control, no integration",
+  "stable_core_changed":false
+}

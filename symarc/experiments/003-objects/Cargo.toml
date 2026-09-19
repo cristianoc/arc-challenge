@@ -1,0 +1,10 @@
+[package]
+name = "symarc-exp-003-objects"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+symarc = { path = "../.." }
+
+[profile.release]
+opt-level = 3

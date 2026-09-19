@@ -1,0 +1,8 @@
+0520fde7  func[dihedral:3 colours:3 cols:4] real[dihedral:3 colours:3 cols:4] |C|=120 gain=5.32b outs=39  progsD=36 progs=1 fitD=1.00 fitC=0.21 evals=3271 sym=0/1(ok 0) equiv=NO det=-  SOLVED  :: splitH and 2
+  accepted: [flipH, flipV, transpose, swapColours 1 5, swapColours 1 2, swapColours 2 5, swapCols 2 3, swapCols 3 4, swapCols 4 5, swapCols 5 6]
+  rejected by realizability: []
+  repaired: []
+  prediction (correct):
+202
+000
+000

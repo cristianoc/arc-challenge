@@ -1,0 +1,496 @@
+{
+  "revisions": [
+    {
+      "url": "https://api.github.com/repos/cristianoc/arc-agi-2-abstraction-dataset/commits/main",
+      "sha": "ddf6a3e7e2db6e0e0cf24dc99368e8386e78e63c"
+    },
+    {
+      "url": "https://api.github.com/repos/arcprize/ARC-AGI-2/commits/main",
+      "sha": "f3283f727488ad98fe575ea6a5ac981e4a188e49"
+    }
+  ],
+  "solution_blobs": [
+    {
+      "path": "tasks/0934a4d8/solution.py",
+      "sha": "7a72a2c93e6f0b38d38bb42a45601e62621f232d"
+    },
+    {
+      "path": "tasks/135a2760/solution.py",
+      "sha": "6f38438440980968ab07166c634825bc8638aecf"
+    },
+    {
+      "path": "tasks/136b0064/solution.py",
+      "sha": "a81a4e3397d941f92459d0c60c40fea62d377ac7"
+    },
+    {
+      "path": "tasks/13e47133/solution.py",
+      "sha": "cd37b442de479f9118d2594b603e1f81690e7ba6"
+    },
+    {
+      "path": "tasks/142ca369/solution.py",
+      "sha": "bc2e21e3c96761ebbe837cd7d5797c5e095b55dd"
+    },
+    {
+      "path": "tasks/16b78196/solution.py",
+      "sha": "668808c4c2d1788f8f55cafcb580542d7249cc25"
+    },
+    {
+      "path": "tasks/16de56c4/solution.py",
+      "sha": "67bb02e219ebcd882ab4a4e6f94859dc2325063f"
+    },
+    {
+      "path": "tasks/1818057f/solution.py",
+      "sha": "85e76761e474e744830cdb1427fd19c484e34c3d"
+    },
+    {
+      "path": "tasks/195c6913/solution.py",
+      "sha": "2e544fec6769a0e2e020ef1c121b5752b51c0200"
+    },
+    {
+      "path": "tasks/1ae2feb7/solution.py",
+      "sha": "463934841e49ba3dc92334d10f5917f157fdfd46"
+    },
+    {
+      "path": "tasks/20270e3b/solution.py",
+      "sha": "2b57b25e58cd477707951af929d5b9a0b82ca049"
+    },
+    {
+      "path": "tasks/20a9e565/solution.py",
+      "sha": "33fb84b2323db6de969e5f096d202a824f769a04"
+    },
+    {
+      "path": "tasks/21897d95/solution.py",
+      "sha": "25fbe341ffcf4128bfad66a8f0638b03796936f0"
+    },
+    {
+      "path": "tasks/221dfab4/solution.py",
+      "sha": "7b75f32f8d2aad34bf5bfe8f3475f45835da4578"
+    },
+    {
+      "path": "tasks/247ef758/solution.py",
+      "sha": "0332afd74517137013196d15343e584259977446"
+    },
+    {
+      "path": "tasks/269e22fb/solution.py",
+      "sha": "262da3ce7a264b9bfa536cb865aac131af625a3b"
+    },
+    {
+      "path": "tasks/271d71e2/solution.py",
+      "sha": "581f21c8c72a68500c12c9a9f6eb591849d89ef7"
+    },
+    {
+      "path": "tasks/28a6681f/solution.py",
+      "sha": "1c3fcd5226c376fac5b80391d510f8412420361d"
+    },
+    {
+      "path": "tasks/291dc1e1/solution.py",
+      "sha": "2984ec7679a1cde443f3fb79bc440370d61fca8e"
+    },
+    {
+      "path": "tasks/2b83f449/solution.py",
+      "sha": "78827b5366618e69e2c972f44b3c8980298e6874"
+    },
+    {
+      "path": "tasks/2ba387bc/solution.py",
+      "sha": "5bb9916275ead58d94302faf6910828c5a402e90"
+    },
+    {
+      "path": "tasks/2c181942/solution.py",
+      "sha": "7564417c8c679525de6b0c28af10fca6b3e82755"
+    },
+    {
+      "path": "tasks/2d0172a1/solution.py",
+      "sha": "2b85b3b9c6b47313c2351c76f2517d5aec2b4958"
+    },
+    {
+      "path": "tasks/31f7f899/solution.py",
+      "sha": "e408a8ce24254560ca96a2d592514dcf6b0a8fdb"
+    },
+    {
+      "path": "tasks/332f06d7/solution.py",
+      "sha": "3d0e4fe3439f96e70d80a1e551cc93b4121a45de"
+    },
+    {
+      "path": "tasks/35ab12c3/solution.py",
+      "sha": "6e63adac40e4e9a794daa8c946983ec0e8b1b722"
+    },
+    {
+      "path": "tasks/36a08778/solution.py",
+      "sha": "2d6606bb6a7aac58c5fbfc01f72820f260eef9c4"
+    },
+    {
+      "path": "tasks/38007db0/solution.py",
+      "sha": "c6d0ad6e9ed172507ebcb394659304d27f2f667c"
+    },
+    {
+      "path": "tasks/3a25b0d8/solution.py",
+      "sha": "403b143b67555528c55548de953f76117893adc2"
+    },
+    {
+      "path": "tasks/3dc255db/solution.py",
+      "sha": "ec546f6e1dbf95c65ec7f5fc4bc578805e52990e"
+    },
+    {
+      "path": "tasks/3e6067c3/solution.py",
+      "sha": "8c1c4f3a5583e373959bbf021a5242747da9a31f"
+    },
+    {
+      "path": "tasks/409aa875/solution.py",
+      "sha": "d03501c030a32968017b697de46c59b7c04124e0"
+    },
+    {
+      "path": "tasks/446ef5d2/solution.py",
+      "sha": "f617eba54471e8fe484dd569b68e6e4a71eea751"
+    },
+    {
+      "path": "tasks/45a5af55/solution.py",
+      "sha": "1429e9cc2a9ff9962bdc8b9d2b1967e145c369bf"
+    },
+    {
+      "path": "tasks/4a21e3da/solution.py",
+      "sha": "be05163063478fe79d2bb8c80e90a6b6f18c2ddb"
+    },
+    {
+      "path": "tasks/4c3d4a41/solution.py",
+      "sha": "abaf053ade56a6458efc28acc38b09e89d034345"
+    },
+    {
+      "path": "tasks/4c416de3/solution.py",
+      "sha": "dcef82e84f9628c011e230e85697e5860d3748ec"
+    },
+    {
+      "path": "tasks/4c7dc4dd/solution.py",
+      "sha": "aa64be59b9d58802e417e2fe68913c9cdb68b935"
+    },
+    {
+      "path": "tasks/4e34c42c/solution.py",
+      "sha": "68dd2f3b4bd90f351dac0449c0b3354be8b6b8c7"
+    },
+    {
+      "path": "tasks/53fb4810/solution.py",
+      "sha": "48798d9e64dae6307497aa5720ab3d21630f7353"
+    },
+    {
+      "path": "tasks/5545f144/solution.py",
+      "sha": "eab53f4e0e774a875531a5786fcc6542acc81dec"
+    },
+    {
+      "path": "tasks/581f7754/solution.py",
+      "sha": "0ba889921e22a488f6c1a28342a1b9d69c3a64b3"
+    },
+    {
+      "path": "tasks/58490d8a/solution.py",
+      "sha": "9ea61d1804699cd0beccfc31281c6843484ec989"
+    },
+    {
+      "path": "tasks/58f5dbd5/solution.py",
+      "sha": "2172aa1f88fabfe3bfb8f4a6ce05c876c3ed589b"
+    },
+    {
+      "path": "tasks/5961cc34/solution.py",
+      "sha": "8508513e24ea075802b1fd840ae8a0fe45184a32"
+    },
+    {
+      "path": "tasks/5dbc8537/solution.py",
+      "sha": "2d1e095a0c53311621499ddf8986d3e37ce2d195"
+    },
+    {
+      "path": "tasks/62593bfd/solution.py",
+      "sha": "d5a757825243843221f35f9b5f976f7b2b434608"
+    },
+    {
+      "path": "tasks/64efde09/solution.py",
+      "sha": "bb619771e528f4eaa445984757808f554e46a33b"
+    },
+    {
+      "path": "tasks/65b59efc/solution.py",
+      "sha": "13f97973942d075c2e80a9aef61551281b4638a1"
+    },
+    {
+      "path": "tasks/67e490f4/solution.py",
+      "sha": "0d7101c10afdf11a02f417edbd098156275fd00b"
+    },
+    {
+      "path": "tasks/6e453dd6/solution.py",
+      "sha": "c0a6097c57d950af736012a1a7124630505bfca8"
+    },
+    {
+      "path": "tasks/6e4f6532/solution.py",
+      "sha": "9e30faf1b4758c25eabfb0d6f17edc7121845baa"
+    },
+    {
+      "path": "tasks/6ffbe589/solution.py",
+      "sha": "e1014c7dabb870dfb1bb420d2ab28c44446d5a6e"
+    },
+    {
+      "path": "tasks/71e489b6/solution.py",
+      "sha": "9679919c51f962996dd8e2ac5d858640f1062044"
+    },
+    {
+      "path": "tasks/7491f3cf/solution.py",
+      "sha": "42a6413b5aa0de696487501c6c74cb60a5ae5e6a"
+    },
+    {
+      "path": "tasks/7666fa5d/solution.py",
+      "sha": "a8f92ed0fabac5fb7f10327a60ed155e9c21728c"
+    },
+    {
+      "path": "tasks/78332cb0/solution.py",
+      "sha": "9c74e8ce0f3f807a74d07288552eab9b3e9cccdc"
+    },
+    {
+      "path": "tasks/7b0280bc/solution.py",
+      "sha": "8f0847ef6b467a351044fdccf4e98664038ad033"
+    },
+    {
+      "path": "tasks/7b3084d4/solution.py",
+      "sha": "ea8af7efccc9f16ce0b164a34cb31bd3518eb529"
+    },
+    {
+      "path": "tasks/7b5033c1/solution.py",
+      "sha": "e74a1b5b976f5923d7eb231e70ec217e8d69a779"
+    },
+    {
+      "path": "tasks/7b80bb43/solution.py",
+      "sha": "9448050e8765f6f1a17615823a64bba4e9b92b1f"
+    },
+    {
+      "path": "tasks/7c66cb00/solution.py",
+      "sha": "ca9d8ae5711363d1b51bf8d9043219373b81fb2c"
+    },
+    {
+      "path": "tasks/7ed72f31/solution.py",
+      "sha": "c8b55b55bf9457b324244d9a63ed65f469f225e4"
+    },
+    {
+      "path": "tasks/800d221b/solution.py",
+      "sha": "0aafff1e354bf09ee2f125f02582ed35f8ce0ec0"
+    },
+    {
+      "path": "tasks/80a900e0/solution.py",
+      "sha": "16f2b95da37fb22e6f444ab187c1fca3173fd1e9"
+    },
+    {
+      "path": "tasks/8698868d/solution.py",
+      "sha": "a6e7e9be856fc56e91944395afe6d230d953bbf2"
+    },
+    {
+      "path": "tasks/88bcf3b4/solution.py",
+      "sha": "9fa547330b2d53a882d822b8b184e09f0dc9b667"
+    },
+    {
+      "path": "tasks/88e364bc/solution.py",
+      "sha": "4e290380718bdfa202e71a0effde11e687eb7f67"
+    },
+    {
+      "path": "tasks/89565ca0/solution.py",
+      "sha": "db2ddb57ebea1f6b4948addf26f276411143db22"
+    },
+    {
+      "path": "tasks/898e7135/solution.py",
+      "sha": "04d2ee06456f88a56dac440f26321d3fa14aeca3"
+    },
+    {
+      "path": "tasks/8b7bacbf/solution.py",
+      "sha": "e08d6a406b3027434702c9ed5173ebf64ccf278a"
+    },
+    {
+      "path": "tasks/8b9c3697/solution.py",
+      "sha": "1fe633add709efa977b0c0fd393a7bc137290adb"
+    },
+    {
+      "path": "tasks/8e5c0c38/solution.py",
+      "sha": "18d837e1cb4178dd669ea3be6e685a07abe4d88d"
+    },
+    {
+      "path": "tasks/8f215267/solution.py",
+      "sha": "04f55cfca695cf611d6c69422050c209474f86cc"
+    },
+    {
+      "path": "tasks/8f3a5a89/solution.py",
+      "sha": "18b36267c46b35a62d06a018e6ef75aa7a7ad0e9"
+    },
+    {
+      "path": "tasks/9385bd28/solution.py",
+      "sha": "d636b42689d4d4c8d20dc63c9f0fc8a9a998f1fa"
+    },
+    {
+      "path": "tasks/97d7923e/solution.py",
+      "sha": "77dd1881f4c58d83ce73faaf45ebe8a9a0263e04"
+    },
+    {
+      "path": "tasks/981571dc/solution.py",
+      "sha": "012b4707baab22bd2ba2d584a4d7a2e67e6a4f5b"
+    },
+    {
+      "path": "tasks/9aaea919/solution.py",
+      "sha": "030b953c5024eb04b8915e2d6e380d611537fb03"
+    },
+    {
+      "path": "tasks/9bbf930d/solution.py",
+      "sha": "516a759e8be37bfb1c8595b413a5fb42c9182a81"
+    },
+    {
+      "path": "tasks/a251c730/solution.py",
+      "sha": "2c90442159446b7956b59c6d1e3eae6842a6c04c"
+    },
+    {
+      "path": "tasks/a25697e4/solution.py",
+      "sha": "52853eeb1b3776dd0cfbe912d1420636ab714d0d"
+    },
+    {
+      "path": "tasks/a32d8b75/solution.py",
+      "sha": "fd69f2b0257161b40cc97416eda41a5fc8d9a4d7"
+    },
+    {
+      "path": "tasks/a395ee82/solution.py",
+      "sha": "5ecd8276459af9a10c1436666886e67115778c07"
+    },
+    {
+      "path": "tasks/a47bf94d/solution.py",
+      "sha": "44dbb078916fb894dbbe32aa863a84724fd366dc"
+    },
+    {
+      "path": "tasks/a6f40cea/solution.py",
+      "sha": "31431946ab5582a2e63337a0e72b01bda530ef08"
+    },
+    {
+      "path": "tasks/aa4ec2a5/solution.py",
+      "sha": "74549319c963c4e2e22c00ea2028f7c0c82cc32c"
+    },
+    {
+      "path": "tasks/abc82100/solution.py",
+      "sha": "7846091606c01052ac75826800a64cf371f801f9"
+    },
+    {
+      "path": "tasks/b0039139/solution.py",
+      "sha": "f6d968cd9fffc2b94fc2b05705cf8038c27630cd"
+    },
+    {
+      "path": "tasks/b10624e5/solution.py",
+      "sha": "5c1924d86962c1f69757e5f60a22478dcefb3c4f"
+    },
+    {
+      "path": "tasks/b5ca7ac4/solution.py",
+      "sha": "ad353efd3e1ba295fb3aa8ec9270d87f97a0a84a"
+    },
+    {
+      "path": "tasks/b6f77b65/solution.py",
+      "sha": "dc43dec41886f0575af8118fea5d6de4f7e119e6"
+    },
+    {
+      "path": "tasks/b99e7126/solution.py",
+      "sha": "738893400686e4205fde75ef3736422e8579303c"
+    },
+    {
+      "path": "tasks/b9e38dc0/solution.py",
+      "sha": "b9b2570073090f8ec7e09c856d0f426e9d71140d"
+    },
+    {
+      "path": "tasks/bf45cf4b/solution.py",
+      "sha": "54bff7ff987dce8a36b56dc3a628e7e3ab87a030"
+    },
+    {
+      "path": "tasks/c4d067a0/solution.py",
+      "sha": "61dfc4c1cf4f7e19b4e8bcabc7186f4cef1b6a4a"
+    },
+    {
+      "path": "tasks/c7f57c3e/solution.py",
+      "sha": "532b2ea242e6aca5d603cb261aecaea1ef70c239"
+    },
+    {
+      "path": "tasks/cb2d8a2c/solution.py",
+      "sha": "3dbaf141c280efff54057baee8e732dfb7dcc405"
+    },
+    {
+      "path": "tasks/cbebaa4b/solution.py",
+      "sha": "c59fa83ab8ac4e53ae0b8e7eddcb2743a12b32e4"
+    },
+    {
+      "path": "tasks/d35bdbdc/solution.py",
+      "sha": "dd7a815434ab0001b03113b3176cd4f3db3852e1"
+    },
+    {
+      "path": "tasks/d59b0160/solution.py",
+      "sha": "1f48d6cdea588d03f9651092430c1ea1f3ec6dc0"
+    },
+    {
+      "path": "tasks/d8e07eb2/solution.py",
+      "sha": "e9cb3456aee198b957c3bdffd50457e2fc71858f"
+    },
+    {
+      "path": "tasks/da515329/solution.py",
+      "sha": "9f54574d5ff259724fa288a595b83a72806feba9"
+    },
+    {
+      "path": "tasks/db0c5428/solution.py",
+      "sha": "bf29834612e275abf867ef72152341ffcde4cb65"
+    },
+    {
+      "path": "tasks/db695cfb/solution.py",
+      "sha": "cd5affa2125ffd3d14563e6770be2e4f0a2f7efd"
+    },
+    {
+      "path": "tasks/dbff022c/solution.py",
+      "sha": "6bfd46ecaad0df25e8e095b40adecbe10d19c231"
+    },
+    {
+      "path": "tasks/dd6b8c4b/solution.py",
+      "sha": "a25d5b6f0adad4697b93c7fa85311def4b729190"
+    },
+    {
+      "path": "tasks/de809cff/solution.py",
+      "sha": "7dfc055765299992107cadfdac816e480e3ce5bc"
+    },
+    {
+      "path": "tasks/dfadab01/solution.py",
+      "sha": "11641d5c88a8eab414f56c37d68a73b81104570f"
+    },
+    {
+      "path": "tasks/e12f9a14/solution.py",
+      "sha": "6b5d9462cc1619efad42afc6a83e158942049f3b"
+    },
+    {
+      "path": "tasks/e3721c99/solution.py",
+      "sha": "816fd18885f9ae6aae17da279732b48ebf503cb1"
+    },
+    {
+      "path": "tasks/e376de54/solution.py",
+      "sha": "86ce31d6149af26d959c01633a589a37e6b6f122"
+    },
+    {
+      "path": "tasks/e8686506/solution.py",
+      "sha": "30c20e23e1ef4261e827b9c3b71e58d7100df15b"
+    },
+    {
+      "path": "tasks/e87109e9/solution.py",
+      "sha": "654bf69bc3f8c34147dc31d8c55ee991e609a29c"
+    },
+    {
+      "path": "tasks/edb79dae/solution.py",
+      "sha": "9429c805145468cad624f2df022e6a93db1370a5"
+    },
+    {
+      "path": "tasks/eee78d87/solution.py",
+      "sha": "f46df34031db3144435a84ac32bb3b841fd3afcb"
+    },
+    {
+      "path": "tasks/f560132c/solution.py",
+      "sha": "4063aa731c4387b8bfb11f14910c1107e1819e20"
+    },
+    {
+      "path": "tasks/f931b4a8/solution.py",
+      "sha": "f5287d30751a279dcc0a3971139faffd9502f6b8"
+    },
+    {
+      "path": "tasks/faa9f03d/solution.py",
+      "sha": "73ce5680c61883c4f875b4c08aa9ffb6234044ec"
+    },
+    {
+      "path": "tasks/fc7cae8d/solution.py",
+      "sha": "a8dbe216ec1dfb578a524d88d3478df7d4249e99"
+    }
+  ],
+  "date": "2026-09-19",
+  "method": "Retrospective repair after inspecting official training and test outputs; not blind evaluation."
+}

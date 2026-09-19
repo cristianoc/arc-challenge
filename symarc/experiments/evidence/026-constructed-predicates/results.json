@@ -1,0 +1,23 @@
+{
+  "baseline":"92a73f4944d48afe3ff3b518e0a5d03d93cdc3ed",
+  "protocol":"8ca83c78407d2a68c2a2ccd1487b398f35a53f22",
+  "source_registration":"4b70b9e15b2bd0856a6cc27b59ec6082130431d1",
+  "core_mathematics":{"new_theorems":15,"module":"SymArc/Learning.lean","imported_by_core":true,"lean_version":"4.34.0","successful_actions_run":35452954813,"head_revision":"c06e6ea23d06c8750163e292341cbe15687eb537","checked_merge_revision":"316e59c05e4625d358715528e85fa4385c4884bb","artifact_id":10587875576,"admitted_or_custom_axioms":false,"standard_classical_foundations_used":true,"rust_tests":11,"cli_regressions_passed":true},
+  "new_arc_score":false,
+  "source_examples":511,
+  "candidate_predicates":945,
+  "selected":{"predicate":["eq",["count"],["mul",["span_c"],["span_r"]]],"false":0,"true":1,"predicate_ast_cost":5,"complete_program_ast_cost":8},
+  "other_minimum":{"predicate":["lt",["count"],["mul",["span_c"],["span_r"]]],"false":1,"true":0,"predicate_ast_cost":5,"complete_program_ast_cost":8},
+  "minimum_programs":2,
+  "direct_and_constructive_minimum_programs_equal":true,
+  "direct_work":{"predicates_considered":945,"predicate_observation_evaluations":482895,"label_checks":12230,"branch_assignments_considered":3780},
+  "constructive_work":{"predicates_considered":945,"predicate_observation_evaluations":482895,"label_checks":5919,"branch_assignments_constructed":2},
+  "primary":{"examples":65535,"correct":65535,"positives":100,"positive_correct":100,"negatives":65435,"negative_correct":65435,"exact_source_overlap":511,"genuinely_unseen":65024,"unseen_correct":65024,"unseen_positives":64,"cases_with_unseen_scalar_tuple":63728},
+  "secondary":{"examples":3085,"correct":3085,"positives":21,"positive_correct":21,"negatives":3064,"negative_correct":3064,"exact_source_overlap":0,"cases_with_unseen_scalar_tuple":3085},
+  "transfer":{"tasks":4,"labels_per_task":2,"task_kind":"new output labels on the same partition, not unrelated ARC problems","all_source_and_target_predictions_correct":true,"matched_source_evidence":true,"expanded_predicate_cost_retained":5,"source_plus_four_adaptations_label_checks":5935,"cold_resynthesis_label_checks":61198,"source_plus_adaptations_predicate_evaluations":482911,"cold_resynthesis_predicate_evaluations":2414491,"cache_amortization_not_new_search_speedup":true},
+  "frame_control":{"source_indices":[254,494],"masks":[255,495],"scalar_values":[8,3,3],"first_points":[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1]],"second_points":[[0,0],[0,1],[0,2],[1,0],[1,2],[2,0],[2,1],[2,2]],"labels":[0,1],"separable_by_supplied_scalar_language":false},
+  "checks":{"synthetic_tests":12,"direct_constructive_synthetic_comparisons":120,"independent_grammar_predicates":945,"verified_rejection_witnesses":943,"replayed_query_outputs":480340,"alias_expansion_invariance":true,"query_and_transfer_input_isolation":true,"repeated_scientific_outputs_identical":true,"reproduction_script_executed":true},
+  "hashes":{"library.json":"7ea82c7a4157ab85e0440f0319ef7f48339b8e4ab1704bf84d76fa0deb1c3195","construction.json":"5075efd376f1bb2900b46022244013223883e9db0f1e896afae4f167b84721e9","predictions.json":"e3b3a78942378b6de83a10b89ad9d296e1706e2327c42d1574619d954bd5c372","scores.json":"c781d53d64e4f5c17a1b8bd34d922638193ad1627c02c11f6227ac60b1b4b4e3","audit.json":"41abb70c03e3cc25b2b01119ecb5f7695ecf90a9051c483c929d2edb9526f140"},
+  "limitations":["Counting, axes and coordinate spans are supplied.","511 source labels are not sparse ARC demonstrations.","The source property was selected to fit this language.","No segmentation or new observation primitive is learned.","Direct reference has the same minimal programs and accuracy.","Reuse is repeated application of the same partition.","The rectangle-cardinality characterization is explained mathematically but not formalized in Lean."],
+  "disposition":"core mathematics integrated; controlled construction harness retained as a research candidate, not a stable solver policy"
+}

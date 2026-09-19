@@ -1,0 +1,57 @@
+split,task,kind,test_index,transformation,training_examples,supporting_input_symmetry_examples,test_input_symmetric,all_training_support
+evaluation,221dfab4,equivariance_compatibility,,"colour:[3, 8]",2,,,
+evaluation,31f7f899,output,0,reflect_ud,3,3,False,True
+evaluation,3a25b0d8,output,0,reflect_lr,2,0,False,False
+evaluation,3a25b0d8,output,1,reflect_lr,2,0,False,False
+evaluation,4e34c42c,output,0,reflect_ud,2,0,False,False
+evaluation,4e34c42c,output,1,reflect_ud,2,0,False,False
+evaluation,67e490f4,output,0,rotate90,2,0,False,False
+evaluation,67e490f4,output,0,rotate270,2,0,False,False
+evaluation,67e490f4,output,0,reflect_antidiagonal,2,0,False,False
+evaluation,67e490f4,output,0,reflect_diagonal,2,0,False,False
+evaluation,9aaea919,equivariance_compatibility,,"colour:[0, 5]",3,,,
+training,0d3d703e,equivariance_compatibility,,"colour:[2, 5]",4,,,
+training,11e1fe23,equivariance_compatibility,,"colour:[2, 5]",2,,,
+training,1c56ad9f,equivariance_compatibility,,geometry:4,4,,,
+training,1c56ad9f,equivariance_compatibility,,geometry:6,4,,,
+training,21f83797,output,0,reflect_ud,2,0,False,False
+training,27a28665,equivariance_compatibility,,"colour:[5, 6]",7,,,
+training,27f8ce4f,equivariance_compatibility,,"colour:[0, 4]",4,,,
+training,2ccd9fef,output,1,reflect_ud,2,0,False,False
+training,351d6448,output,0,reflect_ud,2,0,False,False
+training,39a8645d,output,0,reflect_ud,3,0,False,False
+training,3cd86f4f,equivariance_compatibility,,geometry:4,3,,,
+training,3d6c6e23,output,0,reflect_lr,3,3,False,True
+training,42f14c03,output,0,reflect_ud,3,0,False,False
+training,4522001f,output,0,reflect_diagonal,2,2,False,True
+training,46442a0e,equivariance_compatibility,,geometry:4,3,,,
+training,50c07299,equivariance_compatibility,,geometry:1,3,,,
+training,50c07299,equivariance_compatibility,,geometry:2,3,,,
+training,50c07299,equivariance_compatibility,,geometry:3,3,,,
+training,50c07299,equivariance_compatibility,,geometry:7,3,,,
+training,5168d44c,equivariance_compatibility,,geometry:4,3,,,
+training,6cbe9eb8,equivariance_compatibility,,"colour:[0, 5]",3,,,
+training,6cbe9eb8,equivariance_compatibility,,"colour:[0, 7]",3,,,
+training,74dd1130,equivariance_compatibility,,geometry:6,4,,,
+training,7e4d4f7c,equivariance_compatibility,,"colour:[6, 7]",4,,,
+training,8719f442,output,0,reflect_diagonal,3,3,False,True
+training,878187ab,equivariance_compatibility,,"colour:[4, 6]",2,,,
+training,878187ab,equivariance_compatibility,,"colour:[4, 8]",2,,,
+training,9473c6fb,equivariance_compatibility,,"colour:[5, 9]",3,,,
+training,9473c6fb,equivariance_compatibility,,"colour:[8, 9]",3,,,
+training,9565186b,equivariance_compatibility,,"colour:[5, 8]",4,,,
+training,99306f82,output,0,reflect_diagonal,3,3,False,True
+training,9caf5b84,equivariance_compatibility,,"colour:[1, 7]",4,,,
+training,9caf5b84,equivariance_compatibility,,"colour:[2, 7]",4,,,
+training,a09f6c25,equivariance_compatibility,,"colour:[6, 7]",3,,,
+training,a416fc5b,equivariance_compatibility,,geometry:6,3,,,
+training,a416fc5b,equivariance_compatibility,,geometry:7,3,,,
+training,aaef0977,equivariance_compatibility,,"colour:[3, 5]",2,,,
+training,c3e719e8,equivariance_compatibility,,"colour:[0, 8]",3,,,
+training,caa06a1f,output,0,rotate180,3,0,False,False
+training,caa06a1f,output,0,reflect_antidiagonal,3,0,False,False
+training,caa06a1f,output,0,reflect_diagonal,3,3,False,True
+training,d06dbe63,equivariance_compatibility,,geometry:7,2,,,
+training,d10ecb37,equivariance_compatibility,,geometry:4,3,,,
+training,dc433765,equivariance_compatibility,,"colour:[3, 4]",7,,,
+training,e4075551,equivariance_compatibility,,"colour:[5, 6]",3,,,

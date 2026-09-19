@@ -1,0 +1,20 @@
+{"program":"modal-4-mono / All / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-4-mono / UniqueShape / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-4-mono / UniqueColour / Histogram / first / column","predictions":[{"h":12,"w":1,"cells":[8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-4-multi / All / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-4-multi / Largest / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-4-multi / Smallest / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-4-multi / Widest / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-4-multi / Tallest / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-4-multi / UniqueShape / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-4-multi / UniqueColour / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-8-mono / All / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-8-mono / UniqueShape / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-8-mono / UniqueColour / Histogram / first / column","predictions":[{"h":12,"w":1,"cells":[8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-8-multi / All / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-8-multi / Largest / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-8-multi / Smallest / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-8-multi / Widest / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-8-multi / Tallest / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-8-multi / UniqueShape / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
+{"program":"modal-8-multi / UniqueColour / Histogram / first / column","predictions":[{"h":25,"w":1,"cells":[1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 4]}]}
