@@ -1,0 +1,20 @@
+{
+  "status": "post-run descriptive diagnostic; not a selection rule",
+  "criterion": "Every training output has height 1 or width 1",
+  "eligible_tasks": [
+    "1fad071e",
+    "239be575",
+    "27a28665",
+    "44f52bb0",
+    "4be741c5",
+    "746b3537",
+    "b9b7f026",
+    "d631b094",
+    "d9fac9be",
+    "de1cd16c",
+    "f8b3ba0a",
+    "f8ff0b80"
+  ],
+  "count": 12,
+  "corpus_size": 400
+}

@@ -1,0 +1,96 @@
+{"program":"zero-4-mono / All / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-4-mono / All / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-4-mono / Largest / Histogram / first / row","predictions":[{"h":1,"w":3,"cells":[4, 4, 4]}]}
+{"program":"zero-4-mono / Largest / Histogram / last / row","predictions":[{"h":1,"w":3,"cells":[4, 4, 4]}]}
+{"program":"zero-4-mono / Smallest / Histogram / first / row","predictions":[{"h":1,"w":2,"cells":[4, 4]}]}
+{"program":"zero-4-mono / Smallest / Histogram / last / row","predictions":[{"h":1,"w":2,"cells":[4, 4]}]}
+{"program":"zero-4-mono / Widest / Histogram / first / row","predictions":[{"h":1,"w":3,"cells":[4, 4, 4]}]}
+{"program":"zero-4-mono / Widest / Histogram / last / row","predictions":[{"h":1,"w":3,"cells":[4, 4, 4]}]}
+{"program":"zero-4-mono / Tallest / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-4-mono / Tallest / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-4-multi / All / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-4-multi / All / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-4-multi / Largest / Histogram / first / row","predictions":[{"h":1,"w":3,"cells":[4, 4, 4]}]}
+{"program":"zero-4-multi / Largest / Histogram / last / row","predictions":[{"h":1,"w":3,"cells":[4, 4, 4]}]}
+{"program":"zero-4-multi / Smallest / Histogram / first / row","predictions":[{"h":1,"w":2,"cells":[4, 4]}]}
+{"program":"zero-4-multi / Smallest / Histogram / last / row","predictions":[{"h":1,"w":2,"cells":[4, 4]}]}
+{"program":"zero-4-multi / Widest / Histogram / first / row","predictions":[{"h":1,"w":3,"cells":[4, 4, 4]}]}
+{"program":"zero-4-multi / Widest / Histogram / last / row","predictions":[{"h":1,"w":3,"cells":[4, 4, 4]}]}
+{"program":"zero-4-multi / Tallest / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-4-multi / Tallest / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / All / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / All / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / Largest / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / Largest / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / Smallest / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / Smallest / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / Widest / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / Widest / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / Tallest / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / Tallest / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / UniqueShape / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / UniqueShape / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / UniqueColour / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-mono / UniqueColour / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / All / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / All / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / Largest / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / Largest / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / Smallest / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / Smallest / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / Widest / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / Widest / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / Tallest / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / Tallest / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / UniqueShape / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / UniqueShape / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / UniqueColour / Histogram / first / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"zero-8-multi / UniqueColour / Histogram / last / row","predictions":[{"h":1,"w":5,"cells":[4, 4, 4, 4, 4]}]}
+{"program":"modal-4-mono / All / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-4-mono / All / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-4-mono / Largest / Histogram / first / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-4-mono / Largest / Histogram / last / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-4-mono / Smallest / Histogram / first / row","predictions":[{"h":1,"w":1,"cells":[0]}]}
+{"program":"modal-4-mono / Smallest / Histogram / last / row","predictions":[{"h":1,"w":1,"cells":[0]}]}
+{"program":"modal-4-mono / Widest / Histogram / first / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-4-mono / Widest / Histogram / last / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-4-mono / Tallest / Histogram / first / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-4-mono / Tallest / Histogram / last / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-4-multi / All / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-4-multi / All / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-4-multi / Largest / Histogram / first / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-4-multi / Largest / Histogram / last / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-4-multi / Smallest / Histogram / first / row","predictions":[{"h":1,"w":1,"cells":[0]}]}
+{"program":"modal-4-multi / Smallest / Histogram / last / row","predictions":[{"h":1,"w":1,"cells":[0]}]}
+{"program":"modal-4-multi / Widest / Histogram / first / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-4-multi / Widest / Histogram / last / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-4-multi / Tallest / Histogram / first / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-4-multi / Tallest / Histogram / last / row","predictions":[{"h":1,"w":3,"cells":[0, 0, 0]}]}
+{"program":"modal-8-mono / All / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / All / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / Largest / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / Largest / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / Smallest / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / Smallest / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / Widest / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / Widest / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / Tallest / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / Tallest / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / UniqueShape / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / UniqueShape / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / UniqueColour / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-mono / UniqueColour / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / All / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / All / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / Largest / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / Largest / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / Smallest / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / Smallest / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / Widest / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / Widest / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / Tallest / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / Tallest / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / UniqueShape / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / UniqueShape / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / UniqueColour / Histogram / first / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
+{"program":"modal-8-multi / UniqueColour / Histogram / last / row","predictions":[{"h":1,"w":4,"cells":[0, 0, 0, 0]}]}
