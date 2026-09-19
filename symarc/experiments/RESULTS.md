@@ -79,12 +79,13 @@ Code/evidence: completed code removed; runnable at `b7c96c9`. Retained [protocol
 
 
 ### 009-symmetry-compatibility — What do examples constrain without hand-picked task invariants?
-Status: active — registered before execution.
-Baseline: `e407f53`; 120 revision-pinned tasks from 006, no candidate solver execution.
-Comparison: same full colour-permutation, D4, and product laws on every task. Exact symbolic compatibility checks include input stabilizers and all colour-map completions. Training first; known test pairs used only for a separate additional-contradiction diagnostic. Twelve workers, 600s limit.
-Result: not run yet.
-Decision: diagnostic only; compatibility is not justification or automatic law discovery. Close with witnesses and runnable history.
-Code/evidence: [protocol](009-symmetry-compatibility/README.md).
+Status: closed — exact compatibility diagnostic, no law-selection or solver integration.
+Baseline: `e407f53`; preregistered runnable code `1e69af4`; 120 revision-pinned tasks from 006, no candidate solver execution.
+Implementation: exact symbolic check for existence of any fitting equivariant function under the same three supplied groups on every task: full ten-colour permutations including 0, D4, and their product. Includes input stabilizers and every completion of partial colour maps. No task-specific exemptions. Training first; known test pairs separately diagnose additional contradictions. Twelve workers, 0.264s; four controls and 300 brute-force comparisons pass.
+Result: training contradicts colour equivariance on **15/120**, geometry on **1/120**, product on **16/120**; respectively 105, 119, 104 are compatible. **Zero distinct-input orbit matches** within any task, including known test inputs; zero further contradictions after adding tests. All training contradictions arise from a single input's stabilizer. For `221dfab4`, swapping absent input colours 0 and 3 leaves the input unchanged but changes an output introducing 3. For `da515329`, diagonal reflection fixes input but changes output.
+Interpretation: data can refute a proposed law without justifying a replacement. Compatibility permits independent memorisation of each observed orbit; no supplied test input is a transformed training input. These results do not establish the intended law, predict test answers, or implement abstraction discovery. The three group families are themselves supplied assumptions. No untouched-holdout claim, MDL or anti-unification evaluation.
+Decision: close. Next question concerns evidence or explicitly supplied priors linking distinct orbits; accepting a law merely because it fits would repeat the earlier justification gap. Stable core and accepted math unchanged.
+Code/evidence: completed runner removed; runnable at `1e69af4`. Retained [protocol](evidence/009-symmetry-compatibility/protocol.md), [finding and exact criterion](evidence/009-symmetry-compatibility/README.md), [direct report](evidence/009-symmetry-compatibility/report.md), witness results and manifest.
 
 ## Entry format
 
