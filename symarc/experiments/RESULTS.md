@@ -120,6 +120,16 @@ Protocol: uniform 12 input features, first 16 eligible literal sites, single-sit
 Result: not run yet. No blind-holdout or abstraction-discovery claim.
 Code/evidence: [protocol](013-constant-lifting/README.md).
 
+
+### 013-minimal-sufficient-distinction — Which input distinctions may training justify forgetting?
+Status: active — theory and prospective protocol registered; no solver integration.
+Baseline: `db78e82`; builds on 012's three retrospective mechanism cases. No test-output-based selection result is claimed.
+Question: model an abstraction `a : X -> A` by its kernel `a(x)=a(x')`, i.e. the distinctions every downstream program factoring through `a` must erase. Separate mere compatibility of those identifications from positive training support obtained when examples vary an allegedly irrelevant distinction while preserving the proposed relation.
+Development controls: `7b5033c1` should remain underdetermined because training never varies repeated-colour path order; `8f215267` tests local-patch versus global-count scope and must measure whether its nine within-grid observations contain genuine independent variation; `97d7923e` is treated separately as wrong use of retained information rather than literal representation loss.
+Protocol: freeze a finite local relation/intervention language; infer or instrument candidate decision statistics; search unlabelled kernel-collision witnesses; measure task-level training support for erased distinctions; only then run a blind comparison of shortest-fit, compatible-forgetting, supported-forgetting and conservative/abstaining selection. Synthetic witnesses expose expressivity boundaries but receive no ground-truth labels.
+Decision criterion: do not integrate a heuristic until supported identifications predict blind-test behavior or improve calibrated abstention. If the method reduces to compatibility or needs task-specific interventions, close as negative evidence that sparse ARC examples alone do not justify the quotient.
+Code/evidence: [registered protocol](013-minimal-sufficient-distinction/README.md); runner not implemented yet. Stable core and accepted math unchanged.
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
