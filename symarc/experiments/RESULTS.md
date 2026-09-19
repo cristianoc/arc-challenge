@@ -217,6 +217,13 @@ Checks: 12 synthetic controls and 300 exhaustive tiny-program comparisons. All 8
 Decision: close targeted guard-repair study without changing the existing 019 composition or stable core. Further scope learning needs discriminating evidence or explicitly retained alternatives, not a silent tie-break change. Accepted mathematics unchanged.
 Code/evidence: [protocol and sources](021-default-exceptions/README.md), [findings](evidence/021-default-exceptions/README.md), compact outcomes and full reproduction archive. Default prediction SHA-256 `9ef4d2a4add18023bbb13bfd6fd75bb5c86c03f04a933391b0949dbba858993f`.
 
+### 022-demonstration-design — Does independently varied evidence resolve operation and scope ambiguity?
+Status: active — frozen equal-label-budget protocol; no scientific result yet.
+Baseline: `3f75fee8`; protocol/source hashes `2c264eb5`. Reuse unchanged 018 and 021 learners and six known controlled teachers; no ARC corpus scores or solver changes.
+Comparison: two demonstrations and exactly 90 labelled cells in every condition. Independently vary second-example palette (same/new) and active-row position (centred/shifted). Full crossed query bank has 36 grids per teacher; separate 14-grid legacy bank checks the original design. Twelve workers per learner, serial learners, predictions frozen before scoring.
+Checks: eight pre-run synthetic controls. Primary units are six supplied teachers, not independent grid samples. Retain all four outcomes and any remaining fixed-guard/whole-learner failures. No integration criterion or score-driven protocol repair.
+Code/evidence: [registered protocol](022-demonstration-design/README.md). Stable core and accepted mathematics unchanged.
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
