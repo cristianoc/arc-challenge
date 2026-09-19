@@ -1,0 +1,64 @@
+name: Finalize audited SymArc 024
+on:
+  push:
+    branches: [symarc/stable-core]
+    paths: [.github/workflows/symarc-024-finalize.yml]
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: symarc/stable-core
+      - name: Verify all published scientific sources and evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          E=symarc/experiments/024-query-totality
+          echo "634cc3bbb6575f07e775e70f6a192c6836afd9654311b4cd79f6e82e2e5239ba  $E/run.py" | sha256sum -c -
+          echo "617cfe9ec2d6d85c55f87575b7e64c7915e5ffcd90bc81b2ef706a5cabaabc2f  $E/test_run.py" | sha256sum -c -
+          echo "a5a09e9c9be59ed3becd68746bb8922bb1ab5e0fc19b952d1d3acfbbfaf3b28e  $E/audit.py" | sha256sum -c -
+          echo "36290db6e82131b7eff8ac59a89487220b60fc7fba18f3e126e3c5b103a08195  $E/summarize.py" | sha256sum -c -
+          R=symarc/experiments/evidence/024-query-totality
+          echo "09a8c525f110c1d063a193d0a8713d5af3f12fb3154b677f028527da2d2f133e  $R/README.md" | sha256sum -c -
+          echo "5422b147a95c711518c6077ec3e43d4c5d39e7f8a6158673fdd4dfe3e839706d  $R/results.json" | sha256sum -c -
+          echo "b62ed591e11a3f30d36a4b0dfc3ff5ffd863e651e30d28e9417c0d2e25c83e1e  $R/case-certificates.json" | sha256sum -c -
+          python3 "$E/test_run.py"
+          python3 symarc/experiments/023-query-applicability/test_run.py
+          python3 symarc/experiments/021-default-exceptions/test_run.py
+          python3 symarc/experiments/018-order-guards/test_run.py
+      - name: Finalize only the registered experiment
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,textwrap
+          p=Path('symarc/experiments/RESULTS.md');text=p.read_text()
+          entry='''### 024-query-totality — What follows from concrete-program query totality?
+          Status: closed — exact domain-conditioning instrument and counterexamples retained for guarded-extension research; no solver integration.
+          Baseline: `f2a926f3`; protocol `81d09eb5`, active ledger before execution, source/test hashes and 16 controls at `2e0738ce`. Same 800 ARC1 tasks and 24 controlled specifications as 023; reused public data, no new ARC2 score. Primary run reuses frozen candidate pools/internal scores and reconstructs each training-subset table. Query outputs remain separate until both modes' predictions are frozen.
+          Method: intersect each observed key's operations with definedness at every query occurrence. For 021 defaults, condition original training-optimal whole default branches BEFORE projecting; do not reoptimize or invent rules for unknown keys. Compare old training rank and 023 tie-complete with total-feasible rank and total-feasible evidence-tie completeness. Nonempty but disagreeing families abstain; an empty whole family produces no partial answer.
+          ARC1 result: relative to 023 tie-complete, base relational answers go 28 to 30 correct training tasks, one to two complete errors; hybrid goes **79 to 80/400**, evaluation stays 27/400. Both gains (`a699fb00`, `d5d6de2d`) keep their prior features; only the first enters the no-fit hybrid because stable fits the second. Defaults stay 30 correct but go four to nine complete training errors plus one evaluation error; hybrid remains **81/400 and 27/400**. Two totality policies have the same final predictions, but differ in outer selection. Strict gate retains base 15/3 or 16/3 correct tasks, defaults 14/3, with no complete errors; not a guarantee.
+          Mechanism: `a699fb00` loses an undefined north-copy alternative and correctly completes three cells. On new error `f76d97a5`, east-copy returns intended 3 at (0,3) but is undefined at another occurrence of the same key (2,4); global elimination leaves constant 6, wrong. A post-score concrete-program oracle finds no correct program for this task anywhere in the retained pool. Base pool contains a correct concrete query program on 34 training tasks, unanimously correct conditioned families on 31; defaults 34/34. These ceilings are not selection policies or claims about arbitrary ARC programs.
+          Controlled: with both demonstration contrasts, 216/216 success is preserved. With neither contrast, 12 correct/76 wrong/128 incomplete becomes 12 correct/**204 wrong**/0 incomplete in both modes. Colour-only designs improve but retain 60 wrong answers. No teacher definition or query bank changes; dependent constructed queries are not independent ARC tasks.
+          Coupling/checks: four real outer-model projections differ from naive default filtering; no corpus false-feasibility example, though synthetic examples show it. All 58 tests pass including 1200 exhaustive concrete-program comparisons. Explicit-set independent audit checks 59944 tables, 2344478 projections, 32647 default branches, 133504 unchanged candidate records, 20488 choices, 13896 outer-grid scores, 6592 raw and 6400 hybrid task scores. Input extraction and feature search are reused, not independently reimplemented. Both complete ARC1 runs repeat; fresh end-to-end replay matches all 24 controlled cases per mode and 12 deterministic hash-selected fitting ARC1 tasks per mode. Interrupted controlled attempts were rerun unchanged in four-task batches, 12 workers, no dropped tasks.
+          Decision: retain domain constraints separately from truth/confidence claims. Next construction target is scope refinement or guarded extension suggested by domain obstructions, not automatically selecting a total constant when the partial rule fails. Stable core, prior wrappers and accepted mathematics unchanged.
+          Code/evidence: [protocol and exact implementation](024-query-totality/README.md), [findings](evidence/024-query-totality/README.md), compact results and case certificates; full evidence/reproduction archive. ARC1/base prediction SHA-256 `bb2f4bd3688c62d32cca16bb81386bfcdd108d389225d50496c26cc598637ca2`; default `29b4b81317680d9c2b09de3461fd47790fca88a52e2b0f5fdf2be7b964f4ec40`.
+
+          '''
+          entry=textwrap.dedent(entry)
+          # Multiline literal's first line has no common indent.
+          entry='\n'.join(line[10:] if line.startswith('          ') else line for line in entry.split('\n'))
+          updated,count=re.subn(r'^### 024-query-totality.*?(?=^### |^## Entry format)',lambda _:entry,text,flags=re.M|re.S)
+          assert count==1
+          p.write_text(updated)
+          Path('.github/workflows/symarc-024-finalize.yml').unlink()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add symarc/experiments/RESULTS.md .github/workflows/symarc-024-finalize.yml
+          git commit -m 'experiments: finalize verified query-totality finding and remove workflow'
+          git push origin HEAD:symarc/stable-core
