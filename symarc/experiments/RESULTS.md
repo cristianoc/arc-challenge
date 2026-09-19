@@ -104,6 +104,13 @@ Overlap: 767 ARC2 training IDs occur in local ARC1; 766 preserve per-split label
 Decision: coverage under current bounds is the evaluation bottleneck, not just ranking training-fitting candidates. No solver or accepted-math changes. Earlier 006's 27/120 result belongs to external task-specific Python programs, not SymArc.
 Code/evidence: runner removed, runnable at `f40ffd2`. Retained [protocol](evidence/011-arc2-transfer/protocol.md), [findings](evidence/011-arc2-transfer/README.md), [full report](evidence/011-arc2-transfer/full/report.md), pilot, task TSVs, overlap analysis and source/data/binary manifests.
 
+### 012-information-loss — What do the three symmetry survivors discard?
+Status: active
+Baseline: `8a5b8a9`; pinned original sources/data and manual repairs from 006.
+Protocol: training relationship audit plus three deterministic unlabelled disagreement witnesses; 12-worker pool. No automatic repair or new intended labels.
+Result: not run yet.
+Code/evidence: [protocol](012-information-loss/README.md).
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
