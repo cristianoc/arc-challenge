@@ -82,3 +82,11 @@ Decision: conclusion and integration criterion met/missed; next step if retained
 Code/evidence: path while retained, or "deleted"; integration revision if applicable
 ```
 
+
+### 008-repair-constraints — Can symmetry contracts distinguish known repair pairs?
+Status: active — registered before diagnostic execution.
+Baseline: `fd1d166`; 006's ten fixed original/repaired pairs and inherited symmetry contracts; 2026-09-19.
+Comparison: all permitted single colour swaps plus three task-specific geometry contracts, on 25 training examples only; fixed candidates, retain all constraint survivors, abstain on ties. Twelve processes, 5s per call / 600s whole-run limit. Test pairs removed before execution.
+Result: not run yet.
+Decision: diagnostic only; no integration or blind discovery claim. Contracts and repairs are retrospective assumptions. Close with discriminated and unresolved cases, preserving witnesses and runnable history.
+Code/evidence: [protocol](008-repair-constraints/README.md).
