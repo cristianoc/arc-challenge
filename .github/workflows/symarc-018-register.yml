@@ -1,0 +1,39 @@
+name: Register SymArc 018
+on:
+  push:
+    branches: [symarc/stable-core]
+    paths: [.github/workflows/symarc-018-register.yml]
+permissions:
+  contents: write
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Add only the new experiment entry
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('symarc/experiments/RESULTS.md')
+          text=p.read_text()
+          assert '### 018-order-guards' not in text
+          assert text.count('\n## Entry format') == 1
+          entry='''
+          ### 018-order-guards — Can order relations and applicability replace numeric lookup?
+          Status: active — frozen protocol and source hashes; no corpus result yet.
+          Baseline: `aa0afd5a`; protocol/source hashes frozen at `8edf6342`. Official ARC-AGI-2 `f3283f7`, all 1000 training + 120 evaluation tasks. Development exclusions: `00d62c1b`, `e88171ec`, `29c11459` (997/120 primary denominators). Previously used public data, not untouched holdout. Twelve workers, deterministic.
+          Comparison: 017 joint (19 features/19 operations) versus six directional trichotomy predicates, four beyond-run-validity predicates, or both; union selector. Exact minimal subsets of size <=3, learned action intersections, nested whole-demonstration validation and queries frozen before scoring. Supplied predicates/costs, no new output operations.
+          Controlled comparison: two declared nearer/farther-endpoint teachers trained at widths 7/11 and evaluated on seven unseen widths and two palettes/heights (28 query grids). Teacher labels are not new ARC ground truth. Fixed-key expressivity and learned-selection tests are separate.
+          Checks: 15 pre-corpus synthetic tests including 150 exhaustive subset comparisons and outer-label isolation. Exact-arm replication of 017 joint and independent certificate/score checks required. Outcome not run yet; no stable-core/math integration.
+          Code/evidence: [protocol and sources](018-order-guards/README.md).
+          '''
+          p.write_text(text.replace('\n## Entry format', '\n'+entry+'\n## Entry format'))
+          Path('.github/workflows/symarc-018-register.yml').unlink()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add symarc/experiments/RESULTS.md .github/workflows/symarc-018-register.yml
+          git commit -m 'experiments: register 018 before scientific execution; remove one-shot workflow'
+          git push origin HEAD:symarc/stable-core
