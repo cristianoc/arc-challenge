@@ -1,0 +1,64 @@
+name: Finalize ARC1 and sharing investigations
+on:
+  push:
+    branches: [symarc/stable-core]
+    paths: [.github/workflows/symarc-019-020-finalize.yml]
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: symarc/stable-core
+      - name: Append verified findings without changing old entries
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('symarc/experiments/RESULTS.md')
+          text=p.read_text()
+          assert '### 019-arc1-transfer' not in text and '### 020-shared-operation-evidence' not in text
+          entries='''
+          ### 019-arc1-transfer — Has the unchanged relational learner improved ARC1?
+          Status: candidate — executable complementary-solver composition; no core integration.
+          Baseline: `83df79f7`; protocol `8e6f89f7` before scoring; Actions execution `a5b3cccf`, run 35427286878. All local ARC1 400 training + 400 evaluation tasks; reused public data. Stable defaults/seed 0 and unchanged 018 union, 12 workers per arm, serial execution. Query answers projected away; both prediction files frozen before separate scoring.
+          Result: stable reproduces 57/400 training and 23/400 evaluation; relational alone 27/400 and 5/400. Predeclared complete override and no-fit fallback both achieve **78/400 and 27/400**, adding 21 training + 4 evaluation solutions with no losses. Correct-either oracle is also 78/27. Strict outer override gives 63/25. Correct grids increase 62/416 to 83/416 and 27/419 to 31/419. The no-fit policy preserves stable predictions whenever its program fits demonstrations, and substitutes the relational answer only when complete.
+          Controls/limitations: excluding the three inspected fixtures leaves stable 56/398 and 23/399 versus hybrid 76/398 and 27/399. All 25 gains already occur in ARC2 training with identical labelled content; not independent validation. There are 772 shared-content ARC1/ARC2 tasks after demonstration reordering. The relational model still has one complete training error; hybrid retains stable guesses elsewhere. No speed claim or object-candidate combination.
+          Checks: all 11 core tests and CLI regressions pass; 15 018 synthetic tests pass. Independent audit checks 8,000 policy/task selections and scores, matches all 800 stable task/fit/grid scores to 011, and reproduces selected models, query predictions and outer results on all 772 permuted ARC2 matches. A complete local 12-worker relational rerun is byte-identical. Prediction hash `e47927459066e61bc19b1b1d3e6d2678d62a26aebf4da7f5bc9cc359c8f1ed18`.
+          Decision: retain label-free no-fit combination as an integration candidate while preserving stable core and accepted math. `combine.py` emits predictions without reading answer files. Full evidence artifact 10579147646 expires 2026-12-18 and is regenerable.
+          Code/evidence: [protocol and adapter](019-arc1-transfer/README.md), [findings](evidence/019-arc1-transfer/README.md), compact results, independent audit and companion reproduction archive.
+
+          ### 020-shared-operation-evidence — Can distinct guards share operation evidence?
+          Status: closed — minimum operation count does not resolve the controlled guard-selection failure. Retain exact cover implementation and failed-selection fixture as reusable controls.
+          Baseline: unchanged 018; protocol `4146e142` published before the controlled run. Runner frozen/hashed locally, published unchanged afterwards at `e2317014`. Same 29 features, 19 operations, three-feature bound, nested selection, and previously inspected nearer/farther endpoint teachers. No fresh ARC query scores or primitive/cost/tie-break changes.
+          Method: for each context action table retain all minimum-cardinality palettes hitting every observed context's surviving-action set. Context keys remain separate; unknown keys and undefined survivors still abstain. This is an explicit operation-reuse prior, not additional labelled evidence. All optima survive; constants have the same unit cost as copy operations.
+          Result: baseline and sharing both solve **14/28** constructed queries, make two complete errors, and abstain on twelve. The available endpoint-validity candidate still solves 28/28 but is not selected; the accidental near-border guard retains its higher validation score. Its competitor has five optimal four-operation palettes in a one-demonstration fold, including both four literal colours and a copy/endpoint-copy palette. Thus minimization leaves the crucial ambiguity alive. Narrowing 2,278 action-set constraints in 412 tables establishes that the implementation is not inert, but does not fix this failure.
+          Checks: eight synthetic controls, 600 exhaustive synthetic comparisons; independent enumeration verifies all 1,070 palette families using 178,284 subsets. Original 018 controlled predictions match; repeat scientific outputs are identical. Prediction hash `7c08ff0e61c6b935a283f7fbff9f78baa6c7ee43b0bafbac8308e48d2cc85892`.
+          Decision: no integration. Operation identification and guard identification remain distinct; counting distinct operations alone cannot justify the desired preference. Keep 019's measured composition independent of this unsuccessful heuristic. Core and accepted mathematics unchanged.
+          Code/evidence: [protocol and exact implementation](020-shared-operation-evidence/README.md), [findings](evidence/020-shared-operation-evidence/README.md), compact results and exhaustive audit; full controls in the companion archive.
+
+          '''
+          # Remove YAML indentation without changing the existing ledger.
+          import textwrap
+          p.write_text(text.replace('## Entry format',textwrap.dedent(entries)+'## Entry format'))
+          for f in ['.github/workflows/symarc-019-run.yml','.github/workflows/symarc-019-020-finalize.yml']:
+              Path(f).unlink()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add symarc/experiments/RESULTS.md .github/workflows/symarc-019-run.yml .github/workflows/symarc-019-020-finalize.yml
+          git commit -m 'experiments: record ARC1 gains and sharing limitation; remove completed workflows'
+          git push origin HEAD:symarc/stable-core
+          mkdir -p archive
+          git rev-parse HEAD > archive/source-revision.txt
+          tar -czf archive/source-snapshot.tar.gz symarc data
+          sha256sum archive/source-snapshot.tar.gz > archive/SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: symarc-019-020-source-snapshot
+          path: archive/
+          retention-days: 90
+          if-no-files-found: error
