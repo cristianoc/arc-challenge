@@ -1,0 +1,10 @@
+{
+  "baseline": "71c9efdfb112c35ac61030c758fdbdb3144a3436",
+  "protocol_commit": "f37093f73ef71223d776fa6b31622bf5b8ed52d0",
+  "synthetic_tests": 16,
+  "sources": {
+    "symarc/experiments/017-split-or-share/run.py": "ed48001bd07ff76f4cc0f93e58a16cbd202abd3500d2bd97016ea252b186774f",
+    "symarc/experiments/017-split-or-share/test_run.py": "4412979baf5400ae27905039c670aeaf087e404f93bbfcdad87abb83a15fe8e2"
+  },
+  "data_revision": "f3283f727488ad98fe575ea6a5ac981e4a188e49"
+}

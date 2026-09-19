@@ -164,6 +164,15 @@ Checks: 13 pre-run synthetic tests, exhaustive search comparison on 120 syntheti
 Decision: retain the learner and certificate audits as the next research base. Extend separating-term or shared-operation construction using actual training conflicts rather than optimize a score with only two oracle-recoverable answers. Stable solver and accepted mathematics unchanged.
 Code/evidence: [protocol and sources](016-conflict-refinement/README.md), [action-audit protocol](016-conflict-refinement/ACTION_AUDIT.md), [findings](evidence/016-conflict-refinement/README.md), compact results/provenance. Full frozen predictions, candidates, necessity witnesses, fold records and audits are retained in the accompanying reproducible investigation archive.
 
+
+### 017-split-or-share — Split a context, or share a better operation?
+Status: active — protocol and exact source hashes registered before corpus execution.
+Baseline: `71c9efdf`; protocol `f37093f7`; official ARC-AGI-2 `f3283f7`, 1000 training + 120 evaluation tasks. Development fixtures `00d62c1b` and `e88171ec` excluded; public development data, not untouched holdout.
+Comparison: four matched arms, base/split/share/joint: 15 vs 19 features, 11 vs 19 actions. New constructor follows a same-colour directional run, exposes its length or reads beyond it; four adjacent copies included. Exact minimal conflict sets, all minimal feature subsets of size <=3, nested whole-demonstration validation, a union selector retaining base candidates, isolated query scoring. Twelve workers, deterministic.
+Checks: sixteen pre-corpus synthetic controls passed, including a three-way inconsistency and 150 guided/exhaustive subset comparisons. Source hashes in preregistration.json. Primary run not yet executed.
+Decision: distinguish representation, operation and prediction improvements; keep unresolved and action-ambiguous cases explicit. No stable-core/math integration.
+Code/evidence: [registered protocol and sources](017-split-or-share/README.md).
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
