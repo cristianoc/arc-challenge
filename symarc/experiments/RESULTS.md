@@ -78,6 +78,14 @@ Decision: close with evidence. The missing research step is selecting and justif
 Code/evidence: completed code removed; runnable at `b7c96c9`. Retained [protocol](evidence/008-repair-constraints/protocol.md), [interpretation and unresolved cases](evidence/008-repair-constraints/README.md), [direct report](evidence/008-repair-constraints/report.md), per-case counterexamples and manifest.
 
 
+### 009-symmetry-compatibility — What do examples constrain without hand-picked task invariants?
+Status: active — registered before execution.
+Baseline: `e407f53`; 120 revision-pinned tasks from 006, no candidate solver execution.
+Comparison: same full colour-permutation, D4, and product laws on every task. Exact symbolic compatibility checks include input stabilizers and all colour-map completions. Training first; known test pairs used only for a separate additional-contradiction diagnostic. Twelve workers, 600s limit.
+Result: not run yet.
+Decision: diagnostic only; compatibility is not justification or automatic law discovery. Close with witnesses and runnable history.
+Code/evidence: [protocol](009-symmetry-compatibility/README.md).
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
