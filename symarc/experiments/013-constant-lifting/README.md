@@ -76,3 +76,11 @@ variant is semantically more general. All feature extractors are supplied.
 No MDL/Kolmogorov score is measured. A negative outcome closes this grammar;
 retain protocol/evidence and a runnable Git revision. Even a positive outcome
 requires broader validation before integration.
+
+## Timeout sensitivity (registered after main run, before retries)
+
+The main run had 13 fitting-phase CPU timeouts and no query-phase timeouts.
+Rerun exactly those candidates with 5 CPU seconds per phase, unchanged feature
+and site grammar, same 12 workers. Keep main results intact. This targeted check
+is to qualify the negative coverage result; it does not broaden the grammar or
+choose candidates based on whether their test answers were correct.
