@@ -114,12 +114,13 @@ Decision: close; retain the small executable case catalogue for future represent
 Code/evidence: [protocol and runnable cases](012-information-loss/README.md), [findings](evidence/012-information-loss/README.md), complete witness grids/predictions and manifest.
 
 ### 013-constant-lifting — Can training identify a constant-to-feature repair?
-Status: active
-Baseline: `c9413a8`; all 120 revision-pinned external programs from 006.
-Protocol: uniform 12 input features, first 16 eligible literal sites, single-site replacements; retain all training fits including original and predict only by defined unanimity. Freeze predictions before scoring tests. Twelve workers, explicit CPU budgets.
-Result: not run yet. No blind-holdout or abstraction-discovery claim.
-Code/evidence: [protocol](013-constant-lifting/README.md).
-
+Status: closed — bounded repair-space coverage failure; no integration.
+Baseline: `c9413a8`; pre-run protocol/runner `cf2e54f`; 120 external programs/data pinned by 006. Twelve input features, first 16 comparison/range literal sites, one replacement at a time. Original retained; predictions frozen before test scoring. Twelve workers, 8.24s.
+Result: 5,316 mutations on 85 programs (35 had no sites); 1,421 fit training, including 97 whose feature equals the literal on every training input. **Zero correct repairs** for the 89 training-fitting/test-wrong originals or the 4 training failures, even with oracle selection. Baseline reproduces 116 training fits and 27 test-perfect originals.
+Agreement: 88 unanimous tasks, only 23 correct (65 wrong); 23 disagreements, 5 with undefined candidates, 4 without fits. No new correct unanimous answers. Path case has 0 mutants; global-count case 24/7 tested/fitting with one wrong answer; rank case 60/19 with five answers, all wrong.
+Checks: five controls, all input/source hashes, exact prior baseline comparison and lossless evidence encoding pass. Thirteen 0.25s CPU timeouts remain at 5s; concrete nonadvancing-loop witnesses show all thirteen cannot fit training. Targeted sensitivity 10.96s, 12 workers.
+Interpretation: this fixed scalar-binding language does not express a useful repair for these failures. Candidate agreement is not correctness; no general rejection of anti-unification/MDL and no blind holdout claim. Distinct from the concurrently registered 013-minimal-sufficient-distinction study; use full slugs to distinguish them.
+Code/evidence: completed code removed; runnable main at `cf2e54f`, sensitivity at `91603a2`. Retained [protocol](evidence/013-constant-lifting/protocol.md), [findings](evidence/013-constant-lifting/README.md), full compact candidate evidence, scores and manifests. Stable core and accepted math unchanged.
 
 ### 013-minimal-sufficient-distinction — Which input distinctions may training justify forgetting?
 Status: active — theory and prospective protocol registered; no solver integration.
