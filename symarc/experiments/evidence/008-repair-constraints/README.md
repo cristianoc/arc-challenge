@@ -138,20 +138,20 @@ as successes or failures of this selector.
 Let $D$ be the supplied labelled pairs and $C$ an explicitly assumed collection
 of input/output transformation pairs $(T_{\mathrm{in}}, T_{\mathrm{out}})$. Define
 
-$$
-D_C = D \cup \left\{
+```math
+D_C = D \cup \left\lbrace
 \bigl(T_{\mathrm{in}}(x), T_{\mathrm{out}}(y)\bigr)
 \;\middle|\;
 (x,y) \in D,\ (T_{\mathrm{in}},T_{\mathrm{out}}) \in C
-\right\}.
-$$
+\right\rbrace.
+```
 
-$$
-V_C = \left\{
+```math
+V_C = \left\lbrace
 P \;\middle|\;
 \forall (x,y) \in D_C,\quad P(x)\downarrow\ \land\ P(x)=y
-\right\}.
-$$
+\right\rbrace.
+```
 
 Here $P(x)\downarrow$ means that $P$ terminates with a defined output on $x$.
 The experiment computes membership in $V_C$ for two fixed candidates per task.
@@ -164,9 +164,9 @@ For a full group action $G$, if two programs are equivariant on the relevant
 orbits and agree on $D$, they agree on $G\cdot D$: for each $g\in G$ and training
 input $x$,
 
-$$
+```math
 P(g\cdot x) = g\cdot P(x) = g\cdot Q(x) = Q(g\cdot x).
-$$
+```
 
 Thus orbit augmentation cannot distinguish them. It can expose a violation of
 the proposed invariance, but cannot reveal a distinction that stays outside

@@ -58,9 +58,9 @@ In `221dfab4`, the original periodic rule uses `r % 6`. Training happens to alig
 
 The principled operation is change of coordinates. If $T$ puts an input into a canonical orientation, use
 
-$$
+```math
 T^{-1}\!\bigl(P(T(x))\bigr).
-$$
+```
 
 The hard part includes selecting T from structural evidence. Equivariance is a requirement on the resulting function, not a theorem that automatically identifies T.
 
@@ -172,9 +172,9 @@ Anti-unification can factor the horizontal/vertical painting machinery after coo
 
 The standard anti-unification guarantee concerns common substitution instances: from specialised fragments $P_i$, obtain a template $G$ and substitutions $\sigma_i$ such that
 
-$$
+```math
 G\sigma_i = P_i \qquad \text{for every } i.
-$$
+```
 
 It does not guarantee that executing a repaired, closed solver gives more correct answers. See [Cerna and Kutsia, Anti-unification and Generalization: A Survey](https://www.ijcai.org/proceedings/2023/0736.pdf).
 
@@ -190,10 +190,10 @@ These are mechanisms, not mutually exclusive task labels. A single successful re
 
 For symmetry, a proposed contract uses corresponding input and output transformations:
 
-$$
+```math
 P\bigl(T_{\mathrm{in}}(x)\bigr)
 = T_{\mathrm{out}}\bigl(P(x)\bigr).
-$$
+```
 
 This removes dependence on incidental coordinates or colour names when that transformation really is a task symmetry. It is not valid to assume every colour permutation or geometric transformation is a symmetry of every ARC task. The general mathematical connection is equivariance; see [Bronstein et al., Geometric Deep Learning](https://arxiv.org/abs/2104.13478).
 
