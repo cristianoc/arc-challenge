@@ -1,0 +1,35 @@
+name: Stage pinned SymArc research inputs
+on:
+  push:
+    branches: [symarc/stable-core]
+    paths: [.github/workflows/symarc-research-inputs.yml]
+permissions:
+  contents: read
+jobs:
+  inputs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: arcprize/ARC-AGI-2
+          ref: f3283f727488ad98fe575ea6a5ac981e4a188e49
+          path: arc2-pinned
+          persist-credentials: false
+      - name: Package only research code and task data
+        shell: bash
+        run: |
+          mkdir -p research-inputs
+          git rev-parse HEAD > research-inputs/source-revision.txt
+          git -C arc2-pinned rev-parse HEAD > research-inputs/arc2-revision.txt
+          tar -czf research-inputs/research-inputs.tar.gz symarc data arc2-pinned/data
+          sha256sum research-inputs/research-inputs.tar.gz > research-inputs/SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: symarc-pinned-research-inputs
+          path: research-inputs/
+          retention-days: 1
+          if-no-files-found: error
