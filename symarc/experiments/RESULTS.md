@@ -241,6 +241,13 @@ Decision: retain tie-completion as a measured small selection candidate, not a c
 Code/evidence: [protocol and sources](023-query-applicability/README.md), [findings](evidence/023-query-applicability/README.md), all factorial outcomes, audits and selected case certificates. Full candidates, outer pools, inputs, separate answers, dependencies and reproduction script in companion archive. Base ARC1 prediction SHA-256 `de6cbb72e0728899190a7e185f07f26c7aef7f680adc03b464453e10581f95f6`; default `c15515956f88b17319b738a94715210bb1960dcfe633aa04c50a5383af006ed4`.
 
 
+### 024-query-totality — What follows from concrete-program query totality?
+Status: active — protocol registered before scientific execution; no outcomes yet.
+Baseline: `f2a926f3`; protocol `81d09eb5`. Same 800 ARC1 projected problems, 24 controlled specifications, and unchanged 018/021/023 candidates, features, actions and internal ranks. Reused public/development data, not untouched holdout.
+Comparison: original training rank and 023 tie-complete versus exact conditioning of concrete program families on query definedness, followed by original rank or evidence-tie completeness. Coupled defaults are conditioned as whole branches before projection; original training-optimal defaults are not reoptimized. Unknown keys reject a family; nonempty but disagreeing families still abstain.
+Checks planned: exhaustive synthetic concrete-program enumeration, explicit-set independent conditioner/selector audit, archived baseline replication, fresh replay controls, hash-frozen predictions before scoring. Twelve processes, serial modes; no stable-core or accepted-mathematics changes.
+Code/evidence: [protocol and sources](024-query-totality/README.md); not run yet.
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
