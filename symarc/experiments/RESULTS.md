@@ -105,11 +105,13 @@ Decision: coverage under current bounds is the evaluation bottleneck, not just r
 Code/evidence: runner removed, runnable at `f40ffd2`. Retained [protocol](evidence/011-arc2-transfer/protocol.md), [findings](evidence/011-arc2-transfer/README.md), [full report](evidence/011-arc2-transfer/full/report.md), pilot, task TSVs, overlap analysis and source/data/binary manifests.
 
 ### 012-information-loss — What do the three symmetry survivors discard?
-Status: active
-Baseline: `8a5b8a9`; pinned original sources/data and manual repairs from 006.
-Protocol: training relationship audit plus three deterministic unlabelled disagreement witnesses; 12-worker pool. No automatic repair or new intended labels.
-Result: not run yet.
-Code/evidence: [protocol](012-information-loss/README.md).
+Status: closed — retrospective mechanism study; no automatic selection or integration.
+Baseline: `8a5b8a9`; protocol/runner registered at `ca83781`; original sources/data and manual repairs pinned by 006. Twelve-worker pool, 0.124s.
+Result: reproduce 8/8 training fits for both arms, 0/3 original versus 3/3 repaired test pairs. Both path training examples confound histogram with path order; 9/9 training frames match global same-colour object counts; 4/4 training colour groups match marker length to descending bar rank. These within-grid relationships are not independent tasks.
+Witnesses: same histogram/order but different paths; same local patch but one extra remote object; column permutation preserving marker/rank relation while breaking positional guards. All three independent mechanism checks pass; synthetic inputs have no supplied ground-truth labels.
+Interpretation: first two expose insufficient decision statistics relative to the proposed repair; the third changes use of retained information. Training does not uniquely select the repairs. No anti-unifier, MDL score, law learner or blind generalisation result.
+Decision: close; retain the small executable case catalogue for future representation/rule-selection comparisons. These inspected tasks cannot serve as holdout. Core and accepted math unchanged.
+Code/evidence: [protocol and runnable cases](012-information-loss/README.md), [findings](evidence/012-information-loss/README.md), complete witness grids/predictions and manifest.
 
 ## Entry format
 
