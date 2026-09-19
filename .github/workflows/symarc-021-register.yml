@@ -1,0 +1,40 @@
+name: Register SymArc 021
+on:
+  push:
+    branches: [symarc/stable-core]
+    paths: [.github/workflows/symarc-021-register.yml]
+permissions:
+  contents: write
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: symarc/stable-core
+      - name: Register only; scientific computation is separate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('symarc/experiments/RESULTS.md')
+          text=p.read_text()
+          assert '### 021-default-exceptions' not in text
+          entry='''### 021-default-exceptions — Can a shared default preserve distinct applicability contexts?
+          Status: active — protocol and source hashes frozen before controlled/corpus runs.
+          Baseline: `11466555`; protocol `b9227afb`. Same 018 features/operations/search/selection; only observed-key action tables use all defaults minimizing exception-context count. Unseen keys and undefined survivors abstain. Explicit symmetric operation prior; no default-copy shortcut.
+          Comparison: original two controlled endpoint teachers plus four literal-output variants (84 queries); separately all ARC1 400+400 tasks, unchanged 019 stable predictions and no-fit fallback rule. Reused public data, not untouched holdout. Twelve workers, no tuning after outcomes; base replay and default/projection/score audits required.
+          Result: not run yet. Twelve synthetic controls including 300 exhaustive tiny-program comparisons pass.
+          Decision: no automatic integration; report fixed-model ambiguity reduction separately from selected-model regressions. Stable core and accepted math unchanged.
+          Code/evidence: [frozen protocol](021-default-exceptions/README.md).
+
+          '''
+          import textwrap
+          p.write_text(text.replace('## Entry format',textwrap.dedent(entry)+'## Entry format'))
+          Path('.github/workflows/symarc-021-register.yml').unlink()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add symarc/experiments/RESULTS.md .github/workflows/symarc-021-register.yml
+          git commit -m 'experiments: register 021; remove completed registration workflow'
+          git push origin HEAD:symarc/stable-core
