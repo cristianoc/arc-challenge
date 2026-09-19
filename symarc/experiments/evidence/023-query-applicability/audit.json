@@ -1,0 +1,15 @@
+{
+  "by_group": {
+    "arc1/base": {"tasks":800,"counts":{"candidate_models":37024,"complete_preservation_checks":342,"context_action_sets":1395104,"hybrid_task_scores":3200,"independent_grid_evaluations":36185,"outer_grid_scores":6756,"policy_choices":12136,"tables":30680,"task_scores":3200}},
+    "arc1/default": {"tasks":800,"counts":{"candidate_models":37024,"complete_preservation_checks":418,"context_action_sets":1395104,"hybrid_task_scores":3200,"independent_grid_evaluations":36185,"outer_grid_scores":6756,"policy_choices":12136,"tables":30680,"task_scores":3200}},
+    "controlled/base": {"tasks":24,"counts":{"candidate_models":29728,"complete_preservation_checks":1008,"context_action_sets":354324,"independent_grid_evaluations":133320,"outer_grid_scores":192,"policy_choices":5088,"tables":28332,"task_scores":96}},
+    "controlled/default": {"tasks":24,"counts":{"candidate_models":29728,"complete_preservation_checks":1028,"context_action_sets":354324,"independent_grid_evaluations":133320,"outer_grid_scores":192,"policy_choices":5088,"tables":28332,"task_scores":96}}
+  },
+  "historical": {
+    "arc1/base": {"baseline_outer_folds":1689,"full_candidate_models":5614,"tasks":800},
+    "controlled/base": {"baseline_outer_folds":48,"full_candidate_models":4188,"tasks":24},
+    "controlled/default": {"baseline_outer_folds":48,"full_candidate_models":4188,"tasks":24}
+  },
+  "totals": {"candidate_models":133504,"complete_preservation_checks":2796,"context_action_sets":3498856,"hybrid_task_scores":6400,"independent_grid_evaluations":339010,"outer_grid_scores":13896,"policy_choices":34448,"tables":118024,"task_scores":6592},
+  "boundary":"The input feature/action evaluator is reused. Action sets, default projections, internal evidence, full and outer selection and final scores are independently reconstructed. Feature-subset search is not independently reimplemented. Counts include repeated related candidates and folds, not independent observations."
+}
