@@ -113,6 +113,13 @@ Interpretation: first two expose insufficient decision statistics relative to th
 Decision: close; retain the small executable case catalogue for future representation/rule-selection comparisons. These inspected tasks cannot serve as holdout. Core and accepted math unchanged.
 Code/evidence: [protocol and runnable cases](012-information-loss/README.md), [findings](evidence/012-information-loss/README.md), complete witness grids/predictions and manifest.
 
+### 013-constant-lifting — Can training identify a constant-to-feature repair?
+Status: active
+Baseline: `c9413a8`; all 120 revision-pinned external programs from 006.
+Protocol: uniform 12 input features, first 16 eligible literal sites, single-site replacements; retain all training fits including original and predict only by defined unanimity. Freeze predictions before scoring tests. Twelve workers, explicit CPU budgets.
+Result: not run yet. No blind-holdout or abstraction-discovery claim.
+Code/evidence: [protocol](013-constant-lifting/README.md).
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
