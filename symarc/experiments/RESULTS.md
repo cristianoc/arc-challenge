@@ -176,6 +176,15 @@ Checks: 16 synthetic controls, 150 guided/exhaustive small searches, 761 base-po
 Decision: retain exact split-or-share research machinery, not a production gate. Next target is relational rules and applicability instead of exact numeric lookup; any extension must be rebuilt inside outer validation. Stable core and accepted mathematics unchanged.
 Code/evidence: [protocol and sources](017-split-or-share/README.md), [majority sensitivity protocol](017-split-or-share/MAJORITY_AUDIT.md), [findings](evidence/017-split-or-share/README.md), results/provenance, selected certificates and independent audit. Full frozen predictions and checked reproduction script are in the investigation archive. Prediction SHA-256 `17cbb1bbca38c9ff3743a633bfe995498cd614291c042f13ba7bfbadb919fc05`.
 
+
+### 018-order-guards — Can order relations and applicability replace numeric lookup?
+Status: active — frozen protocol and source hashes; no corpus result yet.
+Baseline: `aa0afd5a`; protocol/source hashes frozen at `8edf6342`. Official ARC-AGI-2 `f3283f7`, all 1000 training + 120 evaluation tasks. Development exclusions: `00d62c1b`, `e88171ec`, `29c11459` (997/120 primary denominators). Previously used public data, not untouched holdout. Twelve workers, deterministic.
+Comparison: 017 joint (19 features/19 operations) versus six directional trichotomy predicates, four beyond-run-validity predicates, or both; union selector. Exact minimal subsets of size <=3, learned action intersections, nested whole-demonstration validation and queries frozen before scoring. Supplied predicates/costs, no new output operations.
+Controlled comparison: two declared nearer/farther-endpoint teachers trained at widths 7/11 and evaluated on seven unseen widths and two palettes/heights (28 query grids). Teacher labels are not new ARC ground truth. Fixed-key expressivity and learned-selection tests are separate.
+Checks: 15 pre-corpus synthetic tests including 150 exhaustive subset comparisons and outer-label isolation. Exact-arm replication of 017 joint and independent certificate/score checks required. Outcome not run yet; no stable-core/math integration.
+Code/evidence: [protocol and sources](018-order-guards/README.md).
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
