@@ -1,0 +1,193 @@
+dataset	split	task	arm	fit	correct	correct_grids	test_grids	oracle_chosen_family	selected_program	oracle_witness
+ARC1	evaluation	a57f2f04	complete	false	false	0	1	NA	id	
+ARC1	evaluation	a57f2f04	grid_d2	false	false	0	1	false		
+ARC1	evaluation	a57f2f04	objects	false	false	0	1	false		
+ARC1	evaluation	a57f2f04	grid_objects	false	false	0	1	false		
+ARC1	evaluation	baf41dbf	complete	false	false	0	1	NA	id	
+ARC1	evaluation	baf41dbf	grid_d2	false	false	0	1	false		
+ARC1	evaluation	baf41dbf	objects	false	false	0	1	false		
+ARC1	evaluation	baf41dbf	grid_objects	false	false	0	1	false		
+ARC1	evaluation	16b78196	complete	false	false	0	1	NA	id	
+ARC1	evaluation	16b78196	grid_d2	false	false	0	1	false		
+ARC1	evaluation	16b78196	objects	false	false	0	1	false		
+ARC1	evaluation	16b78196	grid_objects	false	false	0	1	false		
+ARC1	evaluation	e21a174a	complete	false	false	0	2	NA	id	
+ARC1	evaluation	e21a174a	grid_d2	false	false	0	2	false		
+ARC1	evaluation	e21a174a	objects	false	false	0	2	false		
+ARC1	evaluation	e21a174a	grid_objects	false	false	0	2	false		
+ARC1	evaluation	84db8fc4	complete	true	true	1	1	NA	fillEnclosed 5 ; recolour 0 2	
+ARC1	evaluation	84db8fc4	grid_d2	true	true	1	1	true	fillEnclosed 5 ; recolour 0 2	fillEnclosed 5 ; recolour 0 2
+ARC1	evaluation	84db8fc4	objects	false	false	0	1	false		
+ARC1	evaluation	84db8fc4	grid_objects	true	true	1	1	true	fillEnclosed 5 ; recolour 0 2	fillEnclosed 5 ; recolour 0 2
+ARC1	evaluation	8cb8642d	complete	false	false	0	1	NA	id	
+ARC1	evaluation	8cb8642d	grid_d2	false	false	0	1	false		
+ARC1	evaluation	8cb8642d	objects	false	false	0	1	false		
+ARC1	evaluation	8cb8642d	grid_objects	false	false	0	1	false		
+ARC1	evaluation	4f537728	complete	false	false	0	1	NA	id	
+ARC1	evaluation	4f537728	grid_d2	false	false	0	1	false		
+ARC1	evaluation	4f537728	objects	false	false	0	1	false		
+ARC1	evaluation	4f537728	grid_objects	false	false	0	1	false		
+ARC1	training	1190e5a7	complete	false	false	0	1	NA	id	
+ARC1	training	1190e5a7	grid_d2	false	false	0	1	false		
+ARC1	training	1190e5a7	objects	false	false	0	1	false		
+ARC1	training	1190e5a7	grid_objects	false	false	0	1	false		
+ARC1	evaluation	9bebae7a	complete	false	false	0	1	NA	id	
+ARC1	evaluation	9bebae7a	grid_d2	false	false	0	1	false		
+ARC1	evaluation	9bebae7a	objects	false	false	0	1	false		
+ARC1	evaluation	9bebae7a	grid_objects	false	false	0	1	false		
+ARC1	evaluation	2037f2c7	complete	false	false	0	1	NA	id	
+ARC1	evaluation	2037f2c7	grid_d2	false	false	0	1	false		
+ARC1	evaluation	2037f2c7	objects	false	false	0	1	false		
+ARC1	evaluation	2037f2c7	grid_objects	false	false	0	1	false		
+ARC1	training	c444b776	complete	false	false	0	1	NA	id	
+ARC1	training	c444b776	grid_d2	false	false	0	1	false		
+ARC1	training	c444b776	objects	false	false	0	1	false		
+ARC1	training	c444b776	grid_objects	false	false	0	1	false		
+ARC1	training	6d0aefbc	complete	true	true	1	1	NA	hconcatFlip	
+ARC1	training	6d0aefbc	grid_d2	true	true	1	1	true	hconcatFlip	hconcatFlip
+ARC1	training	6d0aefbc	objects	false	false	0	1	false		
+ARC1	training	6d0aefbc	grid_objects	true	true	1	1	true	hconcatFlip	hconcatFlip
+ARC1	training	85c4e7cd	complete	false	false	0	1	NA	id	
+ARC1	training	85c4e7cd	grid_d2	false	false	0	1	false		
+ARC1	training	85c4e7cd	objects	false	false	0	1	false		
+ARC1	training	85c4e7cd	grid_objects	false	false	0	1	false		
+ARC1	training	3de23699	complete	false	false	0	1	NA	id	
+ARC1	training	3de23699	grid_d2	false	false	0	1	false		
+ARC1	training	3de23699	objects	false	false	0	1	false		
+ARC1	training	3de23699	grid_objects	false	false	0	1	false		
+ARC1	evaluation	bf32578f	complete	false	false	0	1	NA	id	
+ARC1	evaluation	bf32578f	grid_d2	false	false	0	1	false		
+ARC1	evaluation	bf32578f	objects	false	false	0	1	false		
+ARC1	evaluation	bf32578f	grid_objects	false	false	0	1	false		
+ARC1	training	1c786137	complete	false	false	0	1	NA	id	
+ARC1	training	1c786137	grid_d2	false	false	0	1	false		
+ARC1	training	1c786137	objects	false	false	0	1	false		
+ARC1	training	1c786137	grid_objects	false	false	0	1	false		
+ARC1	evaluation	6df30ad6	complete	false	false	0	1	NA	id	
+ARC1	evaluation	6df30ad6	grid_d2	false	false	0	1	false		
+ARC1	evaluation	6df30ad6	objects	false	false	0	1	false		
+ARC1	evaluation	6df30ad6	grid_objects	false	false	0	1	false		
+ARC1	evaluation	17cae0c1	complete	false	false	0	1	NA	id	
+ARC1	evaluation	17cae0c1	grid_d2	false	false	0	1	false		
+ARC1	evaluation	17cae0c1	objects	false	false	0	1	false		
+ARC1	evaluation	17cae0c1	grid_objects	false	false	0	1	false		
+ARC1	training	53b68214	complete	false	false	0	2	NA	tile 2 1	
+ARC1	training	53b68214	grid_d2	false	false	0	2	false		
+ARC1	training	53b68214	objects	false	false	0	2	false		
+ARC1	training	53b68214	grid_objects	false	false	0	2	false		
+ARC1	training	444801d8	complete	false	false	0	1	NA	id	
+ARC1	training	444801d8	grid_d2	false	false	0	1	false		
+ARC1	training	444801d8	objects	false	false	0	1	false		
+ARC1	training	444801d8	grid_objects	false	false	0	1	false		
+ARC1	evaluation	4364c1c4	complete	false	false	0	1	NA	id	
+ARC1	evaluation	4364c1c4	grid_d2	false	false	0	1	false		
+ARC1	evaluation	4364c1c4	objects	false	false	0	1	false		
+ARC1	evaluation	4364c1c4	grid_objects	false	false	0	1	false		
+ARC1	training	28bf18c6	complete	true	true	1	1	NA	cropBBox ; hconcat	
+ARC1	training	28bf18c6	grid_d2	true	true	1	1	true	cropBBox ; hconcat	cropBBox ; hconcat
+ARC1	training	28bf18c6	objects	false	false	0	1	false		
+ARC1	training	28bf18c6	grid_objects	true	true	1	1	true	cropBBox ; hconcat	cropBBox ; hconcat
+ARC1	evaluation	bd14c3bf	complete	false	false	0	1	NA	id	
+ARC1	evaluation	bd14c3bf	grid_d2	false	false	0	1	false		
+ARC1	evaluation	bd14c3bf	objects	false	false	0	1	false		
+ARC1	evaluation	bd14c3bf	grid_objects	false	false	0	1	false		
+ARC1	evaluation	a096bf4d	complete	false	false	0	1	NA	id	
+ARC1	evaluation	a096bf4d	grid_d2	false	false	0	1	false		
+ARC1	evaluation	a096bf4d	objects	false	false	0	1	false		
+ARC1	evaluation	a096bf4d	grid_objects	false	false	0	1	false		
+ARC2	training	a57f2f04	complete	false	false	0	1	NA	id	
+ARC2	training	a57f2f04	grid_d2	false	false	0	1	false		
+ARC2	training	a57f2f04	objects	false	false	0	1	false		
+ARC2	training	a57f2f04	grid_objects	false	false	0	1	false		
+ARC2	training	fc10701f	complete	false	false	0	1	NA	id	
+ARC2	training	fc10701f	grid_d2	false	false	0	1	false		
+ARC2	training	fc10701f	objects	false	false	0	1	false		
+ARC2	training	fc10701f	grid_objects	false	false	0	1	false		
+ARC2	training	baf41dbf	complete	false	false	0	1	NA	id	
+ARC2	training	baf41dbf	grid_d2	false	false	0	1	false		
+ARC2	training	baf41dbf	objects	false	false	0	1	false		
+ARC2	training	baf41dbf	grid_objects	false	false	0	1	false		
+ARC2	evaluation	16b78196	complete	false	false	0	1	NA	id	
+ARC2	evaluation	16b78196	grid_d2	false	false	0	1	false		
+ARC2	evaluation	16b78196	objects	false	false	0	1	false		
+ARC2	evaluation	16b78196	grid_objects	false	false	0	1	false		
+ARC2	training	e21a174a	complete	false	false	0	2	NA	id	
+ARC2	training	e21a174a	grid_d2	false	false	0	2	false		
+ARC2	training	e21a174a	objects	false	false	0	2	false		
+ARC2	training	e21a174a	grid_objects	false	false	0	2	false		
+ARC2	training	df9fd884	complete	false	false	0	1	NA	id	
+ARC2	training	df9fd884	grid_d2	false	false	0	1	false		
+ARC2	training	df9fd884	objects	false	false	0	1	false		
+ARC2	training	df9fd884	grid_objects	false	false	0	1	false		
+ARC2	training	84db8fc4	complete	true	true	1	1	NA	fillEnclosed 5 ; recolour 0 2	
+ARC2	training	84db8fc4	grid_d2	true	true	1	1	true	fillEnclosed 5 ; recolour 0 2	fillEnclosed 5 ; recolour 0 2
+ARC2	training	84db8fc4	objects	false	false	0	1	false		
+ARC2	training	84db8fc4	grid_objects	true	true	1	1	true	fillEnclosed 5 ; recolour 0 2	fillEnclosed 5 ; recolour 0 2
+ARC2	training	8cb8642d	complete	false	false	0	1	NA	id	
+ARC2	training	8cb8642d	grid_d2	false	false	0	1	false		
+ARC2	training	8cb8642d	objects	false	false	0	1	false		
+ARC2	training	8cb8642d	grid_objects	false	false	0	1	false		
+ARC2	training	4f537728	complete	false	false	0	1	NA	id	
+ARC2	training	4f537728	grid_d2	false	false	0	1	false		
+ARC2	training	4f537728	objects	false	false	0	1	false		
+ARC2	training	4f537728	grid_objects	false	false	0	1	false		
+ARC2	training	af726779	complete	false	false	0	3	NA	id	
+ARC2	training	af726779	grid_d2	false	false	0	3	false		
+ARC2	training	af726779	objects	false	false	0	3	false		
+ARC2	training	af726779	grid_objects	false	false	0	3	false		
+ARC2	training	1190e5a7	complete	false	false	0	1	NA	id	
+ARC2	training	1190e5a7	grid_d2	false	false	0	1	false		
+ARC2	training	1190e5a7	objects	false	false	0	1	false		
+ARC2	training	1190e5a7	grid_objects	false	false	0	1	false		
+ARC2	training	25e02866	complete	false	false	0	1	NA	id	
+ARC2	training	25e02866	grid_d2	false	false	0	1	false		
+ARC2	training	25e02866	objects	false	false	0	1	false		
+ARC2	training	25e02866	grid_objects	false	false	0	1	false		
+ARC2	training	1190bc91	complete	false	false	0	1	NA	id	
+ARC2	training	1190bc91	grid_d2	false	false	0	1	false		
+ARC2	training	1190bc91	objects	false	false	0	1	false		
+ARC2	training	1190bc91	grid_objects	false	false	0	1	false		
+ARC2	training	9bebae7a	complete	false	false	0	1	NA	id	
+ARC2	training	9bebae7a	grid_d2	false	false	0	1	false		
+ARC2	training	9bebae7a	objects	false	false	0	1	false		
+ARC2	training	9bebae7a	grid_objects	false	false	0	1	false		
+ARC2	training	bae5c565	complete	false	false	0	1	NA	id	
+ARC2	training	bae5c565	grid_d2	false	false	0	1	false		
+ARC2	training	bae5c565	objects	false	false	0	1	false		
+ARC2	training	bae5c565	grid_objects	false	false	0	1	false		
+ARC2	training	2037f2c7	complete	false	false	0	1	NA	id	
+ARC2	training	2037f2c7	grid_d2	false	false	0	1	false		
+ARC2	training	2037f2c7	objects	false	false	0	1	false		
+ARC2	training	2037f2c7	grid_objects	false	false	0	1	false		
+ARC2	training	c444b776	complete	false	false	0	1	NA	id	
+ARC2	training	c444b776	grid_d2	false	false	0	1	false		
+ARC2	training	c444b776	objects	false	false	0	1	false		
+ARC2	training	c444b776	grid_objects	false	false	0	1	false		
+ARC2	training	396d80d7	complete	false	false	0	1	NA	id	
+ARC2	training	396d80d7	grid_d2	false	false	0	1	false		
+ARC2	training	396d80d7	objects	false	false	0	1	false		
+ARC2	training	396d80d7	grid_objects	false	false	0	1	false		
+ARC2	training	6d0aefbc	complete	true	true	1	1	NA	hconcatFlip	
+ARC2	training	6d0aefbc	grid_d2	true	true	1	1	true	hconcatFlip	hconcatFlip
+ARC2	training	6d0aefbc	objects	false	false	0	1	false		
+ARC2	training	6d0aefbc	grid_objects	true	true	1	1	true	hconcatFlip	hconcatFlip
+ARC2	training	85c4e7cd	complete	false	false	0	1	NA	id	
+ARC2	training	85c4e7cd	grid_d2	false	false	0	1	false		
+ARC2	training	85c4e7cd	objects	false	false	0	1	false		
+ARC2	training	85c4e7cd	grid_objects	false	false	0	1	false		
+ARC2	training	3de23699	complete	false	false	0	1	NA	id	
+ARC2	training	3de23699	grid_d2	false	false	0	1	false		
+ARC2	training	3de23699	objects	false	false	0	1	false		
+ARC2	training	3de23699	grid_objects	false	false	0	1	false		
+ARC2	training	bf32578f	complete	false	false	0	1	NA	id	
+ARC2	training	bf32578f	grid_d2	false	false	0	1	false		
+ARC2	training	bf32578f	objects	false	false	0	1	false		
+ARC2	training	bf32578f	grid_objects	false	false	0	1	false		
+ARC2	training	1c786137	complete	false	false	0	1	NA	id	
+ARC2	training	1c786137	grid_d2	false	false	0	1	false		
+ARC2	training	1c786137	objects	false	false	0	1	false		
+ARC2	training	1c786137	grid_objects	false	false	0	1	false		
+ARC2	evaluation	abc82100	complete	false	false	0	1	NA	id	
+ARC2	evaluation	abc82100	grid_d2	false	false	0	1	false		
+ARC2	evaluation	abc82100	objects	false	false	0	1	false		
+ARC2	evaluation	abc82100	grid_objects	false	false	0	1	false		

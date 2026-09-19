@@ -148,8 +148,7 @@ Inspection of another newly contradicted law exposed an anomaly in the supplied
 training data: all three training inputs are patterned 11×11 grids; two outputs
 and the test output are patterned 11×11 grids, but the third training output is
 an entirely orange 16×16 grid. This is worth reviewing with the task author.
-The audit does not establish whether it is an erroneous annotation or a
-conditional behaviour whose reason is not yet understood. It is not evidence
+A subsequent source check found [upstream PR #18](https://github.com/arcprize/ARC-AGI-2/pull/18), opened in March 2025, reporting this same blank output and a missing input, with a proposed correction. The PR remains open and the pinned dataset is unchanged. This is therefore an existing reported annotation problem, not a newly discovered defect; the audit itself did not verify the proposed replacement. It is not evidence
 that the test output itself is wrong, and it was not the preregistered target.
 
 ![An anomalous training output requiring review](figures/a416fc5b.svg)

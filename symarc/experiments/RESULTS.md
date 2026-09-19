@@ -97,12 +97,12 @@ Decision: close with all flags and inspected grids. No strong counterexample und
 Code/evidence: runner removed, reproducible at `a0a0523`. Retained [protocol](evidence/010-test-surprises/protocol.md), [findings and case boards](evidence/010-test-surprises/README.md), [report](evidence/010-test-surprises/report.md), [all flags CSV](evidence/010-test-surprises/flags.csv), complete per-task results/hashes and manifest.
 
 ### 011-arc2-transfer — How do the unchanged solver configurations perform on ARC2?
-Status: active — registered before measurement.
-Baseline: `2383df6`; unchanged stable solver defaults and 003 object library. Reproduce ARC1 400+400; measure ARC2 1000+120 at `f3283f7` without tuning.
-Comparison: complete pipeline, grid depth 2, objects, grid-first object fallback. Twelve workers; 24 hash-selected tasks/dataset pilot (<120s gate), 600s run cap. Public development data, overlapping training datasets; no blind benchmark claim.
-Result: not run yet.
-Decision: measurement only; no integration or source changes to solver.
-Code/evidence: [protocol](011-arc2-transfer/README.md).
+Status: closed — transfer baseline measured, no integration or tuning.
+Baseline: `2383df6`; registered runnable adapter `f40ffd2`; unchanged stable defaults (seed 0) and 003 object library. ARC1 400+400 reproduced; ARC2 1000+120 at `f3283f7` measured. Twelve workers; 48-task pilot 2.42s, full 1,920-task run 65.87s; no arm-by-arm speed claim.
+Result: complete solver reproduces ARC1 **57/400 training, 23/400 evaluation**; grid-first object fallback **60/400 training, 21/400 evaluation**. ARC2 complete **79/1000 training, 0/120 evaluation**; grid/object fallback **80/1000 training, 0/120 evaluation**. All four arms have **zero training-perfect fits and 0/167 correct test grids** on ARC2 evaluation. Grid-alone and objects-alone ARC2 training: 72/1000 and 17/1000.
+Overlap: 767 ARC2 training IDs occur in local ARC1; 766 preserve per-split labelled pairs ignoring ordering, one has changed content. Both complete and grid/object fallback solve only **1/233 new-ID training tasks**, `5751f35e`. Six ARC2 evaluation IDs also occur in ARC1. These public development datasets are not independent holdouts.
+Decision: coverage under current bounds is the evaluation bottleneck, not just ranking training-fitting candidates. No solver or accepted-math changes. Earlier 006's 27/120 result belongs to external task-specific Python programs, not SymArc.
+Code/evidence: runner removed, runnable at `f40ffd2`. Retained [protocol](evidence/011-arc2-transfer/protocol.md), [findings](evidence/011-arc2-transfer/README.md), [full report](evidence/011-arc2-transfer/full/report.md), pilot, task TSVs, overlap analysis and source/data/binary manifests.
 
 ## Entry format
 

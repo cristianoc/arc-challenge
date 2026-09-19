@@ -1,7 +1,0 @@
-[package]
-name = "symarc-exp-011-arc2-transfer"
-version = "0.1.0"
-edition = "2021"
-[dependencies]
-symarc = { path = "../.." }
-symarc-exp-003-objects = { path = "../003-objects" }
