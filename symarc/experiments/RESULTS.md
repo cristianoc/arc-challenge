@@ -128,7 +128,7 @@ Question: model an abstraction `a : X -> A` by its kernel `a(x)=a(x')`, i.e. the
 Development controls: `7b5033c1` should remain underdetermined because training never varies repeated-colour path order; `8f215267` tests local-patch versus global-count scope and must measure whether its nine within-grid observations contain genuine independent variation; `97d7923e` is treated separately as wrong use of retained information rather than literal representation loss.
 Protocol: freeze a finite local relation/intervention language; infer or instrument candidate decision statistics; search unlabelled kernel-collision witnesses; measure task-level training support for erased distinctions; only then run a blind comparison of shortest-fit, compatible-forgetting, supported-forgetting and conservative/abstaining selection. Synthetic witnesses expose expressivity boundaries but receive no ground-truth labels.
 Decision criterion: do not integrate a heuristic until supported identifications predict blind-test behavior or improve calibrated abstention. If the method reduces to compatibility or needs task-specific interventions, close as negative evidence that sparse ARC examples alone do not justify the quotient.
-Code/evidence: [registered protocol](013-minimal-sufficient-distinction/README.md); runner not implemented yet. Stable core and accepted math unchanged.
+Code/evidence: [registered protocol](013-minimal-sufficient-distinction/README.md) and development-only [support check](013-minimal-sufficient-distinction/run.py). The runner reuses 012's pinned corpus, ignores test outputs when measuring support, and has not yet been executed in a registered run. Stable core and accepted math unchanged.
 
 ## Entry format
 
