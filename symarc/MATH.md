@@ -1,4 +1,20 @@
-# Functional closure under symmetry
+# Accepted mathematical core
+
+The checked library now has two complementary parts:
+
+- [Operation-relative abstraction and exact conditioning](LEARNING.md),
+  checked in [SymArc/Learning.lean](SymArc/Learning.lean): coherent
+  operation sharing, conflict witnesses, absence of a greatest coherent
+  quotient, nonvacuous prediction, and exact whole-family conditioning.
+- Functional closure and equivariance, described below and checked in
+  [SymArc/Theory.lean](SymArc/Theory.lean).
+
+Both are imported by the standard `lake build` target. Experimental
+selection priors, confidence scores and benchmark claims are not part of
+this accepted mathematics. The new learning theorems do not verify the
+Python research implementations or change the stable Rust solver.
+
+## Functional closure under symmetry
 
 This is the current mathematical account for the experiments. The checked
 model is [SymArc/Theory.lean](SymArc/Theory.lean); the executable model is

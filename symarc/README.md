@@ -1,8 +1,10 @@
 # SymArc experiments
 
-One Rust solver and a Lean mathematical model for exploring abstraction,
-program entropy, and functional closure under symmetry. Start with [MATH.md](MATH.md) for the
+A stable Rust solver and a checked Lean mathematical core for studying
+operation-relative abstraction, program families, and functional closure under symmetry. Start with [MATH.md](MATH.md) for the
 current definitions, proved statements, and approximation boundaries.
+[LEARNING.md](LEARNING.md) gives the integrated abstraction/conditioning account;
+experimental construction procedures and their evidence remain separate.
 
 ## Build and check
 

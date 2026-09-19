@@ -263,6 +263,15 @@ Checks: 12 new and 58 inherited tests; 1800 explicit-fit and 200 concrete-progra
 Decision: no domain/branch-confidence heuristic integration. Joint context-and-conditional construction is a distinct next question; do not infer that unseen fallbacks are labelled or that branch coverage certifies scope. Stable core, old wrappers and accepted mathematics unchanged.
 Code/evidence: [protocol and sources](025-guarded-fallbacks/README.md), [findings](evidence/025-guarded-fallbacks/README.md), compact results and certificates; companion archive has dependencies, projected inputs, separate answers, full pools/predictions and audits. Prediction SHA-256 ARC1 `10b5d4e374029b314acb6ee83689dfaf1e9fc2220b517f4e7e21fc33a269b250`; controlled `a0c1151e87b5fbb2277765b29cf8ef98aeb4421117d9e8ae662273d5e04efe2c`.
 
+
+### 026-constructed-predicates — Can a reusable predicate be constructed in a common low-level grammar?
+Status: active — protocol and source hashes frozen; no scientific outcomes yet.
+Baseline: `92a73f49`; protocol `8ca83c78`, source hashes `4b70b9e1`. Separate accepted-core integration adds 15 Lean results on operation-relative coherence and exact conditioning, with successful `lake build`, axiom audit and Rust checks in Actions run 35452954813. No solver policy is integrated.
+Comparison: finite cell sets observed through count and coordinate spans; synthesize arithmetic/Boolean predicates through expanded size 5 and constant-branch programs through size 8. Direct program enumeration versus class/action compatibility construction, exact minimum-program-set equality, explicit library-body cost, and alias invariance. Generic counts/spans/operators supplied; no rectangle atom. One deterministic semantic/work-count study, not a runtime comparison or ARC benchmark.
+Data: all 511 nonempty 3x3 subsets for construction, all 65535 nonempty 4x4 subsets plus fixed larger/translated banks for scoring; row-interval teacher independent of arithmetic learner. Four branch-label transfer tasks receive the same source evidence in both methods. Hollow-frame task is a vocabulary-conflict control; no post-score primitive extension. Query inputs/answers do not enter predicate selection.
+Checks: twelve pre-run tests including 120 direct/constructive comparisons. Exact rejection witnesses, independently enumerated grammar/programs, independent geometry scoring and reproduction required. No outcome or speedup claimed yet.
+Code/evidence: [registered protocol](026-constructed-predicates/README.md); frozen source hashes in preregistration.json. Stable Rust core and previous experimental wrappers unchanged.
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
