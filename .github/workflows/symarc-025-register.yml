@@ -1,0 +1,39 @@
+name: Register SymArc 025
+on:
+  push:
+    branches: [symarc/stable-core]
+    paths: [.github/workflows/symarc-025-register.yml]
+permissions:
+  contents: write
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: symarc/stable-core
+      - name: Register this experiment only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('symarc/experiments/RESULTS.md'); old=p.read_text()
+          assert '### 025-guarded-fallbacks' not in old
+          entry='''### 025-guarded-fallbacks — Can guarded operations repair domain failures?
+          Status: active — protocol registered; no scientific outcomes yet.
+          Baseline: `cf09c2e6`; protocol `42c75add`. Same ARC1 400+400 and 24 controlled problems from 023/024. Reused public data, not fresh holdout.
+          Comparison: fixed base 023 context tuples, original operations versus all 144 two-leaf OrElse extensions or only those with both branches exercised in training. Relearn operation sets and branch support inside internal/outer folds, apply exact query totality and frozen ranking; retain base/observed union control. No new feature search or defaults.
+          Pre-run boundary: an operation defined on all training occurrences supplies no labels for its fallback; every literal fallback remains compatible. Branch-support filtering is an explicit prior, not new evidence or a correctness theorem.
+          Checks required: synthetic program enumeration, independent fitting/branch/totality/ranking audit, baseline 024 replay, source hashes and frozen predictions before separate scoring.
+          Code/evidence: [protocol](025-guarded-fallbacks/README.md). Stable solver, old wrappers and accepted mathematics unchanged.
+
+          '''
+          import textwrap
+          p.write_text(old.replace('## Entry format',textwrap.dedent(entry)+'## Entry format'))
+          Path('.github/workflows/symarc-025-register.yml').unlink()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add symarc/experiments/RESULTS.md .github/workflows/symarc-025-register.yml
+          git commit -m 'experiments: register 025 guarded fallback comparison'
+          git push origin HEAD:symarc/stable-core
