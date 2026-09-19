@@ -1,0 +1,74 @@
+name: Finalize audited SymArc 025
+on:
+  push:
+    branches: [symarc/stable-core]
+    paths: [.github/workflows/symarc-025-finalize.yml]
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: symarc/stable-core
+      - name: Verify actual resumed implementation and controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          e=Path('symarc/experiments/025-guarded-fallbacks')
+          registered=json.loads((e/'resume-registration.json').read_text())
+          for name,expected in registered['source_hashes'].items():
+              assert hashlib.sha256((e/name).read_bytes()).hexdigest()==expected,name
+          assert hashlib.sha256((e/'audit.py').read_bytes()).hexdigest()=='ac1ad58401c71751e19a3144b13f795a8bb5aeb30f2e38b72e5578a4babd1ecc'
+          assert hashlib.sha256((e/'score.py').read_bytes()).hexdigest()=='4cfb470bc4499fea082431b6ce3317b275160d81bf5a42aa38ad4cda85820c1a'
+          PY
+          for e in 018-order-guards 021-default-exceptions 023-query-applicability 024-query-totality 025-guarded-fallbacks; do
+            python3 "symarc/experiments/$e/test_run.py"
+          done
+      - name: Record only the completed experiment and remove this workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import re,textwrap
+          from pathlib import Path
+          p=Path('symarc/experiments/RESULTS.md');old=p.read_text()
+          entry='''
+          ### 025-guarded-fallbacks — Can branch-supported domain guards repair partial operations?
+          Status: closed — no integration; retain the exact guarded interpreter, independent auditor and branch-evidence counterexamples as reusable controls.
+          Baseline: `cf09c2e6`; interrupted protocol `42c75add` and active entry preceded execution, but its hashed source files were never published/recovered. Resumed at `2421c4bf`; reconstructed the unchanged design, registered new hashes at `e68100e9`, published run/tests at `b5fe81fe`/`81a70191` before resumed corpus predictions. Old preregistration retained as history, not a claimed byte reproduction.
+          Comparison: frozen 023 base full/outer feature pools, 29 features and <=3 selected terms; 19 primitives versus 144 OrElse extensions, either unrestricted or requiring both branches in labelled occurrences of the same key; fourth policy retains base and supported models. Refit operations, support and internal scores in every fold; exact query totality; no new feature search or action/default prior. All 800 reused ARC1 tasks and 24 previously inspected controlled specifications. Twelve processes, fixed batches; both corpora persisted before separate scoring. No fresh holdout or ARC2 run.
+          ARC1 result: base/all/observed/union relational training solutions **30/26/29/30**, complete errors **2/1/1/2**, no-fit hybrid **80/77/79/80** of 400. Every evaluation arm has five standalone solutions, no complete errors and 27/400 hybrid solutions. No correct-task gains. All loses a699fb00,d511f180,d5d6de2d,e8593010; observed loses only a699fb00. f76d97a5 becomes incomplete, not correct. Union selects base everywhere and preserves every query output. Prior default/tie-complete hybrid at 81/27 remains unchanged.
+          Mechanisms: any primitive fitting all observations of a key was defined there, so all ten constant OrElse fallbacks fit an unobserved branch and are total but disagree on its colour. Branch support is not sufficient either: on a699fb00, OrElse(copy south,constant 0) has both labelled branches but produces a new wrong alternative, losing completion. After-score concrete oracle counts are 34/35/34 training and five each evaluation; only f76d97a5 gains a correct program in unrestricted guards, and its necessary fallback is unobserved. Query-label oracle is not used for selection.
+          Controls: combined palette/row demonstrations retain 216/216. With neither contrast, base 12 correct/204 wrong becomes 12/12/192 incomplete for unrestricted guards, 12/108/96 for observed; mainly an abstention tradeoff. Other factorial and legacy-bank outcomes retained separately. Added action families retain primitives, so fixed-tuple internal evidence cannot improve; only five observed full-data models gain totality, none wins union. The old fitting-context restriction excludes coarser contexts requiring conditionals in the first place.
+          Checks: 12 new and 58 inherited tests; 1800 explicit-fit and 200 concrete-program controls. Base matches 024 on 824 tasks, 66752 model occurrences and 1737 outer choices. Independent explicit-set audit verifies 59012 tables, 5248284 context action sets, 89916 model occurrences, 436557 candidate grids, 10244 choices, 3296 raw and 3200 hybrid scores, plus 2145 grouped branch witnesses. Primitive extraction/search reused; new fitting/conditioning/selection independently reconstructed. All 14 scientific batches repeat byte-identically. Oversized verification/repeat attempts were rerun unchanged in recorded smaller batches.
+          Decision: no domain/branch-confidence heuristic integration. Joint context-and-conditional construction is a distinct next question; do not infer that unseen fallbacks are labelled or that branch coverage certifies scope. Stable core, old wrappers and accepted mathematics unchanged.
+          Code/evidence: [protocol and sources](025-guarded-fallbacks/README.md), [findings](evidence/025-guarded-fallbacks/README.md), compact results and certificates; companion archive has dependencies, projected inputs, separate answers, full pools/predictions and audits. Prediction SHA-256 ARC1 `10b5d4e374029b314acb6ee83689dfaf1e9fc2220b517f4e7e21fc33a269b250`; controlled `a0c1151e87b5fbb2277765b29cf8ef98aeb4421117d9e8ae662273d5e04efe2c`.
+
+          '''
+          pattern=r'^### 025-guarded-fallbacks\b.*?(?=^### |^## Entry format)'
+          updated,n=re.subn(pattern,textwrap.dedent(entry).lstrip(),old,flags=re.M|re.S)
+          assert n==1,n
+          p.write_text(updated)
+          Path('.github/workflows/symarc-025-finalize.yml').unlink()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add symarc/experiments/RESULTS.md .github/workflows/symarc-025-finalize.yml
+          git commit -m 'experiments: close guarded fallback study with audited branch limits'
+          git push origin HEAD:symarc/stable-core
+          mkdir -p archive
+          git rev-parse HEAD > archive/source-revision.txt
+          tar -czf archive/symarc-025-source.tar.gz symarc/experiments/025-guarded-fallbacks symarc/experiments/evidence/025-guarded-fallbacks symarc/experiments/RESULTS.md
+          sha256sum archive/symarc-025-source.tar.gz > archive/SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: symarc-025-verified-source
+          path: archive/
+          retention-days: 90
+          if-no-files-found: error
