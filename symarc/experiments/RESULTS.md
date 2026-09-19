@@ -96,6 +96,14 @@ Inspection: `31f7f899` transfers a one-cell input asymmetry to its output; `67e4
 Decision: close with all flags and inspected grids. No strong counterexample under this finite whole-grid symmetry menu and support threshold; output-only exceptions are weaker. Does not cover local/object-centred symmetries or certify well-posedness. No solver integration or accepted-math change.
 Code/evidence: runner removed, reproducible at `a0a0523`. Retained [protocol](evidence/010-test-surprises/protocol.md), [findings and case boards](evidence/010-test-surprises/README.md), [report](evidence/010-test-surprises/report.md), [all flags CSV](evidence/010-test-surprises/flags.csv), complete per-task results/hashes and manifest.
 
+### 011-arc2-transfer — How do the unchanged solver configurations perform on ARC2?
+Status: active — registered before measurement.
+Baseline: `2383df6`; unchanged stable solver defaults and 003 object library. Reproduce ARC1 400+400; measure ARC2 1000+120 at `f3283f7` without tuning.
+Comparison: complete pipeline, grid depth 2, objects, grid-first object fallback. Twelve workers; 24 hash-selected tasks/dataset pilot (<120s gate), 600s run cap. Public development data, overlapping training datasets; no blind benchmark claim.
+Result: not run yet.
+Decision: measurement only; no integration or source changes to solver.
+Code/evidence: [protocol](011-arc2-transfer/README.md).
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
