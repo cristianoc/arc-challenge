@@ -1,15 +1,72 @@
-# 008: symmetry rejects incidental commitments, but leaves structural mistakes
+# 008: manually chosen symmetries invalidate seven known incorrect solutions
 
-The fixed contracts distinguish **7/10 original/repaired pairs**. Colour
-renaming rejects five originals; geometry rejects two additional originals.
-All ten repairs survive. Three incorrect originals also survive: path histogram,
-local counting, and position-specific bar selection. This is discrimination
-within ten hand-chosen pairs, not a 70% generalisation or repair-discovery score.
+**What we showed:** after inspecting the tasks and their test answers, we could
+manually choose plausible task-specific symmetry requirements that seven of ten
+known incorrect programs violate, while their hand-written repairs satisfy them.
+The result is conditional on accepting those requirements as properties of the
+intended task.
+
+I chose the requirements from a small menu of familiar ARC-inspired
+transformations: colour renaming, horizontal reflection and transposition.
+These are not universally valid invariants established by ARC's declared priors.
+The experiment did not discover them, justify their applicability from training
+pairs alone, or derive them from a study of Kaggle methods. Choosing which ones
+apply already supplies part of our interpretation of the intended solution.
+
+## What was implemented and run
+
+A Python runner compared ten existing original programs with ten existing
+hand-written repairs from audit 006. Both versions fit all 25 supplied training
+examples. The runner transformed training inputs and their expected outputs
+according to the manually supplied requirements, executed both programs, and
+checked exact agreement. It performed 854 colour-swap checks and seven geometry
+checks per candidate family. It did not synthesise or repair programs.
+
+**Results:** colour swaps reject five originals; geometry checks reject two
+additional originals. All ten repairs pass. Three originals also pass everything:
+histogram instead of path order, local instead of global counting, and
+position-specific guards instead of rank selection. This is a retrospective
+7/10 result within selected pairs, not a blind repair or generalisation score.
+
+## Exactly which assumptions were supplied
+
+A common menu was used, but **the same invariants were not applied to every
+task**. These choices were made manually during the earlier retrospective audit:
+
+| Task(s) | Colours held fixed during swaps | Geometry checked |
+|---|---|---|
+| `1ae2feb7` | 0 | Horizontal reflection |
+| `135a2760` | 0 | Transposition |
+| `221dfab4` | 0, 3, 4 | Transposition |
+| `e3721c99` | 0, 5 | None |
+| `6ffbe589`, `7b5033c1`, `8f215267`, `97d7923e`, `a251c730`, `dbff022c` | 0 | None |
+
+Every pair of colours outside the fixed set was swapped. The rationale was that
+some colour names appeared interchangeable, while background or designated
+marker/target colours had specific roles; geometry was selected where the
+proposed interpretation appeared orientation-independent. These are task-specific
+judgments informed by inspected answers, not consequences established by the
+training data. A repair passing a chosen requirement does not justify that
+requirement: using it as justification would be circular.
+
+For a chosen transformation T, a training pair (x,y) generated the expected pair
+(T(x),T(y)). Calling a mismatch an error on that new pair assumes the intended
+rule respects T. Removing test outputs from the runner does not undo their
+influence on the prior manual selection of repairs and requirements. Likewise,
+registering the execution protocol before running it did not make these choices
+blind.
+
+The remaining research problem is **how to select and justify an applicable
+transformation law without already knowing the intended solution**. This
+experiment tested the consequences of supplied laws, not that discovery problem.
+Neither anti-unification nor MDL was implemented or evaluated.
 
 [Direct report](report.md) · [per-task counts and counterexamples](results.json) ·
-[manifest](run.json) · [registered protocol](protocol.md).
+[manifest](run.json) · [original registered protocol](protocol.md).
+The report and protocol are retained unchanged as execution records; this note
+clarifies their interpretation.
 
-## What was measured
+## Execution details
 
 Implementation and protocol were committed at
 `b7c96c9dae9e686be42eb648e01ac706446cf4a9` before execution. Both candidates fit
