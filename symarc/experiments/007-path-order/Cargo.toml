@@ -1,0 +1,11 @@
+[package]
+name = "symarc-exp-007-path-order"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+symarc = { path = "../.." }
+symarc-exp-003-objects = { path = "../003-objects" }
+
+[profile.release]
+opt-level = 3

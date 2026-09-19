@@ -58,6 +58,14 @@ Result: originals fit all training pairs on 116/120 tasks; 27/120 pass every tes
 Decision: use explicit witnesses to ground the next bounded expressivity/discovery study, following 005. No language or policy integration; these hand repairs do not establish gains over SymArc or automatic discovery. Select and preregister a mechanism and data policy before further scientific runs. Keep code while this selection is active; close or advance the entry once resolved. Do not use these inspected test answers as an untouched holdout.
 Code/evidence: [protocol](006-repair-audit/README.md), [case catalogue](006-repair-audit/repair_patterns.md), Python witnesses and verification runner; [retained evidence](evidence/006-repair-audit/README.md). External inputs are revision-pinned and hash-checked in an ignored cache, not vendored as a duplicate solver. Accepted math and stable core unchanged.
 
+### 007-path-order — Does preserving path order add useful expressivity?
+Status: active — registered before scientific runs.
+Baseline: `3553c00`; stable core and 003 unchanged; 2026-09-19.
+Comparison: finite segment/select/path-unfold language versus matched one-run-per-colour histogram and grid d2 + 003 objects. Known 006 witness is development-only; scientific run uses 400 public training tasks, 24 hash-selected pilot, 12 workers, 600s limit. Training-only fitting, test inputs for vocabulary, test labels for scoring only. Up to 16 training-fit-selected d3 audits.
+Result: not run yet.
+Decision: retain only on an oracle-correct public-training gain beyond control and audited d3; report selection gains/losses separately. No core integration or untouched-holdout claim.
+Code/evidence: [preregistered protocol](007-path-order/README.md); exact grammar, selection and stopping rules there.
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
