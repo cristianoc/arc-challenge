@@ -1,0 +1,35 @@
+{
+  "origin_format":["demonstration_or_query_index","row","column"],
+  "coordinates":"zero-based",
+  "f76d97a5":{
+    "diagnostic":"after-score existence of a correct concrete program, not selected prediction",
+    "query_labels_used_for_this_diagnostic":true,
+    "features":[5,6,14],
+    "key":[0,0,2],
+    "operation":"OrElse(copy:E,copy:N)",
+    "operation_id":84,
+    "training":[{"origin":[1,4,0],"branch":"primary","label":6}],
+    "query":[{"origin":[0,0,3],"branch":"primary","output":3},{"origin":[0,2,4],"branch":"fallback","output":3},{"origin":[0,3,3],"branch":"primary","output":3}],
+    "training_fallback_observed":false,
+    "correct_guard_alternatives_at_this_key":48,
+    "correct_guard_alternatives_with_both_branches_observed":0,
+    "whole_task_result":"Base is complete and wrong. All and Observed are incomplete. Some correct concrete table exists only in All, not in the other two retained pools."
+  },
+  "a699fb00":{
+    "diagnostic":"a fitting guard with both branches observed creates a new wrong possibility",
+    "features":[0,27,28],
+    "key":[0,1,0],
+    "operation":"OrElse(copy:S,constant:0)",
+    "operation_id":37,
+    "training":[{"origin":[0,0,3],"branch":"primary","primary_value":0,"fallback_value":0,"output":0},{"origin":[2,9,4],"branch":"fallback","primary_value":-1,"fallback_value":0,"output":0}],
+    "query_index":0,
+    "query_cell":[4,5],
+    "input":0,
+    "official_output":0,
+    "operation_output":1,
+    "retained_possible_colours":[0,1],
+    "query_primary_occurrences_for_this_key":19,
+    "query_fallback_occurrences_for_this_key":0,
+    "whole_task_result":"The unchanged base model is correct. The Observed model now abstains at (4,5) and (4,7), losing the complete solution."
+  }
+}
