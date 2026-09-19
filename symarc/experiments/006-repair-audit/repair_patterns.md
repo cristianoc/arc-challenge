@@ -2,7 +2,9 @@
 
 A retrospective study of `cristianoc/arc-agi-2-abstraction-dataset`, 19 September 2026.
 
-**Main finding:** the useful repairs do more than replace constants with variables. They recover the source of a decision: a legend, a marker, a path, a global collection of objects, or a coordinate frame. Anti-unification can expose parameters, but most successful repairs additionally change how parameters are computed, what information is retained, or how the scene is represented.
+**What was done:** I inspected failing programs and official test answers, then hand-wrote ten repairs and executed them on the supplied examples. All ten repairs preserve the 25 training pairs and pass the 14 known test pairs, versus 0/14 for the originals. This is a retrospective repair catalogue, not an implemented method for discovering repairs.
+
+**Pattern in these hand-written repairs:** the useful changes do more than replace constants with variables. They recover the source of a decision: a legend, a marker, a path, a global collection of objects, or a coordinate frame. Anti-unification can expose parameters, but most successful repairs additionally change how parameters are computed, what information is retained, or how the scene is represented.
 
 ## Scope and evidence
 
@@ -11,7 +13,7 @@ I scanned the 120 solver files and executed all 120 against the official ARC-AGI
 - 116/120 original solvers pass all their training examples, reproducing the repository's claim.
 - 27/120 pass every supplied test example; 38/167 individual test examples pass.
 - All ten selected repaired solvers preserve all 25 training pairs and pass all 14 supplied test pairs; their original versions passed 0/14 test pairs.
-- The repairs also pass 390 colour-permutation checks and 13 reflection/transposition checks. These transformed cases check particular symmetries; they are not independently drawn ARC examples.
+- The repairs also pass 390 colour-permutation checks and 13 reflection/transposition checks. I manually chose task-specific transformations and fixed colours after inspecting the tasks and answers. These assumptions were neither inferred from training data nor established as universal ARC invariants. The transformed cases check consistency with those assumptions; they are not independently drawn ARC examples.
 - **Test outputs were inspected during diagnosis and repair. These results establish retrospective repairs, not blind discovery or a generalisation benchmark score.** No claim is made that the repairs are unique or correct on every future instance.
 - The prototypes are ordinary Python. I have not certified them against CompDSL's syntax or complexity validators. Several reuse the original solver's helpers.
 
@@ -54,7 +56,13 @@ This is a compound repair: symmetry normalisation is necessary but insufficient.
 
 In `221dfab4`, the original periodic rule uses `r % 6`. Training happens to align its green rows at row zero. The repaired rule measures distance from the yellow seed stripe: offsets 0 and 2 modulo 6 are yellow, offset 4 is green, and the intervening stripe cells use the background colour. A transpose handles a seed stripe at the left edge. The original object overlay can then be retained in the normalised coordinates.
 
-The principled operation is change of coordinates. If T puts an input into a canonical orientation, use `T^-1(P(T(x)))`. The hard part includes selecting T from structural evidence. Equivariance is a requirement on the resulting function, not a theorem that automatically identifies T.
+The principled operation is change of coordinates. If $T$ puts an input into a canonical orientation, use
+
+$$
+T^{-1}\!\bigl(P(T(x))\bigr).
+$$
+
+The hard part includes selecting T from structural evidence. Equivariance is a requirement on the resulting function, not a theorem that automatically identifies T.
 
 ## 3. The input contains a local rulebook: dbff022c and e3721c99
 
@@ -136,7 +144,7 @@ The original program dispatches on exact palettes. The successful repair interpr
 
 The test's grey layer gets three turns, green two, and yellow one. The main figure must also be extracted without dropping its disconnected outer pieces: the original dense-run crop produces 7×7 rather than 13×13. The prototype groups nonzero cells within Chebyshev distance two and selects the largest group before cropping. This extraction heuristic works on the supplied examples, but is not a universal object-separation theorem.
 
-The semantic core is principled: each instruction denotes an element of the cyclic rotation group C4. The geometric extraction remains a separate assumption. This is a useful example of a principled core combined with a contingent perception routine.
+The semantic core is principled: each instruction denotes an element of the cyclic rotation group $C_4$. The geometric extraction remains a separate assumption. This is a useful example of a principled core combined with a contingent perception routine.
 
 ## Partial and unresolved repairs
 
@@ -162,7 +170,13 @@ Anti-unification can factor the horizontal/vertical painting machinery after coo
 
 ## What the patterns say about anti-unification and MDL
 
-The standard anti-unification guarantee concerns common substitution instances: from specialised fragments P_i obtain a template G and substitutions sigma_i with G sigma_i = P_i. It does not guarantee that executing a repaired, closed solver gives more correct answers. See [Cerna and Kutsia, Anti-unification and Generalization: A Survey](https://www.ijcai.org/proceedings/2023/0736.pdf).
+The standard anti-unification guarantee concerns common substitution instances: from specialised fragments $P_i$, obtain a template $G$ and substitutions $\sigma_i$ such that
+
+$$
+G\sigma_i = P_i \qquad \text{for every } i.
+$$
+
+It does not guarantee that executing a repaired, closed solver gives more correct answers. See [Cerna and Kutsia, Anti-unification and Generalization: A Survey](https://www.ijcai.org/proceedings/2023/0736.pdf).
 
 The repairs suggest a useful hierarchy:
 
@@ -174,7 +188,14 @@ The repairs suggest a useful hierarchy:
 
 These are mechanisms, not mutually exclusive task labels. A single successful repair often combines several. No verified case here demonstrates that raw AST anti-unification alone recovers a full successful solver.
 
-For symmetry, a useful contract is P(T(x)) = T(P(x)), with the corresponding action on outputs. This removes dependence on incidental coordinates or colour names when that transformation really is a task symmetry. It is not valid to assume every colour permutation or geometric transformation is a symmetry of every ARC task. The general mathematical connection is equivariance; see [Bronstein et al., Geometric Deep Learning](https://arxiv.org/abs/2104.13478).
+For symmetry, a proposed contract uses corresponding input and output transformations:
+
+$$
+P\bigl(T_{\mathrm{in}}(x)\bigr)
+= T_{\mathrm{out}}\bigl(P(x)\bigr).
+$$
+
+This removes dependence on incidental coordinates or colour names when that transformation really is a task symmetry. It is not valid to assume every colour permutation or geometric transformation is a symmetry of every ARC task. The general mathematical connection is equivariance; see [Bronstein et al., Geometric Deep Learning](https://arxiv.org/abs/2104.13478).
 
 MDL could rank descriptions of these mechanisms. A legend interpreter can replace many colour cases; a path traversal can replace a histogram plus exceptions; a template interpreter can replace entire stored outputs. But the relevant operations must be expressible in the hypothesis language. A shorter encoding does not prove that the hypothesis is intended, and no MDL objective was implemented or measured in this study. Library learning is relevant to making such reusable operations available; [DreamCoder](https://arxiv.org/abs/2006.08381) is a precedent, not an explanation that subsumes every repair here.
 

@@ -1,5 +1,10 @@
 # Retrospective repair audit evidence
 
+Ten repairs were hand-written after inspecting official test answers. They
+preserve 25/25 training pairs and pass 14/14 known test pairs. The runner checks
+these supplied repairs; it does not discover them. The colour and geometry
+checks also use manually chosen task-specific assumptions.
+
 - `baseline.json`: per-example outcomes for all 120 external original solvers.
 - `repair_results.json`: ten repaired witnesses, exact matches and metamorphic checks.
 - `provenance.json`: original source/data revisions and solver blob hashes.

@@ -6,8 +6,8 @@ witnesses, and the distinction between anti-unification and additional inference
 
 ## Question and decision
 
-Which changes turn training-perfect, test-failing external ARC programs into
-successful explanations, and which can be expressed as principled operations?
+Which hand-written changes make training-perfect, test-failing external ARC
+programs also match their known test answers, and what mechanisms recur?
 This supplies explicit witnesses for the expressivity audit requested by 005.
 It does not yet test whether SymArc can express or discover these repairs.
 
@@ -28,8 +28,10 @@ production benchmark gain. All twelve examined tasks are development data.
 - Whole-corpus control: 116/120 training-perfect tasks, 27/120 test-perfect
   tasks, 38/167 correct test grids. Selected treatment: 25/25 training pairs,
   14/14 test pairs, versus 0/14 tests for their controls.
-- Checks: 390 seeded colour permutations and 13 geometry transformations;
-  fixed colours and limitations are recorded in the catalogue/results.
+- Checks: 390 seeded colour permutations and 13 geometry transformations.
+  Applicable transformations and fixed colours were manually chosen per task
+  after inspecting answers. Passing checks supports consistency with these
+  supplied assumptions, not their validity or automatic discovery.
 - Serial functional checks; three-second per-example timeout for the control
   census. No search-depth, seed or compute-budget comparison with SymArc.
   Historical audit timings/toolchain were not systematically retained.
@@ -58,17 +60,17 @@ No Rust or Lean build is required: this does not modify either implementation.
 The partial symmetry function deliberately rejects the eight unresolved test
 cells and is excluded from the ten successful repair witnesses.
 
-## Next bounded step
+## Follow-up and retention
 
-Select one mechanism from the catalogue and formulate its representation and
-search operators against SymArc's current grid/object language. Before running
-that study, record the grammar, control, budget, selection policy, eligible data,
-and acceptance criterion. Use only permitted training evidence for discovery;
-these inspected evaluation answers cannot serve as an untouched holdout.
-A hand-written witness is insufficient for integration. Require a reproducible
-language/search comparison that demonstrates discovery gains and records losses.
+The mechanism-selection step is complete. [007](../evidence/007-path-order/README.md)
+implemented a manually designed path language: it expressed the known repair
+but added no coverage on 400 public training tasks.
+[008](../evidence/008-repair-constraints/README.md) tested manually selected
+symmetry requirements against the original/repair pairs. Seven originals were
+rejected, conditional on accepting the task-specific requirements; three survived.
+Neither study discovers or justifies the intended abstraction automatically.
 
-Keep this directory while mechanism selection is active. Once resolved, record
-its disposition and retain only code needed for the next study or an explicitly
-justified integration candidate. Accepted mathematics stays in `MATH.md` and
-Lean; proposed interpretations stay here until accepted.
+This audit is closed. The catalogue and executable witnesses remain as reusable
+inputs for ongoing research, as recorded in the ledger. Inspected test answers
+remain development evidence. Accepted mathematics and the stable core are
+unchanged.

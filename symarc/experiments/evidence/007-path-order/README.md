@@ -1,5 +1,20 @@
 # 007: path order is expressible, but training fit does not select it
 
+**Implemented experiment:** I manually designed a small language for traversing
+coloured paths, based on a repair whose test answer had already been inspected.
+A Rust enumerator searched that supplied language using training pairs, alongside
+a histogram language and existing grid/object solvers. The search selected
+programs automatically; the path concept, grammar and selection order were
+supplied by me, not discovered by the search.
+
+**Results:** on the known example, both histogram and path programs fit training;
+path-first selection predicts the known answer, while histogram-first selection
+fails. On 400 previously used public training tasks, the path language fits
+none, and combined accuracy stays 60/400. Its one-dimensional output restriction
+already excludes 388 of those tasks. This demonstrates a bounded negative result
+and ambiguity on one inspected example, not general discovery of path abstraction
+or a justified preference for path over histogram.
+
 The frozen extension failed its public-training coverage criterion and is
 closed. Stable core, 003 objects, and accepted mathematics are unchanged.
 [Protocol](protocol.md) was published at `8ed404a` before scientific runs;
