@@ -252,6 +252,14 @@ Coupling/checks: four real outer-model projections differ from naive default fil
 Decision: retain domain constraints separately from truth/confidence claims. Next construction target is scope refinement or guarded extension suggested by domain obstructions, not automatically selecting a total constant when the partial rule fails. Stable core, prior wrappers and accepted mathematics unchanged.
 Code/evidence: [protocol and exact implementation](024-query-totality/README.md), [findings](evidence/024-query-totality/README.md), compact results and case certificates; full evidence/reproduction archive. ARC1/base prediction SHA-256 `bb2f4bd3688c62d32cca16bb81386bfcdd108d389225d50496c26cc598637ca2`; default `29b4b81317680d9c2b09de3461fd47790fca88a52e2b0f5fdf2be7b964f4ec40`.
 
+### 025-guarded-fallbacks — Can guarded operations repair domain failures?
+Status: active — protocol registered; no scientific outcomes yet.
+Baseline: `cf09c2e6`; protocol `42c75add`. Same ARC1 400+400 and 24 controlled problems from 023/024. Reused public data, not fresh holdout.
+Comparison: fixed base 023 context tuples, original operations versus all 144 two-leaf OrElse extensions or only those with both branches exercised in training. Relearn operation sets and branch support inside internal/outer folds, apply exact query totality and frozen ranking; retain base/observed union control. No new feature search or defaults.
+Pre-run boundary: an operation defined on all training occurrences supplies no labels for its fallback; every literal fallback remains compatible. Branch-support filtering is an explicit prior, not new evidence or a correctness theorem.
+Checks required: synthetic program enumeration, independent fitting/branch/totality/ranking audit, baseline 024 replay, source hashes and frozen predictions before separate scoring.
+Code/evidence: [protocol](025-guarded-fallbacks/README.md). Stable solver, old wrappers and accepted mathematics unchanged.
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
