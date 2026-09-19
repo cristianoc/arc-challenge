@@ -1,0 +1,30 @@
+{
+  "accepted_math_check": {
+    "run_id": 35452954813,
+    "head_revision": "c06e6ea23d06c8750163e292341cbe15687eb537",
+    "checked_merge_revision": "316e59c05e4625d358715528e85fa4385c4884bb",
+    "result": "success",
+    "lean_version": "4.34.0",
+    "learning_source_sha256": "d3056e2ee06eac315c95f417182a921caeb8c206015b6afa67003b7369b85920",
+    "theorems_in_axiom_audit": 15,
+    "sorry_or_custom_axioms": false,
+    "stable_rust_tests": 11,
+    "stable_cli_regressions": "passed",
+    "artifact_id": 10587875576
+  },
+  "independent_construction_replay": {
+    "run_id": 35454206508,
+    "execution_revision": "cb1577b3f6b95fef0bc629d7288cfccdbb6765d2",
+    "result": "success",
+    "retained_finalization_revision": "55573b1eae8aa1e4a43fc3183cbb89572e4b8c78",
+    "artifact_id": 10587812015,
+    "artifact_name": "symarc-math-026-verified",
+    "exact_files": ["library.json", "construction.json", "predictions.json", "scores.json", "audit.json"],
+    "all_match_original_local_bytes": true,
+    "source_hashes_checked_before_execution": true,
+    "synthetic_tests_passed": 12,
+    "new_independent_task_samples": false
+  },
+  "implementation_boundary": "Lean checks the structural mathematics. Python construction and its auditor are separately executed, not proved implementations of the Lean theorems. The audit uses neither of the scientific Python modules.",
+  "reproduction_command": "python3 symarc/experiments/026-constructed-predicates/reproduce.py --out /tmp/symarc026-fresh"
+}
