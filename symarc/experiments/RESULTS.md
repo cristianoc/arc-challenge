@@ -87,6 +87,14 @@ Interpretation: data can refute a proposed law without justifying a replacement.
 Decision: close. Next question concerns evidence or explicitly supplied priors linking distinct orbits; accepting a law merely because it fits would repeat the earlier justification gap. Stable core and accepted math unchanged.
 Code/evidence: completed runner removed; runnable at `1e69af4`. Retained [protocol](evidence/009-symmetry-compatibility/protocol.md), [finding and exact criterion](evidence/009-symmetry-compatibility/README.md), [direct report](evidence/009-symmetry-compatibility/report.md), witness results and manifest.
 
+### 010-test-surprises — Which training-supported symmetry patterns break on intended tests?
+Status: active — registered before the all-public-task audit.
+Baseline: `b550350`; official ARC-AGI-2 `f3283f7`, all 1,000 training and 120 evaluation tasks.
+Comparison: uniform output-symmetry and conditional input-symmetry-preservation checks, plus 52 individual cyclic equivariance laws. At least two informative training examples for empirical spatial patterns; distinguish support from mere compatibility. Training selects patterns, intended test outputs score breaks. Twelve workers, 600s cap; no solver execution.
+Result: not run yet.
+Decision: descriptive surprise/ambiguity leads, not automatic defective-task verdicts. Inspect top six preservation leads by frozen ranking; retain all flags and source history.
+Code/evidence: [protocol](010-test-surprises/README.md).
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
