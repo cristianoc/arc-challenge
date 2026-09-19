@@ -1,0 +1,45 @@
+name: Finalize audited SymArc 018
+on:
+  push:
+    branches: [symarc/stable-core]
+    paths: [.github/workflows/symarc-018-finalize.yml]
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Replace only the registered 018 entry
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('symarc/experiments/RESULTS.md')
+          text=p.read_text()
+          pattern=r'^### 018-order-guards[^\n]*\n.*?(?=^### |^## Entry format)'
+          matches=list(re.finditer(pattern,text,re.M|re.S))
+          assert len(matches)==1 and 'Status: active' in matches[0].group()
+          entry='''### 018-order-guards — Do order relations and applicability transfer beyond numeric lookup?
+          Status: candidate — retain the relational-transfer learner and controlled guard-selection failure as research evidence; no stable integration.
+          Baseline: `aa0afd5a`; protocol/source hashes committed at `8edf6342`, active ledger at `f50726ed`, before scientific execution. Exact source published subsequently at `78e3fda0`. Official ARC-AGI-2 `f3283f7`, all 1000 training + 120 evaluation tasks; development exclusions `00d62c1b`, `e88171ec`, `29c11459`. Primary denominators 997/120, eligibility 677/81. Reused public data, not untouched holdout.
+          Comparison: 017 joint exact features/19 operations versus six directional order predicates, four beyond-run-validity predicates, or both; union selector. Up to three features, exact conflict-driven search, all consistent operations retained, nested whole-demonstration validation. Query predictions persisted before separate scoring. Supplied predicates/costs; no new output actions or default copying.
+          Result: exact/order/guarded-exact/guarded-order fit 155/156/163/163 training tasks and solve 23/26/27/30 queries, with 3/3/2/2 complete errors. Union equals guarded-order: seven gains, no correct-answer losses; old complete error `5ad8a7c0` becomes incomplete. Evaluation: five fitting tasks, zero complete answers in every arm. Strict union gate retains 12 correct answers, removes both complete errors and discards 18 correct answers. Candidate oracle 32 training/0 evaluation; no production-solver comparison.
+          Mechanisms: `ce9e57f2` selects colour plus comparison of north/south run lengths, passes all three inner and all outer demonstrations and solves a taller query; `2281f1f4` selects north/east operation validity. Known endpoint fixture `29c11459` still selects raw west/east distances, not the proposed general endpoint relation. Order features cannot change full-vocabulary compatibility: 304 training conflicts with/without comparisons, versus 246 with validity predicates.
+          Controlled result: two prespecified nearer/farther-endpoint teachers, two training widths, 28 queries varying width/palette/height. Exact methods solve 0; selected relational methods solve 14, make two complete errors and abstain on 12. An available endpoint-validity candidate solves 28/28 but is not selected. Wrong near-border guard is confounded by common training height; its higher partial validation score comes exactly from four endpoint cells (difference 36/385). Neither competing model passes whole-demo validation. Constructed teacher labels are not ARC ground truth; no post-score policy repair.
+          Checks: 15 synthetic tests, 150 guided/exhaustive controls. Independent audit verifies 110355 subset checks, 17937 necessity and 1290 full-vocabulary certificates, 19598 internal and 11760 outer predictions, 5600 policy/task scores; exact arm matches all 761 eligible 017 joint pools, 1129 candidate models and 2352 outer folds. Outer selector itself is not independently reimplemented. Identical learner completed in fourteen serial 80-task batches, twelve workers each, after monolithic tool-window interruptions; no skipped tasks or search cap. Repeated predictions byte-identical; successful batch times 65.018s/65.691s are provenance only.
+          Decision: retain as a research candidate, not a correctness gate. Next target separates sharing evidence for an output operation from sharing the applicability condition; exact context tables currently conflate these choices. Primitive/action vocabulary and nested evaluation must remain explicit. Stable core and accepted mathematics unchanged.
+          Code/evidence: [protocol and sources](018-order-guards/README.md), [findings](evidence/018-order-guards/README.md), compact results/provenance. Complete predictions, controlled candidates, independent audits, dependencies and reproduction are in the investigation archive. Prediction SHA-256 `97ad00b4c93a2fc0a71003581480cf6ec6db09499aa9c0934197c119025fdad6`.
+
+          '''
+          match=matches[0]
+          p.write_text(text[:match.start()]+entry+text[match.end():])
+          Path('.github/workflows/symarc-018-finalize.yml').unlink()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add symarc/experiments/RESULTS.md .github/workflows/symarc-018-finalize.yml
+          git commit -m 'experiments: record audited 018 outcome and remove one-shot publisher'
+          git push origin HEAD:symarc/stable-core
