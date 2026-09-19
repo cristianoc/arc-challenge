@@ -88,12 +88,13 @@ Decision: close. Next question concerns evidence or explicitly supplied priors l
 Code/evidence: completed runner removed; runnable at `1e69af4`. Retained [protocol](evidence/009-symmetry-compatibility/protocol.md), [finding and exact criterion](evidence/009-symmetry-compatibility/README.md), [direct report](evidence/009-symmetry-compatibility/report.md), witness results and manifest.
 
 ### 010-test-surprises — Which training-supported symmetry patterns break on intended tests?
-Status: active — registered before the all-public-task audit.
-Baseline: `b550350`; official ARC-AGI-2 `f3283f7`, all 1,000 training and 120 evaluation tasks.
-Comparison: uniform output-symmetry and conditional input-symmetry-preservation checks, plus 52 individual cyclic equivariance laws. At least two informative training examples for empirical spatial patterns; distinguish support from mere compatibility. Training selects patterns, intended test outputs score breaks. Twelve workers, 600s cap; no solver execution.
-Result: not run yet.
-Decision: descriptive surprise/ambiguity leads, not automatic defective-task verdicts. Inspect top six preservation leads by frozen ranking; retain all flags and source history.
-Code/evidence: [protocol](010-test-surprises/README.md).
+Status: closed — full public-corpus diagnostic; no confirmed task-defect verdict.
+Baseline: `b550350`; registered code `a0a0523`; official ARC-AGI-2 `f3283f7`, all **1,000 training + 120 evaluation tasks**, 3,591 demonstration / 1,243 test pairs.
+Implementation: same seven D4 output-symmetry and conditional input-symmetry-preservation checks everywhere; at least two informative training instances, exclude coordinate-trivial actions. Also test cyclic groups of seven spatial generators and 45 colour swaps. Training chooses patterns, intended tests score breaks; no candidate solver, repair or task-specific exemptions. Five controls pass; 12 workers, 2.21s.
+Result: **14 tasks (10 training, 4 evaluation)** break an all-training output symmetry, producing 21 query/action flags. Every flagged query input also lacks that symmetry. **Zero** stronger preservation breaks: none has at least two symmetric-input training instances with symmetric outputs followed by a symmetric test input and asymmetric output. Separately, 35 individual laws in 26 tasks become incompatible after tests, but none had changed-input cross-example training transports; mere compatibility is not learned support.
+Inspection: `31f7f899` transfers a one-cell input asymmetry to its output; `67e490f4` changes from square to rectangular templates. `dc433765` consistently moves green toward yellow in all nine pairs, explaining failure of a colour-swap law despite its training compatibility. A separate unresolved quality lead: `a416fc5b` has a monochrome 16×16 third training output among patterned 11×11 examples. No author-intent or annotation-error conclusion is established.
+Decision: close with all flags and inspected grids. No strong counterexample under this finite whole-grid symmetry menu and support threshold; output-only exceptions are weaker. Does not cover local/object-centred symmetries or certify well-posedness. No solver integration or accepted-math change.
+Code/evidence: runner removed, reproducible at `a0a0523`. Retained [protocol](evidence/010-test-surprises/protocol.md), [findings and case boards](evidence/010-test-surprises/README.md), [report](evidence/010-test-surprises/report.md), [all flags CSV](evidence/010-test-surprises/flags.csv), complete per-task results/hashes and manifest.
 
 ## Entry format
 
