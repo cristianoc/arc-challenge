@@ -1,0 +1,520 @@
+{
+  "summary": {
+    "first_relational_examples": [
+      {
+        "after": "0x50500000000000000000000000400000000000000400000",
+        "before": "0x50550544000000000055050500400000001540000400040",
+        "first_witness": {
+          "after": [
+            0,
+            3
+          ],
+          "before": [
+            0,
+            2,
+            3
+          ],
+          "forbidden": [
+            1,
+            0
+          ],
+          "indices": [
+            74,
+            85
+          ]
+        },
+        "index": 400,
+        "label": 0,
+        "query": 1,
+        "relational_only_exclusions": 28
+      },
+      {
+        "after": "0xa0a00000000000000000000000800000000000000800000",
+        "before": "0xa0aa0a880000000000aa0a0a00800000002a80000800080",
+        "first_witness": {
+          "after": [
+            0,
+            3
+          ],
+          "before": [
+            0,
+            1,
+            3
+          ],
+          "forbidden": [
+            0,
+            1
+          ],
+          "indices": [
+            74,
+            85
+          ]
+        },
+        "index": 400,
+        "label": 1,
+        "query": 1,
+        "relational_only_exclusions": 28
+      },
+      {
+        "after": "0x5555505000000000000000000000055100000000000154000001",
+        "before": "0x404501015555505000000014005555500505055100111114015554000511",
+        "first_witness": {
+          "after": [
+            0,
+            3
+          ],
+          "before": [
+            0,
+            2,
+            3
+          ],
+          "forbidden": [
+            1,
+            0
+          ],
+          "indices": [
+            28,
+            36
+          ]
+        },
+        "index": 400,
+        "label": 0,
+        "query": 1,
+        "relational_only_exclusions": 55
+      },
+      {
+        "after": "0x404501010000000000000014005555500505000000111114015400000510",
+        "before": "0x404501015555505000000014005555500505055100111114015554000511",
+        "first_witness": {
+          "after": [
+            0,
+            3
+          ],
+          "before": [
+            0,
+            2,
+            3
+          ],
+          "forbidden": [
+            1,
+            0
+          ],
+          "indices": [
+            28,
+            30
+          ]
+        },
+        "index": 400,
+        "label": 1,
+        "query": 1,
+        "relational_only_exclusions": 67
+      },
+      {
+        "after": "0x808a0202000000000000002800aaaaa00a0a00000022222802a800000a20",
+        "before": "0x808a0202aaaaa0a00000002800aaaaa00a0a0aa20022222802aaa8000a22",
+        "first_witness": {
+          "after": [
+            0,
+            3
+          ],
+          "before": [
+            0,
+            1,
+            3
+          ],
+          "forbidden": [
+            0,
+            1
+          ],
+          "indices": [
+            28,
+            30
+          ]
+        },
+        "index": 400,
+        "label": 0,
+        "query": 1,
+        "relational_only_exclusions": 67
+      }
+    ],
+    "historical": [
+      {
+        "depths": {
+          "halving": 2,
+          "marginal": 1,
+          "pair": 1
+        },
+        "invert": false,
+        "kind": "perimeter",
+        "target": 258
+      },
+      {
+        "depths": {
+          "halving": 2,
+          "marginal": 1,
+          "pair": 1
+        },
+        "invert": true,
+        "kind": "perimeter",
+        "target": 259
+      },
+      {
+        "depths": {
+          "halving": 7,
+          "marginal": 5,
+          "pair": 5
+        },
+        "invert": false,
+        "kind": "filled",
+        "target": 2
+      },
+      {
+        "depths": {
+          "halving": 7,
+          "marginal": 5,
+          "pair": 5
+        },
+        "invert": true,
+        "kind": "filled",
+        "target": 3
+      },
+      {
+        "depths": {
+          "halving": 2,
+          "marginal": 3,
+          "pair": 3
+        },
+        "invert": false,
+        "kind": "missing_corner",
+        "target": 24
+      },
+      {
+        "depths": {
+          "halving": 2,
+          "marginal": 3,
+          "pair": 3
+        },
+        "invert": true,
+        "kind": "missing_corner",
+        "target": 25
+      },
+      {
+        "depths": {
+          "halving": 6,
+          "marginal": 5,
+          "pair": 5
+        },
+        "invert": false,
+        "kind": "corners",
+        "target": 208
+      },
+      {
+        "depths": {
+          "halving": 6,
+          "marginal": 5,
+          "pair": 5
+        },
+        "invert": true,
+        "kind": "corners",
+        "target": 209
+      }
+    ],
+    "input_classes": 401,
+    "policies": {
+      "halving": {
+        "budgets": [
+          {
+            "budget": 0,
+            "identified": 0,
+            "sum_hypotheses": 31784,
+            "sum_pair": 12342452,
+            "sum_unary": 32124
+          },
+          {
+            "budget": 1,
+            "identified": 0,
+            "sum_hypotheses": 16036,
+            "sum_pair": 9571814,
+            "sum_unary": 24596
+          },
+          {
+            "budget": 2,
+            "identified": 8,
+            "sum_hypotheses": 8188,
+            "sum_pair": 6728522,
+            "sum_unary": 16808
+          },
+          {
+            "budget": 3,
+            "identified": 8,
+            "sum_hypotheses": 4616,
+            "sum_pair": 4235546,
+            "sum_unary": 10598
+          },
+          {
+            "budget": 4,
+            "identified": 10,
+            "sum_hypotheses": 2948,
+            "sum_pair": 2882666,
+            "sum_unary": 7216
+          },
+          {
+            "budget": 5,
+            "identified": 20,
+            "sum_hypotheses": 1840,
+            "sum_pair": 1746936,
+            "sum_unary": 4374
+          },
+          {
+            "budget": 6,
+            "identified": 64,
+            "sum_hypotheses": 1064,
+            "sum_pair": 926162,
+            "sum_unary": 2320
+          },
+          {
+            "budget": 7,
+            "identified": 136,
+            "sum_hypotheses": 608,
+            "sum_pair": 402312,
+            "sum_unary": 1008
+          },
+          {
+            "budget": 8,
+            "identified": 188,
+            "sum_hypotheses": 392,
+            "sum_pair": 155598,
+            "sum_unary": 390
+          }
+        ],
+        "depth_histogram": {
+          "2": 8,
+          "4": 2,
+          "5": 10,
+          "6": 44,
+          "7": 72,
+          "8": 52,
+          "None": 72
+        },
+        "identified_by_eight": 188,
+        "labels_to_identification_or_eight": 1834,
+        "relational_gain_steps": 1012
+      },
+      "marginal": {
+        "budgets": [
+          {
+            "budget": 0,
+            "identified": 0,
+            "sum_hypotheses": 31784,
+            "sum_pair": 12342452,
+            "sum_unary": 32124
+          },
+          {
+            "budget": 1,
+            "identified": 2,
+            "sum_hypotheses": 21372,
+            "sum_pair": 7683708,
+            "sum_unary": 19050
+          },
+          {
+            "budget": 2,
+            "identified": 4,
+            "sum_hypotheses": 10708,
+            "sum_pair": 6149108,
+            "sum_unary": 15314
+          },
+          {
+            "budget": 3,
+            "identified": 8,
+            "sum_hypotheses": 5440,
+            "sum_pair": 4372446,
+            "sum_unary": 10922
+          },
+          {
+            "budget": 4,
+            "identified": 8,
+            "sum_hypotheses": 3528,
+            "sum_pair": 2844030,
+            "sum_unary": 7106
+          },
+          {
+            "budget": 5,
+            "identified": 26,
+            "sum_hypotheses": 2160,
+            "sum_pair": 1709828,
+            "sum_unary": 4274
+          },
+          {
+            "budget": 6,
+            "identified": 72,
+            "sum_hypotheses": 1200,
+            "sum_pair": 889114,
+            "sum_unary": 2224
+          },
+          {
+            "budget": 7,
+            "identified": 122,
+            "sum_hypotheses": 668,
+            "sum_pair": 424122,
+            "sum_unary": 1062
+          },
+          {
+            "budget": 8,
+            "identified": 172,
+            "sum_hypotheses": 428,
+            "sum_pair": 172314,
+            "sum_unary": 432
+          }
+        ],
+        "depth_histogram": {
+          "1": 2,
+          "2": 2,
+          "3": 4,
+          "5": 18,
+          "6": 46,
+          "7": 50,
+          "8": 50,
+          "None": 88
+        },
+        "identified_by_eight": 172,
+        "labels_to_identification_or_eight": 1838,
+        "relational_gain_steps": 970
+      },
+      "pair": {
+        "budgets": [
+          {
+            "budget": 0,
+            "identified": 0,
+            "sum_hypotheses": 31784,
+            "sum_pair": 12342452,
+            "sum_unary": 32124
+          },
+          {
+            "budget": 1,
+            "identified": 2,
+            "sum_hypotheses": 21372,
+            "sum_pair": 7683708,
+            "sum_unary": 19050
+          },
+          {
+            "budget": 2,
+            "identified": 4,
+            "sum_hypotheses": 10708,
+            "sum_pair": 6149108,
+            "sum_unary": 15314
+          },
+          {
+            "budget": 3,
+            "identified": 8,
+            "sum_hypotheses": 5440,
+            "sum_pair": 4372446,
+            "sum_unary": 10922
+          },
+          {
+            "budget": 4,
+            "identified": 8,
+            "sum_hypotheses": 3528,
+            "sum_pair": 2844030,
+            "sum_unary": 7106
+          },
+          {
+            "budget": 5,
+            "identified": 26,
+            "sum_hypotheses": 2160,
+            "sum_pair": 1709828,
+            "sum_unary": 4274
+          },
+          {
+            "budget": 6,
+            "identified": 72,
+            "sum_hypotheses": 1200,
+            "sum_pair": 889114,
+            "sum_unary": 2224
+          },
+          {
+            "budget": 7,
+            "identified": 122,
+            "sum_hypotheses": 668,
+            "sum_pair": 424122,
+            "sum_unary": 1062
+          },
+          {
+            "budget": 8,
+            "identified": 172,
+            "sum_hypotheses": 428,
+            "sum_pair": 172314,
+            "sum_unary": 432
+          }
+        ],
+        "depth_histogram": {
+          "1": 2,
+          "2": 2,
+          "3": 4,
+          "5": 18,
+          "6": 46,
+          "7": 50,
+          "8": 50,
+          "None": 88
+        },
+        "identified_by_eight": 172,
+        "labels_to_identification_or_eight": 1838,
+        "relational_gain_steps": 970
+      }
+    },
+    "targets": 260,
+    "unique_relational_gain_edges": 254,
+    "unordered_pairs": 80200
+  },
+  "checks": {
+    "acquired_labels": 5510,
+    "baseline_sha256": "5c0f09731eb2ba6a190b760f9827832433039d84b2d10572247a1aa631ff7108",
+    "boundary": "Primitive family/grammar inherited from 028; new projections and selections independently reconstructed.",
+    "geometry_model_input_checks": 104260,
+    "historical_trace_matches": 16,
+    "identification_by_budget": {
+      "halving": [
+        0,
+        0,
+        8,
+        8,
+        10,
+        20,
+        64,
+        136,
+        188
+      ],
+      "marginal": [
+        0,
+        2,
+        4,
+        8,
+        8,
+        26,
+        72,
+        122,
+        172
+      ],
+      "pair": [
+        0,
+        2,
+        4,
+        8,
+        8,
+        26,
+        72,
+        122,
+        172
+      ]
+    },
+    "independent_choices": 996,
+    "independent_subset_measures": 2838,
+    "label_complement_trace_pairs": 390,
+    "pair_and_marginal_paths_identical": true,
+    "predictions_sha256": "4ea7649492f5272a6c8bcee4daffb72ba928f4d9dc27e47dacbb49aae6d711f5",
+    "recorded_decisions": 996,
+    "relational_witness_instances": 2952,
+    "strict_quotient_edges": 664,
+    "trace_states": 6290,
+    "unique_relational_edges": 254
+  }
+}
