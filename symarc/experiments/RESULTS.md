@@ -275,6 +275,13 @@ Checks: 12 synthetic tests and 120 direct/constructive comparisons. Independent 
 Decision: integrate only the stable mathematical structure: operation-relative coherence/refinement/conflicts, no greatest coherent quotient, nonvacuous prediction, exact independent/coupled conditioning and unobserved fallback obstruction. The next construction target is richer observations and nontrivial downstream use, not another ranking adjustment. Rust solver and existing scores/wrappers unchanged.
 Code/evidence: [protocol and runnable sources](026-constructed-predicates/README.md), [report](evidence/026-constructed-predicates/README.md), compact results, and `reproduce.py`. Prediction SHA-256 `e3b3a78942378b6de83a10b89ad9d296e1706e2327c42d1574619d954bd5c372`; library `7ea82c7a4157ab85e0440f0319ef7f48339b8e4ab1704bf84d76fa0deb1c3195`. The archive includes full source/data/evidence and accepted mathematics checks.
 
+### 027-constructed-spatial-sets — Can a constructed spatial set support recognition and generation?
+Status: active — protocol c3078d3a registered before scientific execution; no result yet.
+Baseline: 37a312e7. Generic coordinate extrema and bounded Cartesian carrier supplied; Boolean point predicates constructed through seven nodes with fully expanded costs. Exact semantic quotient uses all sixteen point roles, not empirical training equivalence. No frame atom or solver modification.
+Comparison: dense 511-set source versus fixed two-example diagnostic; all 4x4 subsets and larger translated/noisy sets. Freeze body before learning separate completion and interior-extraction operations; compare matched cold synthesis with reuse. Thickness-two collision is a fixed negative control. These are constructed teaching problems, not a new ARC score.
+Checks planned: separate finite grammar/evaluator audit, all-optimum retention, explicit body cost and alias invariance, source/query label isolation, overlap and class balance, exact repeated outputs. Single-process semantic/work-count study, no runtime claim.
+Code/evidence: [protocol](027-constructed-spatial-sets/README.md); stable core and accepted mathematics unchanged.
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
