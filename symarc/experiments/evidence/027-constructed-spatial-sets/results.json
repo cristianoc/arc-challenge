@@ -1,0 +1,40 @@
+{
+  "baseline":"37a312e7725f4ac0a62850e7b4ff0f8ee891585c",
+  "protocol":"c3078d3a3e2bc22807a6dddbfae8e887518fe97f",
+  "source_registration":"df0ab32cc85a3ffb32357f5cb2595226bbc37c63",
+  "source_labels":511,
+  "learned_truth_table":65534,
+  "learned_expression":"r=min(rows(S)) OR r=max(rows(S)) OR c=min(cols(S)) OR c=max(cols(S))",
+  "expanded_costs":{"point_predicate":27,"generated_set":44,"classifier":49,"interior_program":60},
+  "grammar":{"boolean_node_bound":7,"exact_semantic_candidates":366,"independently_enumerated_ordered_trees":90690,"training_trace_merging":false},
+  "recognition":{
+    "dense_primary":{"correct":65535,"cases":65535,"positive_correct":100,"positives":100,"negative_correct":65435,"negatives":65435,"source_overlap":511,"new_correct":65024,"new_cases":65024},
+    "dense_larger":{"correct":2317,"cases":2317,"positive_correct":21,"positives":21,"negative_correct":2296,"negatives":2296,"source_overlap":0},
+    "sparse_primary":{"fit_examples":2,"correct":136,"cases":65535,"complete_wrong":65399,"positive_correct":100,"negative_correct":36,"actual_fit_overlap":2,"new_correct":134,"new_cases":65533},
+    "sparse_larger":{"correct":21,"cases":2317,"complete_wrong":2296},
+    "sparse_expression":"Return 0 if S is its carrier minus the lower-right corner, 1 otherwise",
+    "sparse_predicate_cost":14
+  },
+  "generative_transfer":{
+    "repair":{"target_examples":2,"operation":"generated set","correct":2317,"cases":2317,"target_example_overlap":1,"new_correct":2316,"new_cases":2316,"changed_sets":2296},
+    "interior":{"target_examples":2,"operation":"carrier minus generated set","correct":2317,"cases":2317,"target_example_overlap":1,"new_correct":2316,"new_cases":2316,"changed_sets":2317},
+    "input_extrema_preserved":true,
+    "library_frozen_before_target_labels":true,
+    "matched_cold_source_and_target_minima_equal":true,
+    "target_example_checks":{"repair":10,"interior":9}
+  },
+  "work":{"direct_label_checks":7119,"constructive_label_checks":4757,"profile_checks_both":187026,"direct_branch_assignments":1464,"constructed_assignments":1,"runtime_comparison":false},
+  "post_score_teaching_certificate":{
+    "labels":6,"source_indices":[494,6,72,0,11,12],"positive_examples":"3x3 hollow outline, horizontal three-point line, vertical three-point line, singleton",
+    "negative_examples":[[[0,2],[1,0]],[[0,0],[0,2],[1,0]]],
+    "all_truth_tables_checked":65536,"label_maps_each":4,"unique_semantic_program":[65534,0,1],
+    "size_bound_needed_for_uniqueness":false,"minimum_teaching_size_proved":false,
+    "target_informed_demonstration_selection":true
+  },
+  "negative_control":{"input_size":24,"carrier":[5,5],"missing_points":[[2,2],[1,1]],"same_scalar_and_role_profiles":true,"different_thickness_two_labels":true,"all_template_functions_checked":65536},
+  "verification":{"synthetic_tests":13,"direct_constructive_synthetic_checks":40,"rejection_certificates":365,"independent_teacher_cases":67852,"recognizer_prediction_replays":135704,"set_prediction_replays":4634,"scientific_modules_imported_by_auditor":false,"repeat_seven_scientific_files_identical":true},
+  "scoring_note":"Frozen scores.json source_overlap refers to the common dense source bank for both modes; auditor and this summary report actual fitting overlaps, including two for sparse mode. Accuracy is unaffected.",
+  "new_arc_score":false,"stable_solver_changed":false,"accepted_mathematics_changed":false,
+  "limitations":["Input segmentation, axes, extrema and Cartesian carrier are supplied.","Source is dense and the spatial grammar was designed for the prior frame counterexample.","Perfect large-bank counts are finite interpreter checks once all sixteen semantic roles are fixed, not independent task successes.","Target tasks remain geometrically related and preserve extrema.","Six-example certificate is post-score, not blind passive sampling or proof of minimal teaching dimension."],
+  "disposition":"bounded construction candidate, not a stable solver integration"
+}

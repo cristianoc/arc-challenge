@@ -1,0 +1,186 @@
+{
+  "1ae2feb7": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true,
+      true,
+      true
+    ],
+    "colour_permutation_checks": {
+      "passed": 60,
+      "total": 60,
+      "fixed_colours": [
+        0
+      ]
+    },
+    "reflection": {
+      "passed": 6,
+      "total": 6
+    }
+  },
+  "7b5033c1": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true
+    ],
+    "colour_permutation_checks": {
+      "passed": 30,
+      "total": 30,
+      "fixed_colours": [
+        0
+      ]
+    }
+  },
+  "221dfab4": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true,
+      true
+    ],
+    "colour_permutation_checks": {
+      "passed": 40,
+      "total": 40,
+      "fixed_colours": [
+        0,
+        3,
+        4
+      ]
+    },
+    "transpose": {
+      "passed": 4,
+      "total": 4
+    }
+  },
+  "135a2760": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true
+    ],
+    "colour_permutation_checks": {
+      "passed": 30,
+      "total": 30,
+      "fixed_colours": [
+        0
+      ]
+    },
+    "transpose": {
+      "passed": 3,
+      "total": 3
+    }
+  },
+  "dbff022c": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ],
+    "colour_permutation_checks": {
+      "passed": 40,
+      "total": 40,
+      "fixed_colours": [
+        0
+      ]
+    }
+  },
+  "e3721c99": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true,
+      true
+    ],
+    "colour_permutation_checks": {
+      "passed": 40,
+      "total": 40,
+      "fixed_colours": [
+        0,
+        5
+      ]
+    }
+  },
+  "8f215267": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ],
+    "colour_permutation_checks": {
+      "passed": 40,
+      "total": 40,
+      "fixed_colours": [
+        0
+      ]
+    }
+  },
+  "97d7923e": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ],
+    "colour_permutation_checks": {
+      "passed": 40,
+      "total": 40,
+      "fixed_colours": [
+        0
+      ]
+    }
+  },
+  "a251c730": {
+    "train": [
+      true,
+      true
+    ],
+    "test": [
+      true
+    ],
+    "colour_permutation_checks": {
+      "passed": 30,
+      "total": 30,
+      "fixed_colours": [
+        0
+      ]
+    }
+  },
+  "6ffbe589": {
+    "train": [
+      true,
+      true,
+      true
+    ],
+    "test": [
+      true
+    ],
+    "colour_permutation_checks": {
+      "passed": 40,
+      "total": 40,
+      "fixed_colours": [
+        0
+      ]
+    }
+  }
+}

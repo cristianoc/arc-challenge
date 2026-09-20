@@ -1,0 +1,8 @@
+0520fde7  func[dihedral:3 colours:3 cols:4] real[n/a] |C|=120 gain=5.32b outs=39  progsD=0 progs=0 fitD=0.00 fitC=0.00 evals=1 sym=0/1(ok 0) equiv=yes det=-  unfit  :: id
+  accepted: [flipH, flipV, transpose, swapColours 1 5, swapColours 1 2, swapColours 2 5, swapCols 2 3, swapCols 3 4, swapCols 4 5, swapCols 5 6]
+  rejected by realizability: []
+  repaired: []
+  prediction (wrong):
+1015101
+0105101
+1015010

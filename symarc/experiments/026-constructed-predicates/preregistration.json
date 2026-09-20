@@ -1,0 +1,14 @@
+{
+  "baseline": "92a73f4944d48afe3ff3b518e0a5d03d93cdc3ed",
+  "protocol": "8ca83c78407d2a68c2a2ccd1487b398f35a53f22",
+  "source_hashes": {
+    "language.py": "27541e70aa1a0b3585e13be9ff247e88e8d114772ce87abf5bb5e979fb46354d",
+    "run.py": "0819beb49a0925ecc4e5cc03d7e28f72d8fcb8362837142b157e8bc6215328f2",
+    "test_run.py": "686f8c8ca0ad15552cfec64ebf3a07cc5dfa526e95e8466121519b5bb9517ebd"
+  },
+  "synthetic_tests_passed": 12,
+  "direct_constructive_synthetic_comparisons": 120,
+  "scientific_data_prepared_or_scored": false,
+  "execution": "One deterministic construction problem and its reuse controls; serial semantic/work-count comparison, not a wall-time benchmark or worker-scaling series. No ARC corpus run.",
+  "scope": "Fixed count/span arithmetic grammar, predicate size 5, full if-program size 8. Both direct and constructive methods retain all minimum-cost programs and share source evidence. Query inputs do not participate in synthesis."
+}

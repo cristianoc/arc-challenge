@@ -1,0 +1,15 @@
+{
+  "seconds": 8.243224420999468,
+  "workers": 12,
+  "seed": null,
+  "controls": {
+    "literal_to_width": true,
+    "ambiguity": true,
+    "undefined_blocks": true,
+    "component_control": true,
+    "site_control": true
+  },
+  "source_sha256": "42e7b0efee1143be04aba395fde85f2b23dac99cc0fbd63c04c4a41e7d03c8e1",
+  "prediction_sha256": "c9b8cc09b6383fddd07cdab52c69ac0dfaca3d5b6c6098684849b855c1e8dc65",
+  "source_revision": "cf2e54f2795977ba553e621e7f55ba267d648881"
+}

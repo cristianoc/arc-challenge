@@ -1,0 +1,13 @@
+{
+  "command": [
+    "python3",
+    "experiments/003-objects/illustrate.py",
+    "out/experiments/003-objects/20260918T060557.818291Z-full",
+    "experiments/evidence/003-objects/object-example.png"
+  ],
+  "note": "Post-hoc witness illustration; no search. Source pool agrees byte-for-byte with retained full run.",
+  "data_sha256": "a37dc0bdfe03879c2a879812e2eac7cd61fbb003546cf0671c89d2592d1508d9",
+  "pool_sha256": "704cd81f4c90f519c8d5ac5899c4efcb79e831af7968045d0cac87ce64c66ccb",
+  "script_sha256": "1775d6174705ae2dcfa97c075f874494325061c73e63f7e5ea12bcae3065ce7c",
+  "figure_sha256": "3f0204a317e9293d02e1df3eb64237aaaed8872660c3278f6769606682040d2e"
+}

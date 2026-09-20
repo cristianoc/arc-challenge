@@ -1,0 +1,21 @@
+{
+  "revision": "a0a0523982640bd8e9b25c7de0e88370ed80d74b",
+  "changes": [],
+  "data_revision": "f3283f727488ad98fe575ea6a5ac981e4a188e49",
+  "command": [
+    "symarc/experiments/010-test-surprises/run.py",
+    "/workspace/scratch/3aea49b80e54/arc-agi-2-public",
+    "symarc/out/experiments/010-test-surprises"
+  ],
+  "workers": 12,
+  "elapsed_seconds": 2.2063737450007466,
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "source_sha256": "12afc4fe54c73c718e601b82c16e2601b9538138a1ec5660bd2255281751edde",
+  "controls": "5 targeted controls passed",
+  "artifacts": {
+    "inspection-selection.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "results.json": "021b26f3fca074d1bf5df3c27256c37093ac26d73f0f8edf1e91d50e12fb190c",
+    "report.md": "35cca28ba09e27424466d0688ced653c7a861b5a8b3f46d3450d74db785bc36d"
+  }
+}

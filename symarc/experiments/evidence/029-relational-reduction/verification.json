@@ -1,0 +1,12 @@
+{
+  "workflow_run": "35544811851",
+  "source_revision": "425c264c96f2783a8bf8d53b416006df3e18a582",
+  "source_hashes_checked": true,
+  "synthetic_tests": 12,
+  "four_semantic_hashes_match": true,
+  "quotient_example_classes": [
+    33,
+    7
+  ],
+  "status": "success"
+}

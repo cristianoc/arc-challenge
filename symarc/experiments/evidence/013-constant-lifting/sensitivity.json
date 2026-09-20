@@ -1,0 +1,204 @@
+{
+  "budget_seconds": 5,
+  "workers": 12,
+  "seconds": 10.960197659000187,
+  "source_sha256": "ba86e1fbb01487801821b2aa6a74065eaf3c86b69ae20eb3afd35d4a0cdae760",
+  "prediction_sha256": "c9b8cc09b6383fddd07cdab52c69ac0dfaca3d5b6c6098684849b855c1e8dc65",
+  "candidates": [
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 25,
+          "line": 36,
+          "value": 7
+        },
+        "feature": "foreground_colours",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "height",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "width",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "min_dim",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "max_dim",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "height_minus_1",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "width_minus_1",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "colours",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "foreground_colours",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "min_population",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "max_population",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "components",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    },
+    {
+      "task": "2b83f449",
+      "candidate": {
+        "site": {
+          "column": 42,
+          "line": 38,
+          "value": 7
+        },
+        "feature": "max_component_area",
+        "fit": false,
+        "fit_error": "cpu_timeout",
+        "same_literal_on_all_train": false,
+        "test_correct": false
+      }
+    }
+  ]
+}

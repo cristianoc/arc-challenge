@@ -1,0 +1,43 @@
+{
+  "format":"Compact selected case certificates. Full candidate tables, query predictions and additional cases are in the companion investigation archive.",
+  "e9afcf9a":{
+    "corpus":"ARC1 training",
+    "train":[
+      {"input":[[3,3,3,3,3,3],[9,9,9,9,9,9]],"output":[[3,9,3,9,3,9],[9,3,9,3,9,3]]},
+      {"input":[[4,4,4,4,4,4],[8,8,8,8,8,8]],"output":[[4,8,4,8,4,8],[8,4,8,4,8,4]]}
+    ],
+    "query_input":[[6,6,6,6,6,6],[2,2,2,2,2,2]],
+    "official_query_output":[[6,2,6,2,6,2],[2,6,2,6,2,6]],
+    "baseline":{"arm":"exact","features":[0,17],"names":["colour","ray_W.count"],"cost":5,"cv_exact":0,"cv_fraction":[0,1],"prediction":[[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1]]},
+    "tie_complete":{"arm":"guarded_exact","features":[17,25],"names":["ray_W.count","defined(after_ray:N)"],"cost":9,"cv_exact":0,"cv_fraction":[0,1],"prediction":[[6,2,6,2,6,2],[2,6,2,6,2,6]]},
+    "equally_evidenced_complete_models":8,
+    "distinct_joint_answers_among_them":1,
+    "modes":["base","default"],
+    "outer_gate_passes":false,
+    "limitations":"Both models have zero internal evidence score. The test measures transfer of input colours at the same 2x6 shape, not learned parity or arbitrary-width generalisation. Query labels were read only after choices were frozen."
+  },
+  "controlled_literal_background_both_contrasts":{
+    "problem_ids":["71ded0bc30c48819","ff933ac9d7b89c1f"],
+    "teacher_names":["literal_background_0_p1r1","literal_background_1_p1r1"],
+    "baseline":{"features":[0,24,27],"names":["colour","compare(W,E)","defined(after_ray:W)"],"cost":15,"cv_exact":0,"cv_fraction":[634,385]},
+    "tie_complete":{"features":[6,24,27],"names":["near.max_degree","compare(W,E)","defined(after_ray:W)"],"cost":19,"cv_exact":0,"cv_fraction":[634,385]},
+    "equally_evidenced_complete_models":11,
+    "distinct_joint_answers_among_them":1,
+    "correct_crossed_queries_per_teacher":36,
+    "correct_legacy_queries_per_teacher":14,
+    "modes":["base","default"],
+    "limitations":"Teacher rules and query banks are already inspected constructed controls, not independent ARC annotations. Selected key differs from the manually proposed two-endpoint-validity key. All fully relearned outer gates still fail."
+  },
+  "29c11459_default_consensus":{
+    "corpus":"ARC1 training, excluded development fixture in secondary analysis",
+    "equally_evidenced_complete_models":79,
+    "distinct_joint_answers_among_them":5,
+    "effect":"Consensus abstains on the whole task, losing a previously complete correct answer."
+  },
+  "complete_first_new_errors":{
+    "base_training":["3aa6fb7a"],
+    "default_training":["a79310a0","d4f3cd78","d5d6de2d"],
+    "default_evaluation":["27a77e38"],
+    "interpretation":"These were incomplete under the matched original learner; query completeness alone does not establish their predicted colours."
+  }
+}

@@ -1,0 +1,42 @@
+6d0aefbc: grid fits 36 object fits 0 oracle true/false validation p 0.973/0.000
+d9f24cd1: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+53b68214: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+28bf18c6: grid fits 2 object fits 0 oracle true/false validation p 0.333/0.000
+b0c4d837: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+6f8cd79b: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+a85d4709: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+32597951: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+67385a82: grid fits 0 object fits 2 oracle false/false validation p 0.000/1.000
+6e19193c: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+85c4e7cd: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+a78176bb: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+1190e5a7: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+2dd70a9a: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+3de23699: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+810b9b61: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+444801d8: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+952a094c: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+c444b776: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+1c786137: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+5bd6f4ac: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+b8825c91: grid fits 4 object fits 0 oracle true/false validation p 1.000/0.000
+0dfd9992: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+045e512c: grid fits 0 object fits 0 oracle false/false validation p 0.000/0.000
+        0.83 real         2.70 user         0.02 sys
+            10485760  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                 932  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                1206  involuntary context switches
+         45241053656  instructions retired
+          8433819346  cycles elapsed
+             9765224  peak memory footprint

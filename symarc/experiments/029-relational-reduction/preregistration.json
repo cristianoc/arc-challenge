@@ -1,0 +1,11 @@
+{
+  "baseline": "2f534a92f728bde2446b368cc03f68a8ad14cd34",
+  "protocol": "f8cd4a95cb0c622f0d35ac4d7760421fe3069080",
+  "source_hashes": {
+    "run.py": "820a80aac729d6c6c3d810030d24f4957d3b33887e4ad6cb4aeb8b6aadc115e6",
+    "test_run.py": "284e1db989b9268050b25d2d36b2fbe4384af4efba33c69fa37e7f7aabc3601b"
+  },
+  "synthetic_tests_passed": 12,
+  "random_reference_cases": 300,
+  "scientific_run_started": false
+}

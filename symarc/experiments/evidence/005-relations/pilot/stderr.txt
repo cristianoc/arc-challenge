@@ -1,0 +1,42 @@
+6d0aefbc: baseline fit 36, relation fit 0, new oracle false
+d9f24cd1: baseline fit 0, relation fit 0, new oracle false
+28bf18c6: baseline fit 2, relation fit 0, new oracle false
+a85d4709: baseline fit 0, relation fit 0, new oracle false
+6f8cd79b: baseline fit 0, relation fit 0, new oracle false
+32597951: baseline fit 0, relation fit 0, new oracle false
+b0c4d837: baseline fit 0, relation fit 0, new oracle false
+53b68214: baseline fit 0, relation fit 0, new oracle false
+67385a82: baseline fit 2, relation fit 0, new oracle false
+6e19193c: baseline fit 0, relation fit 0, new oracle false
+1190e5a7: baseline fit 0, relation fit 0, new oracle false
+85c4e7cd: baseline fit 0, relation fit 0, new oracle false
+a78176bb: baseline fit 0, relation fit 0, new oracle false
+3de23699: baseline fit 0, relation fit 0, new oracle false
+810b9b61: baseline fit 0, relation fit 0, new oracle false
+444801d8: baseline fit 0, relation fit 0, new oracle false
+2dd70a9a: baseline fit 0, relation fit 0, new oracle false
+952a094c: baseline fit 0, relation fit 0, new oracle false
+c444b776: baseline fit 0, relation fit 0, new oracle false
+1c786137: baseline fit 0, relation fit 0, new oracle false
+b8825c91: baseline fit 4, relation fit 0, new oracle false
+5bd6f4ac: baseline fit 0, relation fit 0, new oracle false
+0dfd9992: baseline fit 0, relation fit 0, new oracle false
+045e512c: baseline fit 0, relation fit 0, new oracle false
+        0.90 real         1.70 user         0.01 sys
+            10518528  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                 943  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                1546  involuntary context switches
+         27046407574  instructions retired
+          5336747224  cycles elapsed
+             9748840  peak memory footprint

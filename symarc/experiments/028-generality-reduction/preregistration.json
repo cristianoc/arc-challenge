@@ -1,0 +1,14 @@
+{
+  "baseline":"ed4b76bd202202976dfeee82dccd1cd6d32d7bc7",
+  "protocol":"ef49ae6c1b81e81cee66af9bf22f804ac48cc54e",
+  "active_ledger_blob":"444514fb57e03dc2f4b296fdb9a22f04bbaa81ff",
+  "source_hashes":{
+    "run.py":"faf1c6eb59590e9b9be86d86cd43917867b3dd0b9901a6f9658a4833fe4d52b0",
+    "test_run.py":"38c7ad0167345b544b7b5de62b4156f83de2c4157a9f72ea6e7cfc69efbe41be",
+    "../027-constructed-spatial-sets/language.py":"12257e63531088880ecfac3dad2417bbbebde046f9db651e55bce7ee737b0cd0"
+  },
+  "synthetic_tests_passed":12,
+  "independent_synthetic_envelope_cases":300,
+  "scientific_predictions_run":false,
+  "note":"Sources frozen locally before scientific execution and published unchanged with results; source publication time must not be represented as earlier than it was. Single-process exact semantic study, not a runtime benchmark."
+}

@@ -1,0 +1,18 @@
+{
+  "baseline":"37a312e7725f4ac0a62850e7b4ff0f8ee891585c",
+  "protocol":"c3078d3a3e2bc22807a6dddbfae8e887518fe97f",
+  "ledger_active_confirmed":true,
+  "source_hashes":{
+    "language.py":"12257e63531088880ecfac3dad2417bbbebde046f9db651e55bce7ee737b0cd0",
+    "run.py":"7779fdd7d0f03b55ca327bd471893acd4997fb154939c0ec8a524734ebbb22ff",
+    "test_run.py":"22ecdcf0bd3c660ee60e75192a8958f9b5e78fa61b5ce537eadc2357f0abd90f"
+  },
+  "synthetic_tests_passed":13,
+  "synthetic_direct_construction_comparisons":40,
+  "unlabelled_grammar_semantic_predicates":366,
+  "scientific_sources_or_queries_scored_yet":false,
+  "execution_note":"Source files are frozen locally under these hashes and will be published unchanged. No claim of remote publication before these registered hashes.",
+  "workers":1,
+  "runtime_comparison":false,
+  "new_arc_benchmark":false
+}

@@ -1,0 +1,678 @@
+{
+  "ambiguity_example": {
+    "base_prediction": 0,
+    "expected": 0,
+    "features": [
+      "colour",
+      "reach.any_border"
+    ],
+    "id": "d5d6de2d",
+    "key": [
+      2,
+      1
+    ],
+    "point": [
+      0,
+      0
+    ],
+    "query": 1,
+    "surviving_actions": {
+      "after_ray:E": 0,
+      "after_ray:N": -1,
+      "after_ray:W": -1,
+      "constant:0": 0
+    }
+  },
+  "four_point_core": {
+    "classes": 364,
+    "extended_full_fit": false,
+    "four_point_case": [
+      {
+        "features": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          12,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "input": 1,
+        "majority": 2,
+        "neighbours": [
+          0,
+          2,
+          2,
+          2
+        ],
+        "old_allowed": [
+          2,
+          12,
+          13,
+          14,
+          16,
+          17,
+          18
+        ],
+        "origin": [
+          0,
+          2,
+          10
+        ],
+        "output": 2
+      },
+      {
+        "features": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          12,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "input": 1,
+        "majority": 0,
+        "neighbours": [
+          0,
+          0,
+          2,
+          0
+        ],
+        "old_allowed": [
+          0,
+          11,
+          12,
+          14,
+          15,
+          16,
+          18
+        ],
+        "origin": [
+          0,
+          5,
+          5
+        ],
+        "output": 0
+      },
+      {
+        "features": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          12,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "input": 1,
+        "majority": 0,
+        "neighbours": [
+          0,
+          2,
+          0,
+          0
+        ],
+        "old_allowed": [
+          0,
+          11,
+          13,
+          14,
+          15,
+          17,
+          18
+        ],
+        "origin": [
+          0,
+          8,
+          12
+        ],
+        "output": 0
+      },
+      {
+        "features": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          12,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "input": 1,
+        "majority": 2,
+        "neighbours": [
+          2,
+          2,
+          2,
+          0
+        ],
+        "old_allowed": [
+          2,
+          11,
+          12,
+          13,
+          15,
+          16,
+          17
+        ],
+        "origin": [
+          0,
+          11,
+          12
+        ],
+        "output": 2
+      }
+    ],
+    "id": "7e0986d6",
+    "old_conflicting_classes": 3,
+    "old_full_fit": false,
+    "remaining_conflicting_classes": 1,
+    "remaining_witness_class": {
+      "features": [
+        8,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        16,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "origins": [
+        [
+          1,
+          2,
+          8
+        ],
+        [
+          1,
+          2,
+          10
+        ],
+        [
+          1,
+          4,
+          7
+        ],
+        [
+          1,
+          5,
+          4
+        ],
+        [
+          1,
+          7,
+          1
+        ],
+        [
+          1,
+          7,
+          6
+        ],
+        [
+          1,
+          7,
+          12
+        ],
+        [
+          1,
+          8,
+          4
+        ],
+        [
+          1,
+          10,
+          4
+        ],
+        [
+          1,
+          10,
+          8
+        ]
+      ]
+    },
+    "split": "training"
+  },
+  "joint_example": {
+    "cv_exact": 0,
+    "features": [
+      "ray_W.count",
+      "ray_E.count"
+    ],
+    "id": "29c11459",
+    "query_rows": [
+      {
+        "expected": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          5,
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "input": [
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          8
+        ],
+        "prediction": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          5,
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "query": 0,
+        "row": 1
+      },
+      {
+        "expected": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          5,
+          9,
+          9,
+          9,
+          9,
+          9
+        ],
+        "input": [
+          6,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9
+        ],
+        "prediction": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          5,
+          9,
+          9,
+          9,
+          9,
+          9
+        ],
+        "query": 0,
+        "row": 4
+      }
+    ],
+    "rules": [
+      {
+        "actions": [
+          "copy:C"
+        ],
+        "key": [
+          1,
+          1
+        ]
+      },
+      {
+        "actions": [
+          "copy:W",
+          "after_ray:W"
+        ],
+        "key": [
+          1,
+          9
+        ]
+      },
+      {
+        "actions": [
+          "constant:0",
+          "copy:C",
+          "copy:E"
+        ],
+        "key": [
+          1,
+          11
+        ]
+      },
+      {
+        "actions": [
+          "after_ray:W"
+        ],
+        "key": [
+          2,
+          8
+        ]
+      },
+      {
+        "actions": [
+          "constant:0",
+          "copy:C",
+          "copy:W",
+          "copy:E"
+        ],
+        "key": [
+          2,
+          10
+        ]
+      },
+      {
+        "actions": [
+          "after_ray:W"
+        ],
+        "key": [
+          3,
+          7
+        ]
+      },
+      {
+        "actions": [
+          "constant:0",
+          "copy:C",
+          "copy:W",
+          "copy:E"
+        ],
+        "key": [
+          3,
+          9
+        ]
+      },
+      {
+        "actions": [
+          "after_ray:W"
+        ],
+        "key": [
+          4,
+          6
+        ]
+      },
+      {
+        "actions": [
+          "constant:0",
+          "copy:C",
+          "copy:W",
+          "copy:E"
+        ],
+        "key": [
+          4,
+          8
+        ]
+      },
+      {
+        "actions": [
+          "constant:5"
+        ],
+        "key": [
+          5,
+          5
+        ]
+      },
+      {
+        "actions": [
+          "constant:0",
+          "copy:C",
+          "copy:W",
+          "copy:E"
+        ],
+        "key": [
+          5,
+          7
+        ]
+      },
+      {
+        "actions": [
+          "after_ray:E"
+        ],
+        "key": [
+          6,
+          4
+        ]
+      },
+      {
+        "actions": [
+          "constant:0",
+          "copy:C",
+          "copy:W",
+          "copy:E"
+        ],
+        "key": [
+          6,
+          6
+        ]
+      },
+      {
+        "actions": [
+          "after_ray:E"
+        ],
+        "key": [
+          7,
+          3
+        ]
+      },
+      {
+        "actions": [
+          "constant:0",
+          "copy:C",
+          "copy:W",
+          "copy:E"
+        ],
+        "key": [
+          7,
+          5
+        ]
+      },
+      {
+        "actions": [
+          "after_ray:E"
+        ],
+        "key": [
+          8,
+          2
+        ]
+      },
+      {
+        "actions": [
+          "constant:0",
+          "copy:C",
+          "copy:W",
+          "copy:E"
+        ],
+        "key": [
+          8,
+          4
+        ]
+      },
+      {
+        "actions": [
+          "copy:E",
+          "after_ray:E"
+        ],
+        "key": [
+          9,
+          1
+        ]
+      },
+      {
+        "actions": [
+          "constant:0",
+          "copy:C",
+          "copy:W",
+          "copy:E"
+        ],
+        "key": [
+          9,
+          3
+        ]
+      },
+      {
+        "actions": [
+          "constant:0",
+          "copy:C",
+          "copy:W",
+          "copy:E"
+        ],
+        "key": [
+          10,
+          2
+        ]
+      },
+      {
+        "actions": [
+          "constant:0",
+          "copy:C",
+          "copy:W"
+        ],
+        "key": [
+          11,
+          1
+        ]
+      }
+    ],
+    "training_rows": [
+      {
+        "demonstration": 0,
+        "input": [
+          3,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7
+        ],
+        "output": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          5,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "row": 3
+      },
+      {
+        "demonstration": 1,
+        "input": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2
+        ],
+        "output": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          5,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "row": 1
+      }
+    ]
+  }
+}

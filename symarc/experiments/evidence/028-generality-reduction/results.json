@@ -1,0 +1,27 @@
+{
+  "baseline":"ed4b76bd202202976dfeee82dccd1cd6d32d7bc7",
+  "protocol":"ef49ae6c1b81e81cee66af9bf22f804ac48cc54e",
+  "source_registration":"e72ab8ce0788701848ca101cc4b75db5bc3c2e77",
+  "new_arc_score":false,
+  "teacher_oracle":true,
+  "distinct_geometric_families":4,
+  "teacher_rules_including_label_complements":8,
+  "semantic_input_classes":401,
+  "semantic_classifier_functions":260,
+  "policies":{
+    "first":{"identified_by_5":4,"identified_by_8":4,"shortest_correct_on_full_primary_at_5":6},
+    "halving":{"identified_by_5":4,"identified_by_8":8,"shortest_correct_on_full_primary_at_5":8,"total_extra_labels_to_identify_all":34},
+    "negative_reduction":{"identified_by_5":5,"identified_by_8":6,"shortest_correct_on_full_primary_at_5":7},
+    "scope":{"identified_by_5":8,"identified_by_8":8,"shortest_correct_on_full_primary_at_5":8,"total_extra_labels_to_identify_all":28}
+  },
+  "extra_labels_by_rule_without_complement":{"perimeter":{"scope":1,"halving":2},"filled":{"scope":5,"halving":7},"missing_corner":{"scope":3,"halving":2},"corners":{"scope":5,"halving":6}},
+  "unbounded_mechanism":{
+    "seed":{"point_table_programs":256,"semantic_classifiers":36,"disputed_classes":393,"possible_positive_primary":65499,"false_positive_possibilities":65399},
+    "positive_singleton":{"point_table_programs":128,"semantic_classifiers":18,"disputed_classes":392,"possible_positive_primary":65499,"false_positive_possibilities":65399},
+    "negative_solid":{"point_table_programs":128,"semantic_classifiers":18,"disputed_classes":7,"possible_positive_primary":124,"false_positive_possibilities":24}
+  },
+  "scope_shortest_changes":{"equal":18,"specialisation":3,"generalisation":3,"incomparable":4},
+  "checks":{"synthetic_tests":12,"synthetic_envelope_cases":300,"ordered_syntax_trees":90690,"point_truth_tables":366,"distinct_classifier_extensions":260,"teacher_labels_checked":197,"trace_states":165,"acquisition_decisions":133,"elimination_witnesses":1855,"complement_trace_pairs":12,"unbounded_mechanism_states":3,"concrete_geometries":67852,"bank_state_scores":330,"local_reproduction_identical":true},
+  "limitations":["Scope weights are uniform semantic classes, not an ARC distribution.","Additional labels come from a known synthetic teacher.","Four related geometric families and their complements are not eight independent tasks.","Identification improves at five labels; cheapest-program accuracy ties halving then.","This does not construct new spatial primitives or change ARC scores."],
+  "disposition":"candidate: retain consequence-reduction analyser and controls, no solver integration"
+}

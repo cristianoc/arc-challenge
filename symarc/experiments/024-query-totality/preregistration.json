@@ -1,0 +1,11 @@
+{
+  "baseline": "f2a926f30783de3f2ef985d582c748e57c603907",
+  "protocol_commit": "81d09eb51553b384c7172cd21f3a759ec39f7dfd",
+  "frozen_at_utc": "2026-09-19T10:25:04.833514+00:00",
+  "tests_passed": 16,
+  "synthetic_concrete_program_comparisons": 1200,
+  "files": {
+    "run.py": "634cc3bbb6575f07e775e70f6a192c6836afd9654311b4cd79f6e82e2e5239ba",
+    "test_run.py": "617cfe9ec2d6d85c55f87575b7e64c7915e5ffcd90bc81b2ef706a5cabaabc2f"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "target": 22,
+  "policy": "halving",
+  "seed_labels": [
+    [
+      255,
+      0
+    ],
+    [
+      495,
+      0
+    ]
+  ],
+  "preceding_observations": [
+    [
+      7,
+      1
+    ],
+    [
+      73,
+      0
+    ],
+    [
+      9,
+      0
+    ]
+  ],
+  "new_observation": [
+    1,
+    0
+  ],
+  "witness": {
+    "after": {
+      "cartesian_gap": 220,
+      "equality_classes": 7,
+      "hypotheses": 6,
+      "inconsistent": false,
+      "pair": 7970,
+      "unary": 20,
+      "version": "0x50500000000000000000000000400000000000000400000"
+    },
+    "after_version": "0x50500000000000000000000000400000000000000400000",
+    "before": {
+      "cartesian_gap": 1076,
+      "equality_classes": 33,
+      "hypotheses": 25,
+      "inconsistent": false,
+      "pair": 18805,
+      "unary": 47,
+      "version": "0x50550544000000000055050500400000001540000400040"
+    },
+    "before_version": "0x50550544000000000055050500400000001540000400040",
+    "input_indices": [
+      74,
+      85
+    ],
+    "input_sets": [
+      [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    "joint_exclusions_with_ambiguous_coordinates": 28,
+    "pair_after": [
+      0,
+      3
+    ],
+    "pair_before": [
+      0,
+      2,
+      3
+    ],
+    "query_label": 0,
+    "query_mask": 1,
+    "query_points": [
+      [
+        0,
+        0
+      ]
+    ]
+  }
+}
