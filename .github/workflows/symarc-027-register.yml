@@ -1,0 +1,37 @@
+name: Register SymArc 027
+on:
+  push:
+    branches: [symarc/stable-core]
+    paths: [.github/workflows/symarc-027-register.yml]
+permissions:
+  contents: write
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: symarc/stable-core
+      - run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('symarc/experiments/RESULTS.md'); s=p.read_text()
+          assert '### 027-constructed-spatial-sets' not in s
+          entry='''### 027-constructed-spatial-sets — Can a constructed spatial set support recognition and generation?
+          Status: active — protocol c3078d3a registered before scientific execution; no result yet.
+          Baseline: 37a312e7. Generic coordinate extrema and bounded Cartesian carrier supplied; Boolean point predicates constructed through seven nodes with fully expanded costs. Exact semantic quotient uses all sixteen point roles, not empirical training equivalence. No frame atom or solver modification.
+          Comparison: dense 511-set source versus fixed two-example diagnostic; all 4x4 subsets and larger translated/noisy sets. Freeze body before learning separate completion and interior-extraction operations; compare matched cold synthesis with reuse. Thickness-two collision is a fixed negative control. These are constructed teaching problems, not a new ARC score.
+          Checks planned: separate finite grammar/evaluator audit, all-optimum retention, explicit body cost and alias invariance, source/query label isolation, overlap and class balance, exact repeated outputs. Single-process semantic/work-count study, no runtime claim.
+          Code/evidence: [protocol](027-constructed-spatial-sets/README.md); stable core and accepted mathematics unchanged.
+
+          '''
+          import textwrap
+          p.write_text(s.replace('## Entry format',textwrap.dedent(entry)+'## Entry format'))
+          Path('.github/workflows/symarc-027-register.yml').unlink()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add symarc/experiments/RESULTS.md .github/workflows/symarc-027-register.yml
+          git commit -m 'experiments: register spatial-set construction'
+          git push origin HEAD:symarc/stable-core
