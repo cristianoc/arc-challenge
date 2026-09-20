@@ -285,6 +285,13 @@ Negative boundary: full 5x5 sets minus centre versus minus (1,1) have equal scal
 Checks: thirteen synthetic tests, forty direct/constructive controls, 365 rejection certificates, independent 67852 teacher cases, 135704 recognition and 4634 set-output replays. Auditor imports neither scientific module and enumerates raw syntax independently. Local repeat matches seven scientific hashes; this GitHub workflow independently repeats the full reproduction before finalizing. No semantic policy or source change after scores.
 Code/evidence: [protocol and standalone sources](027-constructed-spatial-sets/README.md), [report](evidence/027-constructed-spatial-sets/README.md), compact results and scientific hashes. `reproduce.py` regenerates data, library, predictions, scores and audit. Prediction hash d16fa2262e8c04ea1b350e042170d964d69bb50a824709fedd827849a093cbc1. Core proofs, stable Rust solver and previous ARC wrappers unchanged.
 
+### 028-generality-reduction — Can reduction of semantic scope guide evidence?
+Status: active — protocol frozen before scientific execution; no outcome yet.
+Baseline: `ed4b76bd`; protocol `ef49ae6c`. Same 027 point grammar and full semantic classifier pool, no primitive changes. Distinguish classifier specialisation, candidate elimination and shrinking possible-output envelopes.
+Comparison: first-informative, hypothesis-halving, negative-exclusion and worst-case two-sided scope reduction; eight constructed teachers including label complements, same two seed inputs and at most eight requested 3x3 labels. Exact semantic scope domain, fixed supplementary frame contrast and missing-language control. Teacher oracle supplied; no ARC score or untouched holdout claim.
+Checks planned: independent selection/envelope and geometry audit, duplicate/label-swap invariance, empty-family handling, frozen traces before separate scoring, reproduced output hashes.
+Code/evidence: [protocol](028-generality-reduction/README.md). Stable solver and accepted mathematics unchanged.
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
