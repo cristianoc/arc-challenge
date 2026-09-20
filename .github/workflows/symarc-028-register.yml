@@ -1,0 +1,38 @@
+name: Register SymArc 028
+on:
+  push:
+    branches: [symarc/stable-core]
+    paths: [.github/workflows/symarc-028-register.yml]
+permissions:
+  contents: write
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: symarc/stable-core
+      - name: Register only the new bounded investigation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('symarc/experiments/RESULTS.md');text=p.read_text()
+          assert '### 028-generality-reduction' not in text
+          entry='''### 028-generality-reduction — Can reduction of semantic scope guide evidence?
+          Status: active — protocol frozen before scientific execution; no outcome yet.
+          Baseline: `ed4b76bd`; protocol `ef49ae6c`. Same 027 point grammar and full semantic classifier pool, no primitive changes. Distinguish classifier specialisation, candidate elimination and shrinking possible-output envelopes.
+          Comparison: first-informative, hypothesis-halving, negative-exclusion and worst-case two-sided scope reduction; eight constructed teachers including label complements, same two seed inputs and at most eight requested 3x3 labels. Exact semantic scope domain, fixed supplementary frame contrast and missing-language control. Teacher oracle supplied; no ARC score or untouched holdout claim.
+          Checks planned: independent selection/envelope and geometry audit, duplicate/label-swap invariance, empty-family handling, frozen traces before separate scoring, reproduced output hashes.
+          Code/evidence: [protocol](028-generality-reduction/README.md). Stable solver and accepted mathematics unchanged.
+
+          '''
+          import textwrap
+          p.write_text(text.replace('## Entry format',textwrap.dedent(entry)+'## Entry format'))
+          Path('.github/workflows/symarc-028-register.yml').unlink()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add symarc/experiments/RESULTS.md .github/workflows/symarc-028-register.yml
+          git commit -m 'experiments: register semantic generality reduction'
+          git push origin HEAD:symarc/stable-core
