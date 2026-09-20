@@ -295,6 +295,13 @@ Boundaries: the frame's bounded four-candidate space is identified with one new 
 Checks: 12 synthetic tests, 300 envelope comparisons; independent auditor imports neither scientific module, enumerates 90690 trees, verifies 260 classifier extensions/costs, 133 request choices, 1855 eliminations, 165 states, 12 complement pairs, 67852 geometric inputs and 330 bank/state scores. Local full reproduction is byte-identical; finalization repeats it on GitHub before recording this entry.
 Code/evidence: [protocol and sources](028-generality-reduction/README.md), [findings](evidence/028-generality-reduction/README.md), compact results and scientific hashes. Prediction SHA-256 `5c0f09731eb2ba6a190b760f9827832433039d84b2d10572247a1aa631ff7108`. Full traces and checked reproduction package retained. Stable Rust solver, existing ARC wrappers and accepted Lean mathematics unchanged.
 
+### 029-relational-reduction — Do relational consequences reveal information before individual answers?
+Status: active — fixed protocol and source hashes registered before scientific execution.
+Baseline: 2f534a92; protocol f8cd4a95. Reuse 028's 401 exact input classes, 260 semantic classifiers and two source seeds; no new grammar, geometric primitive or ARC score. Compare hypothesis halving, marginal consequence reduction and pair-consequence reduction on every one of the 260 functions as supplied target, with at most eight extra source labels. These are exhaustive closed-world simulations, not independent natural tasks.
+Question: quantify newly forbidden output pairs whose coordinates remain individually ambiguous; construct forced input equivalences relative to surviving hypotheses. Pairwise information need not capture higher-order constraints or improve a greedy acquisition policy. All pairs equally weighted by explicit choice.
+Checks: twelve synthetic tests passed, including 300 finite reference comparisons, label complementation, empty-family handling, nonbinary projection and parity obstruction. Independent column-intersection audit and exact 028 path replay planned. No scientific outcome yet.
+Code/evidence: [protocol](029-relational-reduction/README.md); source hashes in preregistration.json. Stable solver and accepted mathematics unchanged.
+
 ## Entry format
 
 Use one short entry per experiment; update it in place. Keep decisive facts
