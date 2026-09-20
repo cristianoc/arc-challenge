@@ -1,0 +1,9 @@
+{
+  "audit.json": "dc36f2c8871b9efcccb8d995bd48b06cbf73cb4eff4e14aaef0696fdffbf4526",
+  "construction.json": "ebb9dbcebbe706a7bef59191f1c6cfad6782e5aefcbe17b8df32780c25ff06cd",
+  "library.json": "80ae4c3deb825b784078edf7733c2e094a0cc2088be9a7c053206c9a99ecc35e",
+  "negative-certificate.json": "a18d815798431f045d87ebca53754a2618c5be240a35cd565c0bfefa58bef045",
+  "predictions.json": "d16fa2262e8c04ea1b350e042170d964d69bb50a824709fedd827849a093cbc1",
+  "scores.json": "efc9e2c2f6d1f9f61b8bc8498c47cc5e63b68295d2cd2a7df88dc8c871fc7c2e",
+  "teaching-certificate.json": "e19a4a9c1094e9a1e18ee5c93e785756ac6eb5290c586ed98af19b7f33672d34"
+}
